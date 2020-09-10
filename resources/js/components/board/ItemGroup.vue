@@ -7,7 +7,7 @@
             <i class="fa fa-expand-alt"></i>
           </span>
           <span>
-            {{ stage.title }}
+            {{ stage.title || stage.name }}
           </span>
           <span v-if="!isExpanded"> ({{ items.length }} items) </span>
         </div>
@@ -23,7 +23,7 @@
       </div>
 
       <!-- new item  -->
-      <div class="grid grid-cols-12 text-left item-line" v-if="createMode">
+      <div class="grid grid-cols-12 text-left item-line" v-if="createMode || !items.length">
         <div class="col-span-8 item-line-cell bg-gray-200 flex">
           <item-group-cell
             class="w-full flex items-center"
@@ -118,6 +118,9 @@ export default {
     },
     items: {
       type: Array,
+      default() {
+          return []
+      }
     },
   },
   data() {
@@ -128,11 +131,16 @@ export default {
   },
   methods: {
     getBg(field, value) {
-      if (value && field.rules && field.rules.bg) {
-        const bg = field.rules.bg.find((rule) => {
-          return value.toLowerCase() == rule.value.toLowerCase();
-        });
-        return bg ? "bg-" + bg.result + "-300" : "";
+      if (value && field.rules) {
+        const bgRule = field.rules.find(rule => rule.name == 'bg');
+        if (bgRule) {
+            const ruleOptions = bgRule.options || field[bgRule.reference];
+            const bg = ruleOptions.find((rule) => {
+                const name = rule.name || rule.value
+              return value.toLowerCase() == name.toLowerCase();
+            });
+            return bg ? "bg-" + (bg.result || bg.color) + "-300" : "";
+        }
       }
       return "bg-gray-200";
     },

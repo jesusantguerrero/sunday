@@ -30,7 +30,7 @@
       v-for="stage in board.stages"
       :key="stage.name"
       :stage="stage"
-      :items="items"
+      :items="stage.items"
       :create-mode="createMode"
       @saved="addItem"
       class="mt-4"
@@ -52,14 +52,6 @@ export default {
         type: Object,
         required: true
     }
-  },
-  watch: {
-      board: {
-          handler() {
-              this.setStageData()
-          },
-          immediate:true
-      }
   },
   data() {
     return {
@@ -98,86 +90,11 @@ export default {
   },
   methods: {
     addItem(newItem) {
-      this.items.unshift(newItem);
-      this.createMode = false;
+        axios.post('/items',  newItem
+        ).then(() => {
+            this.$inertia.reload()
+        })
     },
-    setStageData() {
-        this.board.stages.forEach((board,index) => {
-            this.board.stages[index]
-                const stage = this.board.stages[index];
-                this.board.stages[index] = {
-                    name: stage.name,
-                    id: stage.id,
-                    title: stage.name,
-                    fields: [
-                        {
-                        name: "owner",
-                        title: "Owner"
-                        },
-                        {
-                        name: "status",
-                        title: "Status",
-                        type: "select",
-                        options: [
-                            { name: "todo", label: "To Do", color: "red" },
-                            { name: "delegate", label: "Delegate", color: "yellow" },
-                            { name: "delete", label: "Delete", color: "red" },
-                            { name: "backlog", label: "Backlog", color: "gray" },
-                            { name: "done", label: "Done", color: "green" }
-                        ],
-                        rules: [
-                            {
-                            name: "bg",
-                            reference: "options"
-                            }
-                        ]
-                        },
-                        {
-                        name: "due_date",
-                        title: "Due Date"
-                        },
-                        {
-                        name: "priority",
-                        title: "Priority",
-                        type: "select",
-                        options: [
-                            { name: "high", color: "red" },
-                            { name: "medium", color: "blue" },
-                            { name: "low", color: "gree" }
-                        ],
-                        rules: {
-                            bg: [
-                            {
-                                result: "green",
-                                value: "low"
-                            },
-                            {
-                                result: "blue",
-                                value: "medium"
-                            },
-                            {
-                                result: "red",
-                                value: "high"
-                            }
-                            ]
-                        }
-                        }
-                    ],
-                    priorities: [
-                        { name: "high", color: "red" },
-                        { name: "medium", color: "blue" },
-                        { name: "low", color: "gree" }
-                    ],
-                    status: [
-                        { name: "todo", label: "To Do", color: "red" },
-                        { name: "delegate", label: "Delegate", color: "yellow" },
-                        { name: "delete", label: "Delete", color: "red" },
-                        { name: "backlog", label: "Backlog", color: "gray" },
-                        { name: "done", label: "Done", color: "green" }
-                    ]
-                }
-        });
-    }
   }
 };
 </script>

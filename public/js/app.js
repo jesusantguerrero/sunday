@@ -4968,7 +4968,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       type: Object
     },
     items: {
-      type: Array
+      type: Array,
+      "default": function _default() {
+        return [];
+      }
     }
   },
   data: function data() {
@@ -4979,11 +4982,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     getBg: function getBg(field, value) {
-      if (value && field.rules && field.rules.bg) {
-        var bg = field.rules.bg.find(function (rule) {
-          return value.toLowerCase() == rule.value.toLowerCase();
+      if (value && field.rules) {
+        var bgRule = field.rules.find(function (rule) {
+          return rule.name == 'bg';
         });
-        return bg ? "bg-" + bg.result + "-300" : "";
+
+        if (bgRule) {
+          var ruleOptions = bgRule.options || field[bgRule.reference];
+          var bg = ruleOptions.find(function (rule) {
+            var name = rule.name || rule.value;
+            return value.toLowerCase() == name.toLowerCase();
+          });
+          return bg ? "bg-" + (bg.result || bg.color) + "-300" : "";
+        }
       }
 
       return "bg-gray-200";
@@ -5097,7 +5108,7 @@ __webpack_require__.r(__webpack_exports__);
     displayValue: function displayValue() {
       var _this = this;
 
-      if (this.field.type == "select") {
+      if (["select", "label"].includes(this.field.type)) {
         var option = this.field.options.find(function (option) {
           return option.name == _this.value;
         });
@@ -5186,14 +5197,6 @@ __webpack_require__.r(__webpack_exports__);
       required: true
     }
   },
-  watch: {
-    board: {
-      handler: function handler() {
-        this.setStageData();
-      },
-      immediate: true
-    }
-  },
   data: function data() {
     return {
       createMode: false,
@@ -5225,113 +5228,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     addItem: function addItem(newItem) {
-      this.items.unshift(newItem);
-      this.createMode = false;
-    },
-    setStageData: function setStageData() {
       var _this = this;
 
-      this.board.stages.forEach(function (board, index) {
-        _this.board.stages[index];
-        var stage = _this.board.stages[index];
-        _this.board.stages[index] = {
-          name: stage.name,
-          id: stage.id,
-          title: stage.name,
-          fields: [{
-            name: "owner",
-            title: "Owner"
-          }, {
-            name: "status",
-            title: "Status",
-            type: "select",
-            options: [{
-              name: "todo",
-              label: "To Do",
-              color: "red"
-            }, {
-              name: "delegate",
-              label: "Delegate",
-              color: "yellow"
-            }, {
-              name: "delete",
-              label: "Delete",
-              color: "red"
-            }, {
-              name: "backlog",
-              label: "Backlog",
-              color: "gray"
-            }, {
-              name: "done",
-              label: "Done",
-              color: "green"
-            }],
-            rules: [{
-              name: "bg",
-              reference: "options"
-            }]
-          }, {
-            name: "due_date",
-            title: "Due Date"
-          }, {
-            name: "priority",
-            title: "Priority",
-            type: "select",
-            options: [{
-              name: "high",
-              color: "red"
-            }, {
-              name: "medium",
-              color: "blue"
-            }, {
-              name: "low",
-              color: "gree"
-            }],
-            rules: {
-              bg: [{
-                result: "green",
-                value: "low"
-              }, {
-                result: "blue",
-                value: "medium"
-              }, {
-                result: "red",
-                value: "high"
-              }]
-            }
-          }],
-          priorities: [{
-            name: "high",
-            color: "red"
-          }, {
-            name: "medium",
-            color: "blue"
-          }, {
-            name: "low",
-            color: "gree"
-          }],
-          status: [{
-            name: "todo",
-            label: "To Do",
-            color: "red"
-          }, {
-            name: "delegate",
-            label: "Delegate",
-            color: "yellow"
-          }, {
-            name: "delete",
-            label: "Delete",
-            color: "red"
-          }, {
-            name: "backlog",
-            label: "Backlog",
-            color: "gray"
-          }, {
-            name: "done",
-            label: "Done",
-            color: "green"
-          }]
-        };
+      axios.post('/items', newItem).then(function () {
+        _this.$inertia.reload();
       });
     }
   }
@@ -26456,7 +26356,7 @@ var render = function() {
     { staticClass: "min-h-screen bg-gray-100" },
     [
       _c("nav", { staticClass: "bg-white border-b border-gray-100" }, [
-        _c("div", { staticClass: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" }, [
+        _c("div", { staticClass: "max-w-8xl mx-auto px-4 sm:px-6 lg:px-8" }, [
           _c("div", { staticClass: "flex justify-between h-16" }, [
             _c("div", { staticClass: "flex" }, [
               _c("div", { staticClass: "flex-shrink-0 flex items-center" }, [
@@ -27049,7 +26949,7 @@ var render = function() {
       _c("header", { staticClass: "bg-white shadow" }, [
         _c(
           "div",
-          { staticClass: "max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" },
+          { staticClass: "max-w-8xl mx-auto py-6 px-4 sm:px-6 lg:px-8" },
           [_vm._t("header")],
           2
         )
@@ -27736,7 +27636,7 @@ var render = function() {
       _c("div", [
         _c(
           "div",
-          { staticClass: "max-w-7xl mx-auto py-10 sm:px-6 lg:px-8" },
+          { staticClass: "max-w-8xl mx-auto py-10 sm:px-6 lg:px-8" },
           [
             _c("api-token-manager", {
               attrs: {
@@ -27803,7 +27703,7 @@ var render = function() {
     [
       _vm._v(" "),
       _c("div", { staticClass: "py-12" }, [
-        _c("div", { staticClass: "max-w-7xl mx-auto sm:px-6 lg:px-8" }, [
+        _c("div", { staticClass: "max-w-8xl mx-auto sm:px-6 lg:px-8" }, [
           _c(
             "div",
             { staticClass: "bg-white overflow-hidden shadow-xl sm:rounded-lg" },
@@ -27862,7 +27762,7 @@ var render = function() {
     [
       _vm._v(" "),
       _c("div", { staticClass: "py-12" }, [
-        _c("div", { staticClass: "max-w-7xl mx-auto sm:px-6 lg:px-8" }, [
+        _c("div", { staticClass: "max-w-8xl mx-auto sm:px-6 lg:px-8" }, [
           _c(
             "div",
             { staticClass: "bg-white overflow-hidden shadow-xl sm:rounded-lg" },
@@ -28426,7 +28326,7 @@ var render = function() {
       _c("div", [
         _c(
           "div",
-          { staticClass: "max-w-7xl mx-auto py-10 sm:px-6 lg:px-8" },
+          { staticClass: "max-w-8xl mx-auto py-10 sm:px-6 lg:px-8" },
           [
             _c("update-profile-information-form", {
               attrs: { name: _vm.$page.user.name, email: _vm.$page.user.email }
@@ -29132,7 +29032,7 @@ var render = function() {
       _c("div", [
         _c(
           "div",
-          { staticClass: "max-w-7xl mx-auto py-10 sm:px-6 lg:px-8" },
+          { staticClass: "max-w-8xl mx-auto py-10 sm:px-6 lg:px-8" },
           [_c("create-team-form")],
           1
         )
@@ -29463,7 +29363,7 @@ var render = function() {
       _c("div", [
         _c(
           "div",
-          { staticClass: "max-w-7xl mx-auto py-10 sm:px-6 lg:px-8" },
+          { staticClass: "max-w-8xl mx-auto py-10 sm:px-6 lg:px-8" },
           [
             _c("update-team-name-form", {
               attrs: { team: _vm.team, permissions: _vm.permissions }
@@ -30588,7 +30488,9 @@ var render = function() {
                 _vm._v(" "),
                 _c("span", [
                   _vm._v(
-                    "\n          " + _vm._s(_vm.stage.title) + "\n        "
+                    "\n          " +
+                      _vm._s(_vm.stage.title || _vm.stage.name) +
+                      "\n        "
                   )
                 ]),
                 _vm._v(" "),
@@ -30618,7 +30520,7 @@ var render = function() {
             2
           ),
           _vm._v(" "),
-          _vm.createMode
+          _vm.createMode || !_vm.items.length
             ? _c(
                 "div",
                 { staticClass: "grid grid-cols-12 text-left item-line" },
@@ -30824,7 +30726,7 @@ var render = function() {
             [_vm._v("\n    " + _vm._s(_vm.displayValue) + "\n  ")]
           )
         : [
-            _vm.field.type == "select"
+            ["label", "select"].includes(_vm.field.type)
               ? _c(
                   "select",
                   {
@@ -30967,7 +30869,7 @@ var render = function() {
           staticClass: "mt-4",
           attrs: {
             stage: stage,
-            items: _vm.items,
+            items: stage.items,
             "create-mode": _vm.createMode
           },
           on: { saved: _vm.addItem }

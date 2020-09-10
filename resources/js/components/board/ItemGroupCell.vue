@@ -7,7 +7,7 @@
       <select
         name=""
         id=""
-        v-if="field.type == 'select'"
+        v-if="['label', 'select'].includes(field.type)"
         v-model="value"
         @blur="saveChanges"
         class="form-input"
@@ -85,7 +85,7 @@ export default {
   },
   computed: {
     displayValue() {
-      if (this.field.type == "select") {
+      if (["select", "label"].includes(this.field.type)) {
         const option = this.field.options.find((option) => {
           return option.name == this.value;
 				});

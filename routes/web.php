@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Board;
+use App\Models\Item;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,3 +42,9 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/boards/{id}', function ($
     ]);
 })->name('boards');
 
+
+Route::middleware(['auth:sanctum', 'verified'])->post('/items', function (Request $request) {
+    $item = new Item();
+    $item->assign($request->post());
+    $item->save();
+})->name('boards');
