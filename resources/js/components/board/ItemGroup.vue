@@ -1,8 +1,8 @@
 <template>
   <div class="item-group" :class="{ 'bg-gray-200': !isExpanded }">
     <div>
-      <div class="grid grid-cols-12 text-left">
-        <div class="col-span-8 header-cell">
+      <div class="grid grid-cols-10 text-left">
+        <div class="col-span-6 header-cell">
           <span class="toolbar-buttons" @click="toggleExpand">
             <i class="fa fa-expand-alt"></i>
           </span>
@@ -23,8 +23,8 @@
       </div>
 
       <!-- new item  -->
-      <div class="grid grid-cols-12 text-left item-line" v-if="createMode || !items.length">
-        <div class="col-span-8 item-line-cell bg-gray-200 flex">
+      <div class="grid grid-cols-10 text-left item-line" v-if="createMode || !items.length">
+        <div class="col-span-6 item-line-cell bg-gray-200 flex">
           <item-group-cell
             class="w-full flex items-center"
             field-name="title"
@@ -35,7 +35,7 @@
           >
           </item-group-cell>
           <div class="bg-gray-300 mr-2 flex items-center px-2">
-            <button class="btn" @click="addItem()">
+            <button class="btn" @click="addItem(stage)">
               <i class="fa fa-save"></i>
             </button>
           </div>
@@ -61,11 +61,11 @@
       <!-- items  -->
       <template v-if="isExpanded">
         <div
-          class="grid grid-cols-12 text-left"
+          class="grid grid-cols-10 text-left h-11"
           v-for="(item, index) in items"
           :key="`item-${index}`"
         >
-          <div class="col-span-8 bg-gray-200 border-2 border-white flex">
+          <div class="col-span-6 bg-gray-200 border-2 border-white flex">
             <div
               class="checkbox-container bg-gray-300 mr-2 flex items-center px-2"
             >
@@ -76,14 +76,14 @@
               field-name="title"
               :index="index"
               :item="item"
-              @saved="item['title'] = $event"
+              @saved="saveChanges(item, 'title', $event)"
             >
             </item-group-cell>
           </div>
           <div
             v-for="field in stage.fields"
             :key="field.name"
-            class="border-white border-2 p-1 text-center"
+            class="border-white border-2 text-center item-group-cell w-full"
             :class="getBg(field, item[field.name])"
           >
             <item-group-cell
@@ -91,7 +91,7 @@
               :field="field"
               :index="index"
               :item="item"
-              @saved="item[field.name] = $event"
+              @saved="saveChanges(item, field.name, $event)"
             >
             </item-group-cell>
           </div>
@@ -147,9 +147,15 @@ export default {
     toggleExpand() {
       this.isExpanded = !this.isExpanded;
     },
-    addItem() {
+    addItem(stage) {
+        this.newItem.board_id = stage.board_id
+        this.newItem.stage_id = stage.id
         this.$emit("saved", {...this.newItem});
         this.newItem = {};
+    },
+    saveChanges(item,field, value) {
+        item[field] = value;
+        this.$emit("saved", {...item});
     },
   },
 };

@@ -5002,9 +5002,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     toggleExpand: function toggleExpand() {
       this.isExpanded = !this.isExpanded;
     },
-    addItem: function addItem() {
+    addItem: function addItem(stage) {
+      this.newItem.board_id = stage.board_id;
+      this.newItem.stage_id = stage.id;
       this.$emit("saved", _objectSpread({}, this.newItem));
       this.newItem = {};
+    },
+    saveChanges: function saveChanges(item, field, value) {
+      item[field] = value;
+      this.$emit("saved", _objectSpread({}, item));
     }
   }
 });
@@ -5020,6 +5026,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -5120,7 +5129,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     toggleEditMode: function toggleEditMode() {
+      var _this2 = this;
+
       this.isEditMode = !this.isEditMode;
+      this.$nextTick(function () {
+        if (_this2.$refs.input) {
+          _this2.$refs.input.focus();
+        }
+      });
     },
     saveChanges: function saveChanges() {
       this.$emit("saved", this.value);
@@ -5227,10 +5243,16 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    addItem: function addItem(newItem) {
+    addItem: function addItem(item) {
       var _this = this;
 
-      axios.post('/items', newItem).then(function () {
+      var method = item.id ? 'PUT' : 'POST';
+      var param = item.id ? "/".concat(item.id) : '';
+      axios({
+        url: "/items".concat(param),
+        method: method,
+        data: item
+      }).then(function () {
         _this.$inertia.reload();
       });
     }
@@ -5270,7 +5292,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".form-input[data-v-0c7eeaac] {\n  box-shadow: none;\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  border-width: 1px;\n  border-radius: 0.25rem;\n  width: 100%;\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  padding-left: 0.75rem;\n  padding-right: 0.75rem;\n  --text-opacity: 1;\n  color: #374151;\n  color: rgba(55, 65, 81, var(--text-opacity));\n  line-height: 1.25;\n}", ""]);
+exports.push([module.i, ".form-input[data-v-0c7eeaac] {\n  box-shadow: none;\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  border-width: 1px;\n  width: 100%;\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  padding-left: 0.75rem;\n  padding-right: 0.75rem;\n  --text-opacity: 1;\n  color: #374151;\n  color: rgba(55, 65, 81, var(--text-opacity));\n  line-height: 1.25;\n  border-radius: 0 0 0 0 !important;\n}\n.form-input[data-v-0c7eeaac]:focus {\n  outline: none;\n  border: 0;\n}", ""]);
 
 // exports
 
@@ -30474,9 +30496,9 @@ var render = function() {
         [
           _c(
             "div",
-            { staticClass: "grid grid-cols-12 text-left" },
+            { staticClass: "grid grid-cols-10 text-left" },
             [
-              _c("div", { staticClass: "col-span-8 header-cell" }, [
+              _c("div", { staticClass: "col-span-6 header-cell" }, [
                 _c(
                   "span",
                   {
@@ -30523,12 +30545,12 @@ var render = function() {
           _vm.createMode || !_vm.items.length
             ? _c(
                 "div",
-                { staticClass: "grid grid-cols-12 text-left item-line" },
+                { staticClass: "grid grid-cols-10 text-left item-line" },
                 [
                   _c(
                     "div",
                     {
-                      staticClass: "col-span-8 item-line-cell bg-gray-200 flex"
+                      staticClass: "col-span-6 item-line-cell bg-gray-200 flex"
                     },
                     [
                       _c("item-group-cell", {
@@ -30558,7 +30580,7 @@ var render = function() {
                               staticClass: "btn",
                               on: {
                                 click: function($event) {
-                                  return _vm.addItem()
+                                  return _vm.addItem(_vm.stage)
                                 }
                               }
                             },
@@ -30607,14 +30629,14 @@ var render = function() {
                   "div",
                   {
                     key: "item-" + index,
-                    staticClass: "grid grid-cols-12 text-left"
+                    staticClass: "grid grid-cols-10 text-left h-11"
                   },
                   [
                     _c(
                       "div",
                       {
                         staticClass:
-                          "col-span-8 bg-gray-200 border-2 border-white flex"
+                          "col-span-6 bg-gray-200 border-2 border-white flex"
                       },
                       [
                         _vm._m(0, true),
@@ -30628,7 +30650,7 @@ var render = function() {
                           },
                           on: {
                             saved: function($event) {
-                              item["title"] = $event
+                              return _vm.saveChanges(item, "title", $event)
                             }
                           }
                         })
@@ -30641,7 +30663,8 @@ var render = function() {
                         "div",
                         {
                           key: field.name,
-                          staticClass: "border-white border-2 p-1 text-center",
+                          staticClass:
+                            "border-white border-2 text-center item-group-cell w-full",
                           class: _vm.getBg(field, item[field.name])
                         },
                         [
@@ -30654,7 +30677,7 @@ var render = function() {
                             },
                             on: {
                               saved: function($event) {
-                                item[field.name] = $event
+                                return _vm.saveChanges(item, field.name, $event)
                               }
                             }
                           })
@@ -30711,14 +30734,19 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "item-group-cell" },
+    {
+      staticClass: "item-group-cell w-full px-2 h-full flex items-center",
+      class: { "editable-mode": _vm.isEditMode }
+    },
     [
       !_vm.isEditMode
         ? _c(
             "span",
             {
+              staticClass:
+                "w-full h-7 inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2",
               on: {
-                dblclick: function($event) {
+                click: function($event) {
                   return _vm.toggleEditMode()
                 }
               }
@@ -30738,7 +30766,8 @@ var render = function() {
                         expression: "value"
                       }
                     ],
-                    staticClass: "form-input",
+                    ref: "input",
+                    staticClass: "form-input h-8 px-2 rounded-none",
                     attrs: { name: "", id: "" },
                     on: {
                       blur: _vm.saveChanges,
@@ -30781,7 +30810,8 @@ var render = function() {
                       expression: "value"
                     }
                   ],
-                  staticClass: "form-input",
+                  ref: "input",
+                  staticClass: "form-input h-8 px-2 mx-0 rounded-none",
                   attrs: {
                     type: "text",
                     name: _vm.index + "-" + _vm.fieldName,

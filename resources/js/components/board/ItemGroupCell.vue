@@ -1,16 +1,18 @@
 <template>
-  <div class="item-group-cell">
-    <span @dblclick="toggleEditMode()" v-if="!isEditMode">
+  <div class="item-group-cell w-full px-2 h-full flex items-center"
+  :class="{'editable-mode': isEditMode }">
+    <span @click="toggleEditMode()" v-if="!isEditMode" class="w-full h-7 inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2">
       {{ displayValue }}
     </span>
     <template v-else>
       <select
         name=""
         id=""
+        ref="input"
         v-if="['label', 'select'].includes(field.type)"
         v-model="value"
         @blur="saveChanges"
-        class="form-input"
+        class="form-input h-8 px-2 rounded-none"
       >
         <option
           :value="option.name"
@@ -22,9 +24,10 @@
       </select>
       <input
         v-else
+        ref="input"
         @blur="saveChanges"
         type="text"
-        class="form-input"
+        class="form-input h-8 px-2 mx-0 rounded-none"
         :name="`${index}-${fieldName}`"
         id=""
         v-model="value"
@@ -99,6 +102,11 @@ export default {
   methods: {
     toggleEditMode() {
       this.isEditMode = !this.isEditMode;
+      this.$nextTick(() => {
+          if (this.$refs.input) {
+              this.$refs.input.focus();
+          }
+      })
     },
     saveChanges() {
       this.$emit("saved", this.value);
@@ -112,6 +120,17 @@ export default {
 
 <style scoped lang="scss">
 .form-input {
-  @apply shadow-none appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight;
+  @apply shadow-none appearance-none border w-full py-2 px-3 text-gray-700 leading-tight;
+  border-radius: 0 0 0 0 !important;
+
+  &:focus {
+      outline: none;
+      border: 0;
+  }
 }
+
+// .editable-mode {
+//     @apply bg-white;
+//     border: 1px solid #6b7280;
+// }
 </style>

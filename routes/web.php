@@ -1,9 +1,11 @@
 <?php
 
+use App\Actions\Sunday\CreateTask;
+use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Board;
-use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Action;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,31 +22,31 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia\Inertia::render('Dashboard', [
-        'boards' => Board::all()->map(function($board) {
-            return [
+// pages
+Route::middleware(['auth:sanctum', 'verified'])->group(function() {
+    Route::get('/dashboard', function () {
+        return Inertia\Inertia::render('Dashboard', [
+            'boards' => Board::all()->map(function($board) {
+                return [
+                    'name' => $board->name,
+                    'link' =>  URL::route('boards', $board),
+                ];
+            })
+        ]);
+    })->name('dashboard');
+
+    Route::get('/boards/{id}', function ($id) {
+        $board = Board::find($id);
+        return Inertia\Inertia::render('Board', [
+            'board' => [
                 'name' => $board->name,
-                'link' =>  URL::route('boards', $board),
-            ];
-        })
-    ]);
-})->name('dashboard');
+                'stages' => $board->stages
+            ]
+        ]);
+    })->name('boards');
+});
 
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/boards/{id}', function ($id) {
-    $board = Board::find($id);
-    return Inertia\Inertia::render('Board', [
-        'board' => [
-            'name' => $board->name,
-            'stages' => $board->stages
-        ]
-    ]);
-})->name('boards');
-
-
-Route::middleware(['auth:sanctum', 'verified'])->post('/items', function (Request $request) {
-    $item = new Item();
-    $item->assign($request->post());
-    $item->save();
-})->name('boards');
+// resource route
+Route::middleware(['auth:sanctum', 'verified'])->group(function() {
+    Route::apiResource('/items', ItemController::class);
+});

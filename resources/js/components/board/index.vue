@@ -89,9 +89,14 @@ export default {
     };
   },
   methods: {
-    addItem(newItem) {
-        axios.post('/items',  newItem
-        ).then(() => {
+    addItem(item) {
+        const method = item.id ? 'PUT' : 'POST';
+        const param = item.id ? `/${item.id}`: ''
+        axios({
+            url: `/items${param}`,
+            method,
+            data: item
+        }).then(() => {
             this.$inertia.reload()
         })
     },
