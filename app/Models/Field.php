@@ -9,11 +9,28 @@ class Field extends Model
 {
     use HasFactory;
     protected $with = ['options','rules'];
+    protected $fillable = ['name','stage_id', 'title', 'type', 'options'];
+
     public function options() {
         return $this->hasMany('App\Models\Label', 'field_id', 'id');
     }
 
     public function rules() {
         return $this->hasMany('App\Models\FieldRule', 'field_id', 'id');
+    }
+
+    public function fieldValues() {
+        return $this->hasMany('App\Models\FieldValue', 'field_id', 'id');
+    }
+
+    public function labels() {
+        return $this->hasMany('App\Models\Label', 'field_id', 'id');
+    }
+
+    public function deleteRelated() {
+        $this->rules()->delete();
+        $this->options()->delete();
+        $this->labels()->delete();
+        $this->fieldValues()->delete();
     }
 }

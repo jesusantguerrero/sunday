@@ -12,7 +12,7 @@
         v-if="['label', 'select'].includes(field.type)"
         v-model="value"
         @blur="saveChanges"
-        class="form-input h-8 px-2 rounded-none"
+        class="form-input h-8 px-2 rounded-none bg-transparent text-center"
       >
         <option
           :value="option.name"
@@ -73,7 +73,9 @@ export default {
     item: {
       handler(item) {
         if (item[this.fieldName] != this.value) {
-          this.value = item[this.fieldName];
+            const field = item.fields && item.fields.find(field => field.field_name == this.fieldName)
+            item[this.fieldName] = item[this.fieldName] || field && field.value;
+            this.value = item[this.fieldName];
         }
       },
       deep: true,

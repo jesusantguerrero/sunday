@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Item;
+use App\Models\Board;
 use Illuminate\Http\Response;
 
-class ItemController extends Controller
+class BoardController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,13 +26,11 @@ class ItemController extends Controller
      */
     public function store(Request $request, Response $response)
     {
-        $item = new Item();
-        $item->title = $request->title;
-        $item->stage_id = $request->stage_id;
-        $item->board_id = $request->board_id;
-        $item->save();
-        $item->saveFields($request->post('fields'));
-        return $response->send($item);
+        $board = new Board();
+        $board->name = $request->name;
+        $board->save();
+        $board->createMainStage();
+        return $response->send($board);
     }
 
     /**
@@ -55,11 +53,9 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item = Item::find($id);
-        $item->update($request->post());
-        $item->saveFields($request->post('fields'));
-        return $item;
-
+        $board = Board::find($id);
+        $board->update($request->post());
+        return $board;
     }
 
     /**
@@ -70,6 +66,8 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $board = Board::find($id);
+        $board->deleteStages();
+        $board->delete();
     }
 }

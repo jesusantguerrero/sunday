@@ -24,7 +24,7 @@
 
       <!-- new item  -->
       <div class="grid grid-cols-10 text-left item-line" v-if="createMode || !items.length">
-        <div class="col-span-6 item-line-cell bg-gray-200 flex">
+        <div class="col-span-12 item-line-cell bg-gray-200 flex items-center">
           <item-group-cell
             class="w-full flex items-center"
             field-name="title"
@@ -39,21 +39,6 @@
               <i class="fa fa-save"></i>
             </button>
           </div>
-        </div>
-        <div
-          v-for="field in stage.fields"
-          :key="field.name"
-          class="border-white border-2 p-1 text-center"
-          :class="getBg(field, newItem[field.name])"
-        >
-          <item-group-cell
-            :field-name="field.name"
-            :index="index"
-            :item="newItem"
-            :is-new="true"
-            @saved="newItem[field.name] = $event"
-          >
-          </item-group-cell>
         </div>
       </div>
       <!-- End of new item -->
@@ -84,7 +69,7 @@
             v-for="field in stage.fields"
             :key="field.name"
             class="border-white border-2 text-center item-group-cell w-full"
-            :class="getBg(field, item[field.name])"
+            :class="getBg(field, item, field.name)"
           >
             <item-group-cell
               :field-name="field.name"
@@ -130,12 +115,15 @@ export default {
     };
   },
   methods: {
-    getBg(field, value) {
+    getBg(field, item, fieldName) {
+      const fieldValue = item.fields && item.fields.find(field => field.field_name == fieldName)
+      const value = fieldValue ? fieldValue.value : item[fieldName];
+
       if (value && field.rules) {
         const bgRule = field.rules.find(rule => rule.name == 'bg');
         if (bgRule) {
             const ruleOptions = bgRule.options || field[bgRule.reference];
-            const bg = ruleOptions.find((rule) => {
+            const bg = ruleOptions && ruleOptions.find((rule) => {
                 const name = rule.name || rule.value
               return value.toLowerCase() == name.toLowerCase();
             });
@@ -150,11 +138,25 @@ export default {
     addItem(stage) {
         this.newItem.board_id = stage.board_id
         this.newItem.stage_id = stage.id
+        this.newItem.fields = stage.fields.map(field => {
+            return {
+                field_id: field.id,
+                field_name: field.name,
+                value: this.newItem[field.name],
+            }
+        })
         this.$emit("saved", {...this.newItem});
         this.newItem = {};
     },
-    saveChanges(item,field, value) {
+    saveChanges(item, field, value) {
         item[field] = value;
+        item.fields = this.stage.fields.map(field => {
+            return {
+                field_id: field.id,
+                field_name: field.name,
+                value: item[field.name],
+            }
+        })
         this.$emit("saved", {...item});
     },
   },

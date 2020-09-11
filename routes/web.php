@@ -1,9 +1,11 @@
 <?php
 
 use App\Actions\Sunday\CreateTask;
+use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Board;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Action;
 
@@ -28,10 +30,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         return Inertia\Inertia::render('Dashboard', [
             'boards' => Board::all()->map(function($board) {
                 return [
+                    'id' => $board->id,
                     'name' => $board->name,
                     'link' =>  URL::route('boards', $board),
                 ];
-            })
+            }),
+            'todo' => Item::getByCustomField('status', 'todo')->toArray()
         ]);
     })->name('dashboard');
 
@@ -49,4 +53,5 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
 // resource route
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/items', ItemController::class);
+    Route::apiResource('/api/boards', BoardController::class);
 });

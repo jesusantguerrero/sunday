@@ -15,6 +15,7 @@ class CreateLabelsTable extends Migration
     {
         Schema::create('labels', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('stage_id');
             $table->string('name');
             $table->string('label');
             $table->string('color');
