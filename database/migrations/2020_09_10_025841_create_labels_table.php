@@ -18,6 +18,7 @@ class CreateLabelsTable extends Migration
             $table->foreignId('user_id');
             $table->foreignId('team_id');
             $table->foreignId('stage_id');
+            $table->foreignId('field_id')->nullable();
             $table->string('name');
             $table->string('label');
             $table->string('color');

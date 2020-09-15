@@ -30,6 +30,8 @@ class ItemController extends Controller
         $item->title = $request->title;
         $item->stage_id = $request->stage_id;
         $item->board_id = $request->board_id;
+        $item->user_id = $request->user()->id;
+        $item->team_id = $request->user()->current_team_id;
         $item->save();
         $item->saveFields($request->post('fields'));
         return $response->send($item);

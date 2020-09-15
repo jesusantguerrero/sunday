@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Label extends Model
 {
     use HasFactory;
+    protected $fillable = ['user_id', 'team_id', 'stage_id', 'name', 'label', 'color'];
 }

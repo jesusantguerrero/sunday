@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'user_id', 'team_id'];
     protected $with = ['fields'];
     use HasFactory;
 
@@ -25,6 +25,8 @@ class Item extends Model
                 $fieldInstance[0]->save();
             } else {
                 $this->fields()->create([
+                    'user_id' => $this->user_id,
+                    'team_id' => $this->team_id,
                     'resource' => 'item',
                     'field_id' => $field['field_id'],
                     'field_name' => $field['field_name'],

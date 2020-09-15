@@ -21,7 +21,7 @@ class CreateFieldsTable extends Migration
             $table->string('name');
             $table->string('title');
             $table->string('type');
-            $table->json('options');
+            $table->json('options')->nullable();
             $table->timestamps();
         });
     }
