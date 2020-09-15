@@ -15,6 +15,8 @@ class CreateFieldRulesTable extends Migration
     {
         Schema::create('field_rules', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('team_id');
             $table->foreignId('stage_id');
             $table->foreignId('field_id');
             $table->string('name');

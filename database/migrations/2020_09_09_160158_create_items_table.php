@@ -15,6 +15,8 @@ class CreateItemsTable extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('team_id');
             $table->foreignId('board_id');
             $table->foreignId('stage_id');
             $table->string('title');

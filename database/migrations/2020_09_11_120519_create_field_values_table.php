@@ -15,6 +15,8 @@ class CreateFieldValuesTable extends Migration
     {
         Schema::create('field_values', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('team_id');
             $table->foreignId('field_id');
             $table->unsignedBigInteger('entity_id');
             $table->string('resource');
