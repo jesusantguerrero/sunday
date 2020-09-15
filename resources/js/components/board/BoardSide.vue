@@ -22,12 +22,18 @@
 
         <div class="mt-2">
                 <inertia-link
-                    class="board-item my-2 p-2 rounded bg-gray-300 block"
+                    class="board-item my-2 rounded bg-gray-300 block flex"
                     :href="board.link"
                     v-for="board in boards"
                     :key="board.id">
 
-                    {{ board.name }}
+                    <span class="w-full p-2">
+                        {{ board.name }}
+                    </span>
+
+                    <button class="bg-grey-400 text-white p-2 hover:bg-red-600" @click.prevent="deleteBoard(board.id)">
+                         <i class="fa fa-trash"></i>
+                    </button>
                 </inertia-link>
         </div>
   </div>
@@ -65,6 +71,7 @@ export default {
         },
 
         deleteBoard(id) {
+            if (!confirm('Are you sure')) return;
             axios({
                 url:`api/boards/${id}`,
                 method: 'delete',

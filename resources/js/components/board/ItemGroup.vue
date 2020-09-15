@@ -2,7 +2,7 @@
   <div class="item-group" :class="{ 'bg-gray-200': !isExpanded }">
     <div>
       <div class="grid grid-cols-10 text-left">
-        <div class="col-span-6 header-cell">
+        <div class="col-span-5 header-cell">
           <span class="toolbar-buttons" @click="toggleExpand">
             <i class="fa fa-expand-alt"></i>
           </span>
@@ -15,6 +15,7 @@
           v-for="field in stage.fields"
           :key="field.name"
           class="text-center"
+          :class="[field.name == 'owner' ? 'col-span-2' : '']"
         >
           <span v-if="isExpanded">
             {{ field.title }}
@@ -50,7 +51,7 @@
           v-for="(item, index) in items"
           :key="`item-${index}`"
         >
-          <div class="col-span-6 bg-gray-200 border-2 border-white flex">
+          <div class="col-span-5 bg-gray-200 border-2 border-white flex">
             <div
               class="checkbox-container bg-gray-300 mr-2 flex items-center px-2"
             >
@@ -69,7 +70,7 @@
             v-for="field in stage.fields"
             :key="field.name"
             class="border-white border-2 text-center item-group-cell w-full"
-            :class="getBg(field, item, field.name)"
+            :class="[ getBg(field, item, field.name), field.name == 'owner' ? 'col-span-2' : '']"
           >
             <item-group-cell
               :field-name="field.name"

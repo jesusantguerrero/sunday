@@ -16,6 +16,9 @@
                 </div>
 
                 <div class="w-7/12 mx-2">
+                    <board-task-form class="mx-2">
+
+                    </board-task-form>
                     <div class="section-card committed">
                         <header class="bg-purple-400 text-white font-bold">
                             To Do
@@ -72,14 +75,14 @@
 
 <script>
     import AppLayout from './../Layouts/AppLayout'
-    import Welcome from './Welcome'
     import BoardSide from "../components/board/BoardSide"
+    import BoardTaskForm from "../components/board/TaskForm"
 
     export default {
         components: {
             AppLayout,
-            Welcome,
-            BoardSide
+            BoardSide,
+            BoardTaskForm
         },
         props: {
             boards: {

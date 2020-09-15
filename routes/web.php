@@ -42,6 +42,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::get('/boards/{id}', function ($id) {
         $board = Board::find($id);
         return Inertia\Inertia::render('Board', [
+            'boards' => Board::all()->map(function($board) {
+                return [
+                    'id' => $board->id,
+                    'name' => $board->name,
+                    'link' =>  URL::route('boards', $board),
+                ];
+            }),
             'board' => [
                 'name' => $board->name,
                 'stages' => $board->stages
