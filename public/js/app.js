@@ -50316,7 +50316,12 @@ var render = function() {
                                   expression: "item.done"
                                 }
                               ],
-                              attrs: { type: "checkbox", name: "", id: "" },
+                              attrs: {
+                                type: "checkbox",
+                                name: "",
+                                id: "",
+                                disabled: item.commit_date
+                              },
                               domProps: {
                                 checked: Array.isArray(item.done)
                                   ? _vm._i(item.done, null) > -1
