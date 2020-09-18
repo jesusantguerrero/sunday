@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
-    protected $fillable = ['title', 'user_id', 'team_id'];
+    protected $fillable = ['title', 'user_id', 'team_id', 'done','commit_date'];
     protected $with = ['fields'];
     use HasFactory;
 
@@ -36,10 +36,14 @@ class Item extends Model
         }
     }
 
-    public static function getByCustomField($fieldName, $value) {
-        return Item::with(['fields' => function($query) use ($value){
-            $query->where('value', $value);
-        }])->get()->filter(function ($item) {
+    public static function getByCustomField($entry, $user) {
+        return Item::with(['fields' => function($query) use ($entry){
+            $query->where('value', $entry[1]);
+        }])->where([
+            'team_id' => $user->current_team_id,
+            'user_id' => $user->id,
+
+        ])->whereNull('commit_date')->get()->filter(function ($item) {
             return count($item->fields);
         });
     }

@@ -55,7 +55,7 @@
             <div
               class="checkbox-container bg-gray-300 mr-2 flex items-center px-2"
             >
-              <input type="checkbox" name="" id="" />
+              <input type="checkbox" name="" id="" v-model="item.done" @change="saveChanges(item, 'done', item.done)"/>
             </div>
             <item-group-cell
               class="flex items-center"

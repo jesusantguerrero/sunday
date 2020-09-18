@@ -1,11 +1,11 @@
 <template>
-  <div class="hello px-24 pb-24">
+  <div class="hello px-8 pb-24">
     <div class="board__toolbar flex justify-between mb-10">
-      <div class="w-full text-left">
+      <div class="w-5/12 text-left">
         <button>Vista</button>
       </div>
 
-      <div class="w-full">
+      <div class="w-7/12">
         <button class="btn btn-blue" @click="createMode = !createMode">
           New Task
         </button>

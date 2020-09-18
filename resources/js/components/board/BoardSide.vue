@@ -22,12 +22,13 @@
 
         <div class="mt-2">
                 <inertia-link
-                    class="board-item my-2 rounded bg-gray-300 block flex"
+                    class="board-item flex px-2 py-1 items-center"
+                    :class="{active: isPath(board.link)}"
                     :href="board.link"
                     v-for="board in boards"
                     :key="board.id">
 
-                    <span class="w-full p-2">
+                    <span class="w-full block">
                         {{ board.name }}
                     </span>
 
@@ -56,6 +57,11 @@ export default {
         }
     },
     methods: {
+        isPath(url) {
+            const link = url.replace(window.location.origin, '');
+            console.log(link, window.location.pathname)
+            return link == window.location.pathname
+        },
         addBoard() {
             if (this.boardName.trim()) {
                 axios({
@@ -85,8 +91,14 @@ export default {
 
 <style lang="scss">
 .board-item {
+    @apply my-2 rounded bg-gray-300;
+
     &:visited {
         @apply text-gray-600;
+    }
+
+    &.active {
+        @apply bg-purple-400 text-white;
     }
 }
 </style>

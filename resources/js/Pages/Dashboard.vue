@@ -25,8 +25,21 @@
                         </header>
                         <div class="body text-gray-600">
                             <p v-for="task in todo" :key="`task-${task.id}`">
-                                {{ task.title }}
+                                <label class="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    @change="updateItem(task)"
+                                    name=""
+                                    :id="task.id"
+                                    v-model="task.done"
+                                />
+                                <span>
+                                    {{ task.title }}
+                                </span>
+                                </label>
                             </p>
+
+                            <button @click="completeDay()" v-if="hasCommited">Complete Day</button>
                         </div>
                     </div>
                 </div>
@@ -37,7 +50,20 @@
                             Comitted
                         </header>
                         <div class="body bg-yellow-200 text-gray-600">
-                            Hola soy un item de ejemplo
+                           <p v-for="task in committed" :key="`task-${task.id}`">
+                                <label class="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    name=""
+                                    disabled
+                                    :id="task.id"
+                                    v-model="task.done"
+                                />
+                                <span>
+                                    {{ task.title }}
+                                </span>
+                                </label>
+                            </p>
                         </div>
                     </div>
 
@@ -77,6 +103,7 @@
     import AppLayout from './../Layouts/AppLayout'
     import BoardSide from "../components/board/BoardSide"
     import BoardTaskForm from "../components/board/TaskForm"
+    import { subDays } from "date-fns";
 
     export default {
         components: {
@@ -96,6 +123,65 @@
                 default() {
                     return []
                 }
+            },
+            committed: {
+                type: [Array, Object],
+                default() {
+                    return []
+                }
+            }
+        },
+        data() {
+            return {
+                isLoading: false
+            }
+        },
+        computed: {
+            hasCommited() {
+                return this.todo.filter(item => item.done).length;
+            }
+        },
+        methods: {
+           completeDay() {
+                this.isLoading = true;
+                const yesterday = subDays(new Date(), 1)
+                    .toISOString()
+                    .slice(0, 10);
+                const now = new Date().toISOString().slice(0, 10);
+                let completed = this.todo.filter(item => item.done);
+                completed = completed.map(item => {
+                    item.commit_date = yesterday;
+                    return item;
+                });
+
+                completed.forEach(async item => {
+                    await this.updateItem(item);
+                });
+
+                this.updateDayly(now)
+                this.isLoading = false;
+            },
+
+            updateItem(item) {
+                const method = item.id ? 'PUT' : 'POST';
+                const param = item.id ? `/${item.id}`: ''
+                axios({
+                    url: `/items${param}`,
+                    method,
+                    data: item
+                }).then(() => {
+                    return true
+                })
+            },
+
+            updateDayly(date) {
+                axios({
+                    url: 'daily',
+                    method: 'post',
+                    data: {
+                        date
+                    }
+                })
             }
         }
     }
