@@ -28,6 +28,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "date-fns": "^2.16.1"
+        "date-fns": "^2.16.1",
+        "vue-multiselect": "^2.1.6"
     }
 }

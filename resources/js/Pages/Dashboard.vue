@@ -11,15 +11,22 @@
                 <div class="w-2/12 mr-4">
                     <board-side
                         :boards="boards"
+                        class="mb-10"
                     >
                     </board-side>
+                    <div class="section-card committed margin-0 mt-10">
+                        <header class="bg-green-500 text-white font-bold">
+                            Events
+                        </header>
+                        <div class="body text-gray-600">
+                            Hola soy un item de ejemplo
+                        </div>
+                    </div>
                 </div>
 
                 <div class="w-7/12 mx-2">
-                    <board-task-form class="mx-2">
-
-                    </board-task-form>
-                    <div class="section-card committed">
+                    <span class="text-3xl font-bold"> Today's Todos </span>
+                    <div class="section-card committed mt-10">
                         <header class="bg-purple-400 text-white font-bold">
                             To Do
                         </header>
@@ -45,7 +52,8 @@
                 </div>
 
                 <div class="w-3/12 ml-4">
-                    <div class="section-card committed">
+                    <span class="text-3xl ml-2"> Fast Acess </span>
+                    <div class="section-card committed mt-10">
                         <header class="bg-yellow-500 text-white">
                             Comitted
                         </header>
@@ -68,15 +76,6 @@
                     </div>
 
                     <div class="section-card committed">
-                        <header class="bg-green-500 text-white font-bold">
-                            Events
-                        </header>
-                        <div class="body text-gray-600">
-                            Hola soy un item de ejemplo
-                        </div>
-                    </div>
-
-                    <div class="section-card committed">
                         <header class="bg-blue-400 text-white font-bold">
                             Links
                         </header>
@@ -86,11 +85,8 @@
                     </div>
 
                     <div class="section-card committed">
-                        <header class="bg-red-400 text-white font-bold">
-                            Timer
-                        </header>
-                         <div class="body bg-red-400 text-gray-600 font-bold">
-                            This is a timer
+                         <div class="body bg-red-400 text-gray-600 font-bold px-0">
+                            <promodoro></promodoro>
                         </div>
                     </div>
                 </div>
@@ -103,13 +99,15 @@
     import AppLayout from './../Layouts/AppLayout'
     import BoardSide from "../components/board/BoardSide"
     import BoardTaskForm from "../components/board/TaskForm"
+    import Promodoro from "../components/promodoro/index"
     import { subDays } from "date-fns";
 
     export default {
         components: {
             AppLayout,
             BoardSide,
-            BoardTaskForm
+            BoardTaskForm,
+            Promodoro
         },
         props: {
             boards: {
@@ -190,6 +188,9 @@
 <style lang="scss">
 .section-card {
     @apply bg-white overflow-hidden shadow-xl mx-2 mb-4;
+    &.margin-0 {
+        @apply m-0;
+    }
 
     header {
         @apply p-4;

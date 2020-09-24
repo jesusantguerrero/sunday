@@ -5,7 +5,7 @@
       {{ displayValue }}
     </span>
     <template v-else>
-      <select
+      <!-- <select
         name=""
         id=""
         ref="input"
@@ -21,7 +21,25 @@
         >
           {{option.label || option.name }}
         </option>
-      </select>
+      </select> -->
+      <div class="h-8 px-2"
+        v-if="['label', 'select'].includes(field.type)"
+      >
+        <multiselect
+            v-model="selectValue"
+            ref="input"
+            label="name"
+            track-by="id"
+            :show-labels="false"
+            :preselect-first="true"
+            :options="field.options"
+            class="w-full"
+            @select="value = $event.name"
+            @close="saveChanges"
+        >
+        </multiselect>
+      </div>
+
       <input
         v-else
         ref="input"
@@ -31,6 +49,7 @@
         :name="`${index}-${fieldName}`"
         id=""
         v-model="value"
+        @keydown.enter="saveItem"
       />
     </template>
   </div>
@@ -106,7 +125,8 @@ export default {
       this.isEditMode = !this.isEditMode;
       this.$nextTick(() => {
           if (this.$refs.input) {
-              this.$refs.input.focus();
+              const input = this.$refs.input.$el ? this.$refs.input.$el : this.$refs.input;
+              input.focus();
           }
       })
     },
@@ -116,6 +136,10 @@ export default {
         this.toggleEditMode();
       }
     },
+    saveItem($event) {
+        this.saveChanges();
+        this.$emit('keydown', $event)
+    }
   },
 };
 </script>

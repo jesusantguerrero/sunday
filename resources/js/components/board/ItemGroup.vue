@@ -1,7 +1,7 @@
 <template>
   <div class="item-group" :class="{ 'bg-gray-200': !isExpanded }">
     <div>
-      <div class="grid grid-cols-10 text-left">
+      <div class="grid grid-cols-11 text-left">
         <div class="col-span-5 header-cell">
           <span class="toolbar-buttons" @click="toggleExpand">
             <i class="fa fa-expand-alt"></i>
@@ -11,6 +11,7 @@
           </span>
           <span v-if="!isExpanded"> ({{ items.length }} items) </span>
         </div>
+
         <div
           v-for="field in stage.fields"
           :key="field.name"
@@ -19,6 +20,14 @@
         >
           <span v-if="isExpanded">
             {{ field.title }}
+          </span>
+        </div>
+
+        <div
+          class="text-center"
+        >
+          <span v-if="isExpanded">
+            Actions
           </span>
         </div>
       </div>
@@ -33,13 +42,9 @@
             :item="newItem"
             :is-new="true"
             @saved="newItem['title'] = $event"
+            @keydown.enter="addItem(stage)"
           >
           </item-group-cell>
-          <div class="bg-gray-300 mr-2 flex items-center px-2">
-            <button class="btn" @click="addItem(stage)">
-              <i class="fa fa-save"></i>
-            </button>
-          </div>
         </div>
       </div>
       <!-- End of new item -->
@@ -47,7 +52,7 @@
       <!-- items  -->
       <template v-if="isExpanded">
         <div
-          class="grid grid-cols-10 text-left h-11"
+          class="grid grid-cols-11 text-left h-11"
           v-for="(item, index) in items"
           :key="`item-${index}`"
         >
@@ -66,6 +71,7 @@
             >
             </item-group-cell>
           </div>
+
           <div
             v-for="field in stage.fields"
             :key="field.name"
@@ -80,6 +86,11 @@
               @saved="saveChanges(item, field.name, $event)"
             >
             </item-group-cell>
+          </div>
+         <div
+            class="border-white border-2 text-center item-group-cell w-full flex items-center justify-center bg-gray-400"
+          >
+           <button> <i class="fa fa-trash"></i></button>
           </div>
         </div>
         <!-- End of items -->
