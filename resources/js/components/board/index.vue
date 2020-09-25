@@ -26,17 +26,21 @@
       </div>
     </div>
 
-    <item-group
-      v-for="stage in board.stages"
-      :key="stage.name"
-      :stage="stage"
-      :items="stage.items"
-      :create-mode="createMode"
-      @saved="addItem"
-      @stage-updated="addStage"
-      class="mt-4"
-    >
-    </item-group>
+    <draggable v-model="board.stages" @end="saveReorder">
+        <transition-group>
+            <item-group
+                v-for="stage in board.stages"
+                :key="stage.name"
+                :stage="stage"
+                :items="stage.items"
+                :create-mode="createMode"
+                @saved="addItem"
+                @stage-updated="addStage"
+                class="mt-4"
+                >
+            </item-group>
+        </transition-group>
+    </draggable>
 
     <div class="w-full flex justify-center py-5">
         <button
@@ -52,11 +56,13 @@
 
 <script>
 import ItemGroup from "./ItemGroup.vue";
+import Draggable from "vuedraggable";
 
 export default {
   name: "HelloWorld",
   components: {
-    ItemGroup
+    ItemGroup,
+    Draggable
   },
   props: {
     board: {
@@ -100,7 +106,7 @@ export default {
     };
   },
   methods: {
-    addItem(item) {
+    addItem(item, reload=true) {
         const method = item.id ? 'PUT' : 'POST';
         const param = item.id ? `/${item.id}`: ''
         axios({
@@ -108,23 +114,35 @@ export default {
             method,
             data: item
         }).then(() => {
-            this.$inertia.reload()
+            if (reload) {
+                this.$inertia.reload({ preserveScroll: true })
+            }
         })
     },
 
-    addStage(stage = {}) {
+    addStage(stage = {}, reload = true) {
         const method = stage.id ? 'PUT' : 'POST';
         const param = stage.id ? `/${stage.id}`: ''
         stage.board_id = this.board.id
         stage.name = stage.name || `Stage ${this.board.stages.length + 1}`
 
-        axios({
+        return axios({
             url: `/stages${param}`,
             method,
             data: stage
         }).then(({ data }) => {
-            this.$inertia.reload({ preserveScroll: true })
+            if (reload) {
+                this.$inertia.reload({ preserveScroll: true })
+            }
         })
+    },
+
+    saveReorder() {
+      this.board.stages.forEach(async (stage, index) => {
+          stage.order = index;
+          await this.addStage(stage, false);
+      })
+        this.$inertia.reload({ preserveScroll: true })
     },
   }
 };

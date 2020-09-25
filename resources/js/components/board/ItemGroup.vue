@@ -1,9 +1,9 @@
 <template>
   <div class="item-group" :class="{ 'bg-gray-200': !isExpanded }">
     <div>
-      <div class="grid grid-cols-11 text-left">
+      <div class="grid py-1 grid-cols-11 text-left">
         <div class="col-span-5 header-cell">
-          <span class="toolbar-buttons" @click="toggleExpand">
+          <span class="toolbar-buttons mr-2" @click="toggleExpand">
             <i class="fa fa-expand-alt"></i>
           </span>
           <span
@@ -60,50 +60,54 @@
       </div>
       <!-- End of new item -->
 
-      <!-- items  -->
       <template v-if="isExpanded">
-        <div
-          class="grid grid-cols-11 text-left h-11"
-          v-for="(item, index) in items"
-          :key="`item-${index}`"
-        >
-          <div class="col-span-5 bg-gray-200 border-2 border-white flex">
-            <div
-              class="checkbox-container bg-gray-300 mr-2 flex items-center px-2"
-            >
-              <input type="checkbox" name="" id="" v-model="item.done" @change="saveChanges(item, 'done', item.done)" :disabled="item.commit_date"/>
-            </div>
-            <item-group-cell
-              class="flex items-center"
-              field-name="title"
-              :index="index"
-              :item="item"
-              @saved="saveChanges(item, 'title', $event)"
-            >
-            </item-group-cell>
-          </div>
+      <!-- items  -->
+        <draggable v-model="stage.items" @end="saveReorder">
+            <transition-group>
+                <div
+                    class="grid grid-cols-11 text-left h-11"
+                    v-for="(item, index) in items"
+                    :key="`item-${index}`"
+                >
+                    <div class="col-span-5 bg-gray-200 border-2 border-white flex">
+                    <div
+                        class="checkbox-container bg-gray-300 mr-2 flex items-center px-2"
+                    >
+                        <input type="checkbox" name="" id="" v-model="item.done" @change="saveChanges(item, 'done', item.done)" :disabled="item.commit_date"/>
+                    </div>
+                    <item-group-cell
+                        class="flex items-center"
+                        field-name="title"
+                        :index="index"
+                        :item="item"
+                        @saved="saveChanges(item, 'title', $event)"
+                    >
+                    </item-group-cell>
+                    </div>
 
-          <div
-            v-for="field in stage.fields"
-            :key="field.name"
-            class="border-white border-2 text-center item-group-cell w-full"
-            :class="[ getBg(field, item, field.name), field.name == 'owner' ? 'col-span-2' : '']"
-          >
-            <item-group-cell
-              :field-name="field.name"
-              :field="field"
-              :index="index"
-              :item="item"
-              @saved="saveChanges(item, field.name, $event)"
-            >
-            </item-group-cell>
-          </div>
-         <div
-            class="border-white border-2 text-center item-group-cell w-full flex items-center justify-center bg-gray-400"
-          >
-           <button> <i class="fa fa-trash"></i></button>
-          </div>
-        </div>
+                    <div
+                    v-for="field in stage.fields"
+                    :key="field.name"
+                    class="border-white border-2 text-center item-group-cell w-full"
+                    :class="[ getBg(field, item, field.name), field.name == 'owner' ? 'col-span-2' : '']"
+                    >
+                    <item-group-cell
+                        :field-name="field.name"
+                        :field="field"
+                        :index="index"
+                        :item="item"
+                        @saved="saveChanges(item, field.name, $event)"
+                    >
+                    </item-group-cell>
+                    </div>
+                    <div
+                    class="border-white border-2 text-center item-group-cell w-full flex items-center justify-center bg-gray-400"
+                    >
+                    <button> <i class="fa fa-trash"></i></button>
+                    </div>
+                </div>
+            </transition-group>
+        </draggable>
         <!-- End of items -->
       </template>
     </div>
@@ -112,10 +116,12 @@
 
 <script>
 import ItemGroupCell from "./ItemGroupCell";
+import Draggable from "vuedraggable";
 
 export default {
   components: {
     ItemGroupCell,
+    Draggable
   },
   props: {
     createMode: {
@@ -167,8 +173,7 @@ export default {
           }
       })
     },
-    addItem(stage) {
-        debugger
+    addItem(stage, reload) {
         this.newItem.board_id = stage.board_id
         this.newItem.stage_id = stage.id
         this.newItem.fields = stage.fields.map(field => {
@@ -178,7 +183,7 @@ export default {
                 value: this.newItem[field.name],
             }
         })
-        this.$emit("saved", {...this.newItem});
+        this.$emit("saved", {...this.newItem}, reload);
         this.newItem = {};
     },
     saveChanges(item, field, value) {
@@ -196,7 +201,14 @@ export default {
       stage.name = this.$refs.input.value;
       this.toggleEditMode();
       this.$emit("stage-updated", {...stage});
-    }
+    },
+    saveReorder() {
+      this.stage.items.forEach(async (item, index) => {
+        item.order = index;
+        this.$emit("saved", {...item}, false);
+      })
+        this.$inertia.reload({ preserveScroll: true })
+    },
   },
 };
 </script>

@@ -1,6 +1,7 @@
 {
     "private": true,
     "scripts": {
+        "build-image": "docker build -t ic-sunday .",
         "dev": "npm run development",
         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
         "watch": "npm run development -- --watch",
@@ -29,6 +30,7 @@
     },
     "dependencies": {
         "date-fns": "^2.16.1",
-        "vue-multiselect": "^2.1.6"
+        "vue-multiselect": "^2.1.6",
+        "vuedraggable": "^2.24.1"
     }
 }

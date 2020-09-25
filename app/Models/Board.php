@@ -10,7 +10,7 @@ class Board extends Model
     use HasFactory;
 
     public function stages() {
-        return $this->hasMany('App\Models\Stage', 'board_id', 'id');
+        return $this->hasMany('App\Models\Stage', 'board_id', 'id')->orderBy('order');
     }
 
     public function createMainStage() {

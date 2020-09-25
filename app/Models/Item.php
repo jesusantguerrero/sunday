@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
-    protected $fillable = ['title', 'user_id', 'team_id', 'done','commit_date'];
+    protected $fillable = ['title','order' ,'user_id', 'team_id', 'done','commit_date'];
     protected $with = ['fields'];
     use HasFactory;
 
