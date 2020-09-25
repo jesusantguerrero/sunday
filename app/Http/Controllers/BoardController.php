@@ -93,6 +93,7 @@ class BoardController extends Controller
                             ];
                             }),
                 'board' => [
+                    'id' => $board->id,
                     'name' => $board->name,
                     'stages' => $board->stages
                 ]
@@ -114,7 +115,7 @@ class BoardController extends Controller
                     'link' =>  URL::route('boards', $board),
                 ];
             }),
-            'todo' => Item::getByCustomField(['status', 'todo'], $request->user())->toArray(),
+            'todo' => Item::getByCustomField(['status', 'todo'], $request->user()),
             'committed' => Item::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,

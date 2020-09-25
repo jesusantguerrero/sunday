@@ -8,7 +8,7 @@
                 >
 
                 <i class="fa fa-plus"></i>
-                </button>
+            </button>
         </h1>
         <div class="mt-1 text-gray-500 flex rounded overflow-hidden">
             <input type="search" class="w-full p-2" placeholder="search boards...">

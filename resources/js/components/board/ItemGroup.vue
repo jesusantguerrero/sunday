@@ -6,9 +6,20 @@
           <span class="toolbar-buttons" @click="toggleExpand">
             <i class="fa fa-expand-alt"></i>
           </span>
-          <span>
-            {{ stage.title || stage.name }}
+          <span
+            @click="toggleEditMode(true)"
+            v-if="!isEditMode">
+                {{ stage.title || stage.name }}
           </span>
+          <div v-else>
+            <input
+                :value="stage.name"
+                type="text"
+                ref="input"
+                @blur="saveStage(stage)"
+            />
+
+          </div>
           <span v-if="!isExpanded"> ({{ items.length }} items) </span>
         </div>
 
@@ -123,6 +134,7 @@ export default {
   data() {
     return {
       newItem: {},
+      isEditMode: false,
       isExpanded: true,
     };
   },
@@ -147,7 +159,16 @@ export default {
     toggleExpand() {
       this.isExpanded = !this.isExpanded;
     },
+    toggleEditMode() {
+      this.isEditMode = !this.isEditMode;
+         this.$nextTick(() => {
+          if (this.$refs.input) {
+              this.$refs.input.focus();
+          }
+      })
+    },
     addItem(stage) {
+        debugger
         this.newItem.board_id = stage.board_id
         this.newItem.stage_id = stage.id
         this.newItem.fields = stage.fields.map(field => {
@@ -171,6 +192,11 @@ export default {
         })
         this.$emit("saved", {...item});
     },
+    saveStage(stage) {
+      stage.name = this.$refs.input.value;
+      this.toggleEditMode();
+      this.$emit("stage-updated", {...stage});
+    }
   },
 };
 </script>
@@ -188,8 +214,6 @@ export default {
       display: inline-flex;
     }
   }
-}
-.item-line {
 }
 
 .item-line-cell {

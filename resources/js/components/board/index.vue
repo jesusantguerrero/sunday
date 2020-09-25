@@ -33,9 +33,20 @@
       :items="stage.items"
       :create-mode="createMode"
       @saved="addItem"
+      @stage-updated="addStage"
       class="mt-4"
     >
     </item-group>
+
+    <div class="w-full flex justify-center py-5">
+        <button
+            class="rounded-full flex justify-center items-center px-2 h-8 w-8 border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white"
+            @click="addStage()"
+            >
+
+            <i class="fa fa-plus"></i>
+        </button>
+    </div>
   </div>
 </template>
 
@@ -98,6 +109,21 @@ export default {
             data: item
         }).then(() => {
             this.$inertia.reload()
+        })
+    },
+
+    addStage(stage = {}) {
+        const method = stage.id ? 'PUT' : 'POST';
+        const param = stage.id ? `/${stage.id}`: ''
+        stage.board_id = this.board.id
+        stage.name = stage.name || `Stage ${this.board.stages.length + 1}`
+
+        axios({
+            url: `/stages${param}`,
+            method,
+            data: stage
+        }).then(({ data }) => {
+            this.$inertia.reload({ preserveScroll: true })
         })
     },
   }
