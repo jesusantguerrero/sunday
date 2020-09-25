@@ -91,6 +91,36 @@
                     </div>
                 </div>
             </div>
+            <dialog-modal :show="isStandupOpen" @close="isStandupOpen=false">
+                <template #title>
+                    Today's Standup
+                </template>
+
+                <template #content>
+                    <div>
+                        <p v-for="task in todo" :key="`task-${task.id}`">
+                            <label class="checkbox-label">
+                            <input
+                                type="checkbox"
+                                @change="updateItem(task)"
+                                name=""
+                                :id="task.id"
+                                v-model="task.done"
+                            />
+                            <span>
+                                {{ task.title }}
+                            </span>
+                            </label>
+                        </p>
+                    </div>
+                </template>
+
+                <template #footer>
+                    <primary-button @click.native="completeDay()">
+                        Complete Day
+                    </primary-button>
+                </template>
+            </dialog-modal>
         </div>
     </app-layout>
 </template>
@@ -100,6 +130,8 @@
     import BoardSide from "../components/board/BoardSide"
     import BoardTaskForm from "../components/board/TaskForm"
     import Promodoro from "../components/promodoro/index"
+    import DialogModal from "../Jetstream/DialogModal"
+    import PrimaryButton from "../Jetstream/Button"
     import { subDays } from "date-fns";
 
     export default {
@@ -107,7 +139,9 @@
             AppLayout,
             BoardSide,
             BoardTaskForm,
-            Promodoro
+            Promodoro,
+            DialogModal,
+            PrimaryButton
         },
         props: {
             boards: {
@@ -122,6 +156,12 @@
                     return []
                 }
             },
+            standup: {
+                type: Array,
+                default() {
+                    return []
+                }
+            },
             committed: {
                 type: [Array, Object],
                 default() {
@@ -131,12 +171,18 @@
         },
         data() {
             return {
-                isLoading: false
+                isLoading: false,
+                isStandupOpen: false
             }
         },
         computed: {
             hasCommited() {
                 return this.todo.filter(item => item.done).length;
+            }
+        },
+        mounted() {
+            if (!this.standup.length) {
+                this.isStandupOpen = true;
             }
         },
         methods: {
@@ -157,7 +203,9 @@
                 });
 
                 this.updateDayly(now)
+                this.isStandupOpen = false;
                 this.isLoading = false;
+                this.$inertia.reload({ preserveScroll: true })
             },
 
             updateItem(item) {
@@ -174,7 +222,7 @@
 
             updateDayly(date) {
                 axios({
-                    url: 'daily',
+                    url: 'standups',
                     method: 'post',
                     data: {
                         date

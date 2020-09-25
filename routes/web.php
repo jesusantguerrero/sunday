@@ -1,12 +1,10 @@
 <?php
 
-use App\Actions\Sunday\CreateTask;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StageController;
+use App\Http\Controllers\StandupController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use Illuminate\Notifications\Action;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,5 +31,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/items', ItemController::class);
     Route::apiResource('/stages', StageController::class);
+    Route::apiResource('/standups', StandupController::class);
     Route::apiResource('/api/boards', BoardController::class);
 });

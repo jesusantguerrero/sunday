@@ -8,6 +8,7 @@ use App\Models\Item;
 use Illuminate\Http\Response;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\URL;
+use App\Models\Standup;
 
 class BoardController extends Controller
 {
@@ -120,6 +121,11 @@ class BoardController extends Controller
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,
                 'commit_date' => now()->subDay(1)->format('Y-m-d')
+            ])->get(),
+            'standup' => Standup::where([
+                'team_id' => $user->current_team_id,
+                'user_id' => $user->id,
+                'date' => now()->format('Y-m-d')
             ])->get()
         ]);
     }
