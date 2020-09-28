@@ -26,7 +26,7 @@
 
                 <div class="w-7/12 mx-2">
                     <span class="text-3xl font-bold"> Today's Todos </span>
-                    <div class="section-card committed mt-10">
+                    <div class="section-card committed mt-5">
                         <header class="bg-purple-400 text-white font-bold">
                             To Do
                         </header>
@@ -40,20 +40,21 @@
                                     :id="task.id"
                                     v-model="task.done"
                                 />
+                                 <span class="font-bold">
+                                    [{{ task.stage.name }}]
+                                </span>
                                 <span>
                                     {{ task.title }}
                                 </span>
                                 </label>
                             </p>
-
-                            <button @click="completeDay()" v-if="hasCommited">Complete Day</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="w-3/12 ml-4">
                     <span class="text-3xl ml-2"> Fast Acess </span>
-                    <div class="section-card committed mt-10">
+                    <div class="section-card committed mt-5">
                         <header class="bg-yellow-500 text-white">
                             Comitted
                         </header>
@@ -68,6 +69,9 @@
                                     v-model="task.done"
                                 />
                                 <span>
+                                    <span class="font-bold">
+                                        [{{ task.stage.name }}]
+                                    </span>
                                     {{ task.title }}
                                 </span>
                                 </label>
@@ -107,6 +111,9 @@
                                 :id="task.id"
                                 v-model="task.done"
                             />
+                            <span class="font-bold">
+                                [{{ task.stage.name }}]
+                            </span>
                             <span>
                                 {{ task.title }}
                             </span>
@@ -184,6 +191,10 @@
             if (!this.standup.length) {
                 this.isStandupOpen = true;
             }
+
+            axios('services/messages').then((messages) => {
+                console.log(messages.data)
+            })
         },
         methods: {
            completeDay() {
@@ -227,6 +238,26 @@
                     data: {
                         date
                     }
+                })
+            },
+
+            async signIn() {
+                    this.$gapi.signIn().then(async() => {
+                    const baseGapi = await this.$gapi._load();
+                    const authInstance = baseGapi.auth2.getAuthInstance();
+                    const user = authInstance.currentUser.get();
+
+                    authInstance.grantOfflineAccess({
+                        authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
+                    }).then(({ code }) => {
+                        const credentials = { code };
+                        axios({
+                            url: 'services/google',
+                            method: 'post',
+                            data: credentials
+                        })
+                    })
+
                 })
             }
         }

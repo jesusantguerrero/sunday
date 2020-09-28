@@ -25,11 +25,14 @@
                 <x-jet-input class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
             </div>
 
-            <div class="block mt-4">
+            <div class="mt-4 flex justify-between">
                 <label class="flex items-center">
                     <input type="checkbox" class="form-checkbox" name="remember">
                     <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                 </label>
+                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('register') }}">
+                    {{ __('Register') }}
+                </a>
             </div>
 
             <div class="flex items-center justify-end mt-4">

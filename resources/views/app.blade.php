@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="google-signin-client_id" content="929496160502-29advqogj70nr7i2jqkmnnre7bl0chln.apps.googleusercontent.com">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -16,6 +17,7 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
         <!-- Scripts -->
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
         <script src="{{ asset('js/app.js') }}" defer></script>
     </head>

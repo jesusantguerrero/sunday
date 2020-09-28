@@ -16,6 +16,10 @@ class Item extends Model
         return $this->hasMany('App\Models\FieldValue', 'entity_id', 'id');
     }
 
+    public function stage() {
+        return $this->belongsTo('App\Models\Stage', 'stage_id', 'id');
+    }
+
     public function saveFields($fields) {
         foreach ($fields as $field) {
 
@@ -39,7 +43,7 @@ class Item extends Model
     public static function getByCustomField($entry, $user) {
         return Item::whereHas('fields', function($query) use ($entry){
             $query->where('value', $entry[1]);
-        })->where([
+        })->with('stage')->where([
             'team_id' => $user->current_team_id,
             'user_id' => $user->id,
 

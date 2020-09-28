@@ -4,6 +4,7 @@ use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\StandupController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,14 +18,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 // pages
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
+    Route::get('/', [BoardController::class, 'list']);
     Route::get('/dashboard', [BoardController::class, 'list'])->name('dashboard');
     Route::get('/boards/{id}', [BoardController::class, 'edit'])->name('boards');
+    Route::get('/integrations', [ServiceController::class, 'index'])->name('integrations');
 });
 
 // resource route
@@ -33,4 +32,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/stages', StageController::class);
     Route::apiResource('/standups', StandupController::class);
     Route::apiResource('/api/boards', BoardController::class);
+    Route::post('/services/google', [ServiceController::class, 'google']);
+    Route::get('/services/messages', [ServiceController::class, 'getMessages']);
 });
