@@ -1,6 +1,8 @@
 <?php
 namespace App\Libraries;
 use App\Models\User;
+use App\Models\Board;
+use App\Models\Automation;
 use Google_Service_Gmail;
 use Google_Client;
 use PhpMimeMailParser\Parser;
@@ -52,33 +54,59 @@ class GmailService
         return $client;
     }
 
-    public static function getMessages($userId) {
+    public static function createItemFromMessage($userId, $automationId) {
+        $automation = Automation::find($automationId);
+        $track = json_decode($automation->track, true);
+        $automationConfig = json_decode($automation->config);
+        $track['historyId'] = $track['historyId'] ?? 0;
+
         $client = self::getClient($userId);
         $service = new Google_Service_Gmail($client);
         $user = 'me';
-        $results = $service->users_messages->listUsersMessages($user, ['maxResults' => 50]);
+        $results = $service->users_threads->listUsersThreads($user, ['maxResults' => 50, 'q' => "$automationConfig->condition <$automationConfig->value>"]);
         $messages = [];
 
-        forEach($results->getMessages() as $message) {
-            $raw = $service->users_messages->get($user, $message->id, ['format' => 'raw']);
-            $switched = str_replace(['-', '_'], ['+', '/'], $raw['raw']);
-            $raw = base64_decode($switched);
-            $parser = (new Parser)->setText($raw);
-            $headerFrom = array_map(function ($to)
-            {
-                return $to['address'];
-            }, $parser->getAddresses('to'));
-            if (\str_contains(implode(' ',$headerFrom), "all.oorden@abits.com" )) {
+        forEach($results->getThreads() as $index => $thread) {
+            $theadResponse = $service->users_threads->get($user, $thread->id, ['format' => 'MINIMAL']);
+            $message = $theadResponse->getMessages()[0];
+            if ($message && ($message->historyId > $track['historyId'])) {
+                $raw = $service->users_messages->get($user, $message->id, ['format' => 'raw']);
+                $parser = self::parseEmail($raw);
+
+                $body = $parser->getMessageBody('html');
                 $mail = [
+                    'index' => $index,
                     'subject' => $parser->getHeader('subject'),
-                    'message' => $parser->getMessageBody('html'),
                     'id' => $message->id,
-                    'threadId' => $message->threadId
+                    'threadId' => $message->threadId,
+                    'historyId' => $message->historyId
                 ];
+
+                if ($index == 0) {
+                    $automation->track = json_encode($mail);
+                    $automation->save();
+                }
+
+                $mail['message'] = $body;
+                $board = Board::find($automation->board_id);
+                $stage = $board->stages[0];
+                $stage->items()->create([
+                    'title' => $mail['subject'],
+                    'board_id' => $stage->board_id,
+                    'user_id' => $stage->user_id,
+                    'team_id' => $stage->team_id,
+                ]);
                 $messages[] = $mail;
+
             }
         };
 
         return $messages;
+    }
+
+    public static function parseEmail($raw) {
+        $switched = str_replace(['-', '_'], ['+', '/'], $raw['raw']);
+        $raw = base64_decode($switched);
+        return (new Parser)->setText($raw);
     }
 }

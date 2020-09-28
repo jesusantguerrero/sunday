@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Models\Automation;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,7 +25,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $automations = Automation::all();
+        foreach ($automations as $automation) {
+            $schedule->command("gmail createItemFromMessage $automation->users_id $automation->id")->everyMinute();
+        }
     }
 
     /**
