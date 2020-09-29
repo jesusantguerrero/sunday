@@ -14,9 +14,8 @@ class UsersTokens extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->morphs('tokenable');
-            $table->string('hash');
-            $table->string('token');
+            $table->string('hash')->nullable();
+            $table->string('token')->nullable();
         });
     }
 
