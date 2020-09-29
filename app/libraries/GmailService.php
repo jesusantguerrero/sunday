@@ -1,11 +1,15 @@
 <?php
 namespace App\Libraries;
+
 use App\Models\User;
 use App\Models\Board;
 use App\Models\Automation;
 use Google_Service_Gmail;
 use Google_Client;
+use DateTime;
 use PhpMimeMailParser\Parser;
+# Imports the Google Cloud client library
+use Google\Cloud\PubSub\PubSubClient;
 
 class GmailService
 {
@@ -108,5 +112,40 @@ class GmailService
         $switched = str_replace(['-', '_'], ['+', '/'], $raw['raw']);
         $raw = base64_decode($switched);
         return (new Parser)->setText($raw);
+    }
+
+    public static function listen() {
+        # Your Google Cloud Platform project ID
+        $projectId = "sunday-1601040613995";
+
+        # Instantiates a client
+        $pubsub = new PubSubClient([
+            'projectId' => $projectId
+        ]);
+
+        # The name for the new topic
+        $topicName = 'gmail';
+
+        var_dump($pubsub);
+        var_dump(date('Y-m-d h:i:s'));
+        var_dump(date_default_timezone_get());
+
+        # Creates the new topic
+        $topic = $pubsub->createTopic($topicName);
+
+        echo 'Topic ' . $topic->name() . ' created.';
+    }
+
+    function pull_messages($projectId, $subscriptionName)
+    {
+        $pubsub = new PubSubClient([
+            'projectId' => $projectId
+        ]);
+        $subscription = $pubsub->subscription($subscriptionName);
+        foreach ($subscription->pull() as $message) {
+           printf('Message: %s' . PHP_EOL, $message->data());
+           // Acknowledge the Pub/Sub message has been received, so it will not be pulled multiple times.
+           $subscription->acknowledge($message);
+        }
     }
 }

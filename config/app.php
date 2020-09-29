@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => getenv('APPLICATION_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
