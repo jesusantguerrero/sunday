@@ -2,7 +2,6 @@ FROM php:7.4-fpm
 
 ARG user
 ARG uid
-ARG PHP_EXTRA_CONFIGURE_ARGS
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -12,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
+    unzip \
+    cron
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -26,6 +26,15 @@ RUN pecl install mailparse && \
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy cron file to the cron.d directory
+COPY ./docker-compose/web/cron/scheduler-cron /etc/cron.d/scheduler-cron
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/scheduler-cron
+# Apply cron job
+RUN crontab /etc/cron.d/scheduler-cron
+# Create the log file
+RUN touch /var/log/cron.log
 
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user

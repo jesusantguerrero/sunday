@@ -5,7 +5,6 @@ services:
       args:
         user: 'sunday'
         uid: 1000
-        PHP_EXTRA_CONFIGURE_ARGS: " --enable-mailparse"
       context: ./
       dockerfile: Dockerfile
     image: sunday

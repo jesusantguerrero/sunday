@@ -1,0 +1,1 @@
+* * * * * /etc/www && php artisan schedule:run >> /dev/log/cron.log 2>&1 2>&1
