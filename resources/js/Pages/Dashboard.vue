@@ -25,59 +25,45 @@
                 </div>
 
                 <div class="w-7/12 mx-2">
-                    <span class="text-3xl font-bold"> Today's Todos </span>
-                    <div class="section-card committed mt-5">
-                        <header class="bg-purple-400 text-white font-bold">
-                            To Do
-                        </header>
-                        <div class="body text-gray-600">
-                            <p v-for="task in todo" :key="`task-${task.id}`">
-                                <label class="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    @change="updateItem(task)"
-                                    name=""
-                                    :id="task.id"
-                                    v-model="task.done"
-                                />
-                                 <span class="font-bold">
-                                    [{{ task.stage.name }}]
-                                </span>
-                                <span>
-                                    {{ task.title }}
-                                </span>
-                                </label>
-                            </p>
+                    <div class="flex justify-between mr-2">
+                        <span class="text-3xl font-bold"> Today's Todos </span>
+                        <div class="controls bg-purple-700 rounded-full">
+                            <button
+                                v-for="mode in modes"
+                                :key="mode"
+                                @click="modeSelected=mode"
+                                :class="{'bg-purple-400': mode == modeSelected }"
+                                class="px-8 h-full rounded-full text-white capitalize">
+                                    {{ mode }}
+                            </button>
                         </div>
                     </div>
+
+                    <board-item-container
+                        v-show="showCommitted"
+                        title="Commited"
+                        :tasks="committed"
+                    >
+                     <template>
+                        <schedule-controls
+                            v-model="diaActivo"
+                            @input="diaActivo = $event"
+                        >
+
+                        </schedule-controls>
+                     </template>
+                    </board-item-container>
+
+                    <board-item-container
+                        v-show="showTodo"
+                        title="To Do"
+                        :tasks="todo"
+                    >
+                    </board-item-container>
                 </div>
 
                 <div class="w-3/12 ml-4">
                     <span class="text-3xl ml-2"> Fast Acess </span>
-                    <div class="section-card committed mt-5">
-                        <header class="bg-yellow-500 text-white">
-                            Comitted
-                        </header>
-                        <div class="body bg-yellow-200 text-gray-600">
-                           <p v-for="task in committed" :key="`task-${task.id}`">
-                                <label class="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    name=""
-                                    disabled
-                                    :id="task.id"
-                                    v-model="task.done"
-                                />
-                                <span>
-                                    <span class="font-bold">
-                                        [{{ task.stage.name }}]
-                                    </span>
-                                    {{ task.title }}
-                                </span>
-                                </label>
-                            </p>
-                        </div>
-                    </div>
 
                     <div class="section-card committed">
                         <header class="bg-blue-400 text-white font-bold">
@@ -95,6 +81,7 @@
                     </div>
                 </div>
             </div>
+
             <dialog-modal :show="isStandupOpen" @close="isStandupOpen=false">
                 <template #title>
                     Today's Standup
@@ -135,7 +122,8 @@
 <script>
     import AppLayout from './../Layouts/AppLayout'
     import BoardSide from "../components/board/BoardSide"
-    import BoardTaskForm from "../components/board/TaskForm"
+    import BoardItemContainer from "../components/board/ItemContainer"
+    import ScheduleControls from "../components/schedule/controls";
     import Promodoro from "../components/promodoro/index"
     import DialogModal from "../Jetstream/DialogModal"
     import PrimaryButton from "../Jetstream/Button"
@@ -145,10 +133,11 @@
         components: {
             AppLayout,
             BoardSide,
-            BoardTaskForm,
+            BoardItemContainer,
             Promodoro,
             DialogModal,
-            PrimaryButton
+            PrimaryButton,
+            ScheduleControls
         },
         props: {
             boards: {
@@ -178,6 +167,8 @@
         },
         data() {
             return {
+                modes: ['all', 'todos', 'committed'],
+                modeSelected: 'all',
                 isLoading: false,
                 isStandupOpen: false
             }
@@ -185,6 +176,12 @@
         computed: {
             hasCommited() {
                 return this.todo.filter(item => item.done).length;
+            },
+            showTodo() {
+                return ['all', 'todos'].includes(this.modeSelected)
+            },
+            showCommitted() {
+                return ['all', 'committed'].includes(this.modeSelected)
             }
         },
         mounted() {
