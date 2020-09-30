@@ -15,7 +15,7 @@
                     >
                     </board-side>
                     <div class="section-card committed margin-0 mt-10">
-                        <header class="bg-green-500 text-white font-bold">
+                        <header class="bg-gray-200 btext-gray-500 font-bold">
                             Events
                         </header>
                         <div class="body text-gray-600">
@@ -75,7 +75,7 @@
                     </div>
 
                     <div class="section-card committed">
-                         <div class="body bg-red-400 text-gray-600 font-bold px-0">
+                         <div class="bg-red-400 text-gray-600 font-bold px-0">
                             <promodoro></promodoro>
                         </div>
                     </div>
@@ -275,6 +275,10 @@
     .body {
         @apply p-4;
         min-height: 5rem;
+    }
+
+    .body.p-0 {
+        @apply p-0;
     }
 }
 

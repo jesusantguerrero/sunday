@@ -1,15 +1,18 @@
 <template>
     <div class="promodoro-app">
-        <header class="bg-red-400 text-white font-bold">
-            <span @click="setSessionMode">
-                Timer
-            </span>
-            <span @click="setRestMode">
-                Break
-            </span>
-            <span @click="round=2">
-                Long Break
-            </span>
+        <header class="bg-red-400 text-white font-bold flex justify-between w-full items-center py-2">
+            <span> Promodoro </span>
+            <div class="actions rounded-full bg-red-700 flex h-8">
+                <button
+                  v-for="(modeObj, key) in modes"
+                  :key="key"
+                  class="px-2 h-full rounded-full"
+                  :class="{'bg-red-100 text-red-700': modeSelected == key}"
+                  @click="setMode(key)"
+                  >
+                    {{ modeObj.name }}
+                </button>
+            </div>
         </header>
         <div class="clock" :class="{ rest: round, ticking: run == 1 }">
             <time class="time" >{{ time | getTime }}</time
@@ -58,14 +61,26 @@ export default {
     data() {
         return {
             time,
-            session: 25,
-            rest: 5,
             icon: 'play_arrow',
             run: 0,
             timer: '',
             round: 0,
             audio: '',
-            mode: 'session'
+            modes: {
+                session:{
+                    name: 'session',
+                    minutes: 25,
+                },
+                break: {
+                    name: 'break',
+                    minutes: 5
+                },
+                longBreak: {
+                    name: 'long',
+                    minutes: 15
+                }
+            },
+            modeSelected: 'session'
         }
   },
   mounted(){
@@ -125,9 +140,10 @@ export default {
       this.run = 0
       this.round = 0
       this.time = {minutes: 25, seconds: 0}
-      this.session = 25
-      this.rest = 5
-      this.mode = 'session'
+      this.modes.session.minutes = 25
+      this.modes.break.minutes = 5
+      this.modes.longBreak.minutes = 15
+      this.modeSelected = 'session'
     },
 
     clear(){
@@ -147,9 +163,9 @@ export default {
       this.icon = 'pause'
       const self = this
 
-      if (this.mode == 'session' && !selfMode) {
-        this.time.minutes = this.session
-      } else if (this.mode == 'rest' && !selfMode) {
+      if (this.modeSelected == 'session' && !selfMode) {
+        this.time.minutes = this.modes.session
+      } else if (this.modeSelected == 'rest' && !selfMode) {
         this.time.minutes = this.rest
       }
 
@@ -210,7 +226,7 @@ export default {
     //   this.audio.currentTime = 0
     //   this.audio.play()
       window.navigator.vibrate([1000, 100, 1000, 100, 1000, 100, 1000])
-      const stop = confirm(`the time of the ${this.mode} has finished`)
+      const stop = confirm(`the time of the ${this.modeSelected} has finished`)
     //   this.stopSound()
     },
 
@@ -219,14 +235,9 @@ export default {
       window.navigator.vibrate(0)
     },
 
-    setRestMode() {
-      this.mode = 'rest'
-      this.time.minutes = this.rest
-    },
-
-    setSessionMode() {
-      this.mode = 'session'
-      this.time.minutes = this.session
+    setMode(modeName) {
+      this.modeSelected = modeName;
+      this.time.minutes = this.modes[modeName].minutes;
     }
   }
 };
@@ -244,8 +255,9 @@ export default {
 }
 
 .clock {
+    @apply py-5;
 	background: transparent;
-	height: 200px;
+	min-height: 200px;
 	width: 100%;
 	color: #fff;
 	display: flex;
@@ -253,8 +265,7 @@ export default {
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
-	position: relative;
-	margin-top: 15px;
+    position: relative;
 }
 
 .clock:hover {

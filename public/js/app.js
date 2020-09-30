@@ -6037,6 +6037,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 var time = {
   minutes: 25,
   seconds: 0
@@ -6045,14 +6048,26 @@ var time = {
   data: function data() {
     return {
       time: time,
-      session: 25,
-      rest: 5,
       icon: 'play_arrow',
       run: 0,
       timer: '',
       round: 0,
       audio: '',
-      mode: 'session'
+      modes: {
+        session: {
+          name: 'session',
+          minutes: 25
+        },
+        "break": {
+          name: 'break',
+          minutes: 5
+        },
+        longBreak: {
+          name: 'long',
+          minutes: 15
+        }
+      },
+      modeSelected: 'session'
     };
   },
   mounted: function mounted() {
@@ -6115,9 +6130,10 @@ var time = {
         minutes: 25,
         seconds: 0
       };
-      this.session = 25;
-      this.rest = 5;
-      this.mode = 'session';
+      this.modes.session.minutes = 25;
+      this.modes["break"].minutes = 5;
+      this.modes.longBreak.minutes = 15;
+      this.modeSelected = 'session';
     },
     clear: function clear() {
       this.stop();
@@ -6136,9 +6152,9 @@ var time = {
       this.icon = 'pause';
       var self = this;
 
-      if (this.mode == 'session' && !selfMode) {
-        this.time.minutes = this.session;
-      } else if (this.mode == 'rest' && !selfMode) {
+      if (this.modeSelected == 'session' && !selfMode) {
+        this.time.minutes = this.modes.session;
+      } else if (this.modeSelected == 'rest' && !selfMode) {
         this.time.minutes = this.rest;
       }
 
@@ -6196,19 +6212,15 @@ var time = {
       //   this.audio.currentTime = 0
       //   this.audio.play()
       window.navigator.vibrate([1000, 100, 1000, 100, 1000, 100, 1000]);
-      var stop = confirm("the time of the ".concat(this.mode, " has finished")); //   this.stopSound()
+      var stop = confirm("the time of the ".concat(this.modeSelected, " has finished")); //   this.stopSound()
     },
     stopSound: function stopSound() {
       //   this.audio.pause()
       window.navigator.vibrate(0);
     },
-    setRestMode: function setRestMode() {
-      this.mode = 'rest';
-      this.time.minutes = this.rest;
-    },
-    setSessionMode: function setSessionMode() {
-      this.mode = 'session';
-      this.time.minutes = this.session;
+    setMode: function setMode(modeName) {
+      this.modeSelected = modeName;
+      this.time.minutes = this.modes[modeName].minutes;
     }
   }
 });
@@ -6356,7 +6368,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".section-card {\n  --bg-opacity: 1;\n  background-color: #ffffff;\n  background-color: rgba(255, 255, 255, var(--bg-opacity));\n  overflow: hidden;\n  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n  margin-left: 0.5rem;\n  margin-right: 0.5rem;\n  margin-bottom: 1rem;\n}\n.section-card.margin-0 {\n  margin: 0;\n}\n.section-card header {\n  padding: 1rem;\n}\n.section-card .body {\n  padding: 1rem;\n  min-height: 5rem;\n}\nbutton:focus {\n  outline: 0 !important;\n}", ""]);
+exports.push([module.i, ".section-card {\n  --bg-opacity: 1;\n  background-color: #ffffff;\n  background-color: rgba(255, 255, 255, var(--bg-opacity));\n  overflow: hidden;\n  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n  margin-left: 0.5rem;\n  margin-right: 0.5rem;\n  margin-bottom: 1rem;\n}\n.section-card.margin-0 {\n  margin: 0;\n}\n.section-card header {\n  padding: 1rem;\n}\n.section-card .body {\n  padding: 1rem;\n  min-height: 5rem;\n}\n.section-card .body.p-0 {\n  padding: 0;\n}\nbutton:focus {\n  outline: 0 !important;\n}", ""]);
 
 // exports
 
@@ -6470,7 +6482,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".promodoro-app[data-v-2e3975df] {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  width: 100%;\n  height: 100%;\n  text-align: center;\n}\n.clock[data-v-2e3975df] {\n  background: transparent;\n  height: 200px;\n  width: 100%;\n  color: #fff;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  cursor: pointer;\n  position: relative;\n  margin-top: 15px;\n}\n.clock[data-v-2e3975df]:hover {\n  box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.2);\n}\n.clock:hover .inner-controls[data-v-2e3975df] {\n  opacity: 7;\n}\n.clock[data-v-2e3975df]:before {\n  content: \"\";\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(255, 255, 255, 0.3);\n  transition: all ease 1s;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n  z-index: -1;\n}\n.clock.ticking[data-v-2e3975df]:before {\n  -webkit-animation: ticking-data-v-2e3975df 3s infinite;\n          animation: ticking-data-v-2e3975df 3s infinite;\n}\n.title[data-v-2e3975df] {\n  margin: 0;\n}\n.time[data-v-2e3975df] {\n  font-size: 90px;\n}\n.inner-controls[data-v-2e3975df] {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n  opacity: 0;\n  transition: all ease 1s;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.inner-controls .material-icons[data-v-2e3975df] {\n  font-size: 150px;\n}\n.outer-controls-container[data-v-2e3975df] {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  align-items: center;\n}\n.outer-controls-container [class*=-control][data-v-2e3975df] {\n  margin: 5px;\n}\n.cs-row[data-v-2e3975df] {\n  width: 100%;\n  height: 48px;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.cs-row button[data-v-2e3975df] {\n  border: 0;\n  height: 100%;\n  color: white;\n  padding: 5px;\n  background: #0277BD;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n  display: inline-flex;\n  cursor: pointer;\n}\n.cs-row button.reset-btn[data-v-2e3975df] {\n  margin: 5px 0;\n}\n.cs-row button[data-v-2e3975df]:hover {\n  background: #0397ef;\n}\n.cs-row .value[data-v-2e3975df] {\n  display: inline-block;\n  height: 100%;\n  padding: 0 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n  background: #0277BD;\n}\n@-webkit-keyframes ticking-data-v-2e3975df {\n0% {\n    transform: scale(1);\n}\n30% {\n    transform: scale(1.1);\n}\n70% {\n    transform: scale(1.1);\n    border: 2px solid rgba(255, 255, 255, 0.3);\n    background: transparent;\n}\n100% {\n    transform: scale(1);\n}\n}\n@keyframes ticking-data-v-2e3975df {\n0% {\n    transform: scale(1);\n}\n30% {\n    transform: scale(1.1);\n}\n70% {\n    transform: scale(1.1);\n    border: 2px solid rgba(255, 255, 255, 0.3);\n    background: transparent;\n}\n100% {\n    transform: scale(1);\n}\n}", ""]);
+exports.push([module.i, ".promodoro-app[data-v-2e3975df] {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  width: 100%;\n  height: 100%;\n  text-align: center;\n}\n.clock[data-v-2e3975df] {\n  padding-top: 1.25rem;\n  padding-bottom: 1.25rem;\n  background: transparent;\n  min-height: 200px;\n  width: 100%;\n  color: #fff;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  cursor: pointer;\n  position: relative;\n}\n.clock[data-v-2e3975df]:hover {\n  box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.2);\n}\n.clock:hover .inner-controls[data-v-2e3975df] {\n  opacity: 7;\n}\n.clock[data-v-2e3975df]:before {\n  content: \"\";\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(255, 255, 255, 0.3);\n  transition: all ease 1s;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n  z-index: -1;\n}\n.clock.ticking[data-v-2e3975df]:before {\n  -webkit-animation: ticking-data-v-2e3975df 3s infinite;\n          animation: ticking-data-v-2e3975df 3s infinite;\n}\n.title[data-v-2e3975df] {\n  margin: 0;\n}\n.time[data-v-2e3975df] {\n  font-size: 90px;\n}\n.inner-controls[data-v-2e3975df] {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n  opacity: 0;\n  transition: all ease 1s;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.inner-controls .material-icons[data-v-2e3975df] {\n  font-size: 150px;\n}\n.outer-controls-container[data-v-2e3975df] {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  align-items: center;\n}\n.outer-controls-container [class*=-control][data-v-2e3975df] {\n  margin: 5px;\n}\n.cs-row[data-v-2e3975df] {\n  width: 100%;\n  height: 48px;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n.cs-row button[data-v-2e3975df] {\n  border: 0;\n  height: 100%;\n  color: white;\n  padding: 5px;\n  background: #0277BD;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n  display: inline-flex;\n  cursor: pointer;\n}\n.cs-row button.reset-btn[data-v-2e3975df] {\n  margin: 5px 0;\n}\n.cs-row button[data-v-2e3975df]:hover {\n  background: #0397ef;\n}\n.cs-row .value[data-v-2e3975df] {\n  display: inline-block;\n  height: 100%;\n  padding: 0 10px;\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n  background: #0277BD;\n}\n@-webkit-keyframes ticking-data-v-2e3975df {\n0% {\n    transform: scale(1);\n}\n30% {\n    transform: scale(1.1);\n}\n70% {\n    transform: scale(1.1);\n    border: 2px solid rgba(255, 255, 255, 0.3);\n    background: transparent;\n}\n100% {\n    transform: scale(1);\n}\n}\n@keyframes ticking-data-v-2e3975df {\n0% {\n    transform: scale(1);\n}\n30% {\n    transform: scale(1.1);\n}\n70% {\n    transform: scale(1.1);\n    border: 2px solid rgba(255, 255, 255, 0.3);\n    background: transparent;\n}\n100% {\n    transform: scale(1);\n}\n}", ""]);
 
 // exports
 
@@ -48471,7 +48483,7 @@ var render = function() {
                   [
                     _c(
                       "header",
-                      { staticClass: "bg-green-500 text-white font-bold" },
+                      { staticClass: "bg-gray-200 btext-gray-500 font-bold" },
                       [
                         _vm._v(
                           "\n                        Events\n                    "
@@ -48604,9 +48616,7 @@ var render = function() {
               _c("div", { staticClass: "section-card committed" }, [
                 _c(
                   "div",
-                  {
-                    staticClass: "body bg-red-400 text-gray-600 font-bold px-0"
-                  },
+                  { staticClass: "bg-red-400 text-gray-600 font-bold px-0" },
                   [_c("promodoro")],
                   1
                 )
@@ -52250,27 +52260,42 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "promodoro-app" }, [
-    _c("header", { staticClass: "bg-red-400 text-white font-bold" }, [
-      _c("span", { on: { click: _vm.setSessionMode } }, [
-        _vm._v("\n            Timer\n        ")
-      ]),
-      _vm._v(" "),
-      _c("span", { on: { click: _vm.setRestMode } }, [
-        _vm._v("\n            Break\n        ")
-      ]),
-      _vm._v(" "),
-      _c(
-        "span",
-        {
-          on: {
-            click: function($event) {
-              _vm.round = 2
-            }
-          }
-        },
-        [_vm._v("\n            Long Break\n        ")]
-      )
-    ]),
+    _c(
+      "header",
+      {
+        staticClass:
+          "bg-red-400 text-white font-bold flex justify-between w-full items-center py-2"
+      },
+      [
+        _c("span", [_vm._v(" Promodoro ")]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "actions rounded-full bg-red-700 flex h-8" },
+          _vm._l(_vm.modes, function(modeObj, key) {
+            return _c(
+              "button",
+              {
+                key: key,
+                staticClass: "px-2 h-full rounded-full",
+                class: { "bg-red-100 text-red-700": _vm.modeSelected == key },
+                on: {
+                  click: function($event) {
+                    return _vm.setMode(key)
+                  }
+                }
+              },
+              [
+                _vm._v(
+                  "\n                " + _vm._s(modeObj.name) + "\n            "
+                )
+              ]
+            )
+          }),
+          0
+        )
+      ]
+    ),
     _vm._v(" "),
     _c(
       "div",
