@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="w-10/12 mx-2">
-                    <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="overflow-hidden">
                         <Board :board="board"></Board>
                     </div>
                 </div>

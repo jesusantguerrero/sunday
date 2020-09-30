@@ -124,7 +124,7 @@ export default {
 $primary-color: var(--primary-color);
 
 .controls {
-  @apply text-left bg-white shadow-lg mb-1 p-2 border-gray-100 border-2;
+  @apply text-left bg-white mb-1 p-2 border-gray-100 border-2;
   border-radius: 12px;
 }
 
@@ -135,13 +135,13 @@ $primary-color: var(--primary-color);
 
 .day-item,
 .day-controls {
-  @apply text-center capitalize text-gray-600 py-2  cursor-pointer w-20;
+  @apply text-center capitalize text-gray-600 py-2 border-2 cursor-pointer w-20 border-white;
   transition: all ease 0.3s;
   border-radius: 0.80rem;
   display: none;
 
   &:hover {
-    @apply text-white;
+    @apply text-purple-400;
     background: var(--primary-color);
   }
 }
@@ -154,7 +154,7 @@ $primary-color: var(--primary-color);
 }
 
 .selected-day {
-  @apply visible text-white shadow-lg;
+  @apply visible text-purple-400 shadow-lg border-purple-400 border-2;
   display: block;
   background: var(--primary-color);
   box-shadow: 4px 4px 6px var(--primary-color-5)

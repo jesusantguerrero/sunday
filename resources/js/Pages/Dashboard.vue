@@ -1,13 +1,8 @@
 <template>
     <app-layout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard
-            </h2>
-        </template>
-
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
+                <!-- Left Side -->
                 <div class="w-2/12 mr-4">
                     <board-side
                         :boards="boards"
@@ -23,8 +18,10 @@
                         </div>
                     </div>
                 </div>
+                <!-- End of left side -->
 
-                <div class="w-7/12 mx-2">
+                <!-- Main board -->
+                <div class="w-7/12 mx-4">
                     <div class="flex justify-between mr-2">
                         <span class="text-3xl font-bold"> Today's Todos </span>
                         <div class="controls bg-purple-700 rounded-full">
@@ -61,11 +58,13 @@
                     >
                     </board-item-container>
                 </div>
+                <!-- End of main board -->
 
+                <!-- Right Side -->
                 <div class="w-3/12 ml-4">
-                    <span class="text-3xl ml-2"> Fast Acess </span>
+                    <span class="text-3xl ml-2 font-bold"> Fast Access </span>
 
-                    <div class="section-card committed">
+                    <div class="section-card committed mt-5">
                         <header class="bg-blue-400 text-white font-bold">
                             Links
                         </header>
@@ -80,6 +79,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- End of Right Side -->
             </div>
 
             <dialog-modal :show="isStandupOpen" @close="isStandupOpen=false">
@@ -188,10 +188,6 @@
             if (!this.standup.length) {
                 this.isStandupOpen = true;
             }
-
-            axios('services/messages').then((messages) => {
-                console.log(messages.data)
-            })
         },
         methods: {
            completeDay() {
@@ -237,26 +233,6 @@
                     }
                 })
             },
-
-            async signIn() {
-                    this.$gapi.signIn().then(async() => {
-                    const baseGapi = await this.$gapi._load();
-                    const authInstance = baseGapi.auth2.getAuthInstance();
-                    const user = authInstance.currentUser.get();
-
-                    authInstance.grantOfflineAccess({
-                        authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
-                    }).then(({ code }) => {
-                        const credentials = { code };
-                        axios({
-                            url: 'services/google',
-                            method: 'post',
-                            data: credentials
-                        })
-                    })
-
-                })
-            }
         }
     }
 </script>

@@ -1,17 +1,23 @@
 <template>
-  <div class="hello px-8 pb-24">
-    <div class="board__toolbar flex justify-between mb-10">
-      <div class="w-5/12 text-left">
-        <button>Vista</button>
+  <div class="px-8 pb-24">
+    <div class="board__toolbar flex justify-between mb-5">
+      <div class="flex text-left">
+            <div class="flex justify-between mr-2">
+                <span class="text-3xl font-bold"> {{ board.name }} </span>
+                <div class="controls bg-purple-700 rounded-full ml-10">
+                    <button class="px-8 h-full rounded-full text-white capitalize bg-purple-400">List</button>
+                    <button class="px-8 h-full rounded-full text-white capitalize">Kanban</button>
+                </div>
+            </div>
       </div>
 
-      <div class="w-7/12">
-        <button class="btn btn-blue" @click="createMode = !createMode">
+      <div class="flex items-center">
+        <button class="btn text-white bg-purple-700 hover:bg-purple-400 rounded-full" @click="createMode = !createMode">
           New Task
         </button>
         <input
           type="search"
-          class="form-input ml-2"
+          class="form-input ml-2 w-48"
           name=""
           id=""
           placeholder="search"
@@ -26,31 +32,34 @@
       </div>
     </div>
 
-    <draggable v-model="board.stages" @end="saveReorder">
-        <transition-group>
-            <item-group
-                v-for="stage in board.stages"
-                :key="stage.name"
-                :stage="stage"
-                :items="stage.items"
-                :create-mode="createMode"
-                @saved="addItem"
-                @stage-updated="addStage"
-                class="mt-4"
+    <div class="bg-white shadow-lg px-10 py-5">
+        <draggable v-model="board.stages" @end="saveReorder">
+            <transition-group>
+                <item-group
+                    v-for="stage in board.stages"
+                    :key="stage.name"
+                    :stage="stage"
+                    :items="stage.items"
+                    :create-mode="createMode"
+                    @saved="addItem"
+                    @stage-updated="addStage"
+                    class="mt-4"
+                    >
+                </item-group>
+            </transition-group>
+        </draggable>
+
+        <div class="w-full flex justify-center py-5">
+            <button
+                class="rounded-full flex justify-center items-center px-2 h-8 w-8 border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white"
+                @click="addStage()"
                 >
-            </item-group>
-        </transition-group>
-    </draggable>
 
-    <div class="w-full flex justify-center py-5">
-        <button
-            class="rounded-full flex justify-center items-center px-2 h-8 w-8 border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white"
-            @click="addStage()"
-            >
-
-            <i class="fa fa-plus"></i>
-        </button>
+                <i class="fa fa-plus"></i>
+            </button>
+        </div>
     </div>
+
   </div>
 </template>
 
@@ -59,7 +68,7 @@ import ItemGroup from "./ItemGroup.vue";
 import Draggable from "vuedraggable";
 
 export default {
-  name: "HelloWorld",
+  name: "Board",
   components: {
     ItemGroup,
     Draggable
@@ -169,17 +178,6 @@ a {
   @apply font-bold py-2 px-4 rounded;
 }
 
-.btn-blue {
-  @apply bg-blue-500 text-white;
-}
-
-.btn-blue:hover {
-  @apply bg-blue-700;
-}
-
-.board__toolbar {
-  @apply pt-8;
-}
 
 .toolbar-buttons {
   @apply px-2 rounded-full inline-flex items-center justify-center cursor-pointer;
@@ -192,6 +190,6 @@ a {
 }
 
 .form-input {
-  @apply shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight;
+  @apply shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight;
 }
 </style>

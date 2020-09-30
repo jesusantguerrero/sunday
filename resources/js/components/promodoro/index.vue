@@ -161,16 +161,13 @@ export default {
     initTimer(selfMode) {
       this.run = 1
       this.icon = 'pause'
-      const self = this
 
-      if (this.modeSelected == 'session' && !selfMode) {
-        this.time.minutes = this.modes.session
-      } else if (this.modeSelected == 'rest' && !selfMode) {
-        this.time.minutes = this.rest
+      if (!selfMode) {
+        this.time.minutes = this.modes[this.modeSelected].minutes
       }
 
       this.timer = setInterval(()=> {
-        self.countDown()
+        this.countDown()
       }, 1000)
 
     },
@@ -238,6 +235,7 @@ export default {
     setMode(modeName) {
       this.modeSelected = modeName;
       this.time.minutes = this.modes[modeName].minutes;
+      this.time.seconds = 0;
     }
   }
 };

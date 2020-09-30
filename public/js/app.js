@@ -3453,10 +3453,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     if (!this.standup.length) {
       this.isStandupOpen = true;
     }
-
-    axios('services/messages').then(function (messages) {
-      console.log(messages.data);
-    });
   },
   methods: {
     completeDay: function completeDay() {
@@ -3519,57 +3515,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           date: date
         }
       });
-    },
-    signIn: function signIn() {
-      var _this2 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _this2.$gapi.signIn().then( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-                  var baseGapi, authInstance, user;
-                  return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
-                    while (1) {
-                      switch (_context2.prev = _context2.next) {
-                        case 0:
-                          _context2.next = 2;
-                          return _this2.$gapi._load();
-
-                        case 2:
-                          baseGapi = _context2.sent;
-                          authInstance = baseGapi.auth2.getAuthInstance();
-                          user = authInstance.currentUser.get();
-                          authInstance.grantOfflineAccess({
-                            authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
-                          }).then(function (_ref3) {
-                            var code = _ref3.code;
-                            var credentials = {
-                              code: code
-                            };
-                            axios({
-                              url: 'services/google',
-                              method: 'post',
-                              data: credentials
-                            });
-                          });
-
-                        case 6:
-                        case "end":
-                          return _context2.stop();
-                      }
-                    }
-                  }, _callee2);
-                })));
-
-              case 1:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
     }
   }
 });
@@ -5230,6 +5175,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     boards: {
@@ -5241,14 +5213,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      boardName: '',
-      showAdd: ''
+      boardName: "",
+      showAdd: ""
     };
   },
   methods: {
     isPath: function isPath(url) {
-      var link = url.replace(window.location.origin, '');
-      console.log(link, window.location.pathname);
+      var link = url.replace(window.location.origin, "");
       return link == window.location.pathname;
     },
     addBoard: function addBoard() {
@@ -5256,13 +5227,16 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.boardName.trim()) {
         axios({
-          url: 'api/boards',
-          method: 'post',
+          url: "api/boards",
+          method: "post",
           data: {
             name: this.boardName
           }
         }).then(function () {
           _this.$inertia.reload();
+
+          _this.boardName = "";
+          _this.showAdd = false;
         });
       }
     },
@@ -5277,10 +5251,10 @@ __webpack_require__.r(__webpack_exports__);
     deleteBoard: function deleteBoard(id) {
       var _this3 = this;
 
-      if (!confirm('Are you sure')) return;
+      if (!confirm("Are you sure")) return;
       axios({
         url: "api/boards/".concat(id),
-        method: 'delete'
+        method: "delete"
       }).then(function () {
         _this3.$inertia.reload();
       });
@@ -5856,10 +5830,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "HelloWorld",
+  name: "Board",
   components: {
     ItemGroup: _ItemGroup_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
     Draggable: vuedraggable__WEBPACK_IMPORTED_MODULE_2___default.a
@@ -6148,18 +6131,17 @@ var time = {
       }
     },
     initTimer: function initTimer(selfMode) {
+      var _this = this;
+
       this.run = 1;
       this.icon = 'pause';
-      var self = this;
 
-      if (this.modeSelected == 'session' && !selfMode) {
-        this.time.minutes = this.modes.session;
-      } else if (this.modeSelected == 'rest' && !selfMode) {
-        this.time.minutes = this.rest;
+      if (!selfMode) {
+        this.time.minutes = this.modes[this.modeSelected].minutes;
       }
 
       this.timer = setInterval(function () {
-        self.countDown();
+        _this.countDown();
       }, 1000);
     },
     countDown: function countDown() {
@@ -6221,6 +6203,7 @@ var time = {
     setMode: function setMode(modeName) {
       this.modeSelected = modeName;
       this.time.minutes = this.modes[modeName].minutes;
+      this.time.seconds = 0;
     }
   }
 });
@@ -6463,7 +6446,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "h3 {\n  margin: 40px 0 0;\n}\nul {\n  list-style-type: none;\n  padding: 0;\n}\nli {\n  display: inline-block;\n  margin: 0 10px;\n}\na {\n  color: #42b983;\n}\n.btn {\n  font-weight: 700;\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  padding-left: 1rem;\n  padding-right: 1rem;\n  border-radius: 0.25rem;\n}\n.btn-blue {\n  --bg-opacity: 1;\n  background-color: #3f83f8;\n  background-color: rgba(63, 131, 248, var(--bg-opacity));\n  --text-opacity: 1;\n  color: #ffffff;\n  color: rgba(255, 255, 255, var(--text-opacity));\n}\n.btn-blue:hover {\n  --bg-opacity: 1;\n  background-color: #1a56db;\n  background-color: rgba(26, 86, 219, var(--bg-opacity));\n}\n.board__toolbar {\n  padding-top: 2rem;\n}\n.toolbar-buttons {\n  padding-left: 0.5rem;\n  padding-right: 0.5rem;\n  border-radius: 9999px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  cursor: pointer;\n  width: 34px;\n  height: 34px;\n}\n.toolbar-buttons:hover {\n  --bg-opacity: 1;\n  background-color: #d2d6dc;\n  background-color: rgba(210, 214, 220, var(--bg-opacity));\n}\n.form-input {\n  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  border-width: 1px;\n  border-radius: 0.25rem;\n  width: 50%;\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  padding-left: 0.75rem;\n  padding-right: 0.75rem;\n  --text-opacity: 1;\n  color: #374151;\n  color: rgba(55, 65, 81, var(--text-opacity));\n  line-height: 1.25;\n}", ""]);
+exports.push([module.i, "h3 {\n  margin: 40px 0 0;\n}\nul {\n  list-style-type: none;\n  padding: 0;\n}\nli {\n  display: inline-block;\n  margin: 0 10px;\n}\na {\n  color: #42b983;\n}\n.btn {\n  font-weight: 700;\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  padding-left: 1rem;\n  padding-right: 1rem;\n  border-radius: 0.25rem;\n}\n.toolbar-buttons {\n  padding-left: 0.5rem;\n  padding-right: 0.5rem;\n  border-radius: 9999px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  cursor: pointer;\n  width: 34px;\n  height: 34px;\n}\n.toolbar-buttons:hover {\n  --bg-opacity: 1;\n  background-color: #d2d6dc;\n  background-color: rgba(210, 214, 220, var(--bg-opacity));\n}\n.form-input {\n  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  border-width: 1px;\n  border-radius: 0.25rem;\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  padding-left: 0.75rem;\n  padding-right: 0.75rem;\n  --text-opacity: 1;\n  color: #374151;\n  color: rgba(55, 65, 81, var(--text-opacity));\n  line-height: 1.25;\n}", ""]);
 
 // exports
 
@@ -6501,7 +6484,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".controls[data-v-51ad751a] {\n  text-align: left;\n  --bg-opacity: 1;\n  background-color: #ffffff;\n  background-color: rgba(255, 255, 255, var(--bg-opacity));\n  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);\n  margin-bottom: 0.25rem;\n  padding: 0.5rem;\n  --border-opacity: 1;\n  border-color: #f4f5f7;\n  border-color: rgba(244, 245, 247, var(--border-opacity));\n  border-width: 2px;\n  border-radius: 12px;\n}\n.controls-container[data-v-51ad751a] {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  padding-bottom: 0.75rem;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.day-item[data-v-51ad751a],\n.day-controls[data-v-51ad751a] {\n  text-align: center;\n  text-transform: capitalize;\n  --text-opacity: 1;\n  color: #4b5563;\n  color: rgba(75, 85, 99, var(--text-opacity));\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  cursor: pointer;\n  width: 5rem;\n  transition: all ease 0.3s;\n  border-radius: 0.8rem;\n  display: none;\n}\n.day-item[data-v-51ad751a]:hover,\n.day-controls[data-v-51ad751a]:hover {\n  --text-opacity: 1;\n  color: #ffffff;\n  color: rgba(255, 255, 255, var(--text-opacity));\n  background: var(--primary-color);\n}\n.day-controls[data-v-51ad751a] {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  --text-opacity: 1;\n  color: #374151;\n  color: rgba(55, 65, 81, var(--text-opacity));\n}\n.day-controls[data-v-51ad751a]:hover {\n  --bg-opacity: 1;\n  background-color: #9fa6b2;\n  background-color: rgba(159, 166, 178, var(--bg-opacity));\n  --text-opacity: 1;\n  color: #374151;\n  color: rgba(55, 65, 81, var(--text-opacity));\n}\n.selected-day[data-v-51ad751a] {\n  visibility: visible;\n  --text-opacity: 1;\n  color: #ffffff;\n  color: rgba(255, 255, 255, var(--text-opacity));\n  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);\n  display: block;\n  background: var(--primary-color);\n  box-shadow: 4px 4px 6px var(--primary-color-5);\n}\n@media (min-width: 768px) {\n.controls-container[data-v-51ad751a] {\n    grid-template-columns: repeat(9, minmax(0, 1fr));\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.day-item[data-v-51ad751a] {\n    display: block;\n}\n}", ""]);
+exports.push([module.i, ".controls[data-v-51ad751a] {\n  text-align: left;\n  --bg-opacity: 1;\n  background-color: #ffffff;\n  background-color: rgba(255, 255, 255, var(--bg-opacity));\n  margin-bottom: 0.25rem;\n  padding: 0.5rem;\n  --border-opacity: 1;\n  border-color: #f4f5f7;\n  border-color: rgba(244, 245, 247, var(--border-opacity));\n  border-width: 2px;\n  border-radius: 12px;\n}\n.controls-container[data-v-51ad751a] {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  padding-bottom: 0.75rem;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n.day-item[data-v-51ad751a],\n.day-controls[data-v-51ad751a] {\n  text-align: center;\n  text-transform: capitalize;\n  --text-opacity: 1;\n  color: #4b5563;\n  color: rgba(75, 85, 99, var(--text-opacity));\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n  border-width: 2px;\n  cursor: pointer;\n  width: 5rem;\n  --border-opacity: 1;\n  border-color: #ffffff;\n  border-color: rgba(255, 255, 255, var(--border-opacity));\n  transition: all ease 0.3s;\n  border-radius: 0.8rem;\n  display: none;\n}\n.day-item[data-v-51ad751a]:hover,\n.day-controls[data-v-51ad751a]:hover {\n  --text-opacity: 1;\n  color: #ac94fa;\n  color: rgba(172, 148, 250, var(--text-opacity));\n  background: var(--primary-color);\n}\n.day-controls[data-v-51ad751a] {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  --text-opacity: 1;\n  color: #374151;\n  color: rgba(55, 65, 81, var(--text-opacity));\n}\n.day-controls[data-v-51ad751a]:hover {\n  --bg-opacity: 1;\n  background-color: #9fa6b2;\n  background-color: rgba(159, 166, 178, var(--bg-opacity));\n  --text-opacity: 1;\n  color: #374151;\n  color: rgba(55, 65, 81, var(--text-opacity));\n}\n.selected-day[data-v-51ad751a] {\n  visibility: visible;\n  --text-opacity: 1;\n  color: #ac94fa;\n  color: rgba(172, 148, 250, var(--text-opacity));\n  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);\n  --border-opacity: 1;\n  border-color: #ac94fa;\n  border-color: rgba(172, 148, 250, var(--border-opacity));\n  border-width: 2px;\n  display: block;\n  background: var(--primary-color);\n  box-shadow: 4px 4px 6px var(--primary-color-5);\n}\n@media (min-width: 768px) {\n.controls-container[data-v-51ad751a] {\n    grid-template-columns: repeat(9, minmax(0, 1fr));\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.day-item[data-v-51ad751a] {\n    display: block;\n}\n}", ""]);
 
 // exports
 
@@ -48405,9 +48388,7 @@ var render = function() {
           _c("div", { staticClass: "w-10/12 mx-2" }, [
             _c(
               "div",
-              {
-                staticClass: "bg-white overflow-hidden shadow-xl sm:rounded-lg"
-              },
+              { staticClass: "overflow-hidden" },
               [_c("Board", { attrs: { board: _vm.board } })],
               1
             )
@@ -48439,327 +48420,299 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "app-layout",
-    {
-      scopedSlots: _vm._u([
-        {
-          key: "header",
-          fn: function() {
-            return [
+  return _c("app-layout", [
+    _c(
+      "div",
+      { staticClass: "py-12" },
+      [
+        _c("div", { staticClass: "max-w-8xl mx-auto sm:px-6 lg:px-8 flex" }, [
+          _c(
+            "div",
+            { staticClass: "w-2/12 mr-4" },
+            [
+              _c("board-side", {
+                staticClass: "mb-10",
+                attrs: { boards: _vm.boards }
+              }),
+              _vm._v(" "),
               _c(
-                "h2",
-                {
-                  staticClass:
-                    "font-semibold text-xl text-gray-800 leading-tight"
-                },
-                [_vm._v("\n            Dashboard\n        ")]
-              )
-            ]
-          },
-          proxy: true
-        }
-      ])
-    },
-    [
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "py-12" },
-        [
-          _c("div", { staticClass: "max-w-8xl mx-auto sm:px-6 lg:px-8 flex" }, [
-            _c(
-              "div",
-              { staticClass: "w-2/12 mr-4" },
-              [
-                _c("board-side", {
-                  staticClass: "mb-10",
-                  attrs: { boards: _vm.boards }
-                }),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "section-card committed margin-0 mt-10" },
-                  [
-                    _c(
-                      "header",
-                      { staticClass: "bg-gray-200 btext-gray-500 font-bold" },
-                      [
-                        _vm._v(
-                          "\n                        Events\n                    "
-                        )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "body text-gray-600" }, [
-                      _vm._v(
-                        "\n                        Hola soy un item de ejemplo\n                    "
-                      )
-                    ])
-                  ]
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "w-7/12 mx-2" },
-              [
-                _c("div", { staticClass: "flex justify-between mr-2" }, [
-                  _c("span", { staticClass: "text-3xl font-bold" }, [
-                    _vm._v(" Today's Todos ")
-                  ]),
-                  _vm._v(" "),
+                "div",
+                { staticClass: "section-card committed margin-0 mt-10" },
+                [
                   _c(
-                    "div",
-                    { staticClass: "controls bg-purple-700 rounded-full" },
-                    _vm._l(_vm.modes, function(mode) {
-                      return _c(
-                        "button",
-                        {
-                          key: mode,
-                          staticClass:
-                            "px-8 h-full rounded-full text-white capitalize",
-                          class: { "bg-purple-400": mode == _vm.modeSelected },
-                          on: {
-                            click: function($event) {
-                              _vm.modeSelected = mode
-                            }
-                          }
-                        },
-                        [
-                          _vm._v(
-                            "\n                                " +
-                              _vm._s(mode) +
-                              "\n                        "
-                          )
-                        ]
+                    "header",
+                    { staticClass: "bg-gray-200 btext-gray-500 font-bold" },
+                    [
+                      _vm._v(
+                        "\n                        Events\n                    "
                       )
-                    }),
-                    0
-                  )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "body text-gray-600" }, [
+                    _vm._v(
+                      "\n                        Hola soy un item de ejemplo\n                    "
+                    )
+                  ])
+                ]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "w-7/12 mx-4" },
+            [
+              _c("div", { staticClass: "flex justify-between mr-2" }, [
+                _c("span", { staticClass: "text-3xl font-bold" }, [
+                  _vm._v(" Today's Todos ")
                 ]),
                 _vm._v(" "),
                 _c(
-                  "board-item-container",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.showCommitted,
-                        expression: "showCommitted"
-                      }
-                    ],
-                    attrs: { title: "Commited", tasks: _vm.committed }
-                  },
-                  [
-                    [
-                      _c("schedule-controls", {
-                        on: {
-                          input: function($event) {
-                            _vm.diaActivo = $event
-                          }
-                        },
-                        model: {
-                          value: _vm.diaActivo,
-                          callback: function($$v) {
-                            _vm.diaActivo = $$v
-                          },
-                          expression: "diaActivo"
-                        }
-                      })
-                    ]
-                  ],
-                  2
-                ),
-                _vm._v(" "),
-                _c("board-item-container", {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.showTodo,
-                      expression: "showTodo"
-                    }
-                  ],
-                  attrs: { title: "To Do", tasks: _vm.todo }
-                })
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c("div", { staticClass: "w-3/12 ml-4" }, [
-              _c("span", { staticClass: "text-3xl ml-2" }, [
-                _vm._v(" Fast Acess ")
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "section-card committed" }, [
-                _c(
-                  "header",
-                  { staticClass: "bg-blue-400 text-white font-bold" },
-                  [
-                    _vm._v(
-                      "\n                        Links\n                    "
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "body text-gray-600" }, [
-                  _vm._v(
-                    "\n                        Hola soy un item de ejemplo\n                    "
-                  )
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "section-card committed" }, [
-                _c(
                   "div",
-                  { staticClass: "bg-red-400 text-gray-600 font-bold px-0" },
-                  [_c("promodoro")],
-                  1
-                )
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("dialog-modal", {
-            attrs: { show: _vm.isStandupOpen },
-            on: {
-              close: function($event) {
-                _vm.isStandupOpen = false
-              }
-            },
-            scopedSlots: _vm._u([
-              {
-                key: "title",
-                fn: function() {
-                  return [
-                    _vm._v("\n                Today's Standup\n            ")
-                  ]
-                },
-                proxy: true
-              },
-              {
-                key: "content",
-                fn: function() {
-                  return [
-                    _c(
-                      "div",
-                      _vm._l(_vm.todo, function(task) {
-                        return _c("p", { key: "task-" + task.id }, [
-                          _c("label", { staticClass: "checkbox-label" }, [
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: task.done,
-                                  expression: "task.done"
-                                }
-                              ],
-                              attrs: {
-                                type: "checkbox",
-                                name: "",
-                                id: task.id
-                              },
-                              domProps: {
-                                checked: Array.isArray(task.done)
-                                  ? _vm._i(task.done, null) > -1
-                                  : task.done
-                              },
-                              on: {
-                                change: [
-                                  function($event) {
-                                    var $$a = task.done,
-                                      $$el = $event.target,
-                                      $$c = $$el.checked ? true : false
-                                    if (Array.isArray($$a)) {
-                                      var $$v = null,
-                                        $$i = _vm._i($$a, $$v)
-                                      if ($$el.checked) {
-                                        $$i < 0 &&
-                                          _vm.$set(
-                                            task,
-                                            "done",
-                                            $$a.concat([$$v])
-                                          )
-                                      } else {
-                                        $$i > -1 &&
-                                          _vm.$set(
-                                            task,
-                                            "done",
-                                            $$a
-                                              .slice(0, $$i)
-                                              .concat($$a.slice($$i + 1))
-                                          )
-                                      }
-                                    } else {
-                                      _vm.$set(task, "done", $$c)
-                                    }
-                                  },
-                                  function($event) {
-                                    return _vm.updateItem(task)
-                                  }
-                                ]
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("span", { staticClass: "font-bold" }, [
-                              _vm._v(
-                                "\n                            [" +
-                                  _vm._s(task.stage.name) +
-                                  "]\n                        "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("span", [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(task.title) +
-                                  "\n                        "
-                              )
-                            ])
-                          ])
-                        ])
-                      }),
-                      0
-                    )
-                  ]
-                },
-                proxy: true
-              },
-              {
-                key: "footer",
-                fn: function() {
-                  return [
-                    _c(
-                      "primary-button",
+                  { staticClass: "controls bg-purple-700 rounded-full" },
+                  _vm._l(_vm.modes, function(mode) {
+                    return _c(
+                      "button",
                       {
-                        nativeOn: {
+                        key: mode,
+                        staticClass:
+                          "px-8 h-full rounded-full text-white capitalize",
+                        class: { "bg-purple-400": mode == _vm.modeSelected },
+                        on: {
                           click: function($event) {
-                            return _vm.completeDay()
+                            _vm.modeSelected = mode
                           }
                         }
                       },
                       [
                         _vm._v(
-                          "\n                    Complete Day\n                "
+                          "\n                                " +
+                            _vm._s(mode) +
+                            "\n                        "
                         )
                       ]
                     )
-                  ]
+                  }),
+                  0
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "board-item-container",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.showCommitted,
+                      expression: "showCommitted"
+                    }
+                  ],
+                  attrs: { title: "Commited", tasks: _vm.committed }
                 },
-                proxy: true
-              }
+                [
+                  [
+                    _c("schedule-controls", {
+                      on: {
+                        input: function($event) {
+                          _vm.diaActivo = $event
+                        }
+                      },
+                      model: {
+                        value: _vm.diaActivo,
+                        callback: function($$v) {
+                          _vm.diaActivo = $$v
+                        },
+                        expression: "diaActivo"
+                      }
+                    })
+                  ]
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c("board-item-container", {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.showTodo,
+                    expression: "showTodo"
+                  }
+                ],
+                attrs: { title: "To Do", tasks: _vm.todo }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "w-3/12 ml-4" }, [
+            _c("span", { staticClass: "text-3xl ml-2 font-bold" }, [
+              _vm._v(" Fast Access ")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "section-card committed mt-5" }, [
+              _c(
+                "header",
+                { staticClass: "bg-blue-400 text-white font-bold" },
+                [
+                  _vm._v(
+                    "\n                        Links\n                    "
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "body text-gray-600" }, [
+                _vm._v(
+                  "\n                        Hola soy un item de ejemplo\n                    "
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "section-card committed" }, [
+              _c(
+                "div",
+                { staticClass: "bg-red-400 text-gray-600 font-bold px-0" },
+                [_c("promodoro")],
+                1
+              )
             ])
-          })
-        ],
-        1
-      )
-    ]
-  )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("dialog-modal", {
+          attrs: { show: _vm.isStandupOpen },
+          on: {
+            close: function($event) {
+              _vm.isStandupOpen = false
+            }
+          },
+          scopedSlots: _vm._u([
+            {
+              key: "title",
+              fn: function() {
+                return [
+                  _vm._v("\n                Today's Standup\n            ")
+                ]
+              },
+              proxy: true
+            },
+            {
+              key: "content",
+              fn: function() {
+                return [
+                  _c(
+                    "div",
+                    _vm._l(_vm.todo, function(task) {
+                      return _c("p", { key: "task-" + task.id }, [
+                        _c("label", { staticClass: "checkbox-label" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: task.done,
+                                expression: "task.done"
+                              }
+                            ],
+                            attrs: { type: "checkbox", name: "", id: task.id },
+                            domProps: {
+                              checked: Array.isArray(task.done)
+                                ? _vm._i(task.done, null) > -1
+                                : task.done
+                            },
+                            on: {
+                              change: [
+                                function($event) {
+                                  var $$a = task.done,
+                                    $$el = $event.target,
+                                    $$c = $$el.checked ? true : false
+                                  if (Array.isArray($$a)) {
+                                    var $$v = null,
+                                      $$i = _vm._i($$a, $$v)
+                                    if ($$el.checked) {
+                                      $$i < 0 &&
+                                        _vm.$set(
+                                          task,
+                                          "done",
+                                          $$a.concat([$$v])
+                                        )
+                                    } else {
+                                      $$i > -1 &&
+                                        _vm.$set(
+                                          task,
+                                          "done",
+                                          $$a
+                                            .slice(0, $$i)
+                                            .concat($$a.slice($$i + 1))
+                                        )
+                                    }
+                                  } else {
+                                    _vm.$set(task, "done", $$c)
+                                  }
+                                },
+                                function($event) {
+                                  return _vm.updateItem(task)
+                                }
+                              ]
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "font-bold" }, [
+                            _vm._v(
+                              "\n                            [" +
+                                _vm._s(task.stage.name) +
+                                "]\n                        "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("span", [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(task.title) +
+                                "\n                        "
+                            )
+                          ])
+                        ])
+                      ])
+                    }),
+                    0
+                  )
+                ]
+              },
+              proxy: true
+            },
+            {
+              key: "footer",
+              fn: function() {
+                return [
+                  _c(
+                    "primary-button",
+                    {
+                      nativeOn: {
+                        click: function($event) {
+                          return _vm.completeDay()
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                    Complete Day\n                "
+                      )
+                    ]
+                  )
+                ]
+              },
+              proxy: true
+            }
+          ])
+        })
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -51387,7 +51340,7 @@ var render = function() {
             staticClass: "bg-purple-400 text-white p-2",
             on: { click: _vm.addBoard }
           },
-          [_vm._v(" Search ")]
+          [_vm._v("\n            Search\n        ")]
         )
       ]
     ),
@@ -51407,7 +51360,7 @@ var render = function() {
           [
             _c("span", { staticClass: "w-full block" }, [
               _vm._v(
-                "\n                  " + _vm._s(board.name) + "\n              "
+                "\n                " + _vm._s(board.name) + "\n            "
               )
             ]),
             _vm._v(" "),
@@ -51467,6 +51420,15 @@ var render = function() {
               attrs: { type: "text", placeholder: "Add board name" },
               domProps: { value: _vm.boardName },
               on: {
+                keydown: function($event) {
+                  if (
+                    !$event.type.indexOf("key") &&
+                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                  ) {
+                    return null
+                  }
+                  return _vm.addBoard()
+                },
                 blur: function($event) {
                   _vm.showAdd = false
                 },
@@ -51483,9 +51445,14 @@ var render = function() {
               "button",
               {
                 staticClass: "bg-purple-400 text-white p-2",
-                on: { click: _vm.addBoard }
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.addBoard()
+                  }
+                }
               },
-              [_vm._v(" Add")]
+              [_vm._v("\n            Add\n        ")]
             )
           ]
         )
@@ -52098,104 +52065,132 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "hello px-8 pb-24" },
-    [
-      _c("div", { staticClass: "board__toolbar flex justify-between mb-10" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c("div", { staticClass: "w-7/12" }, [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-blue",
-              on: {
-                click: function($event) {
-                  _vm.createMode = !_vm.createMode
-                }
-              }
-            },
-            [_vm._v("\n        New Task\n      ")]
-          ),
+  return _c("div", { staticClass: "px-8 pb-24" }, [
+    _c("div", { staticClass: "board__toolbar flex justify-between mb-5" }, [
+      _c("div", { staticClass: "flex text-left" }, [
+        _c("div", { staticClass: "flex justify-between mr-2" }, [
+          _c("span", { staticClass: "text-3xl font-bold" }, [
+            _vm._v(" " + _vm._s(_vm.board.name) + " ")
+          ]),
           _vm._v(" "),
-          _c("input", {
-            staticClass: "form-input ml-2",
-            attrs: { type: "search", name: "", id: "", placeholder: "search" }
-          }),
-          _vm._v(" "),
-          _vm._m(1),
-          _vm._v(" "),
-          _vm._m(2),
-          _vm._v(" "),
-          _vm._m(3),
-          _vm._v(" "),
-          _vm._m(4),
-          _vm._v(" "),
-          _vm._m(5)
+          _vm._m(0)
         ])
       ]),
       _vm._v(" "),
-      _c(
-        "draggable",
-        {
-          on: { end: _vm.saveReorder },
-          model: {
-            value: _vm.board.stages,
-            callback: function($$v) {
-              _vm.$set(_vm.board, "stages", $$v)
-            },
-            expression: "board.stages"
-          }
-        },
-        [
-          _c(
-            "transition-group",
-            _vm._l(_vm.board.stages, function(stage) {
-              return _c("item-group", {
-                key: stage.name,
-                staticClass: "mt-4",
-                attrs: {
-                  stage: stage,
-                  items: stage.items,
-                  "create-mode": _vm.createMode
-                },
-                on: { saved: _vm.addItem, "stage-updated": _vm.addStage }
-              })
-            }),
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "w-full flex justify-center py-5" }, [
+      _c("div", { staticClass: "flex items-center" }, [
         _c(
           "button",
           {
             staticClass:
-              "rounded-full flex justify-center items-center px-2 h-8 w-8 border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white",
+              "btn text-white bg-purple-700 hover:bg-purple-400 rounded-full",
             on: {
               click: function($event) {
-                return _vm.addStage()
+                _vm.createMode = !_vm.createMode
               }
             }
           },
-          [_c("i", { staticClass: "fa fa-plus" })]
-        )
+          [_vm._v("\n        New Task\n      ")]
+        ),
+        _vm._v(" "),
+        _c("input", {
+          staticClass: "form-input ml-2 w-48",
+          attrs: { type: "search", name: "", id: "", placeholder: "search" }
+        }),
+        _vm._v(" "),
+        _vm._m(1),
+        _vm._v(" "),
+        _vm._m(2),
+        _vm._v(" "),
+        _vm._m(3),
+        _vm._v(" "),
+        _vm._m(4),
+        _vm._v(" "),
+        _vm._m(5)
       ])
-    ],
-    1
-  )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "bg-white shadow-lg px-10 py-5" },
+      [
+        _c(
+          "draggable",
+          {
+            on: { end: _vm.saveReorder },
+            model: {
+              value: _vm.board.stages,
+              callback: function($$v) {
+                _vm.$set(_vm.board, "stages", $$v)
+              },
+              expression: "board.stages"
+            }
+          },
+          [
+            _c(
+              "transition-group",
+              _vm._l(_vm.board.stages, function(stage) {
+                return _c("item-group", {
+                  key: stage.name,
+                  staticClass: "mt-4",
+                  attrs: {
+                    stage: stage,
+                    items: stage.items,
+                    "create-mode": _vm.createMode
+                  },
+                  on: { saved: _vm.addItem, "stage-updated": _vm.addStage }
+                })
+              }),
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "w-full flex justify-center py-5" }, [
+          _c(
+            "button",
+            {
+              staticClass:
+                "rounded-full flex justify-center items-center px-2 h-8 w-8 border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white",
+              on: {
+                click: function($event) {
+                  return _vm.addStage()
+                }
+              }
+            },
+            [_c("i", { staticClass: "fa fa-plus" })]
+          )
+        ])
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "w-5/12 text-left" }, [
-      _c("button", [_vm._v("Vista")])
-    ])
+    return _c(
+      "div",
+      { staticClass: "controls bg-purple-700 rounded-full ml-10" },
+      [
+        _c(
+          "button",
+          {
+            staticClass:
+              "px-8 h-full rounded-full text-white capitalize bg-purple-400"
+          },
+          [_vm._v("List")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          { staticClass: "px-8 h-full rounded-full text-white capitalize" },
+          [_vm._v("Kanban")]
+        )
+      ]
+    )
   },
   function() {
     var _vm = this
