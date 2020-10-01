@@ -42,6 +42,7 @@
                     :items="stage.items"
                     :create-mode="createMode"
                     @saved="addItem"
+                    @item-deleted="confirmDeleteItem"
                     @stage-updated="addStage"
                     class="mt-4"
                     >
@@ -58,12 +59,37 @@
                 <i class="fa fa-plus"></i>
             </button>
         </div>
+
+
+        <!-- Delete Team Confirmation Modal -->
+        <jet-confirmation-modal :show="itemToDelete" @close="itemToDelete = false">
+            <template #title>
+                Delete Team
+            </template>
+
+            <template #content>
+                Are you sure you want to delete this team? Once a team is deleted, all of its resources and data will be permanently deleted.
+            </template>
+
+            <template #footer>
+                <jet-secondary-button @click.native="itemToDelete = false">
+                    Nevermind
+                </jet-secondary-button>
+
+                <jet-danger-button class="ml-2" @click.native="deleteItem(itemToDelete)">
+                    Delete Item
+                </jet-danger-button>
+            </template>
+        </jet-confirmation-modal>
     </div>
 
   </div>
 </template>
 
 <script>
+import JetConfirmationModal from '../../Jetstream/ConfirmationModal'
+import JetDangerButton from '../../Jetstream/DangerButton'
+import JetSecondaryButton from '../../Jetstream/SecondaryButton'
 import ItemGroup from "./ItemGroup.vue";
 import Draggable from "vuedraggable";
 
@@ -71,7 +97,10 @@ export default {
   name: "Board",
   components: {
     ItemGroup,
-    Draggable
+    Draggable,
+    JetConfirmationModal,
+    JetDangerButton,
+    JetSecondaryButton
   },
   props: {
     board: {
@@ -83,6 +112,7 @@ export default {
     return {
       createMode: false,
       views: [],
+      itemToDelete: false,
       items: [
         {
           title: "Test",
@@ -124,6 +154,22 @@ export default {
             data: item
         }).then(() => {
             if (reload) {
+                this.$inertia.reload({ preserveScroll: true })
+            }
+        })
+    },
+
+    confirmDeleteItem(item, reload=true) {
+        this.itemToDelete = item;
+    },
+
+    deleteItem(item, reload = true) {
+        axios({
+            url: `/items/${item.id}`,
+            method: 'delete',
+        }).then(() => {
+            if (reload) {
+                this.itemToDelete = false;
                 this.$inertia.reload({ preserveScroll: true })
             }
         })

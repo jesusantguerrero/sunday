@@ -5765,9 +5765,12 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _ItemGroup_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ItemGroup.vue */ "./resources/js/components/board/ItemGroup.vue");
-/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.common.js");
-/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Jetstream_ConfirmationModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Jetstream/ConfirmationModal */ "./resources/js/Jetstream/ConfirmationModal.vue");
+/* harmony import */ var _Jetstream_DangerButton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Jetstream/DangerButton */ "./resources/js/Jetstream/DangerButton.vue");
+/* harmony import */ var _Jetstream_SecondaryButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Jetstream/SecondaryButton */ "./resources/js/Jetstream/SecondaryButton.vue");
+/* harmony import */ var _ItemGroup_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ItemGroup.vue */ "./resources/js/components/board/ItemGroup.vue");
+/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.common.js");
+/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_5__);
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -5839,13 +5842,42 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Board",
   components: {
-    ItemGroup: _ItemGroup_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
-    Draggable: vuedraggable__WEBPACK_IMPORTED_MODULE_2___default.a
+    ItemGroup: _ItemGroup_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
+    Draggable: vuedraggable__WEBPACK_IMPORTED_MODULE_5___default.a,
+    JetConfirmationModal: _Jetstream_ConfirmationModal__WEBPACK_IMPORTED_MODULE_1__["default"],
+    JetDangerButton: _Jetstream_DangerButton__WEBPACK_IMPORTED_MODULE_2__["default"],
+    JetSecondaryButton: _Jetstream_SecondaryButton__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   props: {
     board: {
@@ -5857,6 +5889,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       createMode: false,
       views: [],
+      itemToDelete: false,
       items: [{
         title: "Test",
         owner: "Jesus Guerrero",
@@ -5901,8 +5934,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       });
     },
-    addStage: function addStage() {
+    confirmDeleteItem: function confirmDeleteItem(item) {
+      var reload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      this.itemToDelete = item;
+    },
+    deleteItem: function deleteItem(item) {
       var _this2 = this;
+
+      var reload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      axios({
+        url: "/items/".concat(item.id),
+        method: 'delete'
+      }).then(function () {
+        if (reload) {
+          _this2.itemToDelete = false;
+
+          _this2.$inertia.reload({
+            preserveScroll: true
+          });
+        }
+      });
+    },
+    addStage: function addStage() {
+      var _this3 = this;
 
       var stage = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var reload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -5918,14 +5972,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         var data = _ref.data;
 
         if (reload) {
-          _this2.$inertia.reload({
+          _this3.$inertia.reload({
             preserveScroll: true
           });
         }
       });
     },
     saveReorder: function saveReorder() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.board.stages.forEach( /*#__PURE__*/function () {
         var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(stage, index) {
@@ -5935,7 +5989,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 case 0:
                   stage.order = index;
                   _context.next = 3;
-                  return _this3.addStage(stage, false);
+                  return _this4.addStage(stage, false);
 
                 case 3:
                 case "end":
@@ -51904,9 +51958,20 @@ var render = function() {
                                   "border-white border-2 text-center item-group-cell w-full flex items-center justify-center bg-gray-400"
                               },
                               [
-                                _c("button", [
-                                  _c("i", { staticClass: "fa fa-trash" })
-                                ])
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "w-full h-full bg-gray-400 text-white hover:bg-red-500",
+                                    on: {
+                                      click: function($event) {
+                                        $event.preventDefault()
+                                        return _vm.$emit("item-deleted", item)
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fa fa-trash" })]
+                                )
                               ]
                             )
                           ],
@@ -52137,7 +52202,11 @@ var render = function() {
                     items: stage.items,
                     "create-mode": _vm.createMode
                   },
-                  on: { saved: _vm.addItem, "stage-updated": _vm.addStage }
+                  on: {
+                    saved: _vm.addItem,
+                    "item-deleted": _vm.confirmDeleteItem,
+                    "stage-updated": _vm.addStage
+                  }
                 })
               }),
               1
@@ -52160,7 +52229,68 @@ var render = function() {
             },
             [_c("i", { staticClass: "fa fa-plus" })]
           )
-        ])
+        ]),
+        _vm._v(" "),
+        _c("jet-confirmation-modal", {
+          attrs: { show: _vm.itemToDelete },
+          on: {
+            close: function($event) {
+              _vm.itemToDelete = false
+            }
+          },
+          scopedSlots: _vm._u([
+            {
+              key: "title",
+              fn: function() {
+                return [_vm._v("\n              Delete Team\n          ")]
+              },
+              proxy: true
+            },
+            {
+              key: "content",
+              fn: function() {
+                return [
+                  _vm._v(
+                    "\n              Are you sure you want to delete this team? Once a team is deleted, all of its resources and data will be permanently deleted.\n          "
+                  )
+                ]
+              },
+              proxy: true
+            },
+            {
+              key: "footer",
+              fn: function() {
+                return [
+                  _c(
+                    "jet-secondary-button",
+                    {
+                      nativeOn: {
+                        click: function($event) {
+                          _vm.itemToDelete = false
+                        }
+                      }
+                    },
+                    [_vm._v("\n                  Nevermind\n              ")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "jet-danger-button",
+                    {
+                      staticClass: "ml-2",
+                      nativeOn: {
+                        click: function($event) {
+                          return _vm.deleteItem(_vm.itemToDelete)
+                        }
+                      }
+                    },
+                    [_vm._v("\n                  Delete Item\n              ")]
+                  )
+                ]
+              },
+              proxy: true
+            }
+          ])
+        })
       ],
       1
     )

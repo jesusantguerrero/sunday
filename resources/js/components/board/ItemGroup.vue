@@ -101,9 +101,9 @@
                     </item-group-cell>
                     </div>
                     <div
-                    class="border-white border-2 text-center item-group-cell w-full flex items-center justify-center bg-gray-400"
+                        class="border-white border-2 text-center item-group-cell w-full flex items-center justify-center bg-gray-400"
                     >
-                    <button> <i class="fa fa-trash"></i></button>
+                        <button @click.prevent="$emit('item-deleted', item)" class="w-full h-full bg-gray-400 text-white hover:bg-red-500"> <i class="fa fa-trash"></i></button>
                     </div>
                 </div>
             </transition-group>
@@ -186,6 +186,7 @@ export default {
         this.$emit("saved", {...this.newItem}, reload);
         this.newItem = {};
     },
+
     saveChanges(item, field, value) {
         item[field] = value;
         item.fields = this.stage.fields.map(field => {
@@ -197,11 +198,13 @@ export default {
         })
         this.$emit("saved", {...item});
     },
+
     saveStage(stage) {
       stage.name = this.$refs.input.value;
       this.toggleEditMode();
       this.$emit("stage-updated", {...stage});
     },
+
     saveReorder() {
       this.stage.items.forEach(async (item, index) => {
         item.order = index;
