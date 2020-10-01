@@ -5777,6 +5777,62 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/board/ItemKanbanContainer.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/board/ItemKanbanContainer.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    kanbanData: {
+      type: Object,
+      required: true
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/board/index.vue?vue&type=script&lang=js&":
 /*!**********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/board/index.vue?vue&type=script&lang=js& ***!
@@ -5792,8 +5848,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Jetstream_DangerButton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Jetstream/DangerButton */ "./resources/js/Jetstream/DangerButton.vue");
 /* harmony import */ var _Jetstream_SecondaryButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Jetstream/SecondaryButton */ "./resources/js/Jetstream/SecondaryButton.vue");
 /* harmony import */ var _ItemGroup_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ItemGroup.vue */ "./resources/js/components/board/ItemGroup.vue");
-/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.common.js");
-/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _ItemKanbanContainer_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ItemKanbanContainer.vue */ "./resources/js/components/board/ItemKanbanContainer.vue");
+/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.common.js");
+/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_6__);
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -5912,6 +5969,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -5921,7 +5988,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   name: "Board",
   components: {
     ItemGroup: _ItemGroup_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
-    Draggable: vuedraggable__WEBPACK_IMPORTED_MODULE_5___default.a,
+    Draggable: vuedraggable__WEBPACK_IMPORTED_MODULE_6___default.a,
+    ItemKanbanContainer: _ItemKanbanContainer_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
     JetConfirmationModal: _Jetstream_ConfirmationModal__WEBPACK_IMPORTED_MODULE_1__["default"],
     JetDangerButton: _Jetstream_DangerButton__WEBPACK_IMPORTED_MODULE_2__["default"],
     JetSecondaryButton: _Jetstream_SecondaryButton__WEBPACK_IMPORTED_MODULE_3__["default"]
@@ -5944,7 +6012,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       createMode: false,
-      views: [],
+      modeSelected: "kanban",
+      views: ["list", "kanban"],
       itemToDelete: false,
       items: [{
         title: "Test",
@@ -5970,6 +6039,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         name: "Jesus Guerrero"
       }]
     };
+  },
+  computed: {
+    kanbanData: function kanbanData() {
+      if (this.board.stages.length) {
+        var statusField = this.board.stages[0].fields.find(function (field) {
+          return field.name == "status";
+        });
+        var quadrants = {};
+        this.board.stages[0].labels.forEach(function (label) {
+          if (label.field_id == statusField.id) {
+            quadrants[label.name] = {
+              id: label.id,
+              fieldId: label.field_id,
+              attributes: label,
+              childs: []
+            };
+          }
+        });
+        this.board.stages.forEach(function (stage) {
+          stage.items.forEach(function (item) {
+            var statusField = item.fields.find(function (field) {
+              return field.field_name == "status";
+            });
+            quadrants[statusField.value].childs.push(item);
+          });
+        });
+        return quadrants;
+      }
+
+      return {};
+    }
   },
   methods: {
     addItem: function addItem(item) {
@@ -52201,6 +52301,121 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/board/ItemKanbanContainer.vue?vue&type=template&id=d8b3c81a&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/board/ItemKanbanContainer.vue?vue&type=template&id=d8b3c81a& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "flex" },
+    _vm._l(_vm.kanbanData, function(quadrant, name) {
+      return _c(
+        "div",
+        {
+          key: name,
+          staticClass: "w-full border-2 border-white",
+          class: "bg-" + quadrant.attributes.color + "-300"
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass:
+                "header capitalize font-bold flex w-full justify-center items-center h-12"
+            },
+            [_vm._v("\n            " + _vm._s(name) + "\n        ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "px-2 py-5" },
+            _vm._l(quadrant.childs, function(task) {
+              return _c("p", { key: "task-" + task.id }, [
+                _c("label", { staticClass: "checkbox-label" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: task.done,
+                        expression: "task.done"
+                      }
+                    ],
+                    attrs: { type: "checkbox", name: "", id: task.id },
+                    domProps: {
+                      checked: Array.isArray(task.done)
+                        ? _vm._i(task.done, null) > -1
+                        : task.done
+                    },
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$a = task.done,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 &&
+                                _vm.$set(task, "done", $$a.concat([$$v]))
+                            } else {
+                              $$i > -1 &&
+                                _vm.$set(
+                                  task,
+                                  "done",
+                                  $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                                )
+                            }
+                          } else {
+                            _vm.$set(task, "done", $$c)
+                          }
+                        },
+                        function($event) {
+                          return _vm.$emit("update-item", task)
+                        }
+                      ]
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "font-bold" }),
+                  _vm._v(" "),
+                  _c("span", [
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(task.title) +
+                        "\n                    "
+                    )
+                  ])
+                ])
+              ])
+            }),
+            0
+          )
+        ]
+      )
+    }),
+    0
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/board/index.vue?vue&type=template&id=1aa27eee&":
 /*!**************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/board/index.vue?vue&type=template&id=1aa27eee& ***!
@@ -52216,206 +52431,215 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "px-8 pb-24" }, [
-    _c("div", { staticClass: "board__toolbar flex justify-between mb-5" }, [
-      _c("div", { staticClass: "flex text-left" }, [
-        _c("div", { staticClass: "flex justify-between mr-2" }, [
-          _c("span", { staticClass: "text-3xl font-bold" }, [
-            _vm._v(" " + _vm._s(_vm.board.name) + " ")
-          ]),
-          _vm._v(" "),
-          _vm._m(0)
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "flex items-center" }, [
-        _c(
-          "button",
-          {
-            staticClass:
-              "btn text-white bg-purple-700 hover:bg-purple-400 rounded-full",
-            on: {
-              click: function($event) {
-                _vm.createMode = !_vm.createMode
-              }
-            }
-          },
-          [_vm._v("\n                New Task\n            ")]
-        ),
-        _vm._v(" "),
-        _c("input", {
-          staticClass: "form-input ml-2 w-48",
-          attrs: { type: "search", name: "", id: "", placeholder: "search" }
-        }),
-        _vm._v(" "),
-        _vm._m(1),
-        _vm._v(" "),
-        _vm._m(2),
-        _vm._v(" "),
-        _vm._m(3),
-        _vm._v(" "),
-        _vm._m(4),
-        _vm._v(" "),
-        _vm._m(5)
-      ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "bg-white shadow-lg px-10 py-5" },
-      [
-        _c(
-          "draggable",
-          {
-            on: { end: _vm.saveReorder },
-            model: {
-              value: _vm.board.stages,
-              callback: function($$v) {
-                _vm.$set(_vm.board, "stages", $$v)
-              },
-              expression: "board.stages"
-            }
-          },
-          [
+  return _c(
+    "div",
+    { staticClass: "px-8 pb-24" },
+    [
+      _c("div", { staticClass: "board__toolbar flex justify-between mb-5" }, [
+        _c("div", { staticClass: "flex text-left" }, [
+          _c("div", { staticClass: "flex justify-between mr-2" }, [
+            _c("span", { staticClass: "text-3xl font-bold" }, [
+              _vm._v(" " + _vm._s(_vm.board.name) + " ")
+            ]),
+            _vm._v(" "),
             _c(
-              "transition-group",
-              _vm._l(_vm.board.stages, function(stage) {
-                return _c("item-group", {
-                  key: stage.name,
-                  staticClass: "mt-4",
-                  attrs: {
-                    stage: stage,
-                    items: stage.items,
-                    "create-mode": _vm.createMode
+              "div",
+              {
+                staticClass:
+                  "controls bg-purple-700 rounded-full ml-10 h-12 overflow-hidden"
+              },
+              _vm._l(_vm.views, function(view) {
+                return _c(
+                  "button",
+                  {
+                    key: view,
+                    staticClass:
+                      "px-8 h-full rounded-full text-white capitalize",
+                    class: { "bg-purple-400": _vm.modeSelected == view },
+                    on: {
+                      click: function($event) {
+                        _vm.modeSelected = view
+                      }
+                    }
                   },
-                  on: {
-                    saved: _vm.addItem,
-                    "item-deleted": _vm.confirmDeleteItem,
-                    "stage-updated": _vm.addStage
-                  }
-                })
+                  [
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(view) +
+                        "\n                    "
+                    )
+                  ]
+                )
               }),
-              1
+              0
             )
-          ],
-          1
-        ),
+          ])
+        ]),
         _vm._v(" "),
-        _c("div", { staticClass: "w-full flex justify-center py-5" }, [
+        _c("div", { staticClass: "flex items-center" }, [
           _c(
             "button",
             {
               staticClass:
-                "rounded-full flex justify-center items-center px-2 h-8 w-8 border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white",
+                "btn text-white bg-purple-700 hover:bg-purple-400 rounded-full",
               on: {
                 click: function($event) {
-                  return _vm.addStage()
+                  _vm.createMode = !_vm.createMode
                 }
               }
             },
-            [_c("i", { staticClass: "fa fa-plus" })]
-          )
-        ]),
-        _vm._v(" "),
-        _c("jet-confirmation-modal", {
-          attrs: { show: _vm.itemToDelete },
-          on: {
-            close: function($event) {
-              _vm.itemToDelete = false
-            }
+            [_vm._v("\n                New Task\n            ")]
+          ),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-input ml-2 w-48",
+            attrs: { type: "search", name: "", id: "", placeholder: "search" }
+          }),
+          _vm._v(" "),
+          _vm._m(0),
+          _vm._v(" "),
+          _vm._m(1),
+          _vm._v(" "),
+          _vm._m(2),
+          _vm._v(" "),
+          _vm._m(3),
+          _vm._v(" "),
+          _vm._m(4)
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "bg-white shadow-lg px-10 py-5" },
+        [
+          _vm.modeSelected == "list"
+            ? _c(
+                "draggable",
+                {
+                  on: { end: _vm.saveReorder },
+                  model: {
+                    value: _vm.board.stages,
+                    callback: function($$v) {
+                      _vm.$set(_vm.board, "stages", $$v)
+                    },
+                    expression: "board.stages"
+                  }
+                },
+                [
+                  _c(
+                    "transition-group",
+                    _vm._l(_vm.board.stages, function(stage) {
+                      return _c("item-group", {
+                        key: stage.name,
+                        staticClass: "mt-4",
+                        attrs: {
+                          stage: stage,
+                          items: stage.items,
+                          "create-mode": _vm.createMode
+                        },
+                        on: {
+                          saved: _vm.addItem,
+                          "item-deleted": _vm.confirmDeleteItem,
+                          "stage-updated": _vm.addStage
+                        }
+                      })
+                    }),
+                    1
+                  )
+                ],
+                1
+              )
+            : _c("item-kanban-container", {
+                staticClass: "flex pt-5",
+                attrs: { "kanban-data": _vm.kanbanData }
+              }),
+          _vm._v(" "),
+          _vm.modeSelected == "list"
+            ? _c("div", { staticClass: "w-full flex justify-center py-5" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass:
+                      "rounded-full flex justify-center items-center px-2 h-8 w-8 border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white",
+                    on: {
+                      click: function($event) {
+                        return _vm.addStage()
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fa fa-plus" })]
+                )
+              ])
+            : _vm._e()
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("jet-confirmation-modal", {
+        attrs: { show: _vm.itemToDelete },
+        on: {
+          close: function($event) {
+            _vm.itemToDelete = false
+          }
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "title",
+            fn: function() {
+              return [_vm._v("\n            Delete Team\n        ")]
+            },
+            proxy: true
           },
-          scopedSlots: _vm._u([
-            {
-              key: "title",
-              fn: function() {
-                return [_vm._v("\n                Delete Team\n            ")]
-              },
-              proxy: true
+          {
+            key: "content",
+            fn: function() {
+              return [
+                _vm._v(
+                  "\n            Are you sure you want to delete this team? Once a team is\n            deleted, all of its resources and data will be permanently\n            deleted.\n        "
+                )
+              ]
             },
-            {
-              key: "content",
-              fn: function() {
-                return [
-                  _vm._v(
-                    "\n                Are you sure you want to delete this team? Once a team is\n                deleted, all of its resources and data will be permanently\n                deleted.\n            "
-                  )
-                ]
-              },
-              proxy: true
+            proxy: true
+          },
+          {
+            key: "footer",
+            fn: function() {
+              return [
+                _c(
+                  "jet-secondary-button",
+                  {
+                    nativeOn: {
+                      click: function($event) {
+                        _vm.itemToDelete = false
+                      }
+                    }
+                  },
+                  [_vm._v("\n                Nevermind\n            ")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "jet-danger-button",
+                  {
+                    staticClass: "ml-2",
+                    nativeOn: {
+                      click: function($event) {
+                        return _vm.deleteItem(_vm.itemToDelete)
+                      }
+                    }
+                  },
+                  [_vm._v("\n                Delete Item\n            ")]
+                )
+              ]
             },
-            {
-              key: "footer",
-              fn: function() {
-                return [
-                  _c(
-                    "jet-secondary-button",
-                    {
-                      nativeOn: {
-                        click: function($event) {
-                          _vm.itemToDelete = false
-                        }
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                    Nevermind\n                "
-                      )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "jet-danger-button",
-                    {
-                      staticClass: "ml-2",
-                      nativeOn: {
-                        click: function($event) {
-                          return _vm.deleteItem(_vm.itemToDelete)
-                        }
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                    Delete Item\n                "
-                      )
-                    ]
-                  )
-                ]
-              },
-              proxy: true
-            }
-          ])
-        })
-      ],
-      1
-    )
-  ])
+            proxy: true
+          }
+        ])
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "controls bg-purple-700 rounded-full ml-10" },
-      [
-        _c(
-          "button",
-          {
-            staticClass:
-              "px-8 h-full rounded-full text-white capitalize bg-purple-400"
-          },
-          [_vm._v("\n                        List\n                    ")]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          { staticClass: "px-8 h-full rounded-full text-white capitalize" },
-          [_vm._v("\n                        Kanban\n                    ")]
-        )
-      ]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -70401,6 +70625,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ItemGroupCell_vue_vue_type_template_id_0c7eeaac_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ItemGroupCell_vue_vue_type_template_id_0c7eeaac_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/board/ItemKanbanContainer.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/components/board/ItemKanbanContainer.vue ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ItemKanbanContainer_vue_vue_type_template_id_d8b3c81a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ItemKanbanContainer.vue?vue&type=template&id=d8b3c81a& */ "./resources/js/components/board/ItemKanbanContainer.vue?vue&type=template&id=d8b3c81a&");
+/* harmony import */ var _ItemKanbanContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ItemKanbanContainer.vue?vue&type=script&lang=js& */ "./resources/js/components/board/ItemKanbanContainer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ItemKanbanContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ItemKanbanContainer_vue_vue_type_template_id_d8b3c81a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ItemKanbanContainer_vue_vue_type_template_id_d8b3c81a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/board/ItemKanbanContainer.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/board/ItemKanbanContainer.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/board/ItemKanbanContainer.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ItemKanbanContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ItemKanbanContainer.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/board/ItemKanbanContainer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ItemKanbanContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/board/ItemKanbanContainer.vue?vue&type=template&id=d8b3c81a&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/board/ItemKanbanContainer.vue?vue&type=template&id=d8b3c81a& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ItemKanbanContainer_vue_vue_type_template_id_d8b3c81a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ItemKanbanContainer.vue?vue&type=template&id=d8b3c81a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/board/ItemKanbanContainer.vue?vue&type=template&id=d8b3c81a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ItemKanbanContainer_vue_vue_type_template_id_d8b3c81a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ItemKanbanContainer_vue_vue_type_template_id_d8b3c81a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

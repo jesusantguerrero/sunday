@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Stage extends Model
 {
     use HasFactory;
-    protected $with = ['fields', 'items'];
+    protected $with = ['fields', 'items', 'labels'];
     protected $fillable = ['name','order', 'color', 'board_id', 'user_id', 'team_id'];
 
     public function fields() {
@@ -17,6 +17,10 @@ class Stage extends Model
 
     public function items() {
         return $this->hasMany('App\Models\Item', 'stage_id', 'id')->orderBy('order');
+    }
+
+    public function labels() {
+        return $this->hasMany('App\Models\Label', 'stage_id', 'id');
     }
 
     public function setUp() {
