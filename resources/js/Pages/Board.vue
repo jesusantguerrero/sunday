@@ -17,7 +17,7 @@
 
                 <div class="w-10/12 mx-2">
                     <div class="overflow-hidden">
-                        <Board :board="board"></Board>
+                        <Board :board="board" :users="users"></Board>
                     </div>
                 </div>
             </div>
@@ -47,6 +47,12 @@
                 type: Object,
                 default() {
                     return {}
+                }
+            },
+            users: {
+                type: Array,
+                refault() {
+                    return []
                 }
             }
         }
