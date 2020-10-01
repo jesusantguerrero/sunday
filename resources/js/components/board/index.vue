@@ -4,16 +4,15 @@
             <div class="flex text-left">
                 <div class="flex justify-between mr-2">
                     <span class="text-3xl font-bold"> {{ board.name }} </span>
-                    <div class="controls bg-purple-700 rounded-full ml-10">
+                    <div class="controls bg-purple-700 rounded-full ml-10 h-12 overflow-hidden">
                         <button
-                            class="px-8 h-full rounded-full text-white capitalize bg-purple-400"
-                        >
-                            List
-                        </button>
-                        <button
+                            v-for="view in views"
+                            :key="view"
+                            @click="modeSelected = view"
+                            :class="{ 'bg-purple-400': modeSelected == view }"
                             class="px-8 h-full rounded-full text-white capitalize"
                         >
-                            Kanban
+                            {{ view }}
                         </button>
                     </div>
                 </div>
@@ -52,7 +51,11 @@
         </div>
 
         <div class="bg-white shadow-lg px-10 py-5">
-            <draggable v-model="board.stages" @end="saveReorder">
+            <draggable
+                v-model="board.stages"
+                @end="saveReorder"
+                v-if="modeSelected == 'list'"
+            >
                 <transition-group>
                     <item-group
                         v-for="stage in board.stages"
@@ -69,7 +72,13 @@
                 </transition-group>
             </draggable>
 
-            <div class="w-full flex justify-center py-5">
+            <item-kanban-container
+                v-else
+                :kanban-data="kanbanData"
+                class="flex pt-5">
+            </item-kanban-container>
+
+            <div class="w-full flex justify-center py-5" v-if="modeSelected == 'list'">
                 <button
                     class="rounded-full flex justify-center items-center px-2 h-8 w-8 border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white"
                     @click="addStage()"
@@ -77,36 +86,36 @@
                     <i class="fa fa-plus"></i>
                 </button>
             </div>
-
-            <!-- Delete Team Confirmation Modal -->
-            <jet-confirmation-modal
-                :show="itemToDelete"
-                @close="itemToDelete = false"
-            >
-                <template #title>
-                    Delete Team
-                </template>
-
-                <template #content>
-                    Are you sure you want to delete this team? Once a team is
-                    deleted, all of its resources and data will be permanently
-                    deleted.
-                </template>
-
-                <template #footer>
-                    <jet-secondary-button @click.native="itemToDelete = false">
-                        Nevermind
-                    </jet-secondary-button>
-
-                    <jet-danger-button
-                        class="ml-2"
-                        @click.native="deleteItem(itemToDelete)"
-                    >
-                        Delete Item
-                    </jet-danger-button>
-                </template>
-            </jet-confirmation-modal>
         </div>
+
+        <!-- Delete Team Confirmation Modal -->
+        <jet-confirmation-modal
+            :show="itemToDelete"
+            @close="itemToDelete = false"
+        >
+            <template #title>
+                Delete Team
+            </template>
+
+            <template #content>
+                Are you sure you want to delete this team? Once a team is
+                deleted, all of its resources and data will be permanently
+                deleted.
+            </template>
+
+            <template #footer>
+                <jet-secondary-button @click.native="itemToDelete = false">
+                    Nevermind
+                </jet-secondary-button>
+
+                <jet-danger-button
+                    class="ml-2"
+                    @click.native="deleteItem(itemToDelete)"
+                >
+                    Delete Item
+                </jet-danger-button>
+            </template>
+        </jet-confirmation-modal>
     </div>
 </template>
 
@@ -115,6 +124,7 @@ import JetConfirmationModal from "../../Jetstream/ConfirmationModal";
 import JetDangerButton from "../../Jetstream/DangerButton";
 import JetSecondaryButton from "../../Jetstream/SecondaryButton";
 import ItemGroup from "./ItemGroup.vue";
+import ItemKanbanContainer from "./ItemKanbanContainer.vue";
 import Draggable from "vuedraggable";
 
 export default {
@@ -122,6 +132,7 @@ export default {
     components: {
         ItemGroup,
         Draggable,
+        ItemKanbanContainer,
         JetConfirmationModal,
         JetDangerButton,
         JetSecondaryButton
@@ -144,7 +155,8 @@ export default {
     data() {
         return {
             createMode: false,
-            views: [],
+            modeSelected: "kanban",
+            views: ["list", "kanban"],
             itemToDelete: false,
             items: [
                 {
@@ -176,6 +188,37 @@ export default {
                 }
             ]
         };
+    },
+    computed: {
+        kanbanData() {
+            if (this.board.stages.length) {
+                const statusField = this.board.stages[0].fields.find(
+                    field => field.name == "status"
+                );
+                const quadrants = {};
+                this.board.stages[0].labels.forEach(label => {
+                    if (label.field_id == statusField.id) {
+                        quadrants[label.name] = {
+                            id: label.id,
+                            fieldId: label.field_id,
+                            attributes: label,
+                            childs: []
+                        };
+                    }
+                });
+
+                this.board.stages.forEach(stage => {
+                    stage.items.forEach(item => {
+                        const statusField = item.fields.find(
+                            field => field.field_name == "status"
+                        );
+                        quadrants[statusField.value].childs.push(item);
+                    });
+                });
+                return quadrants;
+            }
+            return {};
+        }
     },
     methods: {
         addItem(item, reload = true) {
