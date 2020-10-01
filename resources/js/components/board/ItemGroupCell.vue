@@ -23,7 +23,7 @@
         </option>
       </select> -->
       <div class="h-8 px-2"
-        v-if="['label', 'select'].includes(field.type)"
+        v-if="['person'].includes(field.type)"
       >
         <multiselect
             v-model="selectValue"
@@ -31,7 +31,23 @@
             label="name"
             track-by="id"
             :show-labels="false"
-            :preselect-first="true"
+            :options="users"
+            class="w-full"
+            @select="value = $event.name"
+            @close="saveChanges"
+        >
+        </multiselect>
+      </div>
+
+      <div class="h-8 px-2"
+        v-else-if="['label', 'select'].includes(field.type)"
+      >
+        <multiselect
+            v-model="selectValue"
+            ref="input"
+            label="name"
+            track-by="id"
+            :show-labels="false"
             :options="field.options"
             class="w-full"
             @select="value = $event.name"
@@ -58,6 +74,7 @@
 <script>
 export default {
   name: "ItemGroupCell",
+  inject: ['users'],
   props: {
     fieldName: {
       type: String,

@@ -3232,6 +3232,12 @@ __webpack_require__.r(__webpack_exports__);
       "default": function _default() {
         return {};
       }
+    },
+    users: {
+      type: Array,
+      refault: function refault() {
+        return [];
+      }
     }
   }
 });
@@ -5657,8 +5663,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ItemGroupCell",
+  inject: ['users'],
   props: {
     fieldName: {
       type: String
@@ -5865,6 +5888,30 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -5879,9 +5926,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     JetDangerButton: _Jetstream_DangerButton__WEBPACK_IMPORTED_MODULE_2__["default"],
     JetSecondaryButton: _Jetstream_SecondaryButton__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
+  provide: function provide() {
+    return {
+      users: this.users
+    };
+  },
   props: {
     board: {
       type: Object,
+      required: true
+    },
+    users: {
+      type: Array,
       required: true
     }
   },
@@ -5920,8 +5976,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       var reload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-      var method = item.id ? 'PUT' : 'POST';
-      var param = item.id ? "/".concat(item.id) : '';
+      var method = item.id ? "PUT" : "POST";
+      var param = item.id ? "/".concat(item.id) : "";
       axios({
         url: "/items".concat(param),
         method: method,
@@ -5944,7 +6000,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var reload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       axios({
         url: "/items/".concat(item.id),
-        method: 'delete'
+        method: "delete"
       }).then(function () {
         if (reload) {
           _this2.itemToDelete = false;
@@ -5960,8 +6016,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       var stage = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var reload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-      var method = stage.id ? 'PUT' : 'POST';
-      var param = stage.id ? "/".concat(stage.id) : '';
+      var method = stage.id ? "PUT" : "POST";
+      var param = stage.id ? "/".concat(stage.id) : "";
       stage.board_id = this.board.id;
       stage.name = stage.name || "Stage ".concat(this.board.stages.length + 1);
       return axios({
@@ -48443,7 +48499,7 @@ var render = function() {
             _c(
               "div",
               { staticClass: "overflow-hidden" },
-              [_c("Board", { attrs: { board: _vm.board } })],
+              [_c("Board", { attrs: { board: _vm.board, users: _vm.users } })],
               1
             )
           ])
@@ -52035,7 +52091,7 @@ var render = function() {
             [_vm._v("\n    " + _vm._s(_vm.displayValue) + "\n  ")]
           )
         : [
-            ["label", "select"].includes(_vm.field.type)
+            ["person"].includes(_vm.field.type)
               ? _c(
                   "div",
                   { staticClass: "h-8 px-2" },
@@ -52047,7 +52103,37 @@ var render = function() {
                         label: "name",
                         "track-by": "id",
                         "show-labels": false,
-                        "preselect-first": true,
+                        options: _vm.users
+                      },
+                      on: {
+                        select: function($event) {
+                          _vm.value = $event.name
+                        },
+                        close: _vm.saveChanges
+                      },
+                      model: {
+                        value: _vm.selectValue,
+                        callback: function($$v) {
+                          _vm.selectValue = $$v
+                        },
+                        expression: "selectValue"
+                      }
+                    })
+                  ],
+                  1
+                )
+              : ["label", "select"].includes(_vm.field.type)
+              ? _c(
+                  "div",
+                  { staticClass: "h-8 px-2" },
+                  [
+                    _c("multiselect", {
+                      ref: "input",
+                      staticClass: "w-full",
+                      attrs: {
+                        label: "name",
+                        "track-by": "id",
+                        "show-labels": false,
                         options: _vm.field.options
                       },
                       on: {
@@ -52154,7 +52240,7 @@ var render = function() {
               }
             }
           },
-          [_vm._v("\n        New Task\n      ")]
+          [_vm._v("\n                New Task\n            ")]
         ),
         _vm._v(" "),
         _c("input", {
@@ -52242,7 +52328,7 @@ var render = function() {
             {
               key: "title",
               fn: function() {
-                return [_vm._v("\n              Delete Team\n          ")]
+                return [_vm._v("\n                Delete Team\n            ")]
               },
               proxy: true
             },
@@ -52251,7 +52337,7 @@ var render = function() {
               fn: function() {
                 return [
                   _vm._v(
-                    "\n              Are you sure you want to delete this team? Once a team is deleted, all of its resources and data will be permanently deleted.\n          "
+                    "\n                Are you sure you want to delete this team? Once a team is\n                deleted, all of its resources and data will be permanently\n                deleted.\n            "
                   )
                 ]
               },
@@ -52270,7 +52356,11 @@ var render = function() {
                         }
                       }
                     },
-                    [_vm._v("\n                  Nevermind\n              ")]
+                    [
+                      _vm._v(
+                        "\n                    Nevermind\n                "
+                      )
+                    ]
                   ),
                   _vm._v(" "),
                   _c(
@@ -52283,7 +52373,11 @@ var render = function() {
                         }
                       }
                     },
-                    [_vm._v("\n                  Delete Item\n              ")]
+                    [
+                      _vm._v(
+                        "\n                    Delete Item\n                "
+                      )
+                    ]
                   )
                 ]
               },
@@ -52311,13 +52405,13 @@ var staticRenderFns = [
             staticClass:
               "px-8 h-full rounded-full text-white capitalize bg-purple-400"
           },
-          [_vm._v("List")]
+          [_vm._v("\n                        List\n                    ")]
         ),
         _vm._v(" "),
         _c(
           "button",
           { staticClass: "px-8 h-full rounded-full text-white capitalize" },
-          [_vm._v("Kanban")]
+          [_vm._v("\n                        Kanban\n                    ")]
         )
       ]
     )
