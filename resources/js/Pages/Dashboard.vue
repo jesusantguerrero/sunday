@@ -9,14 +9,14 @@
                         class="mb-10"
                     >
                     </board-side>
-                    <div class="section-card committed margin-0 mt-10">
+                    <!-- <div class="section-card committed margin-0 mt-10">
                         <header class="bg-gray-200 btext-gray-500 font-bold">
                             Events
                         </header>
                         <div class="body text-gray-600">
                             Hola soy un item de ejemplo
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <!-- End of left side -->
 
@@ -43,8 +43,8 @@
                     >
                      <template>
                         <schedule-controls
-                            v-model="diaActivo"
-                            @input="diaActivo = $event"
+                            v-if="localCommitDate"
+                            v-model="localCommitDate"
                         >
 
                         </schedule-controls>
@@ -127,7 +127,7 @@
     import Promodoro from "../components/promodoro/index"
     import DialogModal from "../Jetstream/DialogModal"
     import PrimaryButton from "../Jetstream/Button"
-    import { subDays } from "date-fns";
+    import { subDays, toDate } from "date-fns";
 
     export default {
         components: {
@@ -152,6 +152,10 @@
                     return []
                 }
             },
+            commitDate: {
+                type: String,
+                required: true
+            },
             standup: {
                 type: Array,
                 default() {
@@ -169,9 +173,17 @@
             return {
                 modes: ['all', 'todos', 'committed'],
                 modeSelected: 'all',
+                localCommitDate: new Date,
                 isLoading: false,
                 isStandupOpen: false
             }
+        },
+        watch: {
+            localCommitDate(newDate, oldDate) {
+                if (oldDate &&  (newDate.toISOString().slice(0, 10) != oldDate.toISOString().slice(0, 10))) {
+                    this.getCommitsByDate();
+                }
+            },
         },
         computed: {
             hasCommited() {
@@ -189,8 +201,19 @@
                 this.isStandupOpen = true;
             }
         },
+        created() {
+            this.setCommitDate()
+        },
         methods: {
-           completeDay() {
+            setCommitDate() {
+                let date = new Date();
+                if (this.commitDate) {
+                    date = this.commitDate.split("-");
+                    date = toDate(new Date(date[0], date[1] - 1, date[2]));
+                }
+                this.localCommitDate = date;
+            },
+            completeDay() {
                 this.isLoading = true;
                 const yesterday = subDays(new Date(), 1)
                     .toISOString()
@@ -210,6 +233,15 @@
                 this.isStandupOpen = false;
                 this.isLoading = false;
                 this.$inertia.reload({ preserveScroll: true })
+            },
+
+            getCommitsByDate() {
+                const params = `?commit-date=${this.localCommitDate.toISOString().slice(0, 10)}`
+                this.$inertia.replace(`/${params}`,
+                 {
+                    only: ['committed'],
+                    preserveState: true
+                 })
             },
 
             updateItem(item) {

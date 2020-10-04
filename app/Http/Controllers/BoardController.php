@@ -104,6 +104,7 @@ class BoardController extends Controller
     public function list(Request $request)
     {
         $user = $request->user();
+        $commitDate = $request->query('commit-date') ?? now()->subDay(1)->format('Y-m-d');
 
         return Inertia::render('Dashboard', [
             'boards' => Board::where([
@@ -116,11 +117,13 @@ class BoardController extends Controller
                     'link' =>  URL::route('boards', $board),
                 ];
             }),
+
             'todo' => Item::getByCustomField(['status', 'todo'], $request->user()),
+            'commitDate' => $commitDate,
             'committed' => Item::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,
-                'commit_date' => now()->subDay(1)->format('Y-m-d')
+                'commit_date' => $commitDate
             ])->with('stage')->get(),
             'standup' => Standup::where([
                 'team_id' => $user->current_team_id,
