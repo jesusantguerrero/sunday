@@ -2,11 +2,11 @@
     <div class="promodoro-app">
         <header class="bg-red-400 text-white font-bold flex justify-between w-full items-center py-2">
             <span> Promodoro </span>
-            <div class="actions rounded-full bg-red-700 flex h-8">
+            <div class="actions rounded-lg bg-red-700 flex h-8">
                 <button
                   v-for="(modeObj, key) in modes"
                   :key="key"
-                  class="px-2 h-full rounded-full"
+                  class="px-2 h-full rounded-lg"
                   :class="{'bg-red-100 text-red-700': modeSelected == key}"
                   @click="setMode(key)"
                   >

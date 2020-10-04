@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <h1 class="font-bold flex justify-between items-center">
-            <span class="text-3xl"> My Boards </span>
+    <div class="bg-white py-5">
+        <h1 class="font-bold flex justify-between items-centerv px-5">
+            <span class="text-2xl"> My Boards </span>
         </h1>
-        <div class="mt-5 text-gray-500 flex rounded overflow-hidden">
+        <div class="mt-5 text-gray-500 flex rounded overflow-hidden px-5">
             <input
                 type="search"
                 class="w-full p-2"
@@ -16,12 +16,16 @@
 
         <div class="mt-2">
             <inertia-link
-                class="board-item flex px-2 py-1 items-center"
+                class="board-item flex px-2 py-1 items-center px-5"
                 :class="{ active: isPath(board.link) }"
                 :href="board.link"
                 v-for="board in boards"
                 :key="board.id"
             >
+                <span class="board-item__avatar">
+                    {{ board.name.slice(0, 1) }}
+                </span>
+
                 <span class="w-full block">
                     {{ board.name }}
                 </span>
@@ -35,7 +39,7 @@
             </inertia-link>
         </div>
         <div
-            class="mt-2 text-gray-500 flex rounded overflow-hidden"
+            class="mt-2 text-gray-500 flex rounded overflow-hidden mx-5"
             v-if="!showAdd"
         >
             <button
@@ -46,7 +50,7 @@
             </button>
         </div>
         <div
-            class="mt-2 text-gray-500 flex rounded overflow-hidden"
+            class="mt-2 text-gray-500 flex rounded overflow-hidden mx-5"
             v-if="showAdd"
         >
             <input
@@ -126,14 +130,37 @@ export default {
 
 <style lang="scss">
 .board-item {
-    @apply my-2 rounded bg-gray-300;
+    @apply my-2 border-l-4 border-white;
 
     &:visited {
         @apply text-gray-600;
     }
 
     &.active {
-        @apply bg-purple-400 text-white;
+        @apply border-purple-400 bg-purple-50;
+        &__avatar {
+            @apply bg-purple-400 flex justify-center items-center;
+            width: 40px;
+            min-width: 40px;
+            font-size: 30px;
+            height: 40px;
+            border-radius: 8px;
+            font-weight: bolder;
+            margin-right: 4px;
+            color: white;
+        }
+    }
+
+    &__avatar {
+        @apply bg-purple-400 flex justify-center items-center;
+        width: 40px;
+        min-width: 40px;
+        font-size: 30px;
+        height: 40px;
+        border-radius: 8px;
+        font-weight: bolder;
+        margin-right: 4px;
+        color: white;
     }
 }
 </style>

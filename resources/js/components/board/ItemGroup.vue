@@ -7,6 +7,7 @@
             <i class="fa fa-expand-alt"></i>
           </span>
           <span
+            class="font-bold"
             @click="toggleEditMode(true)"
             v-if="!isEditMode">
                 {{ stage.title || stage.name }}
@@ -29,7 +30,7 @@
           class="text-center"
           :class="[field.name == 'owner' ? 'col-span-2' : '']"
         >
-          <span v-if="isExpanded">
+          <span v-if="isExpanded" class="font-bold">
             {{ field.title }}
           </span>
         </div>
@@ -37,7 +38,7 @@
         <div
           class="text-center"
         >
-          <span v-if="isExpanded">
+          <span v-if="isExpanded" class="font-bold">
             Actions
           </span>
         </div>
@@ -103,7 +104,11 @@
                     <div
                         class="border-white border-2 text-center item-group-cell w-full flex items-center justify-center bg-gray-400"
                     >
-                        <button @click.prevent="$emit('item-deleted', item)" class="w-full h-full bg-gray-400 text-white hover:bg-red-500"> <i class="fa fa-trash"></i></button>
+                        <button
+                            @click.prevent="$emit('item-deleted', item)"
+                            class="w-full h-full bg-gray-400 text-white hover:bg-red-500">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </div>
                 </div>
             </transition-group>
