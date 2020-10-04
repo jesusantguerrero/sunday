@@ -3415,6 +3415,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         return [];
       }
     },
+    commitDate: {
+      type: String,
+      required: true
+    },
     standup: {
       type: Array,
       "default": function _default() {
@@ -3432,9 +3436,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       modes: ['all', 'todos', 'committed'],
       modeSelected: 'all',
+      localCommitDate: new Date(),
       isLoading: false,
       isStandupOpen: false
     };
+  },
+  watch: {
+    localCommitDate: function localCommitDate(newDate, oldDate) {
+      if (oldDate && newDate.toISOString().slice(0, 10) != oldDate.toISOString().slice(0, 10)) {
+        this.getCommitsByDate();
+      }
+    }
   },
   computed: {
     hasCommited: function hasCommited() {
@@ -3454,7 +3466,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.isStandupOpen = true;
     }
   },
+  created: function created() {
+    this.setCommitDate();
+  },
   methods: {
+    setCommitDate: function setCommitDate() {
+      var date = new Date();
+
+      if (this.commitDate) {
+        date = this.commitDate.split("-");
+        date = Object(date_fns__WEBPACK_IMPORTED_MODULE_8__["toDate"])(new Date(date[0], date[1] - 1, date[2]));
+      }
+
+      this.localCommitDate = date;
+    },
     completeDay: function completeDay() {
       var _this = this;
 
@@ -3494,6 +3519,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.isLoading = false;
       this.$inertia.reload({
         preserveScroll: true
+      });
+    },
+    getCommitsByDate: function getCommitsByDate() {
+      var params = "?commit-date=".concat(this.localCommitDate.toISOString().slice(0, 10));
+      this.$inertia.replace("/".concat(params), {
+        only: ['committed'],
+        preserveState: true
       });
     },
     updateItem: function updateItem(item) {
@@ -48718,29 +48750,7 @@ var render = function() {
               _c("board-side", {
                 staticClass: "mb-10",
                 attrs: { boards: _vm.boards }
-              }),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "section-card committed margin-0 mt-10" },
-                [
-                  _c(
-                    "header",
-                    { staticClass: "bg-gray-200 btext-gray-500 font-bold" },
-                    [
-                      _vm._v(
-                        "\n                        Events\n                    "
-                      )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "body text-gray-600" }, [
-                    _vm._v(
-                      "\n                        Hola soy un item de ejemplo\n                    "
-                    )
-                  ])
-                ]
-              )
+              })
             ],
             1
           ),
@@ -48799,20 +48809,17 @@ var render = function() {
                 },
                 [
                   [
-                    _c("schedule-controls", {
-                      on: {
-                        input: function($event) {
-                          _vm.diaActivo = $event
-                        }
-                      },
-                      model: {
-                        value: _vm.diaActivo,
-                        callback: function($$v) {
-                          _vm.diaActivo = $$v
-                        },
-                        expression: "diaActivo"
-                      }
-                    })
+                    _vm.localCommitDate
+                      ? _c("schedule-controls", {
+                          model: {
+                            value: _vm.localCommitDate,
+                            callback: function($$v) {
+                              _vm.localCommitDate = $$v
+                            },
+                            expression: "localCommitDate"
+                          }
+                        })
+                      : _vm._e()
                   ]
                 ],
                 2
@@ -51794,7 +51801,7 @@ var render = function() {
     { staticClass: "item-container section-card committed mt-5" },
     [
       _c("header", { staticClass: "bg-purple-400 text-white font-bold" }, [
-        _vm._v("\n        " + _vm._s(_vm.title) + "\n    ")
+        _vm._v("\r\n        " + _vm._s(_vm.title) + "\r\n    ")
       ]),
       _vm._v(" "),
       _vm._t("default"),
@@ -51857,17 +51864,17 @@ var render = function() {
                   _vm._v(" "),
                   _c("span", { staticClass: "font-bold" }, [
                     _vm._v(
-                      "\n                [" +
+                      "\r\n                [" +
                         _vm._s(task.stage.name) +
-                        "]\n            "
+                        "]\r\n            "
                     )
                   ]),
                   _vm._v(" "),
                   _c("span", [
                     _vm._v(
-                      "\n                " +
+                      "\r\n                " +
                         _vm._s(task.title) +
-                        "\n            "
+                        "\r\n            "
                     )
                   ])
                 ])
@@ -51881,7 +51888,11 @@ var render = function() {
                 {
                   staticClass: "task-item text-center font-bold text-gray-400"
                 },
-                [_vm._v("\n                There's no items to show\n        ")]
+                [
+                  _vm._v(
+                    "\r\n                There's no items to show\r\n        "
+                  )
+                ]
               )
             : _vm._e()
         ],
