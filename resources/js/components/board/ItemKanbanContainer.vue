@@ -3,16 +3,16 @@
         <div
             v-for="(quadrant, name) in kanbanData"
             :key="name"
-            class="w-full border-2 border-white"
-            :class="`bg-${quadrant.attributes.color}-300`"
+            class="w-full border-2 border-gray-200 mx-2"
+            :class="`bg-${quadrant.attributes.color}-200`"
         >
             <div
                 class="header capitalize font-bold flex w-full justify-center items-center h-12"
             >
                 {{ name }}
             </div>
-            <div class="px-2 py-5">
-                <p v-for="task in quadrant.childs" :key="`task-${task.id}`">
+            <div class="px-2 pt-5">
+                <div v-for="task in quadrant.childs" :key="`task-${task.id}`" class="task-item">
                     <label class="checkbox-label">
                         <input
                             type="checkbox"
@@ -28,7 +28,7 @@
                             {{ task.title }}
                         </span>
                     </label>
-                </p>
+                </div>
             </div>
         </div>
     </div>
@@ -45,6 +45,15 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.task-item {
+    @apply py-4;
+    border-bottom: 2px solid rgba(0,0,0,.1);
+}
 
+.item-container.section-card .body{
+    padding-top: 0;
+    padding-bottom: 0;
+    min-height: unset;
+}
 </style>

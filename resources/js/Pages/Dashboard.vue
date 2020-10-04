@@ -1,9 +1,9 @@
 <template>
     <app-layout>
-        <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
+        <div class="">
+            <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex">
                 <!-- Left Side -->
-                <div class="w-2/12 mr-4">
+                <div class="w-80 mr-4  bg-white min-h-screen">
                     <board-side
                         :boards="boards"
                         class="mb-10"
@@ -21,16 +21,16 @@
                 <!-- End of left side -->
 
                 <!-- Main board -->
-                <div class="w-7/12 mx-4">
+                <div class="w-7/12 mx-4 pt-12">
                     <div class="flex justify-between mr-2">
                         <span class="text-3xl font-bold"> Today's Todos </span>
-                        <div class="controls bg-purple-700 rounded-full">
+                        <div class="controls bg-purple-700 rounded-lg">
                             <button
                                 v-for="mode in modes"
                                 :key="mode"
                                 @click="modeSelected=mode"
                                 :class="{'bg-purple-400': mode == modeSelected }"
-                                class="px-8 h-full rounded-full text-white capitalize">
+                                class="px-8 h-full rounded-lg text-white capitalize">
                                     {{ mode }}
                             </button>
                         </div>
@@ -61,7 +61,7 @@
                 <!-- End of main board -->
 
                 <!-- Right Side -->
-                <div class="w-3/12 ml-4">
+                <div class="w-3/12 ml-4 pt-12">
                     <span class="text-3xl ml-2 font-bold"> Fast Access </span>
 
                     <div class="section-card committed mt-5">

@@ -1,21 +1,15 @@
 <template>
     <app-layout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ board.name }}
-            </h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
-                <div class="w-2/12 mr-4">
+        <div class="">
+            <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex">
+                <div class="mr-4 min-h-screen bg-white w-80">
                     <board-side
                         :boards="boards"
                     >
                     </board-side>
                 </div>
 
-                <div class="w-10/12 mx-2">
+                <div class="w-10/12 mx-2 pt-12">
                     <div class="overflow-hidden">
                         <Board :board="board" :users="users"></Board>
                     </div>

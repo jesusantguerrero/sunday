@@ -4,13 +4,13 @@
             <div class="flex text-left">
                 <div class="flex justify-between mr-2">
                     <span class="text-3xl font-bold"> {{ board.name }} </span>
-                    <div class="controls bg-purple-700 rounded-full ml-10 h-12 overflow-hidden">
+                    <div class="controls bg-purple-700 rounded-lg ml-10 h-12 overflow-hidden">
                         <button
                             v-for="view in views"
                             :key="view"
                             @click="modeSelected = view"
                             :class="{ 'bg-purple-400': modeSelected == view }"
-                            class="px-8 h-full rounded-full text-white capitalize"
+                            class="ic-btn px-8 h-full rounded-lg text-white capitalize"
                         >
                             {{ view }}
                         </button>
@@ -66,7 +66,7 @@
                         @saved="addItem"
                         @item-deleted="confirmDeleteItem"
                         @stage-updated="addStage"
-                        class="mt-4"
+                        class="mt-10"
                     >
                     </item-group>
                 </transition-group>
@@ -155,7 +155,7 @@ export default {
     data() {
         return {
             createMode: false,
-            modeSelected: "kanban",
+            modeSelected: "list",
             views: ["list", "kanban"],
             itemToDelete: false,
             items: [
