@@ -6,6 +6,7 @@ import Vue from 'vue';
 import { InertiaApp } from '@inertiajs/inertia-vue';
 import { InertiaForm } from 'laravel-jetstream';
 import VueGoogleApi from 'vue-google-api'
+import VCalendar from "v-calendar";
 
 const config = {
   apiKey: process.env.MIX_GOOGLE_APP_KEY,
@@ -20,6 +21,7 @@ import PortalVue from 'portal-vue';
 Vue.use(InertiaApp);
 Vue.use(InertiaForm);
 Vue.use(PortalVue);
+Vue.use(VCalendar);
 Vue.use(VueGoogleApi, config)
 Vue.component('multiselect', Multiselect)
 

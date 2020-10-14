@@ -30,6 +30,7 @@
     },
     "dependencies": {
         "date-fns": "^2.16.1",
+        "v-calendar": "^1.0.8",
         "vue-google-api": "^0.2.0",
         "vue-multiselect": "^2.1.6",
         "vuedraggable": "^2.24.1"

@@ -1,27 +1,10 @@
 <template>
   <div class="item-group-cell w-full px-2 h-full flex items-center"
   :class="{'editable-mode': isEditMode }">
-    <span @click="toggleEditMode()" v-if="!isEditMode" class="w-full h-7 inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2">
+    <span @click="toggleEditMode()" v-if="!isEditMode" class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2">
       {{ displayValue }}
     </span>
     <template v-else>
-      <!-- <select
-        name=""
-        id=""
-        ref="input"
-        v-if="['label', 'select'].includes(field.type)"
-        v-model="value"
-        @blur="saveChanges"
-        class="form-input h-8 px-2 rounded-none bg-transparent text-center"
-      >
-        <option
-          :value="option.name"
-          v-for="option in field.options"
-          :key="option.name"
-        >
-          {{option.label || option.name }}
-        </option>
-      </select> -->
       <div class="h-8 px-2"
         v-if="['person'].includes(field.type)"
       >
@@ -37,6 +20,12 @@
             @close="saveChanges"
         >
         </multiselect>
+      </div>
+
+      <div class="h-8 px-2"
+        v-if="['date'].includes(field.type)"
+      >
+        <v-date-picker v-model='value' @popoverDidHide="saveChanges"/>
       </div>
 
       <div class="h-8 px-2"
@@ -72,6 +61,8 @@
 </template>
 
 <script>
+import { format } from 'date-fns';
+
 export default {
   name: "ItemGroupCell",
   inject: ['users'],
@@ -129,9 +120,10 @@ export default {
       if (["select", "label"].includes(this.field.type)) {
         const option = this.field.options.find((option) => {
           return option.name == this.value;
-				});
-
-				return option ? option.label || option.name :  this.item[this.fieldName];
+		});
+		return option ? option.label || option.name :  this.item[this.fieldName];
+      } else if (["date"].includes(this.field.type)) {
+          return this.item[this.fieldName] ? format(new Date(this.item[this.fieldName]), 'yyyy-MM-dd') : '';
       } else {
         return this.item[this.fieldName];
       }
