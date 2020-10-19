@@ -49,4 +49,19 @@ class Item extends Model
 
         ])->whereNull('commit_date')->get();
     }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $filters['done'] = $filters['done'] ?? -1;
+
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where('title', 'like', '%'.$search.'%');
+        })->when($filters['done'] ?? -1 , function ($query, $done) {
+            if ($done == 'only') {
+                $query->where('done', 1);
+            } elseif ($done == -1) {
+                $query->whereNull('commit_date');
+            }
+        });
+    }
 }
