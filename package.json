@@ -11,28 +11,29 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "@inertiajs/inertia": "^0.1.7",
-        "@inertiajs/inertia-vue": "^0.1.2",
+        "@inertiajs/inertia": "^0.3.1",
+        "@inertiajs/inertia-vue": "^0.2.3",
         "@tailwindcss/ui": "^0.1.3",
         "axios": "^0.19",
         "cross-env": "^7.0",
         "laravel-jetstream": "^0.0.3",
-        "laravel-mix": "^5.0.1",
+        "laravel-mix": "^5.0.7",
         "lodash": "^4.17.19",
         "portal-vue": "^2.1.7",
         "postcss-import": "^12.0.1",
         "resolve-url-loader": "^3.1.0",
-        "sass": "^1.26.10",
-        "sass-loader": "^10.0.2",
-        "tailwindcss": "^1.3.0",
+        "sass": "^1.27.0",
+        "sass-loader": "^10.0.3",
+        "tailwindcss": "^1.9.5",
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
         "date-fns": "^2.16.1",
-        "v-calendar": "^1.0.8",
+        "lodash-es": "^4.17.15",
+        "v-calendar": "^1.1.1",
         "vue-google-api": "^0.2.0",
         "vue-multiselect": "^2.1.6",
-        "vuedraggable": "^2.24.1"
+        "vuedraggable": "^2.24.2"
     }
 }

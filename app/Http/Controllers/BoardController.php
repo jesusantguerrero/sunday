@@ -92,11 +92,20 @@ class BoardController extends Controller
                                 'name' => $board->name,
                                 'link' =>  URL::route('boards', $board),
                             ];
-                            }),
+                }),
+                'filters' => $request->all('search', 'done'),
                 'board' => [
                     'id' => $board->id,
                     'name' => $board->name,
-                    'stages' => $board->stages
+                    'stages' => $board->stages->map(function ($stage) use($request) {
+                        return [
+                            'id' => $stage->id,
+                            'name' => $stage->name,
+                            'fields' => $stage->fields,
+                            'labels' => $stage->labels,
+                            'items' => $stage->items()->filter($request->only('search', 'done'))->get()
+                        ];
+                    })
                 ]
             ]);
     }

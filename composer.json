@@ -19,7 +19,8 @@
         "laravel/jetstream": "^1.0",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.0",
-        "php-mime-mail-parser/php-mime-mail-parser": "^6.0"
+        "php-mime-mail-parser/php-mime-mail-parser": "^6.0",
+        "twilio/sdk": "^6.10"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

@@ -30,12 +30,15 @@
                     class="form-input ml-2 w-48"
                     name=""
                     id=""
+                    v-model="searchOptions.search"
                     placeholder="search"
                 />
                 <span class="ml-2 toolbar-buttons">
                     <i class="fa fa-user"></i>
                 </span>
                 <span class="ml-2 toolbar-buttons"
+                    :class="{active: searchOptions.done}"
+                    @click="toggleDone()"
                     ><i class="fa fa-eye"></i
                 ></span>
                 <span class="ml-2 toolbar-buttons">
@@ -126,6 +129,7 @@ import JetSecondaryButton from "../../Jetstream/SecondaryButton";
 import ItemGroup from "./ItemGroup.vue";
 import ItemKanbanContainer from "./ItemKanbanContainer.vue";
 import Draggable from "vuedraggable";
+import { throttle } from "lodash-es";
 
 export default {
     name: "Board",
@@ -150,6 +154,15 @@ export default {
         users: {
             type: Array,
             required: true
+        },
+        filters: {
+            type: Object,
+            default() {
+                return {
+                    search: '',
+                    done: 'with'
+                }
+            }
         }
     },
     data() {
@@ -186,8 +199,23 @@ export default {
                 {
                     name: "Jesus Guerrero"
                 }
-            ]
+            ],
+            searchOptions: {
+                search: this.filters.search,
+                done: this.filters.done
+            }
         };
+    },
+    watch: {
+        searchOptions: {
+            handler: throttle(function() {
+                let query = this.pickBy(this.searchOptions);
+                query = Object.keys(query).length ?  '?' + new URLSearchParams(this.pickBy(this.searchOptions)) : '';
+                this.$inertia.replace(`/boards/${this.board.id}${query}`)
+            }, 200),
+            deep: true,
+            immediate: true
+        }
     },
     computed: {
         kanbanData() {
@@ -274,6 +302,26 @@ export default {
                 await this.addStage(stage, false);
             });
             this.$inertia.reload({ preserveScroll: true });
+        },
+
+        toggleDone() {
+            const nextValues = {
+                'with' : 'only',
+                'only' : '',
+                '' : 'with'
+            }
+
+            this.searchOptions.done = nextValues[this.searchOptions.done];
+        },
+        pickBy(object, predicate) {
+            const result = {}
+                Object.entries(this.searchOptions).map(([key, value]) => {
+                    if (value) {
+                        result[key] = value;
+                    }
+                })
+
+            return result;
         }
     }
 };
@@ -304,6 +352,10 @@ a {
     @apply px-2 rounded-full inline-flex items-center justify-center cursor-pointer;
     width: 34px;
     height: 34px;
+
+    &.active {
+        @apply bg-gray-300;
+    }
 
     &:hover {
         @apply bg-gray-300;
