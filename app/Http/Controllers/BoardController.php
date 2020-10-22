@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Board;
 use App\Models\Item;
+use App\Models\Link;
 use Illuminate\Http\Response;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\URL;
@@ -135,6 +136,10 @@ class BoardController extends Controller
                 'user_id' => $user->id,
                 'commit_date' => $commitDate
             ])->with('stage')->get(),
+            'links' => Link::where([
+                'team_id' => $user->current_team_id,
+                'user_id' => $user->id,
+            ])->get(),
             'standup' => Standup::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,

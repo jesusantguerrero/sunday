@@ -63,7 +63,7 @@
 
       <template v-if="isExpanded">
       <!-- items  -->
-        <draggable v-model="stage.items" @end="saveReorder">
+        <draggable v-model="stage.items" @end="saveReorder" handle=".handle">
             <transition-group>
                 <div
                     class="grid grid-cols-11 text-left h-11"
@@ -76,6 +76,7 @@
                     >
                         <input type="checkbox" name="" id="" v-model="item.done" @change="saveChanges(item, 'done', item.done)" :disabled="item.commit_date"/>
                     </div>
+                    <i class="fa fa-align-justify handle"></i>
                     <item-group-cell
                         class="flex items-center"
                         field-name="title"

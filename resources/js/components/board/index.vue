@@ -58,6 +58,7 @@
                 v-model="board.stages"
                 @end="saveReorder"
                 v-if="modeSelected == 'list'"
+                handle=".handle"
             >
                 <transition-group>
                     <item-group

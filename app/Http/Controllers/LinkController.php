@@ -28,6 +28,7 @@ class LinkController extends Controller
     {
         $link = new Link();
         $link->title = $request->title;
+        $link->url = $request->url;
         $link->user_id = $request->user()->id;
         $link->team_id = $request->user()->current_team_id;
         $link->save();
