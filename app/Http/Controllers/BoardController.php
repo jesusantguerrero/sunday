@@ -100,6 +100,7 @@ class BoardController extends Controller
                     'stages' => $board->stages->map(function ($stage) use($request) {
                         return [
                             'id' => $stage->id,
+                            'board_id' => $stage->board_id,
                             'name' => $stage->name,
                             'fields' => $stage->fields,
                             'labels' => $stage->labels,
