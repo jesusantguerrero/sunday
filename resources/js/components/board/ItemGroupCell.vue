@@ -25,7 +25,7 @@
       <div class="h-8 px-2"
         v-else-if="['date'].includes(field.type)"
       >
-        <v-date-picker v-model='value'/>
+        <v-date-picker v-model="value" @dayclick="saveChanges"/>
       </div>
 
       <div class="h-8 px-2"
