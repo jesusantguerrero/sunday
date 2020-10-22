@@ -23,9 +23,9 @@
       </div>
 
       <div class="h-8 px-2"
-        v-if="['date'].includes(field.type)"
+        v-else-if="['date'].includes(field.type)"
       >
-        <v-date-picker v-model='value' @popoverDidHide="saveChanges"/>
+        <v-date-picker v-model='value'/>
       </div>
 
       <div class="h-8 px-2"

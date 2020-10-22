@@ -65,11 +65,24 @@
                     <span class="text-3xl ml-2 font-bold"> Fast Access </span>
 
                     <div class="section-card committed mt-5">
-                        <header class="bg-blue-400 text-white font-bold">
-                            Links
+                        <header class="bg-blue-400 text-white font-bold flex justify-between">
+                            <span>
+                                Links
+                            </span>
+                            <button class="bg-transparent text-white" @click="isLinkFormOpen = !isLinkFormOpen">
+                                <i class="fa fa-plus"></i>
+                            </button>
                         </header>
                          <div class="body text-gray-600">
-                            Hola soy un item de ejemplo
+                            <a
+                                class="block link"
+                                :href="link.url"
+                                target="_blank"
+                                v-for="link in links"
+                                :title="link.title"
+                                :key="link.id">
+                                {{ link.title }}
+                            </a>
                         </div>
                     </div>
 
@@ -115,6 +128,9 @@
                     </primary-button>
                 </template>
             </dialog-modal>
+
+            <link-form-modal :is-open="isLinkFormOpen" @saved="onLinkSaved">
+            </link-form-modal>
         </div>
     </app-layout>
 </template>
@@ -126,6 +142,7 @@
     import ScheduleControls from "../components/schedule/controls";
     import Promodoro from "../components/promodoro/index"
     import DialogModal from "../Jetstream/DialogModal"
+    import LinkFormModal from "./LinkForm"
     import PrimaryButton from "../Jetstream/Button"
     import { subDays, toDate } from "date-fns";
 
@@ -136,6 +153,7 @@
             BoardItemContainer,
             Promodoro,
             DialogModal,
+            LinkFormModal,
             PrimaryButton,
             ScheduleControls
         },
@@ -162,6 +180,12 @@
                     return []
                 }
             },
+            links: {
+                type: Array,
+                default() {
+                    return []
+                }
+            },
             committed: {
                 type: [Array, Object],
                 default() {
@@ -175,7 +199,8 @@
                 modeSelected: 'all',
                 localCommitDate: new Date,
                 isLoading: false,
-                isStandupOpen: false
+                isStandupOpen: false,
+                isLinkFormOpen: false
             }
         },
         watch: {
@@ -265,6 +290,13 @@
                     }
                 })
             },
+
+            onLinkSaved() {
+                this.isLinkFormOpen = false;
+                this.$inertia.reload({
+                    preserveScroll: true
+                })
+            }
         }
     }
 </script>
@@ -294,5 +326,17 @@ button {
     &:focus {
         outline: 0 !important;
     }
+}
+
+.link {
+    font-weight: bold;
+    margin: 5px;
+    display: inline-block;
+    border-bottom: 1px dashed dodgerblue;
+
+    &:hover {
+        color: dodgerblue;
+    }
+
 }
 </style>
