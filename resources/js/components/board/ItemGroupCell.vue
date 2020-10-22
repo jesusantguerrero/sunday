@@ -112,6 +112,7 @@ export default {
   data() {
     return {
       value: "",
+      selectValue: "",
       isEditMode: false,
     };
   },

@@ -3,6 +3,7 @@
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StageController;
+use App\Http\Controllers\LinkController;
 use App\Http\Controllers\StandupController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/stages', StageController::class);
     Route::apiResource('/standups', StandupController::class);
     Route::apiResource('/api/boards', BoardController::class);
+    Route::apiResource('/links', LinkController::class);
     Route::post('/services/google', [ServiceController::class, 'google']);
     Route::get('/services/messages', [ServiceController::class, 'getMessages']);
 });
