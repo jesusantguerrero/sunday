@@ -57,7 +57,6 @@ class LinkController extends Controller
     {
         $link = Link::find($id);
         $link->update($request->post());
-        $link->saveFields($request->post('fields'));
         return $link;
 
     }
