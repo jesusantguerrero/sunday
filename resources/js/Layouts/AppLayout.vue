@@ -193,6 +193,17 @@
             <slot></slot>
         </main>
 
+        <!-- Confirmation Modal -->
+        <confirmation-modal
+            :show-modal="showConfirmationModal"
+            :modal-data="confirmationData"
+            @confirm="handleConfirm"
+            @close="handleConfirmClose"
+            >
+
+        </confirmation-modal>
+        <!-- Endof confirmation modal -->
+
         <!-- Modal Portal -->
         <portal-target name="modal" multiple>
         </portal-target>
@@ -206,6 +217,7 @@
     import JetDropdownLink from './../Jetstream/DropdownLink'
     import JetNavLink from './../Jetstream/NavLink'
     import JetResponsiveNavLink from './../Jetstream/ResponsiveNavLink'
+    import ConfirmationModal from "../components/shared/ConfirmationModal"
 
     export default {
         components: {
@@ -215,15 +227,40 @@
             JetDropdownLink,
             JetNavLink,
             JetResponsiveNavLink,
+            ConfirmationModal
         },
 
         data() {
             return {
                 showingNavigationDropdown: false,
+                showConfirmationModal: false,
+                confirmationData: {}
             }
         },
 
+        mounted() {
+            this.$root.$on('show-modal', (data) => {
+                this.showConfirmationModal = true;
+                this.confirmationData = data;
+            })
+        },
+
         methods: {
+            handleConfirm() {
+                this.confirmationData.confirm && this.confirmationData.confirm()
+                this.closeConfirm();
+            },
+
+            handleConfirmClose() {
+                this.confirmationData.cancel && this.confirmationData.cancel()
+                this.closeConfirm();
+            },
+
+            closeConfirm() {
+                this.showConfirmationModal = false;
+                this.confirmationData = {};
+            },
+
             switchToTeam(team) {
                 this.$inertia.put('/current-team', {
                     'team_id': team.id

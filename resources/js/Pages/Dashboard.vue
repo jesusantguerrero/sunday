@@ -74,15 +74,11 @@
                             </button>
                         </header>
                          <div class="body text-gray-600">
-                            <a
-                                class="block link"
-                                :href="link.url"
-                                target="_blank"
-                                v-for="link in links"
-                                :title="link.title"
-                                :key="link.id">
-                                {{ link.title }}
-                            </a>
+                             <link-viewer
+                                :links="links"
+                                @edit="openLinkForm"
+
+                             ></link-viewer>
                         </div>
                     </div>
 
@@ -129,7 +125,11 @@
                 </template>
             </dialog-modal>
 
-            <link-form-modal :is-open="isLinkFormOpen" @saved="onLinkSaved">
+            <link-form-modal
+                :record-data="linkData"
+                :is-open="isLinkFormOpen"
+                @saved="onLinkSaved"
+                @cancel="isLinkFormOpen=false">
             </link-form-modal>
         </div>
     </app-layout>
@@ -142,7 +142,8 @@
     import ScheduleControls from "../components/schedule/controls";
     import Promodoro from "../components/promodoro/index"
     import DialogModal from "../Jetstream/DialogModal"
-    import LinkFormModal from "./LinkForm"
+    import LinkFormModal from "../components/links/Form"
+    import LinkViewer from "../components/links/Viewer"
     import PrimaryButton from "../Jetstream/Button"
     import { subDays, toDate } from "date-fns";
 
@@ -154,6 +155,7 @@
             Promodoro,
             DialogModal,
             LinkFormModal,
+            LinkViewer,
             PrimaryButton,
             ScheduleControls
         },
@@ -200,7 +202,8 @@
                 localCommitDate: new Date,
                 isLoading: false,
                 isStandupOpen: false,
-                isLinkFormOpen: false
+                isLinkFormOpen: false,
+                linkData: {}
             }
         },
         watch: {
@@ -238,6 +241,7 @@
                 }
                 this.localCommitDate = date;
             },
+
             completeDay() {
                 this.isLoading = true;
                 const yesterday = subDays(new Date(), 1)
@@ -291,8 +295,18 @@
                 })
             },
 
+            closeLinkForm() {
+                this.linkData = {};
+                this.isLinkFormOpen = false
+            },
+
+            openLinkForm(formData) {
+                this.linkData = formData;
+                this.isLinkFormOpen = true
+            },
+
             onLinkSaved() {
-                this.isLinkFormOpen = false;
+                this.closeLinkForm();
                 this.$inertia.reload({
                     preserveScroll: true
                 })
@@ -326,17 +340,5 @@ button {
     &:focus {
         outline: 0 !important;
     }
-}
-
-.link {
-    font-weight: bold;
-    margin: 5px;
-    display: inline-block;
-    border-bottom: 1px dashed dodgerblue;
-
-    &:hover {
-        color: dodgerblue;
-    }
-
 }
 </style>
