@@ -6,6 +6,7 @@ use App\Http\Controllers\StageController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\StandupController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\TimeEntryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +26,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::get('/dashboard', [BoardController::class, 'list'])->name('dashboard');
     Route::get('/boards/{id}', [BoardController::class, 'edit'])->name('boards');
     Route::get('/integrations', [ServiceController::class, 'index'])->name('integrations');
+    Route::get('/tracker', [TimeEntryController::class, 'list'])->name('tracker');
 });
 
 // resource route
@@ -34,6 +36,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/standups', StandupController::class);
     Route::apiResource('/api/boards', BoardController::class);
     Route::apiResource('/links', LinkController::class);
+    Route::apiResource('/time-entries', TimeEntryController::class);
     Route::post('/services/google', [ServiceController::class, 'google']);
     Route::get('/services/messages', [ServiceController::class, 'getMessages']);
 });
