@@ -30,6 +30,7 @@
     },
     "dependencies": {
         "date-fns": "^2.16.1",
+        "duration": "^0.2.2",
         "lodash-es": "^4.17.15",
         "v-calendar": "1.1.1",
         "vue-google-api": "^0.2.0",

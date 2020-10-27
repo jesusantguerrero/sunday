@@ -20,6 +20,9 @@
                             <jet-nav-link href="/integrations" :active="$page.currentRouteName == 'integrations'">
                                 Integrations
                             </jet-nav-link>
+                            <jet-nav-link href="/tracker" :active="$page.currentRouteName == 'tracker'">
+                                Tracker
+                            </jet-nav-link>
                         </div>
                     </div>
 
@@ -116,6 +119,9 @@
                     </jet-responsive-nav-link>
                     <jet-responsive-nav-link href="/integrations" :active="$page.currentRouteName == 'integrations'">
                         Integrations
+                    </jet-responsive-nav-link>
+                    <jet-responsive-nav-link href="/tracker" :active="$page.currentRouteName == 'tracker'">
+                        Time Tracker
                     </jet-responsive-nav-link>
                 </div>
 

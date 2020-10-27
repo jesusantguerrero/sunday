@@ -15,6 +15,16 @@ class CreateTimeEntriesTable extends Migration
     {
         Schema::create('time_entries', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('team_id');
+            $table->foreignId('item_id')->nullable();
+            $table->json('label_ids')->nullable();
+            $table->text('description');
+            $table->boolean("billable")->default(false);
+            $table->time("duration")->nullable();
+            $table->boolean("status")->default(false);
+            $table->timestamp("start");
+            $table->timestamp("end")->nullable();
             $table->timestamps();
         });
     }
