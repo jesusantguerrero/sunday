@@ -10,13 +10,27 @@
             <div class="max-w-8xl mx-auto flex">
                 <time-entry-form
                     :current="current"
+                    @stopped="reloadTracks"
                 >
-
                 </time-entry-form>
             </div>
-            <div class="sm:px-6 lg:px-8">
-                <div v-for="track in tracks" :key="track.id">
-                    {{ track.description }}
+            <div class="mt-10 items-container">
+                <div class="items-container__header flex justify-between px-8 mb-10">
+                        <span class="text-3xl font-bold"> Time entries </span>
+                        <div class="controls bg-purple-700 rounded-lg">
+                            <button
+                                v-for="mode in modes"
+                                :key="mode"
+                                @click="modeSelected=mode"
+                                :class="{'bg-purple-400': mode == modeSelected }"
+                                class="px-8 h-full rounded-lg text-white capitalize">
+                                    {{ mode }}
+                            </button>
+                        </div>
+                </div>
+                <div class="items-container__list px-8">
+                    <time-entry-item :time-entry="track" v-for="track in tracks" :key="track.id">
+                    </time-entry-item>
                 </div>
             </div>
         </div>
@@ -26,12 +40,14 @@
 <script>
     import AppLayout from './../Layouts/AppLayout'
     import TimeEntryForm from "../components/timeTracker/Form"
+    import TimeEntryItem from "../components/timeTracker/Item"
 
     export default {
         name: "Integrations",
         components: {
             AppLayout,
-            TimeEntryForm
+            TimeEntryForm,
+            TimeEntryItem
         },
         props:{
             current: {
@@ -47,24 +63,16 @@
                 }
             }
         },
+        data() {
+            return {
+                modes: ['list', 'grid'],
+                modeSelected: 'list',
+            }
+        },
         methods: {
-            async signIn() {
-                    this.$gapi.signIn().then(async() => {
-                    const baseGapi = await this.$gapi._load();
-                    const authInstance = baseGapi.auth2.getAuthInstance();
-                    const user = authInstance.currentUser.get();
-
-                    authInstance.grantOfflineAccess({
-                        authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
-                    }).then(({ code }) => {
-                        const credentials = { code };
-                        axios({
-                            url: 'services/google',
-                            method: 'post',
-                            data: credentials
-                        })
-                    })
-
+            reloadTracks() {
+                 this.$inertia.reload({
+                    preserveScroll: true
                 })
             }
         }

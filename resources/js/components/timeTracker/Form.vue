@@ -255,7 +255,7 @@ export default {
       this.updateEntry(formData).then(() => {
         this.running = false;
         this.resetTimer();
-        this.$emit("stoped");
+        this.$emit("stopped");
       });
     },
 
