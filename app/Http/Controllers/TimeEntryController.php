@@ -67,9 +67,22 @@ class TimeEntryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $stage = TimeEntry::find($id);
-        $stage->update($request->post());
-        return $stage;
+        $entry = TimeEntry::find($id);
+        $entry->update($request->post());
+        return $entry;
+    }
+
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $entry = TimeEntry::find($id);
+        $entry->delete();
+        return $entry;
     }
 
 }
