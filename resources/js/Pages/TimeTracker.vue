@@ -63,6 +63,13 @@
                 }
             }
         },
+        created() {
+             this.$parent.$on('session::stopped', () => {
+                 this.$nextTick(() => {
+                     this.reloadTracks()
+                 })
+             })
+        },
         data() {
             return {
                 modes: ['list', 'grid'],

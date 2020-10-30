@@ -55,6 +55,8 @@
                         v-show="showTodo"
                         title="To Do"
                         :tasks="todo"
+                        :tracker="tracker"
+                        @item-clicked="setTaskToTimer"
                     >
                     </board-item-container>
                 </div>
@@ -84,7 +86,12 @@
 
                     <div class="section-card committed">
                          <div class="bg-red-400 text-gray-600 font-bold px-0">
-                            <promodoro></promodoro>
+                            <promodoro
+                                ref="Promodoro"
+                                :tracker.sync="tracker"
+                                :tasks="todo"
+                            >
+                            </promodoro>
                         </div>
                     </div>
                 </div>
@@ -203,7 +210,8 @@
                 isLoading: false,
                 isStandupOpen: false,
                 isLinkFormOpen: false,
-                linkData: {}
+                linkData: {},
+                tracker: null
             }
         },
         watch: {
@@ -310,6 +318,10 @@
                 this.$inertia.reload({
                     preserveScroll: true
                 })
+            },
+
+            setTaskToTimer(task) {
+                this.$refs.Promodoro.setTask(task);
             }
         }
     }
