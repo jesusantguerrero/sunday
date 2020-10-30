@@ -25,7 +25,7 @@
                 </span>
                 </label>
             </div>
-             <button @click="$emit('item-clicked', task)" class="play-button">
+             <button @click="$emit('item-clicked', task)" class="play-button" v-if="!task.commit">
                 <i class="fa" :class="[isTracker(task) ? 'fa-pause' : 'fa fa-play']"/>
             </button>
         </div>

@@ -55,15 +55,14 @@
 
             Item
         </div>
-        <div class="pb-10">
-            <header>
-                Task
-            </header>
-            <div class="promodoros-tasks__body">
+
+        <div class="promodoro__footer">
+            <div class="w-full">
                 <multiselect
                     v-model="task"
                     label="title"
                     track-by="id"
+                    placeholder="Select a task"
                     :show-labels="false"
                     :options="tasks"
                     class="w-full"
@@ -451,5 +450,9 @@ export default {
     100% {
         transform: scale(1);
     }
+}
+
+.promodoro__footer {
+    @apply bg-red-400 text-white font-bold flex justify-between w-full items-center py-2 px-4;
 }
 </style>
