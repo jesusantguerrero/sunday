@@ -234,6 +234,7 @@ export default {
     },
 
     updateEntry(formData) {
+    debugger
       formData = formData || this.prepareForm();
       return axios.put(`/time-entries/${this.timeEntry.id}`, formData);
     },

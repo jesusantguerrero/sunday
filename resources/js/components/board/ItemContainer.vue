@@ -8,21 +8,26 @@
     </slot>
     <div class="body text-gray-600">
         <div v-for="task in tasks" :key="`task-${task.id}`" class="task-item">
-            <label class="checkbox-label">
-            <input
-                type="checkbox"
-                @change="$emit('update-item', task)"
-                name=""
-                :id="task.id"
-                v-model="task.done"
-            />
-                <span class="font-bold">
-                [{{ task.stage.name }}]
-            </span>
-            <span>
-                {{ task.title }}
-            </span>
-            </label>
+            <div>
+                <label class="checkbox-label">
+                <input
+                    type="checkbox"
+                    @change="$emit('update-item', task)"
+                    name=""
+                    :id="task.id"
+                    v-model="task.done"
+                />
+                    <span class="font-bold">
+                    [{{ task.stage.name }}]
+                </span>
+                <span>
+                    {{ task.title }}
+                </span>
+                </label>
+            </div>
+             <button @click="$emit('item-clicked', task)" class="play-button">
+                <i class="fa" :class="[isTracker(task) ? 'fa-pause' : 'fa fa-play']"/>
+            </button>
         </div>
         <div v-if="!tasks.length" class="task-item text-center font-bold text-gray-400">
                 There's no items to show
@@ -41,6 +46,14 @@ export default {
         title: {
             type: String,
             default: 'Todos'
+        },
+        tracker: {
+            type: Object
+        }
+    },
+    methods: {
+        isTracker(task) {
+            return this.tracker && this.tracker.timeEntry.item_id == task.id;
         }
     }
 }
@@ -48,7 +61,7 @@ export default {
 
 <style lang="scss" scoped>
 .task-item {
-    @apply py-4 border-b-2 border-gray-100;
+    @apply py-4 border-b-2 border-gray-100 flex justify-between;
 }
 
 .item-container.section-card .body{
