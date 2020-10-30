@@ -56,6 +56,7 @@
                         title="To Do"
                         :tasks="todo"
                         :tracker="tracker"
+                        @update-item="updateItem"
                         @item-clicked="setTaskToTimer"
                     >
                     </board-item-container>
