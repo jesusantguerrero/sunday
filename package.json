@@ -33,10 +33,12 @@
     "dependencies": {
         "date-fns": "^2.16.1",
         "duration": "^0.2.2",
+        "googleapis": "^62.0.0",
         "lodash-es": "^4.17.15",
         "v-calendar": "1.1.1",
         "vue-google-api": "^0.2.0",
         "vue-multiselect": "^2.1.6",
-        "vuedraggable": "^2.24.2"
+        "vuedraggable": "^2.24.2",
+        "vuelidate": "^0.7.6"
     }
 }
