@@ -17,9 +17,9 @@
                             <jet-nav-link href="/dashboard" :active="$page.currentRouteName == 'dashboard'">
                                 Dashboard
                             </jet-nav-link>
-                            <jet-nav-link href="/integrations" :active="$page.currentRouteName == 'integrations'">
+                            <!-- <jet-nav-link href="/integrations" :active="$page.currentRouteName == 'integrations'">
                                 Integrations
-                            </jet-nav-link>
+                            </jet-nav-link> -->
                             <jet-nav-link href="/tracker" :active="$page.currentRouteName == 'tracker'">
                                 Tracker
                             </jet-nav-link>
@@ -117,9 +117,9 @@
                     <jet-responsive-nav-link href="/dashboard" :active="$page.currentRouteName == 'dashboard'">
                         Dashboard
                     </jet-responsive-nav-link>
-                    <jet-responsive-nav-link href="/integrations" :active="$page.currentRouteName == 'integrations'">
+                    <!-- <jet-responsive-nav-link href="/integrations" :active="$page.currentRouteName == 'integrations'">
                         Integrations
-                    </jet-responsive-nav-link>
+                    </jet-responsive-nav-link> -->
                     <jet-responsive-nav-link href="/tracker" :active="$page.currentRouteName == 'tracker'">
                         Time Tracker
                     </jet-responsive-nav-link>
