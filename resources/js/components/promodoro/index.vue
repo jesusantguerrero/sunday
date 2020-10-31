@@ -234,8 +234,8 @@ export default {
 
         countDown() {
             if (this.time.seconds == 0) {
-                this.time.minutes--;
-                if (this.time.minutes >= 0) {
+                if (this.time.minutes > 0) {
+                    this.time.minutes--;
                     this.time.seconds = 59;
                 } else {
                     this.clear();

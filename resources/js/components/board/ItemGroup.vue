@@ -44,23 +44,6 @@
         </div>
       </div>
 
-      <!-- new item  -->
-      <div class="grid grid-cols-10 text-left item-line" v-if="createMode || !items.length">
-        <div class="col-span-12 item-line-cell bg-gray-200 flex items-center">
-          <item-group-cell
-            class="w-full flex items-center"
-            field-name="title"
-            :index="-1"
-            :item="newItem"
-            :is-new="true"
-            @saved="newItem['title'] = $event"
-            @keydown.enter="addItem(stage)"
-          >
-          </item-group-cell>
-        </div>
-      </div>
-      <!-- End of new item -->
-
       <template v-if="isExpanded">
       <!-- items  -->
         <draggable v-model="stage.items" @end="saveReorder" handle=".handle">
@@ -118,6 +101,24 @@
         </draggable>
         <!-- End of items -->
       </template>
+
+      <!-- new item  -->
+      <div class="grid grid-cols-10 text-left item-line">
+        <div class="col-span-12 item-line-cell px-0 flex items-center">
+          <item-group-cell
+            class="w-full flex items-center"
+            field-name="title"
+            :is-title="true"
+            :index="-1"
+            :item="newItem"
+            :is-new="true"
+            @saved="newItem['title'] = $event"
+            @keydown.enter="addItem(stage)"
+          >
+          </item-group-cell>
+        </div>
+      </div>
+      <!-- End of new item -->
     </div>
   </div>
 </template>
@@ -182,6 +183,7 @@ export default {
       })
     },
     addItem(stage, reload) {
+        const lastItemOrder = Math.max(...this.stage.items.map(item => item.order))
         this.newItem.board_id = stage.board_id
         this.newItem.stage_id = stage.id
         this.newItem.fields = stage.fields.map(field => {
@@ -191,6 +193,7 @@ export default {
                 value: this.newItem[field.name],
             }
         })
+        this.newItem.order = lastItemOrder + 1;
         this.$emit("saved", {...this.newItem}, reload);
         this.newItem = {};
     },

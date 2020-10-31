@@ -1,9 +1,18 @@
 <template>
   <div class="item-group-cell w-full px-2 h-full flex items-center"
-  :class="{'editable-mode': isEditMode }">
-    <span @click="toggleEditMode()" v-if="!isEditMode" class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2">
+  :class="{'editable-mode': isEditMode, 'new-item': isTitle }">
+
+    <div v-if="isTitle && !isEditMode" class="new-item-button" @click="toggleEditMode()">
+        <i class="fa fa-plus mr-3"></i>
+        <span>
+        Add Item
+        </span>
+    </div>
+
+    <span @click="toggleEditMode()" v-else-if="!isEditMode" class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2">
       {{ displayValue }}
     </span>
+
     <template v-else>
       <div class="h-8 px-2"
         v-if="['person'].includes(field.type)"
@@ -51,6 +60,7 @@
         @blur="saveChanges"
         type="text"
         class="form-input h-8 px-2 mx-0 rounded-none"
+        :class="{'new-item': isTitle }"
         :name="`${index}-${fieldName}`"
         id=""
         v-model="value"
@@ -89,14 +99,11 @@ export default {
     isNew: {
       type: Boolean,
     },
+    isTitle: {
+      type: Boolean,
+    },
   },
   watch: {
-    isNew: {
-      handler(isNew) {
-        this.isEditMode = isNew;
-      },
-      immediate: true,
-    },
     item: {
       handler(item) {
         if (item[this.fieldName] != this.value) {
@@ -142,13 +149,12 @@ export default {
     },
     saveChanges() {
       this.$emit("saved", this.value);
-      if (!this.isNew) {
-        this.toggleEditMode();
-      }
+      this.toggleEditMode();
     },
     saveItem($event) {
         this.saveChanges();
         this.$emit('keydown', $event)
+        this.toggleEditMode()
     }
   },
 };
@@ -163,10 +169,29 @@ export default {
       outline: none;
       border: 0;
   }
+
 }
 
-// .editable-mode {
-//     @apply bg-white;
-//     border: 1px solid #6b7280;
-// }
+
+
+.item-group-cell.new-item {
+    @apply px-0 my-2 border-white border-t-2 border-b-2;
+    position: relative;
+    background: transparent !important;
+    margin: 0 2px;
+
+    &.editable-mode {
+        @apply border-purple-300 border-2;
+    }
+
+    .new-item-button {
+        @apply p-2 text-gray-300;
+        width: 100%;
+        transition: all ease .3s;
+        cursor: pointer;
+        &:hover {
+            @apply bg-gray-200 text-gray-600;
+        }
+    }
+}
 </style>

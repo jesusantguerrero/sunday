@@ -115,7 +115,7 @@ class BoardController extends Controller
     public function list(Request $request)
     {
         $user = $request->user();
-        $commitDate = $request->query('commit-date') ?? now()->subDay(1)->format('Y-m-d');
+        $commitDate = $request->query('commit-date') ?? now()->format('Y-m-d');
 
         return Inertia::render('Dashboard', [
             'boards' => Board::where([

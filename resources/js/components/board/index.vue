@@ -19,12 +19,6 @@
             </div>
 
             <div class="flex items-center">
-                <button
-                    class="btn text-white bg-purple-700 hover:bg-purple-400 rounded-full"
-                    @click="createMode = !createMode"
-                >
-                    New Task
-                </button>
                 <input
                     type="search"
                     class="form-input ml-2 w-48"
@@ -161,7 +155,7 @@ export default {
             default() {
                 return {
                     search: '',
-                    done: 'with'
+                    done: ''
                 }
             }
         }

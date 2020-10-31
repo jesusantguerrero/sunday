@@ -26,13 +26,11 @@ class ItemController extends Controller
      */
     public function store(Request $request, Response $response)
     {
+        $postData = $request->post();
+        $postData['user_id'] = $request->user()->id;
+        $postData['team_id'] = $request->user()->current_team_id;
         $item = new Item();
-        $item->title = $request->title;
-        $item->stage_id = $request->stage_id;
-        $item->board_id = $request->board_id;
-        $item->user_id = $request->user()->id;
-        $item->team_id = $request->user()->current_team_id;
-        $item->save();
+        $item = $item::create($postData);
         $item->saveFields($request->post('fields'));
         return $response->send($item);
     }
