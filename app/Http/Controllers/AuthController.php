@@ -14,4 +14,14 @@ class AuthController extends Controller
     {
         return Jetstream::inertia()->render($request, 'Auth/Login');
     }
+
+    public function register(Request $request)
+    {
+        return Jetstream::inertia()->render($request, 'Auth/Register');
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        return Jetstream::inertia()->render($request, 'Auth/ForgotPassword');
+    }
 }

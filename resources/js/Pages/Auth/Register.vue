@@ -1,6 +1,6 @@
 <template>
   <div class="login-box">
-    <form class="form-signin col-md-6" @submit.prevent="login">
+    <form class="form-signin md:w-1/2 w-full" @submit.prevent="login">
       <h3 class="login-title">Create an account</h3>
 
       <div
@@ -25,13 +25,13 @@
         class="form-group"
         :class="{ 'form-group--error': $v.user.email.$error }"
       >
-        <label for="email">Username</label>
+        <label for="email">name</label>
         <p :class="{ control: true }">
           <input
-            v-model.trim="$v.user.username.$model"
+            v-model.trim="$v.user.name.$model"
             class="form-control input"
             :class="{ 'is-danger': false }"
-            name="username"
+            name="name"
             type="text"
             required
             @keydown.enter="login"
@@ -39,7 +39,9 @@
         </p>
       </div>
 
-      <div class="form-group">
+      <div class="form-group"
+       :class="{ 'form-group--error': $v.user.password_confirmation.$error }"
+      >
         <label for="password" class="password-label"
           ><span>Password</span></label
         >
@@ -57,7 +59,8 @@
         </p>
       </div>
 
-      <div class="form-group">
+      <div class="form-group"
+       :class="{ 'form-group--error': $v.user.password_confirmation.$error }">
         <label for="password" class="password-label"
           ><span>Confirm Password</span></label
         >
@@ -65,7 +68,7 @@
           <input
             type="password"
             id="password-confirm"
-            v-model="$v.user.passwordConfirm.$model"
+            v-model="$v.user.password_confirmation.$model"
             class="form-control input"
             :class="{ 'is-danger': false }"
             name="password-confirm"
@@ -76,19 +79,20 @@
       </div>
 
       <button
-        class="btn btn-lg btn-primary btn-block"
+        class="btn btn-action"
         type="submit"
         @click.prevent="login"
       >
         Sign Up
+        <i v-if="isLoading" class="fa fa-spinner fa-pulse ml-2"></i>
       </button>
-      <p>
+      <p class="text-center">
         <small>
           Already have an account?
-          <inertia-link to="login">Login</inertia-link>
+          <inertia-link href="login">Login</inertia-link>
         </small>
       </p>
-      <p class="mt-5 mb-3 text-muted">&copy; 2017-{{ currentYear }}</p>
+      <p class="copyrights text-center">&copy; 2020-{{ currentYear }}</p>
     </form>
   </div>
 </template>
@@ -96,15 +100,16 @@
 <script>
 import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
 import AppLogo from "../../Jetstream/ApplicationLogo";
+import axios from "axios";
 
 export default {
   data() {
     return {
       user: {
         email: "",
-        username: "",
+        name: "",
         password: "",
-        passwordConfirm: ""
+        password_confirmation: ""
       },
       isLoading: false
     };
@@ -122,14 +127,14 @@ export default {
         required,
         email
       },
-      username: {
+      name: {
         required,
         minLength: minLength(4)
       },
       password: {
         required
       },
-      passwordConfirm: {
+      password_confirmation: {
         required,
         sameAs: sameAs("password")
       }
@@ -140,41 +145,22 @@ export default {
       if (!this.isLoading) {
         this.$v.$touch();
         if (this.$v.$invalid) {
-          console.log(this.$v);
-          this.$notify({
-            title: "Error",
-            message: "the form has some errors",
-            type: "warning"
-          });
           return;
         }
 
         this.isLoading = true;
-        this.$http
-          .post("/auth/registration", this.user)
-          .then(async ({ data }) => {
-            await this.$store.dispatch("setToken", data.token);
-            this.$router.push({ name: "home" });
+        axios
+          .post("/register", this.user)
+          .then(() => {
+               this.$inertia.visit('dashboard')
           })
           .catch(err => {
-            if (err.response) {
-              this.onLoginError();
-            } else {
               console.log(err);
-            }
           })
           .finally(() => {
             this.isLoading = false;
           });
       }
-    },
-
-    onLoginError() {
-      this.$notify({
-        title: "Error",
-        message: "Bad user credentials. check and try again",
-        type: "error"
-      });
     }
   }
 };
@@ -204,7 +190,7 @@ export default {
         position: absolute;
         width: 100%;
         top: 0;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.5);
         left: 0;
         height: 100%;
     }
@@ -222,8 +208,8 @@ export default {
         text-align: left;
     }
 
-    button[type="submit"] {
-        background: linear-gradient(#1fa1d0, #087a9c);
+    .btn-action {
+        background:#087a9c;
         width: 100%;
         color: white;
         border: none;
@@ -234,7 +220,7 @@ export default {
         height: 37px;
 
         &:hover {
-            background:#087a9c;
+            background: #1fa1d0;
         }
     }
 
@@ -265,7 +251,7 @@ export default {
 }
 
 .copyrights {
-    @apply text-gray-500;
+    @apply text-gray-100;
     height: 10vh;
     text-align: center;
     margin: 5px 0;
@@ -299,6 +285,13 @@ export default {
         input {
             @apply shadow-xs border-2 border-red-300;
         }
+    }
+}
+.form-control {
+    @apply text-gray-400 px-2;
+
+    &:focus {
+        outline: none;
     }
 }
 

@@ -28,43 +28,14 @@
                 </p>
             </div>
 
-            <div
-                class="form-group"
-                :class="{ 'form-group--error': $v.user.password.$error }"
-            >
-                <label for="password" class="password-label"
-                    ><span>Password</span>
-                    <small
-                        ><a href="/forgot-password" tabindex="5">Forgot password?</a></small
-                    ></label
-                >
-                <p :class="{ control: true }">
-                    <input
-                        type="password"
-                        id="password"
-                        v-model="$v.user.password.$model"
-                        class="form-control input"
-                        :class="{ 'is-danger': false }"
-                        name="password"
-                        required
-                        @keydown.enter="login"
-                    />
-                </p>
-            </div>
-
             <button
                 class="btn btn-action"
                 type="submit"
                 @click.prevent="login"
             >
-                Login
+                Email password reset link
                 <i v-if="isLoading" class="fa fa-spinner fa-pulse ml-2"></i>
             </button>
-            <p class="text-center">
-                <small> Dont have an account?
-                    <inertia-link href="/register"> Create one </inertia-link>
-                </small>
-            </p>
             <p class="copyrights">&copy; 2020-{{ currentYear }}</p>
         </form>
     </div>
@@ -100,9 +71,6 @@ export default {
             email: {
                 required,
                 email
-            },
-            password: {
-                required
             }
         }
     },
@@ -115,9 +83,9 @@ export default {
                 }
 
                 this.isLoading = true;
-                axios.post("/login", this.user)
+                axios.post("/forgot-password", this.user)
                     .then(async ({ data }) => {
-                        this.$inertia.visit('dashboard')
+                        this.$inertia.visit('login')
                     })
                     .catch(err => {
                             console.log(err);
