@@ -32,7 +32,7 @@
 
                 <button
                     class="bg-grey-400 text-white p-2 hover:bg-red-600"
-                    @click.prevent="deleteBoard(board.id)"
+                    @click.prevent="confirmDelete(board)"
                 >
                     <i class="fa fa-trash"></i>
                 </button>
@@ -96,7 +96,7 @@ export default {
         addBoard() {
             if (this.boardName.trim()) {
                 axios({
-                    url: "api/boards",
+                    url: "/api/boards",
                     method: "post",
                     data: {
                         name: this.boardName
@@ -115,13 +115,34 @@ export default {
                 this.$refs.input.focus();
             });
         },
+
+        confirmDelete(board) {
+            this.showConfirm({
+                title: `Delete "${board.name}" board`,
+                content: "Are you sure you want to delete this board?",
+                confirmationButtonText: "Yes, delete",
+                confirm: () => {
+                    this.deleteBoard(board.id)
+                }
+            })
+        },
+
         deleteBoard(id) {
-            if (!confirm("Are you sure")) return;
             axios({
-                url: `api/boards/${id}`,
+                url: `/api/boards/${id}`,
                 method: "delete"
             }).then(() => {
-                this.$inertia.reload();
+                const index = this.boards.findIndex(board => board.id == id);
+                const currentBoard = index >= 0 ? this.boards[index] : null;
+
+                if (currentBoard && this.isPath(currentBoard.link)) {
+                    if (index != 0) {
+                        const previousBoard = this.boards[index - 1];
+                        return this.$inertia.visit(previousBoard.link)
+                    }
+                    return this.$inertia.visit('dashboard')
+                }
+                 this.$inertia.reload();
             });
         }
     }

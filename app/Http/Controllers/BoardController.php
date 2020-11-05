@@ -82,6 +82,9 @@ class BoardController extends Controller
     {
         $user = $request->user();
         $board = Board::find($id);
+        if (!$board) {
+            return redirect('dashboard');
+        }
 
         return Inertia::render('Board', [
                 'boards' => Board::where([
