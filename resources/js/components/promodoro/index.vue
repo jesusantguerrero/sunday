@@ -74,7 +74,21 @@
 </template>
 
 <script>
-const time = { minutes: 25, seconds: 0 };
+const time = { minutes: 0, seconds: 10 };
+const SESSION_MINUTES= 25;
+const BREAK_MINUTES= 5;
+const LONG_BREAK_MINUTES= 15;
+const TIME_SECONDS= 0;
+const PROMODORO_TEMPLATE = [
+    'session',
+    'break',
+    'session',
+    'break',
+    'session',
+    'break',
+    'session',
+    'longBreak'
+]
 import Tracker from "../timeTracker/tracker";
 
 export default {
@@ -100,17 +114,21 @@ export default {
             modes: {
                 session: {
                     name: "session",
-                    minutes: 25
+                    minutes: SESSION_MINUTES,
+                    seconds: TIME_SECONDS
                 },
                 break: {
                     name: "break",
-                    minutes: 5
+                    minutes: BREAK_MINUTES,
+                    seconds: TIME_SECONDS
                 },
                 longBreak: {
                     name: "long",
-                    minutes: 15
+                    minutes: LONG_BREAK_MINUTES,
+                    seconds: TIME_SECONDS
                 }
             },
+            promodoroTemplate: PROMODORO_TEMPLATE,
             modeSelected: "session",
             task: [],
             track: null
@@ -184,23 +202,21 @@ export default {
             this.stop();
             this.run = 0;
             this.round = 0;
-            this.time = { minutes: 25, seconds: 0 };
-            this.modes.session.minutes = 25;
-            this.modes.break.minutes = 5;
-            this.modes.longBreak.minutes = 15;
+            this.time = { minutes: SESSION_MINUTES, seconds: TIME_SECONDS };
+            this.modes.session.minutes = SESSION_MINUTES;
+            this.modes.break.minutes = BREAK_MINUTES;
+            this.modes.longBreak.minutes = LONG_BREAK_MINUTES;
             this.modeSelected = "session";
         },
 
         clear() {
             this.stop();
-            if (this.round == 0) {
-                this.setRestMode();
-                this.round = 1;
-            } else {
-                this.round = 0;
-                this.setSessionMode();
-                this.run = 0;
-            }
+            confirm(`the time of the ${this.modeSelected} has finished`);
+            const isLastMode = this.promodoroTemplate.length - 1 == this.round;
+            this.round = isLastMode ? 0 : this.round + 1;
+            const nextMode = this.promodoroTemplate[this.round];
+            this.setMode(nextMode);
+            this.run = 0;
         },
 
         initTimer(selfMode) {
@@ -283,9 +299,6 @@ export default {
             //   this.audio.currentTime = 0
             //   this.audio.play()
             window.navigator.vibrate([1000, 100, 1000, 100, 1000, 100, 1000]);
-            const stop = confirm(
-                `the time of the ${this.modeSelected} has finished`
-            );
             //   this.stopSound()
         },
 
@@ -297,7 +310,7 @@ export default {
         setMode(modeName) {
             this.modeSelected = modeName;
             this.time.minutes = this.modes[modeName].minutes;
-            this.time.seconds = 0;
+            this.time.seconds = this.modes[modeName].seconds;
         }
     }
 };
