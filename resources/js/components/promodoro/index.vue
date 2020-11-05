@@ -4,15 +4,20 @@
             class="bg-red-400 text-white font-bold flex justify-between w-full items-center py-2"
         >
             <span> Promodoro </span>
-            <div class="actions rounded-lg bg-red-700 flex h-8">
-                <button
-                    v-for="(modeObj, key) in modes"
-                    :key="key"
-                    class="px-2 h-full rounded-lg"
-                    :class="{ 'bg-red-100 text-red-700': modeSelected == key }"
-                    @click="setMode(key)"
-                >
-                    {{ modeObj.name }}
+            <div class="flex">
+                <div class="actions rounded-lg bg-red-700 flex h-8">
+                    <button
+                        v-for="(modeObj, key) in modes"
+                        :key="key"
+                        class="px-2 h-full rounded-lg"
+                        :class="{ 'bg-red-100 text-red-700': modeSelected == key }"
+                        @click="setMode(key)"
+                    >
+                        {{ modeObj.name }}
+                    </button>
+                </div>
+                <button @click="toggleConfiguration" class="ml-2" title="Promodoro configuration">
+                    <i class="fa fa-cog"></i>
                 </button>
             </div>
         </header>
@@ -24,13 +29,13 @@
                 <i class="material-icons">{{ icon }}</i>
             </div>
         </div>
-        <div class="outer-controls-container" v-if="false">
+        <div class="outer-controls-container">
             <div class="session-control">
                 <h4>Session</h4>
                 <div class="cs-row">
                     <button @click="removeTime('session')">
                         <i class="material-icons">navigate_before</i></button
-                    ><span class="value">{{ session }}</span
+                    ><span class="value">{{ modes.session.minutes }}</span
                     ><button @click="addTime('session')">
                         <i class="material-icons">navigate_next</i>
                     </button>
@@ -43,17 +48,15 @@
             <div class="rest-control">
                 <h4>Rest</h4>
                 <div class="cs-row">
-                    <button @click="removeTime('rest')">
+                    <button @click="removeTime('break')">
                         <i class="material-icons">navigate_before</i></button
-                    ><span class="value">{{ rest }}</span
-                    ><button @click="addTime('rest')">
+                    ><span class="value">{{ modes.break.minutes }}</span
+                    ><button @click="addTime('break')">
                         <i class="material-icons">navigate_next</i>
                     </button>
                 </div>
                 <!-- <audio id="audio" src="./assets/muerte_en_hawaii.mp3"></audio> -->
             </div>
-
-            Item
         </div>
 
         <div class="promodoro__footer">
@@ -70,28 +73,24 @@
                 </multiselect>
             </div>
         </div>
+
+        <promodoro-configuration-modal
+            :is-open="isConfigurationOpen"
+            @cancel="toggleConfiguration"
+            @saved="toggleConfiguration">
+        </promodoro-configuration-modal>
     </div>
 </template>
 
 <script>
 const time = { minutes: 0, seconds: 10 };
-const SESSION_MINUTES= 25;
-const BREAK_MINUTES= 5;
-const LONG_BREAK_MINUTES= 15;
-const TIME_SECONDS= 0;
-const PROMODORO_TEMPLATE = [
-    'session',
-    'break',
-    'session',
-    'break',
-    'session',
-    'break',
-    'session',
-    'longBreak'
-]
+
 import Tracker from "../timeTracker/tracker";
+import PromodoroConfigurationModal from "./Configuration"
+import promodoroMixin from "./promodoro"
 
 export default {
+    mixins: [promodoroMixin],
     props: {
         tasks: {
             type: Array,
@@ -102,6 +101,9 @@ export default {
         tracker: {
             type: Object
         }
+    },
+    components: {
+        PromodoroConfigurationModal
     },
     data() {
         return {
@@ -114,21 +116,22 @@ export default {
             modes: {
                 session: {
                     name: "session",
-                    minutes: SESSION_MINUTES,
-                    seconds: TIME_SECONDS
+                    minutes: 0,
+                    seconds: 0
                 },
                 break: {
                     name: "break",
-                    minutes: BREAK_MINUTES,
-                    seconds: TIME_SECONDS
+                    minutes: 0,
+                    seconds: 0
                 },
                 longBreak: {
                     name: "long",
-                    minutes: LONG_BREAK_MINUTES,
-                    seconds: TIME_SECONDS
+                    minutes: 0,
+                    seconds: 0
                 }
             },
-            promodoroTemplate: PROMODORO_TEMPLATE,
+            isConfigurationOpen: false,
+            promodoroTemplate: [],
             modeSelected: "session",
             task: [],
             track: null
@@ -136,7 +139,7 @@ export default {
     },
     mounted() {
         this.audio = document.querySelector("#audio");
-        this.reset();
+        this.init()
     },
 
     beforeDestroy() {
@@ -149,6 +152,7 @@ export default {
             this.$emit('update:tracker', this.track)
         }
     },
+
 
     computed: {
         mode() {
@@ -172,6 +176,9 @@ export default {
             minutes = minutes < 10 ? (minutes = "0" + minutes) : minutes;
             return `${minutes}:${seconds}`;
         }
+    },
+    mounted() {
+        this.init();
     },
 
     methods: {
@@ -199,13 +206,24 @@ export default {
         },
 
         reset() {
+            const permission = localStorage.getItem('permission')
+            if (Notification && permission === 'granted') {
+                const notification = new Notification("Expired");
+            } else if (permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    localStorage.setItem('permission', permission)
+                    new Notification("Expired", {
+                        body: "Time has expired"
+                    });
+                })
+            }
             this.stop();
             this.run = 0;
             this.round = 0;
-            this.time = { minutes: SESSION_MINUTES, seconds: TIME_SECONDS };
-            this.modes.session.minutes = SESSION_MINUTES;
-            this.modes.break.minutes = BREAK_MINUTES;
-            this.modes.longBreak.minutes = LONG_BREAK_MINUTES;
+            this.time = {
+                minutes: this.modes.session.minutes,
+                seconds: this.modes.session.seconds
+            };
             this.modeSelected = "session";
         },
 
@@ -264,12 +282,13 @@ export default {
 
         addTime(property) {
             const self = this;
-            this[property]++;
+            this.modes[property].minutes +=1;
+            const { minutes, seconds} = this.modes[property]
 
             if (property == "session" && this.round == 0) {
-                self.updateTime(this[property]);
-            } else if (property == "rest" && this.round == 1) {
-                self.updateTime(this[property]);
+                self.updateTime(minutes, seconds);
+            } else if (property == "break" && this.round == 1) {
+                self.updateTime(minutes, seconds);
             }
 
             this.stop();
@@ -277,20 +296,21 @@ export default {
 
         removeTime(property) {
             const self = this;
-            if (this[property] > 0) {
-                this[property]--;
+            if (this.modes[property].minutes > 0) {
+                this.modes[property].minutes-=1;
             }
+            const { minutes, seconds} = this.modes[property]
 
             if (property == "session" && this.round == 0) {
-                self.updateTime(this[property]);
-            } else if (property == "rest" && this.round == 1) {
-                self.updateTime(this[property]);
+                self.updateTime(minutes, seconds);
+            } else if (property == "break" && this.round == 1) {
+                self.updateTime(minutes, seconds);
             }
 
             this.stop();
         },
 
-        updateTime(mins, secs = "00") {
+        updateTime(mins, secs = 0) {
             this.time.minutes = mins;
             this.time.seconds = secs;
         },
@@ -311,6 +331,13 @@ export default {
             this.modeSelected = modeName;
             this.time.minutes = this.modes[modeName].minutes;
             this.time.seconds = this.modes[modeName].seconds;
+        },
+
+        toggleConfiguration() {
+            if (this.isConfigurationOpen) {
+                this.init();
+            }
+            this.isConfigurationOpen = !this.isConfigurationOpen;
         }
     }
 };
