@@ -84,24 +84,13 @@
 
 <script>
 const time = { minutes: 0, seconds: 10 };
-const SESSION_MINUTES= 25;
-const BREAK_MINUTES= 5;
-const LONG_BREAK_MINUTES= 15;
-const TIME_SECONDS= 0;
-const PROMODORO_TEMPLATE = [
-    'session',
-    'break',
-    'session',
-    'break',
-    'session',
-    'break',
-    'session',
-    'longBreak'
-]
+
 import Tracker from "../timeTracker/tracker";
 import PromodoroConfigurationModal from "./Configuration"
+import promodoroMixin from "./promodoro"
 
 export default {
+    mixins: [promodoroMixin],
     props: {
         tasks: {
             type: Array,
@@ -127,22 +116,22 @@ export default {
             modes: {
                 session: {
                     name: "session",
-                    minutes: SESSION_MINUTES,
-                    seconds: TIME_SECONDS
+                    minutes: 0,
+                    seconds: 0
                 },
                 break: {
                     name: "break",
-                    minutes: BREAK_MINUTES,
-                    seconds: TIME_SECONDS
+                    minutes: 0,
+                    seconds: 0
                 },
                 longBreak: {
                     name: "long",
-                    minutes: LONG_BREAK_MINUTES,
-                    seconds: TIME_SECONDS
+                    minutes: 0,
+                    seconds: 0
                 }
             },
             isConfigurationOpen: false,
-            promodoroTemplate: PROMODORO_TEMPLATE,
+            promodoroTemplate: [],
             modeSelected: "session",
             task: [],
             track: null
@@ -150,7 +139,7 @@ export default {
     },
     mounted() {
         this.audio = document.querySelector("#audio");
-        this.reset();
+        this.init()
     },
 
     beforeDestroy() {
@@ -188,38 +177,11 @@ export default {
             return `${minutes}:${seconds}`;
         }
     },
-    created() {
+    mounted() {
         this.init();
     },
 
     methods: {
-        init() {
-            if (localStorage.getItem('workflowTemplate')) {
-                this.promodoroTemplate = JSON.parse(localStorage.getItem('workflowTemplate'))
-            }
-            const modes = JSON.parse(localStorage.getItem('workflowItems'))
-
-            this.modes = {
-                session: {
-                    name: "session",
-                    minutes: modes ? modes.session.minutes : SESSION_MINUTES,
-                    seconds: modes ? modes.session.seconds : TIME_SECONDS
-                },
-                break: {
-                    name: "break",
-                    minutes: modes ? modes.break.minutes : TIME_SECONDSBREAK_MINUTES,
-                    seconds:  modes ? modes.break.seconds : TIME_SECONDS
-                },
-
-                longBreak: {
-                    name: "long",
-                    minutes: modes ? modes.longBreak.minutes : LONG_BREAK_MINUTES,
-                    seconds: modes ? modes.longBreak.seconds : TIME_SECONDS
-                }
-            }
-            this.reset();
-        },
-
         play() {
             this.stopSound();
             switch (this.run) {
@@ -244,6 +206,17 @@ export default {
         },
 
         reset() {
+            const permission = localStorage.getItem('permission')
+            if (Notification && permission === 'granted') {
+                const notification = new Notification("Expired");
+            } else if (permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    localStorage.setItem('permission', permission)
+                    new Notification("Expired", {
+                        body: "Time has expired"
+                    });
+                })
+            }
             this.stop();
             this.run = 0;
             this.round = 0;

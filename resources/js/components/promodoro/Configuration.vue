@@ -28,17 +28,17 @@
                  <h1>  Workflow Template </h1>
                  <div class="form-group">
                     <div class="workflow-item"
-                        v-for="(item, index) in workflowTemplate"
+                        v-for="(item, index) in promodoroTemplate"
                         :key="`template-item-${index}`"
                         @click="removeItem(index)">
-                        {{ workflowItems[item] ? workflowItems[item].name : item }}
+                        {{ modes[item] ? modes[item].name : item }}
                         <i class="fa fa-minus"></i>
                     </div>
                  </div>
                  <h1>  Workflow Items </h1>
                  <div class="form-group">
                     <div class="workflow-item"
-                        v-for="(item, key) in workflowItems"
+                        v-for="(item, key) in modes"
                         :key="key"
                         @click="addWorkflowItem(key)">
                         {{ item.name }}
@@ -61,7 +61,7 @@
                         <input
                             type="number"
                             class="form-control"
-                            v-model="workflowItems.session.minutes">
+                            v-model="modes.session.minutes">
                     </div>
                     <div class="form-group">
                         <label for="">
@@ -70,7 +70,7 @@
                         <input
                             type="number"
                             class="form-control"
-                            v-model="workflowItems.break.minutes"
+                            v-model="modes.break.minutes"
                         >
                     </div>
                     <div class="form-group">
@@ -80,7 +80,7 @@
                         <input
                             type="number"
                             class="form-control"
-                            v-model="workflowItems.longBreak.minutes"
+                            v-model="modes.longBreak.minutes"
                         >
                     </div>
                  </div>
@@ -101,8 +101,10 @@
 <script>
 import DialogModal from "../../Jetstream/DialogModal"
 import PrimaryButton from "../../Jetstream/Button"
+import promodoroMixin from "./promodoro"
 
 export default {
+    mixins: [promodoroMixin],
     components: {
         DialogModal,
         PrimaryButton
@@ -117,10 +119,7 @@ export default {
     },
     data() {
         return {
-            formData: {
-
-            },
-            workflowItems: {
+            modes: {
                 session: {
                     name: 'Session',
                     minutes: 25,
@@ -137,25 +136,27 @@ export default {
                     seconds: 0
                 }
             },
-            workflowTemplate: JSON.parse(localStorage.getItem('workflowTemplate')) || []
+            promodoroTemplate: JSON.parse(localStorage.getItem('promodoroTemplate')) || []
         }
     },
     watch: {
-        recordData() {
-            this.formData = this.recordData
+        isOpen() {
+            this.init();
         }
     },
     methods: {
         save() {
+            localStorage.setItem('promodoroTemplate', JSON.stringify(this.promodoroTemplate))
+            localStorage.setItem('modes', JSON.stringify(this.modes))
             this.$emit('saved');
-            localStorage.setItem('workflowTemplate', JSON.stringify(this.workflowTemplate))
-            localStorage.setItem('workflowItems', JSON.stringify(this.workflowItems))
         },
+
         addWorkflowItem(item) {
-            this.workflowTemplate.push(item)
+            this.promodoroTemplate.push(item)
         },
+
         removeItem(index) {
-            this.workflowTemplate.splice(index, 1);
+            this.promodoroTemplate.splice(index, 1);
         }
     }
 }
