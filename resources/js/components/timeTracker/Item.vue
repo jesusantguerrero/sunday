@@ -124,7 +124,8 @@ export default {
 
   computed: {
     duration() {
-      return this.timeEntry.duration || this.localDuration;
+        console.log(this)
+      return this.durationFromMs(this.timeEntry.duration) || this.localDuration;
     },
 
     localDuration() {
@@ -161,6 +162,14 @@ export default {
                 })
             }
         })
+    },
+
+
+    durationFromMs(ms) {
+        const date = new Date(ms);
+        return date.toISOString().slice(11, -2).split(':').map((unit) => {
+            return Math.round(unit).toString().padStart(2,'0')
+        }).join(":")
     },
 
     toggleTimer() {

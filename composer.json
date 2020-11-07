@@ -9,7 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
-        "php-mailparse":"*",
+        "doctrine/dbal": "^2.12",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "google/apiclient": "2.7",
@@ -20,6 +20,7 @@
         "laravel/jetstream": "^1.0",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.0",
+        "php-mailparse": "*",
         "php-mime-mail-parser/php-mime-mail-parser": "^6.0",
         "twilio/sdk": "^6.10"
     },

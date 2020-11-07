@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Team;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,8 @@ class AppServiceProvider extends ServiceProvider
                 return  $team->allUsers();
             }
         });
+
+        JsonResource::withoutWrapping();
 
     }
 }
