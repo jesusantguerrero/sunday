@@ -60,6 +60,7 @@
                         </label>
                         <input
                             type="number"
+                            min="1"
                             class="form-control"
                             v-model="modes.session.minutes">
                     </div>
@@ -70,6 +71,7 @@
                         <input
                             type="number"
                             class="form-control"
+                            min="1"
                             v-model="modes.break.minutes"
                         >
                     </div>
@@ -80,10 +82,14 @@
                         <input
                             type="number"
                             class="form-control"
+                            min="1"
                             v-model="modes.longBreak.minutes"
                         >
                     </div>
                  </div>
+                <primary-button @click.native.prevent="playSound">
+                    Test Audio
+                </primary-button>
             </form>
         </template>
 
@@ -147,6 +153,9 @@ export default {
     methods: {
         save() {
             localStorage.setItem('promodoroTemplate', JSON.stringify(this.promodoroTemplate))
+            Object.keys(this.modes).forEach((key) => {
+                this.modes[key].minutes = Number(this.modes[key].minutes) || 1;
+            })
             localStorage.setItem('modes', JSON.stringify(this.modes))
             this.$emit('saved');
         },

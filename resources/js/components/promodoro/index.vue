@@ -1,19 +1,22 @@
 <template>
     <div class="promodoro-app">
         <header
-            class="bg-red-400 text-white font-bold flex justify-between w-full items-center py-2"
+            class=" text-white font-bold flex justify-between w-full items-center py-2"
+            :class="`bg-${promodoroColor}-400`"
         >
             <span> Promodoro </span>
             <div class="flex">
-                <div class="actions rounded-lg bg-red-700 flex h-8">
+                <div class="actions rounded-lg flex h-8"
+                :class="`bg-${promodoroColor}-700`"
+                >
                     <button
-                        v-for="(modeObj, key) in modes"
+                        v-for="(mode, key) in modes"
                         :key="key"
                         class="px-2 h-full rounded-lg"
-                        :class="{ 'bg-red-100 text-red-700': modeSelected == key }"
+                        :class="{ [`bg-${promodoroColor}-100 text-${promodoroColor}-700`]: modeSelected == key }"
                         @click="setMode(key)"
                     >
-                        {{ modeObj.name }}
+                        {{ mode.name }}
                     </button>
                 </div>
                 <button @click="toggleConfiguration" class="ml-2" title="Promodoro configuration">
@@ -24,7 +27,7 @@
         <div class="clock" :class="{ rest: round, ticking: run == 1 }">
             <time class="time">{{ formattedTime }}</time
             ><span class="note">click here to {{ message }}</span
-            ><span>{{ mode }}</span>
+            ><span>{{ modes[modeSelected].name }}</span>
             <div class="inner-controls" @click="play">
                 <i class="material-icons">{{ icon }}</i>
             </div>
@@ -55,7 +58,6 @@
                         <i class="material-icons">navigate_next</i>
                     </button>
                 </div>
-                <!-- <audio id="audio" src="./assets/muerte_en_hawaii.mp3"></audio> -->
             </div>
         </div>
 
@@ -100,6 +102,9 @@ export default {
         },
         tracker: {
             type: Object
+        },
+        timerColor: {
+            type: String
         }
     },
     components: {
@@ -112,24 +117,6 @@ export default {
             run: 0,
             timer: "",
             round: 0,
-            audio: "",
-            modes: {
-                session: {
-                    name: "session",
-                    minutes: 0,
-                    seconds: 0
-                },
-                break: {
-                    name: "break",
-                    minutes: 0,
-                    seconds: 0
-                },
-                longBreak: {
-                    name: "long",
-                    minutes: 0,
-                    seconds: 0
-                }
-            },
             isConfigurationOpen: false,
             promodoroTemplate: [],
             modeSelected: "session",
@@ -138,7 +125,6 @@ export default {
         };
     },
     mounted() {
-        this.audio = document.querySelector("#audio");
         this.init()
     },
 
@@ -150,15 +136,21 @@ export default {
     watch: {
         track() {
             this.$emit('update:tracker', this.track)
+        },
+        promodoroColor() {
+            this.$emit('update:timerColor', this.promodoroColor)
+        },
+        time: {
+            deep: true,
+            handler() {
+                const title = this.run ? `(${this.formattedTime}) Sunday` : 'Sunday'
+                document.getElementsByTagName('title')[0].text = title;
+            }
         }
     },
 
 
     computed: {
-        mode() {
-            return this.round == 0 ? "Session" : "Rest";
-        },
-
         message() {
             switch (this.run) {
                 case 0:
@@ -168,6 +160,10 @@ export default {
                 case 2:
                     return "resume";
             }
+        },
+
+        promodoroColor() {
+            return this.modeSelected && this.modes[this.modeSelected].color ? this.modes[this.modeSelected].color : 'red';
         },
 
         formattedTime() {
@@ -205,10 +201,12 @@ export default {
             this.icon = "play_arrow";
         },
 
-        reset() {
+        showNotification() {
             const permission = localStorage.getItem('permission')
             if (Notification && permission === 'granted') {
-                const notification = new Notification("Expired");
+                setTimeout(() => {
+                    const notification = new Notification("Expired");
+                }, 5000)
             } else if (permission !== 'denied') {
                 Notification.requestPermission().then(permission => {
                     localStorage.setItem('permission', permission)
@@ -217,6 +215,9 @@ export default {
                     });
                 })
             }
+        },
+
+        reset() {
             this.stop();
             this.run = 0;
             this.round = 0;
@@ -229,12 +230,13 @@ export default {
 
         clear() {
             this.stop();
-            confirm(`the time of the ${this.modeSelected} has finished`);
-            const isLastMode = this.promodoroTemplate.length - 1 == this.round;
-            this.round = isLastMode ? 0 : this.round + 1;
-            const nextMode = this.promodoroTemplate[this.round];
-            this.setMode(nextMode);
-            this.run = 0;
+            if (confirm(`the time of the ${this.modeSelected} has finished`)) {
+                const isLastMode = this.promodoroTemplate.length - 1 == this.round;
+                this.round = isLastMode ? 0 : this.round + 1;
+                const nextMode = this.promodoroTemplate[this.round];
+                this.setMode(nextMode);
+                this.run = 0;
+            }
         },
 
         initTimer(selfMode) {
@@ -272,8 +274,10 @@ export default {
                     this.time.minutes--;
                     this.time.seconds = 59;
                 } else {
-                    this.clear();
-                    this.playSound();
+                    this.playSound()
+                    setTimeout(() => {
+                        this.clear();
+                    }, 200)
                 }
             } else {
                 this.time.seconds--;
@@ -282,7 +286,7 @@ export default {
 
         addTime(property) {
             const self = this;
-            this.modes[property].minutes +=1;
+            this.modes[property].minutes = Number(this.modes[property].minutes ) + 1;
             const { minutes, seconds} = this.modes[property]
 
             if (property == "session" && this.round == 0) {
@@ -313,18 +317,6 @@ export default {
         updateTime(mins, secs = 0) {
             this.time.minutes = mins;
             this.time.seconds = secs;
-        },
-
-        playSound() {
-            //   this.audio.currentTime = 0
-            //   this.audio.play()
-            window.navigator.vibrate([1000, 100, 1000, 100, 1000, 100, 1000]);
-            //   this.stopSound()
-        },
-
-        stopSound() {
-            //   this.audio.pause()
-            window.navigator.vibrate(0);
         },
 
         setMode(modeName) {
@@ -428,6 +420,7 @@ export default {
 
 .outer-controls-container [class*="-control"] {
     margin: 5px;
+    color: white;
 }
 
 .cs-row {
@@ -444,7 +437,7 @@ export default {
     height: 100%;
     color: white;
     padding: 5px;
-    background: #0277bd;
+    background: transparent;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -458,7 +451,7 @@ export default {
 }
 
 .cs-row button:hover {
-    background: #0397ef;
+    background: transparent;
 }
 
 .cs-row .value {
@@ -469,7 +462,8 @@ export default {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background: #0277bd;
+    background: transparent;
+    color: white;
 }
 
 @keyframes ticking {
@@ -493,6 +487,6 @@ export default {
 }
 
 .promodoro__footer {
-    @apply bg-red-400 text-white font-bold flex justify-between w-full items-center py-2 px-4;
+    @apply bg-transparent text-white font-bold flex justify-between w-full items-center py-2 px-4;
 }
 </style>

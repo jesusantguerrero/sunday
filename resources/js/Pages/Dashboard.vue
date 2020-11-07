@@ -86,10 +86,11 @@
                     </div>
 
                     <div class="section-card committed">
-                         <div class="bg-red-400 text-gray-600 font-bold px-0">
+                         <div :class="`bg-${promodoroColor}-400 text-gray-600 font-bold px-0`">
                             <promodoro
                                 ref="Promodoro"
                                 :tracker.sync="tracker"
+                                :timer-color.sync="promodoroColor"
                                 :tasks="todo"
                             >
                             </promodoro>
@@ -207,6 +208,7 @@
             return {
                 modes: ['all', 'todos', 'committed'],
                 modeSelected: 'all',
+                promodoroColor: "red",
                 localCommitDate: new Date,
                 isLoading: false,
                 isStandupOpen: false,
