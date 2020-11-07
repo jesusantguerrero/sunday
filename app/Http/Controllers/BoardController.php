@@ -135,11 +135,11 @@ class BoardController extends Controller
 
             'todo' => ItemResource::collection(Item::getByCustomField(['status', 'todo'], $request->user())),
             'commitDate' => $commitDate,
-            'committed' => Item::where([
+            'committed' => ItemResource::collection(Item::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,
                 'commit_date' => $commitDate
-            ])->with('stage')->get(),
+            ])->with('stage')->get()),
             'links' => Link::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,
