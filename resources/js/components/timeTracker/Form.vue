@@ -178,18 +178,7 @@ export default {
 
   computed: {
     duration() {
-      return this.timeEntry.duration || this.localDuration;
-    },
-
-    localDuration() {
-      let duration = 0;
-      if (this.timeEntry.start) {
-        const start = formatDate(new Date(this.timeEntry.start), "yyyy-MM-dd HH:mm:ss");
-        duration = new Duration(new Date(start), this.now);
-        return duration.toString("%H:%M:%S");
-      }
-
-      return "00:00:00";
+      return this.timeEntry.duration || this.getDuration(true);
     },
 
     timerButtonIcon() {
@@ -234,7 +223,6 @@ export default {
     },
 
     updateEntry(formData) {
-    debugger
       formData = formData || this.prepareForm();
       return axios.put(`/time-entries/${this.timeEntry.id}`, formData);
     },
@@ -253,6 +241,7 @@ export default {
       formData.start = formatDate(new Date(this.timeEntry.start), "yyyy-MM-dd HH:mm:ss");
       formData.label_ids = JSON.stringify(this.timeEntry.label_ids);
       formData.status = 1;
+      formData.duration = this.getDuration();
       this.updateEntry(formData).then(() => {
         this.running = false;
         this.resetTimer();
@@ -272,6 +261,19 @@ export default {
       setInterval(() => {
         this.now = new Date();
       }, 1000);
+    },
+
+    getDuration(formatted) {
+      let duration = 0;
+      if (this.timeEntry.start) {
+        const start = formatDate(new Date(this.timeEntry.start), "yyyy-MM-dd HH:mm:ss");
+        duration = new Duration(new Date(start), this.now);
+      } else {
+          const date = new Date();
+          duration = new Duration(date, date);
+      }
+
+      return formatted ? duration.toString("%H:%M:%S") : duration.milliseconds;
     },
 
     focusTagSelect(event) {

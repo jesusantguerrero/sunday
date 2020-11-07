@@ -40,6 +40,10 @@ class Item extends Model
         }
     }
 
+    public function timeEntries() {
+        return $this->hasMany('App\Models\TimeEntry', 'item_id', 'id');
+    }
+
     public static function getByCustomField($entry, $user) {
         return Item::whereHas('fields', function($query) use ($entry){
             $query->where('value', $entry[1]);

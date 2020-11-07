@@ -194,11 +194,26 @@ export default {
         },
 
         stop() {
-            this.track && this.track.stopTimer();
-            this.track = null;
+            this.stopTracker();
             clearInterval(this.timer);
             this.run = 2;
             this.icon = "play_arrow";
+        },
+
+        stopTracker() {
+            if (this.track) {
+                this.track.stopTimer();
+                this.$set(this.tracker, 'duration', this.tracker.getDuration());
+                this.$inertia.on('success', (event) => {
+                    this.$nextTick(() => {
+                        this.track = null;
+                    })
+                })
+                this.$inertia.reload({
+                    only: ['todo'],
+                    preserveState: true
+                });
+            }
         },
 
         showNotification() {
@@ -256,6 +271,7 @@ export default {
             }
 
             this.timer = setInterval(() => {
+                this.$set(this.tracker, 'duration', this.tracker.getDuration());
                 this.countDown();
             }, 1000);
         },

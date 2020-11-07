@@ -1,9 +1,9 @@
 <template>
     <app-layout>
         <div class="">
-            <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex">
+            <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row">
                 <!-- Left Side -->
-                <div class="w-80 mr-4  bg-white min-h-screen">
+                <div class="hidden md:block md:w-80 mr-4  bg-white min-h-screen">
                     <board-side
                         :boards="boards"
                         class="mb-10"
@@ -21,10 +21,10 @@
                 <!-- End of left side -->
 
                 <!-- Main board -->
-                <div class="w-7/12 mx-4 pt-12">
-                    <div class="flex justify-between mr-2">
+                <div class="w-100 md:w-7/12 md:mx-4 pt-12">
+                    <div class="flex justify-between flex-col md:flex-row mx-2 md:mr-2 md:ml-0">
                         <span class="text-3xl font-bold"> Today's Todos </span>
-                        <div class="controls bg-purple-700 rounded-lg">
+                        <div class="controls h-12 bg-purple-700 rounded-lg">
                             <button
                                 v-for="mode in modes"
                                 :key="mode"
@@ -64,7 +64,7 @@
                 <!-- End of main board -->
 
                 <!-- Right Side -->
-                <div class="w-3/12 ml-4 pt-12">
+                <div class="w-100 md:w-3/12 md:ml-4 pt-12">
                     <span class="text-3xl ml-2 font-bold"> Fast Access </span>
 
                     <div class="section-card committed mt-5">

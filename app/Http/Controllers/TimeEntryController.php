@@ -36,7 +36,7 @@ class TimeEntryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Response $response, TimeEntry $entry)
+    public function store(Request $request, TimeEntry $entry)
     {
         $entryData = [
             'user_id' =>  $request->user()->id,

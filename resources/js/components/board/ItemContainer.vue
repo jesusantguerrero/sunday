@@ -1,43 +1,37 @@
 <template>
-<div class="item-container section-card committed mt-5">
-    <header class="bg-purple-400 text-white font-bold">
-        {{ title }}
-    </header>
-    <slot>
+    <div class="item-container section-card committed mt-5">
+        <header class="bg-purple-400 text-white font-bold">
+            {{ title }}
+        </header>
+        <slot> </slot>
+        <div class="body text-gray-600">
+            <item-container-task
+                v-for="task in tasks"
+                :key="`task-${task.id}`"
+                :task="task"
+                :tracker="tracker"
+                @item-clicked="$emit('item-clicked', task)"
+                @update-item="$emit('update-item', $event)"
+            >
+            </item-container-task>
 
-    </slot>
-    <div class="body text-gray-600">
-        <div v-for="task in tasks" :key="`task-${task.id}`" class="task-item">
-            <div>
-                <label class="checkbox-label">
-                <input
-                    type="checkbox"
-                    @change="$emit('update-item', task)"
-                    name=""
-                    :id="task.id"
-                    v-model="task.done"
-                />
-                    <span class="font-bold">
-                    [{{ task.stage.name }}]
-                </span>
-                <span>
-                    {{ task.title }}
-                </span>
-                </label>
-            </div>
-             <button @click="$emit('item-clicked', task)" class="play-button" v-if="!task.commit">
-                <i class="fa" :class="[isTracker(task) ? 'fa-pause' : 'fa fa-play']"/>
-            </button>
-        </div>
-        <div v-if="!tasks.length" class="task-item text-center font-bold text-gray-400">
+            <div
+                v-if="!tasks.length"
+                class="task-item text-center font-bold text-gray-400"
+            >
                 There's no items to show
+            </div>
         </div>
     </div>
-</div>
 </template>
 
 <script>
+import ItemContainerTask from "./itemContainerTask";
+
 export default {
+    components: {
+        ItemContainerTask
+    },
     props: {
         tasks: {
             type: Array,
@@ -45,18 +39,13 @@ export default {
         },
         title: {
             type: String,
-            default: 'Todos'
+            default: "Todos"
         },
         tracker: {
             type: Object
         }
-    },
-    methods: {
-        isTracker(task) {
-            return this.tracker && this.tracker.timeEntry.item_id == task.id;
-        }
     }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -64,7 +53,7 @@ export default {
     @apply py-4 border-b-2 border-gray-100 flex justify-between;
 }
 
-.item-container.section-card .body{
+.item-container.section-card .body {
     padding-top: 0;
     padding-bottom: 0;
     min-height: unset;

@@ -20,6 +20,7 @@ export default class tracker {
             this.onUpdate = null
             this.interval = null
         }
+
         startTimer() {
             const formData = cloneDeep(this.timeEntry);
 
@@ -67,11 +68,11 @@ export default class tracker {
             formData.start = formatDate(new Date(this.timeEntry.start), "yyyy-MM-dd HH:mm:ss");
             formData.label_ids = JSON.stringify(this.timeEntry.label_ids);
             formData.status = 1;
+            formData.duration = this.getDuration();
             this.updateEntry(formData).then(() => {
                 this.running = false;
                 clearInterval(this.interval)
             this.resetTimer();
-            this.$emit("stopped");
             });
         }
 
@@ -90,20 +91,22 @@ export default class tracker {
             }, 1000);
         }
 
-        getDuration() {
+        getDuration(formatted) {
             let duration = 0;
             if (this.timeEntry.start) {
               const start = formatDate(new Date(this.timeEntry.start), "yyyy-MM-dd HH:mm:ss");
               duration = new Duration(new Date(start), this.now);
-              return duration.toString("%H:%M:%S");
+            } else {
+                const date = new Date();
+                duration = new Duration(date, date);
             }
-
-            return "00:00:00";
+            return formatted ? duration.toString("%H:%M:%S") : duration.seconds * 1000;
         }
 
-        focusTagSelect(event) {
-            if (event.relatedTarget) {
-            this.$refs.tagSelect.click();
-            }
+        static durationFromMs(ms) {
+            const date = new Date(ms);
+            return date.toISOString().slice(11, -2).split(':').map((unit) => {
+                return Math.floor(unit).toString().padStart(2,'0')
+            }).join(":")
         }
 }
