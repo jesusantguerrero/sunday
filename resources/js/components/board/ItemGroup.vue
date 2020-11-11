@@ -70,6 +70,9 @@
                         @saved="saveChanges(item, 'title', $event)"
                     >
                     </item-group-cell>
+                    <div class="flex items-center mr-2" @click="$emit('open-item', item)">
+                        <i class="fa fa-ellipsis-v"></i>
+                    </div>
                     </div>
 
                     <div
@@ -151,6 +154,7 @@ export default {
       newItem: {},
       isEditMode: false,
       isExpanded: true,
+      isItemModalOpen: false
     };
   },
   methods: {

@@ -4,16 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Checklist;
 
 class Item extends Model
 {
     protected $fillable = ['board_id', 'team_id', 'stage_id', 'title', 'order', 'user_id', 'done','commit_date'];
-    protected $with = ['fields'];
+    protected $with = ['fields', 'checklist'];
     use HasFactory;
 
 
     public function fields() {
         return $this->hasMany('App\Models\FieldValue', 'entity_id', 'id');
+    }
+
+    public function checklist() {
+        return $this->hasMany('App\Models\Checklist', 'item_id', 'id')->orderBy('order');
     }
 
     public function stage() {
@@ -37,6 +42,21 @@ class Item extends Model
                     'value' => $field['value'] ?? ''
                 ]);
             }
+        }
+    }
+
+    public function saveChecklist($list) {
+        Checklist::where(['item_id' => $this->id])->delete();
+
+        foreach ($list as $check) {
+            $this->checklist()->create([
+                'user_id' => $this->user_id,
+                'team_id' => $this->team_id,
+                'item_id' => $this->id,
+                'title' => $check['title'],
+                'done' => $check['done'] ?? false,
+                'order' => $check['order'] ?? 0
+            ]);
         }
     }
 

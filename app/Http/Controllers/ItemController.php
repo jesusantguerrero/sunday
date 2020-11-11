@@ -32,6 +32,7 @@ class ItemController extends Controller
         $item = new Item();
         $item = $item::create($postData);
         $item->saveFields($request->post('fields'));
+        $item->saveCheckList($request->post('checklist'));
         return $response->send($item);
     }
 
@@ -58,6 +59,7 @@ class ItemController extends Controller
         $item = Item::find($id);
         $item->update($request->post());
         $item->saveFields($request->post('fields'));
+        $item->saveCheckList($request->post('checklist'));
         return $item;
 
     }

@@ -62,6 +62,7 @@
                         :items="stage.items"
                         :create-mode="createMode"
                         @saved="addItem"
+                        @open-item="openItem"
                         @item-deleted="confirmDeleteItem"
                         @stage-updated="addStage"
                         class="mt-10"
@@ -114,6 +115,13 @@
                 </jet-danger-button>
             </template>
         </jet-confirmation-modal>
+
+        <item-modal
+            @cancel="isItemModalOpen=false"
+            @saved="isItemModalOpen=false"
+            :record-data="openedItem"
+            :is-open="isItemModalOpen">
+        </item-modal>
     </div>
 </template>
 
@@ -122,6 +130,7 @@ import JetConfirmationModal from "../../Jetstream/ConfirmationModal";
 import JetDangerButton from "../../Jetstream/DangerButton";
 import JetSecondaryButton from "../../Jetstream/SecondaryButton";
 import ItemGroup from "./ItemGroup.vue";
+import ItemModal from "./ItemModal";
 import ItemKanbanContainer from "./ItemKanbanContainer.vue";
 import Draggable from "vuedraggable";
 import { throttle } from "lodash-es";
@@ -130,6 +139,7 @@ export default {
     name: "Board",
     components: {
         ItemGroup,
+        ItemModal,
         Draggable,
         ItemKanbanContainer,
         JetConfirmationModal,
@@ -198,7 +208,9 @@ export default {
             searchOptions: {
                 search: this.filters.search,
                 done: this.filters.done
-            }
+            },
+            openedItem: {},
+            isItemModalOpen: false
         };
     },
     watch: {
@@ -308,6 +320,7 @@ export default {
 
             this.searchOptions.done = nextValues[this.searchOptions.done];
         },
+
         pickBy(object, predicate) {
             const result = {}
                 Object.entries(this.searchOptions).map(([key, value]) => {
@@ -317,6 +330,11 @@ export default {
                 })
 
             return result;
+        },
+
+        openItem(item) {
+            this.isItemModalOpen = true;
+            this.openedItem = item;
         }
     }
 };
