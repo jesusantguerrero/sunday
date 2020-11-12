@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class FieldRule extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'team_id', 'stage_id', 'name', 'reference'];
+    protected $fillable = ['user_id', 'team_id', 'board_id', 'name', 'reference'];
 }

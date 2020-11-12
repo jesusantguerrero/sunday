@@ -14,7 +14,6 @@
                     <label for="title"> Checklist </label>
                     <draggable
                         v-model="formData.checklist"
-                        @end="saveReorder"
                         handle=".handle"
                     >
                         <div v-for="(check, index) in formData.checklist" :key="check.id" class="checklist-item">
@@ -148,7 +147,7 @@ export default {
             }
         }
 
-        &__input {
+        &__input, form-control {
             border: none;
             background: white;
 

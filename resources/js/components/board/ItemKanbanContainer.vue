@@ -4,10 +4,10 @@
             v-for="(quadrant, name) in kanbanData"
             :key="name"
             class="w-full border-2 border-gray-200 mx-2"
-            :class="`bg-${quadrant.attributes.color}-200`"
         >
             <div
                 class="header capitalize font-bold flex w-full justify-center items-center h-12"
+                :class="`text-${quadrant.attributes.color}-400`"
             >
                 {{ name }}
             </div>
@@ -48,7 +48,7 @@ export default {
 <style lang="scss">
 .task-item {
     @apply py-4;
-    border-bottom: 2px solid rgba(0,0,0,.1);
+    border-top: 1px solid rgba(0,0,0,.1);
 }
 
 .item-container.section-card .body{

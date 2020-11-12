@@ -9,7 +9,7 @@
                 class="w-full p-2"
                 placeholder="search boards..."
             />
-            <button class="bg-purple-400 text-white p-2" @click="addBoard">
+            <button class="bg-purple-400 text-white p-2">
                 Search
             </button>
         </div>
@@ -64,7 +64,7 @@
             />
             <button
                 class="bg-purple-400 text-white p-2"
-                @click.prevent="addBoard()"
+                @click.native="addBoard()"
             >
                 Add
             </button>
@@ -143,6 +143,8 @@ export default {
                     return this.$inertia.visit('dashboard')
                 }
                  this.$inertia.reload();
+            }).catch((err) => {
+                console.log(err)
             });
         }
     }

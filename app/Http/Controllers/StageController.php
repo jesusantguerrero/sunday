@@ -32,7 +32,6 @@ class StageController extends Controller
         $stage->board_id = $request->board_id;
         $stage->name = $request->name;
         $stage->save();
-        $stage->setUp();
         return $response->send($stage);
     }
 

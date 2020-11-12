@@ -59,6 +59,7 @@
                         v-for="stage in board.stages"
                         :key="stage.name"
                         :stage="stage"
+                        :board="board"
                         :items="stage.items"
                         :create-mode="createMode"
                         @saved="addItem"
