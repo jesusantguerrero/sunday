@@ -4,16 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Checklist;
 
 class Item extends Model
 {
     protected $fillable = ['board_id', 'team_id', 'stage_id', 'title', 'order', 'user_id', 'done','commit_date'];
-    protected $with = ['fields'];
+    protected $with = ['fields', 'checklist'];
     use HasFactory;
 
 
+    protected static function boot()
+    {
+        parent::boot();
+        Item::updating(function ($model) {
+            if (!$model->commit_date && $model->done) {
+                $model->commit_date = now()->format('Y-m-d');
+            } else if (!$model->done) {
+                $model->commit_date = null;
+            }
+        });
+    }
+
     public function fields() {
         return $this->hasMany('App\Models\FieldValue', 'entity_id', 'id');
+    }
+
+    public function checklist() {
+        return $this->hasMany('App\Models\Checklist', 'item_id', 'id')->orderBy('order');
     }
 
     public function stage() {
@@ -21,23 +38,41 @@ class Item extends Model
     }
 
     public function saveFields($fields) {
-        foreach ($fields as $field) {
+        if ($fields) {
+            foreach ($fields as $field) {
+                $fieldInstance = FieldValue::where(['field_id' => $field['field_id'], 'entity_id' => $this->id])->get();
+                if (count($fieldInstance) && isset($fieldInstance[0])) {
+                    $fieldInstance[0]->value = isset($field['value']) ? $field['value'] : '';
+                    $fieldInstance[0]->save();
+                } else {
+                    $this->fields()->create([
+                        'user_id' => $this->user_id,
+                        'team_id' => $this->team_id,
+                        'resource' => 'item',
+                        'field_id' => $field['field_id'],
+                        'field_name' => $field['field_name'],
+                        'value' => $field['value'] ?? ''
+                    ]);
+                }
+            }
+        }
+    }
 
-            $fieldInstance = FieldValue::where(['field_id' => $field['field_id'], 'entity_id' => $this->id])->get();
-            if (count($fieldInstance) && isset($fieldInstance[0])) {
-                $fieldInstance[0]->value = isset($field['value']) ? $field['value'] : '';
-                $fieldInstance[0]->save();
-            } else {
-                $this->fields()->create([
+    public function saveChecklist($list) {
+        if ($list) {
+            Checklist::where(['item_id' => $this->id])->delete();
+            foreach ($list as $check) {
+                $this->checklist()->create([
                     'user_id' => $this->user_id,
                     'team_id' => $this->team_id,
-                    'resource' => 'item',
-                    'field_id' => $field['field_id'],
-                    'field_name' => $field['field_name'],
-                    'value' => $field['value'] ?? ''
+                    'item_id' => $this->id,
+                    'title' => $check['title'],
+                    'done' => $check['done'] ?? false,
+                    'order' => $check['order'] ?? 0
                 ]);
             }
         }
+
     }
 
     public function timeEntries() {

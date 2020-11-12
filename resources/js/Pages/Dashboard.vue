@@ -40,6 +40,7 @@
                         v-show="showCommitted"
                         title="Commited"
                         :tasks="committed"
+                        @update-item="updateItem"
                     >
                      <template>
                         <schedule-controls
@@ -292,7 +293,10 @@
                     method,
                     data: item
                 }).then(() => {
-                    return true
+                    this.$inertia.reload({
+                        preserveScroll: true
+                    });
+                    return true;
                 })
             },
 

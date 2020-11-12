@@ -271,7 +271,9 @@ export default {
             }
 
             this.timer = setInterval(() => {
-                this.$set(this.tracker, 'duration', this.tracker.getDuration());
+                if (this.tracker) {
+                    this.$set(this.tracker, 'duration', this.tracker.getDuration());
+                }
                 this.countDown();
             }, 1000);
         },

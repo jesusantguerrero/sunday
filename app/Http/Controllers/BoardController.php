@@ -102,13 +102,13 @@ class BoardController extends Controller
                 'board' => [
                     'id' => $board->id,
                     'name' => $board->name,
+                    'fields' => $board->fields,
+                    'labels' => $board->labels,
                     'stages' => $board->stages->map(function ($stage) use($request) {
                         return [
                             'id' => $stage->id,
                             'board_id' => $stage->board_id,
                             'name' => $stage->name,
-                            'fields' => $stage->fields,
-                            'labels' => $stage->labels,
                             'items' => $stage->items()->filter($request->only('search', 'done'))->get()
                         ];
                     })

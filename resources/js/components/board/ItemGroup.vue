@@ -2,10 +2,24 @@
   <div class="item-group" :class="{ 'bg-gray-200': !isExpanded }">
     <div>
       <div class="grid py-1 grid-cols-11 text-left">
-        <div class="col-span-5 header-cell">
+        <div :class="`col-span-${titleSize} header-cell`">
+            <jet-dropdown align="left" width="48" class="mr-2">
+                <template #trigger>
+                    <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                        <i class="fa fa-angle-down text-lg"></i>
+                    </button>
+                </template>
+
+                <template #content>
+                    <div class="block px-4 py-2 text-xs text-gray-400">
+                        Options
+                    </div>
+                </template>
+            </jet-dropdown>
           <span class="toolbar-buttons mr-2" @click="toggleExpand">
             <i class="fa fa-expand-alt"></i>
           </span>
+
           <span
             class="font-bold"
             @click="toggleEditMode(true)"
@@ -25,7 +39,7 @@
         </div>
 
         <div
-          v-for="field in stage.fields"
+          v-for="field in board.fields"
           :key="field.name"
           class="text-center"
           :class="[field.name == 'owner' ? 'col-span-2' : '']"
@@ -53,7 +67,7 @@
                     v-for="(item, index) in items"
                     :key="`item-${index}`"
                 >
-                    <div class="col-span-5 bg-gray-200 border-2 border-white flex">
+                    <div :class="`col-span-${titleSize} bg-gray-200 border-2 border-white flex`">
                     <div
                         class="checkbox-container bg-gray-300 mr-2 flex items-center px-2"
                     >
@@ -70,10 +84,13 @@
                         @saved="saveChanges(item, 'title', $event)"
                     >
                     </item-group-cell>
+                    <div class="flex items-center mr-2" @click="$emit('open-item', item)">
+                        <i class="fa fa-ellipsis-v"></i>
+                    </div>
                     </div>
 
                     <div
-                    v-for="field in stage.fields"
+                    v-for="field in board.fields"
                     :key="field.name"
                     class="border-white border-2 text-center item-group-cell w-full"
                     :class="[ getBg(field, item, field.name), field.name == 'owner' ? 'col-span-2' : '']"
@@ -125,18 +142,23 @@
 
 <script>
 import ItemGroupCell from "./ItemGroupCell";
+import JetDropdown from "../../Jetstream/Dropdown";
 import Draggable from "vuedraggable";
 
 export default {
   components: {
     ItemGroupCell,
-    Draggable
+    Draggable,
+    JetDropdown
   },
   props: {
     createMode: {
       type: Boolean,
     },
     stage: {
+      type: Object,
+    },
+    board: {
       type: Object,
     },
     items: {
@@ -151,7 +173,13 @@ export default {
       newItem: {},
       isEditMode: false,
       isExpanded: true,
+      isItemModalOpen: false
     };
+  },
+  computed: {
+      titleSize() {
+          return 10 - this.board.fields.length - 1;
+      }
   },
   methods: {
     getBg(field, item, fieldName) {
@@ -186,7 +214,7 @@ export default {
         const lastItemOrder = Math.max(...this.stage.items.map(item => item.order))
         this.newItem.board_id = stage.board_id
         this.newItem.stage_id = stage.id
-        this.newItem.fields = stage.fields.map(field => {
+        this.newItem.fields = this.board.fields.map(field => {
             return {
                 field_id: field.id,
                 field_name: field.name,
@@ -200,7 +228,7 @@ export default {
 
     saveChanges(item, field, value) {
         item[field] = value;
-        item.fields = this.stage.fields.map(field => {
+        item.fields = this.board.fields.map(field => {
             return {
                 field_id: field.id,
                 field_name: field.name,

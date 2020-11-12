@@ -172,8 +172,6 @@ export default {
 
 }
 
-
-
 .item-group-cell.new-item {
     @apply px-0 my-2 border-white border-t-2 border-b-2;
     position: relative;
