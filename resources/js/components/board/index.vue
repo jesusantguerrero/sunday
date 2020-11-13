@@ -228,11 +228,11 @@ export default {
     computed: {
         kanbanData() {
             if (this.board.stages.length) {
-                const statusField = this.board.stages[0].fields.find(
+                const statusField = this.board.fields.find(
                     field => field.name == "status"
                 );
                 const quadrants = {};
-                this.board.stages[0].labels.forEach(label => {
+                this.board.labels.forEach(label => {
                     if (label.field_id == statusField.id) {
                         quadrants[label.name] = {
                             id: label.id,
