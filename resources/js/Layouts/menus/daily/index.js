@@ -40,11 +40,18 @@ export default {
         icon: "robot",
         to: "/integrations"
     },
-    //
+    {
+        divider:""
+    },
     {
         label: "Notes",
         icon: "lightbulb",
         to: "/notes"
+    },
+    {
+        label: "Reports",
+        icon: "chart-line",
+        to: "/reports"
     },
   ]
 };
