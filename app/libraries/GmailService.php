@@ -126,10 +126,6 @@ class GmailService
         # The name for the new topic
         $topicName = 'gmail';
 
-        var_dump($pubsub);
-        var_dump(date('Y-m-d h:i:s'));
-        var_dump(date_default_timezone_get());
-
         # Creates the new topic
         $topic = $pubsub->createTopic($topicName);
 

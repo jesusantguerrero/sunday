@@ -156,6 +156,7 @@ export default {
     }
     .dot {
         @apply text-green-400;
+        font-weight: bolder;
     }
   }
 

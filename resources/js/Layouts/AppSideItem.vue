@@ -39,7 +39,9 @@ export default {
     methods: {
         isPath(url) {
             const link = url.replace(window.location.origin, "");
-            console.log(link, window.location.pathname);
+            if (url == "/") {
+                return ["/", "/dashboard"].includes(window.location.pathname);
+            }
             return link == window.location.pathname;
         },
     }
