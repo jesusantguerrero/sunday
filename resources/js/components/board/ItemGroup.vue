@@ -1,7 +1,7 @@
 <template>
   <div class="item-group ic-scroller" :class="{ 'bg-gray-200': !isExpanded }">
     <div>
-      <div class="item-group-row grid py-1 grid-cols-11  text-left">
+      <div class="item-group-row grid py-1  text-left">
         <div :class="`col-span-${titleSize} header-cell`">
             <jet-dropdown align="left" width="48" class="mr-2">
                 <template #trigger>
@@ -47,14 +47,6 @@
             {{ field.title }}
           </span>
         </div>
-
-        <div
-          class="text-center"
-        >
-          <span v-if="isExpanded" class="font-bold">
-            Actions
-          </span>
-        </div>
       </div>
 
       <template v-if="isExpanded">
@@ -62,7 +54,7 @@
         <draggable v-model="stage.items" @end="saveReorder" handle=".handle">
             <transition-group>
                 <div
-                    class="grid item-group-row grid-cols-11 text-left h-11"
+                    class="grid item-group-row text-left h-11"
                     v-for="(item, index) in items"
                     :key="`item-${index}`"
                 >
@@ -83,9 +75,17 @@
                         @saved="saveChanges(item, 'title', $event)"
                     >
                     </item-group-cell>
-                    <div class="flex items-center mr-2" @click="$emit('open-item', item)">
-                        <i class="fa fa-ellipsis-v"></i>
-                    </div>
+                     <el-dropdown trigger="click" @command="($event) => handleCommand(item, $event)" @click.native.prevent>
+                        <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center">
+                            <div class="flex items-center mr-2">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </div>
+                        </div>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="edit" icon="fa fa-edit">Edit</el-dropdown-item>
+                            <el-dropdown-item command="delete" icon="fa fa-trash">Delete</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                     </div>
 
                     <div
@@ -102,15 +102,6 @@
                         @saved="saveChanges(item, field.name, $event)"
                     >
                     </item-group-cell>
-                    </div>
-                    <div
-                        class="border-white border-2 text-center item-group-cell w-full flex items-center justify-center bg-gray-400"
-                    >
-                        <button
-                            @click.prevent="$emit('item-deleted', item)"
-                            class="w-full h-full bg-gray-400 text-white hover:bg-red-500">
-                            <i class="fa fa-trash"></i>
-                        </button>
                     </div>
                 </div>
             </transition-group>
@@ -181,7 +172,7 @@ export default {
       },
 
       titleSize() {
-          return 10 - this.visibleFields.length - 1;
+          return 10 - this.visibleFields.length;
       }
   },
   methods: {
@@ -254,6 +245,19 @@ export default {
       })
         this.$inertia.reload({ preserveScroll: true })
     },
+
+    handleCommand(item, command) {
+        switch (command) {
+            case 'delete':
+                this.$emit('item-deleted', item)
+                break
+            case 'edit':
+                this.$emit('open-item', item)
+                break
+            default:
+            break;
+        }
+    },
   },
 };
 </script>
@@ -283,6 +287,6 @@ export default {
 }
 
 .item-group-row {
-    grid-template-columns: repeat(11, minmax(175px, 1fr)) !important;
+    grid-template-columns: repeat(10, minmax(175px, 100%));
 }
 </style>

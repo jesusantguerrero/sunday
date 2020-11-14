@@ -1,4 +1,4 @@
-# Sunday 
+# IC-Daily (codename: Sunday) 
 Monolith app using laravel 8, jetstream, intertia and vue.
 
 ## Installation

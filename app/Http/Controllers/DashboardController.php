@@ -75,4 +75,8 @@ class DashboardController extends Controller
             'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $date], $request->user()))
         ]);
     }
+    public function blank(Request $request)
+    {
+        return Inertia::render('Blank');
+    }
 }

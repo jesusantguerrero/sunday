@@ -1,12 +1,14 @@
 <template>
-    <inertia-link
-        class="side-item flex px-2 py-1 items-center px-5"
-        :class="{ active: isPath(to) }"
-        :href="to"
-        :title="label"
-    >
-        <i :class="`fa fa-${icon}`" class="ic-icon" />
-    </inertia-link>
+    <el-tooltip class="item" effect="dark" :content="label" placement="right">
+        <inertia-link
+            class="side-item flex px-2 py-1 items-center px-5"
+            :class="{ active: isPath(to) }"
+            :href="to"
+            :title="label"
+        >
+            <i :class="`fa fa-${icon}`" class="ic-icon" />
+        </inertia-link>
+    </el-tooltip>
 </template>
 
 <script>
