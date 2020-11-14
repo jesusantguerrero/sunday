@@ -189,7 +189,7 @@ export default {
     data() {
         return {
             createMode: false,
-            modeSelected: "kanban",
+            modeSelected: "list",
             views: {
                 list:{
                     name: "list",
