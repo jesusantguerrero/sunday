@@ -26,7 +26,7 @@
             :options="users"
             class="w-full"
             @select="value = $event.name"
-            @close="saveChanges"
+            @close="saveChanges()"
         >
         </multiselect>
       </div>
@@ -34,7 +34,17 @@
       <div class="h-8 px-2"
         v-else-if="['date'].includes(field.type)"
       >
-        <v-date-picker v-model="value" @dayclick="saveChanges"/>
+         <el-date-picker
+              ref="input"
+              v-model="value"
+              type="date"
+              @input="saveChanges('date')"
+              @blur="saveChanges('date')"
+              input-class="w-full"
+              placeholder="selecciona una fecha"
+            >
+            </el-date-picker>
+        <!-- <v-date-picker v-model="value" @dayclick="saveChanges('date')"/> -->
       </div>
 
       <div class="h-8 px-2"
@@ -49,7 +59,7 @@
             :options="field.options"
             class="w-full"
             @select="value = $event.name"
-            @close="saveChanges"
+            @close="saveChanges()"
         >
         </multiselect>
       </div>
@@ -57,7 +67,7 @@
       <input
         v-else
         ref="input"
-        @blur="saveChanges"
+        @blur="saveChanges()"
         type="text"
         class="form-input h-8 px-2 mx-0 rounded-none"
         :class="{'new-item': isTitle }"
@@ -71,7 +81,7 @@
 </template>
 
 <script>
-import { format } from 'date-fns';
+import { format, toDate } from 'date-fns';
 
 export default {
   name: "ItemGroupCell",
@@ -109,7 +119,7 @@ export default {
         if (item[this.fieldName] != this.value) {
             const field = item.fields && item.fields.find(field => field.field_name == this.fieldName)
             item[this.fieldName] = item[this.fieldName] || field && field.value;
-            this.value = item[this.fieldName];
+            this.value = this.formatValue(item[this.fieldName], this.field ? this.field.type : "default" , 'read');
         }
       },
       deep: true,
@@ -131,24 +141,49 @@ export default {
 		});
 		return option ? option.label || option.name :  this.item[this.fieldName];
       } else if (["date"].includes(this.field.type)) {
-          return this.item[this.fieldName] ? format(new Date(this.item[this.fieldName]), 'yyyy-MM-dd') : '';
+          if (this.item[this.fieldName]) {
+               return typeof this.item[this.fieldName] == "string" ? this.item[this.fieldName]  : format(new Date(this.item[this.fieldName]), 'yyyy-MM-dd');
+          }
+          return "";
       } else {
         return this.item[this.fieldName];
       }
     },
   },
   methods: {
+      formatValue(value,type="default", operation="read") {
+        const formatters = {
+            date: {
+                write: (value="") => {
+                    return typeof value == 'string'? value : format(value, "yyyy-MM-dd");
+                },
+                read: (value="") => {
+                    return value && typeof value == 'string' ? this.setDate(value) : value;
+                }
+            },
+            default: {
+                read: (value) =>  value,
+                write: (value) =>  value
+            }
+        }
+        return formatters[type] ? formatters[type][operation](value) : value;
+    },
+    setDate(dateValue) {
+      const date = dateValue ? dateValue.split("-") : null;
+      return date ? new Date(date[0], date[1] - 1, date[2]) : null;
+    },
+
     toggleEditMode() {
       this.isEditMode = !this.isEditMode;
       this.$nextTick(() => {
           if (this.$refs.input) {
-              const input = this.$refs.input.$el ? this.$refs.input.$el : this.$refs.input;
+              const input = this.$refs.input.$el && !this.$refs.input.focus ? this.$refs.input.$el : this.$refs.input;
               input.focus();
           }
       })
     },
-    saveChanges() {
-      this.$emit("saved", this.value);
+    saveChanges(type= "default") {
+      this.$emit("saved", this.formatValue(this.value, type, 'write'));
       this.toggleEditMode();
     },
     saveItem($event) {
@@ -160,6 +195,18 @@ export default {
 };
 </script>
 
+<style lang="scss">
+    .el-input__icon {
+        line-height: 30px;
+    }
+
+    .el-input__inner {
+        height: 30px;
+    }
+    .el-date-editor.el-input {
+        width: 150px;
+    }
+</style>
 <style scoped lang="scss">
 .form-input {
   @apply shadow-none appearance-none border w-full py-2 px-3 text-gray-700 leading-tight;

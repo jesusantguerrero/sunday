@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="bg-white shadow-lg px-10 py-5">
+        <div class="py-5">
             <draggable
                 v-model="board.stages"
                 @end="saveReorder"
@@ -248,7 +248,11 @@ export default {
                         const statusField = item.fields.find(
                             field => field.field_name == "status"
                         );
-                        quadrants[statusField.value].childs.push(item);
+                        if (quadrants[statusField.value]) {
+                            quadrants[statusField.value].childs.push(item);
+                        } else {
+                            quadrants['backlog'].childs.push(item);
+                        }
                     });
                 });
                 return quadrants;

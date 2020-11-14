@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white py-5">
+    <div class="board-side bg-white py-5">
         <h1 class="font-bold flex justify-between items-centerv px-5">
             <span class="text-2xl"> My Boards </span>
         </h1>
@@ -152,6 +152,10 @@ export default {
 </script>
 
 <style lang="scss">
+.board-side {
+    border-radius: 18px 0 0 0;
+    height: 100%;
+}
 .board-item {
     @apply my-2 border-l-4 border-white;
 
@@ -161,25 +165,14 @@ export default {
 
     &.active {
         @apply border-purple-400 bg-purple-50;
-        &__avatar {
-            @apply bg-purple-400 flex justify-center items-center;
-            width: 40px;
-            min-width: 40px;
-            font-size: 30px;
-            height: 40px;
-            border-radius: 8px;
-            font-weight: bolder;
-            margin-right: 4px;
-            color: white;
-        }
     }
 
     &__avatar {
         @apply bg-purple-400 flex justify-center items-center;
-        width: 40px;
-        min-width: 40px;
-        font-size: 30px;
-        height: 40px;
+        width: 30px;
+        min-width: 30px;
+        font-size: 20px;
+        height: 30px;
         border-radius: 8px;
         font-weight: bolder;
         margin-right: 4px;

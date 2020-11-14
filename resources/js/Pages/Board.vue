@@ -1,21 +1,12 @@
 <template>
-    <app-layout>
+    <app-layout :boards="boards">
         <div class="">
-            <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex">
-                <div class="mr-4 min-h-screen bg-white w-80">
-                    <board-side
-                        :boards="boards"
-                    >
-                    </board-side>
-                </div>
-
-                <div class="w-10/12 mx-2 pt-12">
+                <div class="w-12/12 mx-2 pt-12">
                     <div class="overflow-hidden">
                         <Board :board="board" :users="users"></Board>
                     </div>
                 </div>
             </div>
-        </div>
     </app-layout>
 </template>
 

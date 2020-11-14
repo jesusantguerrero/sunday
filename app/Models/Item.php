@@ -82,10 +82,10 @@ class Item extends Model
     public static function getByCustomField($entry, $user) {
         return Item::whereHas('fields', function($query) use ($entry){
             $query->where('value', $entry[1]);
+            $query->orWhere('date_value', $entry[1]);
         })->with('stage')->where([
             'team_id' => $user->current_team_id,
             'user_id' => $user->id,
-
         ])->whereNull('commit_date')->get();
     }
 
