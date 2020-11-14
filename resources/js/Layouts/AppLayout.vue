@@ -9,7 +9,7 @@
                         <!-- Logo -->
                         <div class="flex-shrink-0 flex items-center">
                             <a href="/dashboard">
-                                Sunday
+                                Daily
                             </a>
                         </div>
                     </div>
@@ -332,7 +332,10 @@
         </nav>
         <div class="app-content">
             <div class="appside-container">
-                <app-side :menu="menu" :show-clock="true" />
+                <app-side
+                    :menu="menu"
+                    :header-menu="headerMenu"
+                />
                 <!-- Left Side -->
                 <board-side
                     :boards="boards"
@@ -406,7 +409,7 @@ export default {
             showingNavigationDropdown: false,
             showConfirmationModal: false,
             confirmationData: {},
-            moduleName: "accounting",
+            moduleName: "daily",
             isMenuExpanded: false
         };
     },

@@ -1,9 +1,7 @@
-import accounting from "./accounting";
-import internet from "./internet";
-import issues from "./issues";
+import daily from "./daily";
 
 export default function getModuleMenu(moduleName) {
   return modules[moduleName];
 }
 
-const modules = { accounting, internet, issues };
+const modules = { daily };

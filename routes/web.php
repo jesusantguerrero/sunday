@@ -33,6 +33,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/planner', [DashboardController::class, 'planner'])->name('planner');
 
+    // Todo
+    Route::get('/notes', [DashboardController::class, 'blank'])->name('blank');
+    Route::get('/help', [DashboardController::class, 'blank'])->name('blank');
+    Route::get('/about', [DashboardController::class, 'blank'])->name('blank');
+    Route::get('/settings', [DashboardController::class, 'blank'])->name('blank');
+
     // Boards
     Route::get('/boards/{id}', [BoardController::class, 'edit'])->name('boards');
 

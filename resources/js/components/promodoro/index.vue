@@ -143,7 +143,7 @@ export default {
         time: {
             deep: true,
             handler() {
-                const title = this.run ? `(${this.formattedTime}) Sunday` : 'Sunday'
+                const title = this.run ? `(${this.formattedTime}) Daily` : 'Daily'
                 document.getElementsByTagName('title')[0].text = title;
             }
         }

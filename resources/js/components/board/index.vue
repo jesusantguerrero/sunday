@@ -1,24 +1,36 @@
 <template>
     <div class="px-8 pb-24">
-        <div class="board__toolbar flex justify-between mb-5">
+        <div class="board__toolbar flex justify-between">
             <div class="flex text-left">
                 <div class="flex justify-between mr-2">
                     <span class="text-3xl font-bold"> {{ board.name }} </span>
-                    <div class="controls bg-purple-700 rounded-lg ml-10 h-12 overflow-hidden">
-                        <button
-                            v-for="view in views"
-                            :key="view"
-                            @click="modeSelected = view"
-                            :class="{ 'bg-purple-400': modeSelected == view }"
-                            class="ic-btn px-8 h-full rounded-lg text-white capitalize"
-                        >
-                            {{ view }}
-                        </button>
-                    </div>
                 </div>
             </div>
 
             <div class="flex items-center">
+                <div class="w-40">
+                    <multiselect
+                        v-model="modeSelected"
+                        ref="input"
+                        :show-labels="false"
+                        :options="viewsKeys"
+                        class="w-full"
+                    >
+                     <template slot="singleLabel" slot-scope="props">
+                         <span class="option__title">
+                                <i :class="views[props.option].icon" class="mr-2"></i>
+                                {{ views[props.option].title }}
+                            </span>
+                    </template>
+                    <template slot="option" slot-scope="props">
+                        <div class="option__desc">
+                            <span class="option__title"><i :class="views[props.option].icon" class="mr-2"></i>
+                                {{ views[props.option].title }}
+                            </span>
+                        </div>
+                    </template>
+                    </multiselect>
+                </div>
                 <input
                     type="search"
                     class="form-input ml-2 w-48"
@@ -47,7 +59,7 @@
             </div>
         </div>
 
-        <div class="py-5">
+        <div class="">
             <draggable
                 v-model="board.stages"
                 @end="saveReorder"
@@ -74,7 +86,10 @@
 
             <item-kanban-container
                 v-else
+                :stages="board.stages"
+                :fields="board.fields"
                 :kanban-data="kanbanData"
+                @saved="addItem"
                 class="flex pt-5">
             </item-kanban-container>
 
@@ -174,8 +189,26 @@ export default {
     data() {
         return {
             createMode: false,
-            modeSelected: "list",
-            views: ["list", "kanban"],
+            modeSelected: "kanban",
+            views: {
+                list:{
+                    name: "list",
+                    title: "List",
+                    icon: "fa fa-th-list"
+                },
+                kanban:{
+                    name: "kanban",
+                    title: "Kanban",
+                    icon: "fa fa-border-all"
+                },
+                schedule:
+                {
+                    name: "schedule",
+                    title: "Schedule",
+                    icon: "fa fa-calendar-alt"
+                },
+
+            },
             itemToDelete: false,
             items: [
                 {
@@ -238,7 +271,8 @@ export default {
                             id: label.id,
                             fieldId: label.field_id,
                             attributes: label,
-                            childs: []
+                            childs: [],
+                            newTask: {}
                         };
                     }
                 });
@@ -248,7 +282,7 @@ export default {
                         const statusField = item.fields.find(
                             field => field.field_name == "status"
                         );
-                        if (quadrants[statusField.value]) {
+                        if (statusField && quadrants[statusField.value]) {
                             quadrants[statusField.value].childs.push(item);
                         } else {
                             quadrants['backlog'].childs.push(item);
@@ -258,6 +292,9 @@ export default {
                 return quadrants;
             }
             return {};
+        },
+        viewsKeys() {
+            return Object.values(this.views).map( view => view.name)
         }
     },
     methods: {
@@ -354,7 +391,7 @@ ul {
     list-style-type: none;
     padding: 0;
 }
-li {
+li.link {
     display: inline-block;
     margin: 0 10px;
 }
@@ -364,6 +401,11 @@ a {
 
 .btn {
     @apply font-bold py-2 px-4 rounded;
+}
+
+.board__toolbar {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
 }
 
 .toolbar-buttons {

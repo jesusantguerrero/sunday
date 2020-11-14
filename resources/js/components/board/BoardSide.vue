@@ -30,12 +30,14 @@
                     {{ board.name }}
                 </span>
 
-                <button
-                    class="bg-grey-400 text-white p-2 hover:bg-red-600"
-                    @click.prevent="confirmDelete(board)"
-                >
-                    <i class="fa fa-trash"></i>
-                </button>
+                <el-dropdown trigger="click" @command="($event) => handleCommand(board, $event)" @click.native.prevent>
+                    <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center">
+                     <i class="fa fa-ellipsis-v"></i>
+                    </div>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="delete" icon="fa fa-trash">Delete</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </inertia-link>
         </div>
         <div
@@ -114,6 +116,16 @@ export default {
             this.$nextTick(() => {
                 this.$refs.input.focus();
             });
+        },
+
+        handleCommand(board, command) {
+            switch (command) {
+                case 'delete':
+                    this.confirmDelete(board)
+                    break
+                default:
+                break;
+            }
         },
 
         confirmDelete(board) {
