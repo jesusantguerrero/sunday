@@ -61,6 +61,12 @@
                 default() {
                     return []
                 }
+            },
+            boards: {
+                type: Array,
+                default() {
+                    return []
+                }
             }
         },
         created() {
