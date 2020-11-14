@@ -88,13 +88,13 @@ export default {
     },
     nextWeek() {
       this.week = this.getWeek(
-        new Date(this.week[3].setDate(this.week[3].getDate() + 1))
+        new Date(this.selectedDay.setDate(this.selectedDay.getDate() + 1))
       );
       this.isSelectedDayInWeek();
     },
     prevWeek() {
       this.week = this.getWeek(
-        new Date(this.week[3].setDate(this.week[3].getDate() - 1))
+        new Date(this.selectedDay.setDate(this.selectedDay.getDate() - 1))
       );
       this.isSelectedDayInWeek();
     },
@@ -142,7 +142,6 @@ $primary-color: var(--primary-color);
 
   &:hover {
     @apply text-purple-400;
-    background: var(--primary-color);
   }
 }
 
@@ -156,8 +155,6 @@ $primary-color: var(--primary-color);
 .selected-day {
   @apply visible text-purple-400 shadow-lg border-purple-400 border-2;
   display: block;
-  background: var(--primary-color);
-  box-shadow: 4px 4px 6px var(--primary-color-5)
 }
 
 @media (min-width: 768px) {

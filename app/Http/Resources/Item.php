@@ -14,7 +14,7 @@ class Item extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $item = [
             'id' => $this->id,
             'title' => $this->title,
             'done' => $this->done,
@@ -22,5 +22,11 @@ class Item extends JsonResource
             'stage' => $this->stage ? $this->stage->name : "",
             'duration' => $this->timeEntries->sum('duration')
         ];
+
+        foreach ($this->fields as $field) {
+            $item[$field->field_name] = $field->value;
+        }
+
+        return $item;
     }
 }

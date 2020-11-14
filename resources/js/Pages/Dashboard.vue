@@ -1,27 +1,9 @@
 <template>
-    <app-layout>
+    <app-layout :boards="boards">
         <div class="">
             <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row">
-                <!-- Left Side -->
-                <div class="hidden md:block md:w-80 mr-4  bg-white min-h-screen">
-                    <board-side
-                        :boards="boards"
-                        class="mb-10"
-                    >
-                    </board-side>
-                    <!-- <div class="section-card committed margin-0 mt-10">
-                        <header class="bg-gray-200 btext-gray-500 font-bold">
-                            Events
-                        </header>
-                        <div class="body text-gray-600">
-                            Hola soy un item de ejemplo
-                        </div>
-                    </div> -->
-                </div>
-                <!-- End of left side -->
-
                 <!-- Main board -->
-                <div class="w-100 md:w-7/12 md:mx-4 pt-12">
+                <div class="w-100 md:w-9/12 md:mx-4 pt-12">
                     <div class="flex justify-between flex-col md:flex-row mx-2 md:mr-2 md:ml-0">
                         <span class="text-3xl font-bold"> Today's Todos </span>
                         <div class="controls h-12 bg-purple-700 rounded-lg">
@@ -150,6 +132,7 @@
     import BoardSide from "../components/board/BoardSide"
     import BoardItemContainer from "../components/board/ItemContainer"
     import ScheduleControls from "../components/schedule/controls";
+    import ScheduleView from "../components/schedule"
     import Promodoro from "../components/promodoro/index"
     import DialogModal from "../Jetstream/DialogModal"
     import LinkFormModal from "../components/links/Form"
@@ -162,6 +145,7 @@
             AppLayout,
             BoardSide,
             BoardItemContainer,
+            ScheduleView,
             Promodoro,
             DialogModal,
             LinkFormModal,
@@ -177,6 +161,12 @@
                 }
             },
             todo: {
+                type: [Array, Object],
+                default() {
+                    return []
+                }
+            },
+            scheduled: {
                 type: [Array, Object],
                 default() {
                     return []

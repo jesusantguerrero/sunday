@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\LinkController;
@@ -27,10 +28,18 @@ Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
-    Route::get('/', [BoardController::class, 'list']);
-    Route::get('/dashboard', [BoardController::class, 'list'])->name('dashboard');
+    // Dashboards
+    Route::get('/', [DashboardController::class, 'index'])->name('home');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/planner', [DashboardController::class, 'planner'])->name('planner');
+
+    // Boards
     Route::get('/boards/{id}', [BoardController::class, 'edit'])->name('boards');
+
+    // Integration
     Route::get('/integrations', [ServiceController::class, 'index'])->name('integrations');
+
+    // Tracker
     Route::get('/tracker', [TimeEntryController::class, 'list'])->name('tracker');
 });
 

@@ -8,6 +8,7 @@ import { InertiaForm } from 'laravel-jetstream';
 import ConfirmModalMixin from "./plugins/ConfirmModalMixin";
 import VueGoogleApi from 'vue-google-api'
 import VCalendar from "v-calendar";
+import "./plugins/element-ui";
 
 const config = {
   apiKey: process.env.MIX_GOOGLE_APP_KEY,

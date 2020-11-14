@@ -1,7 +1,7 @@
 <template>
-  <div class="item-group" :class="{ 'bg-gray-200': !isExpanded }">
+  <div class="item-group ic-scroller" :class="{ 'bg-gray-200': !isExpanded }">
     <div>
-      <div class="grid py-1 grid-cols-11 text-left">
+      <div class="item-group-row grid py-1 grid-cols-11  text-left">
         <div :class="`col-span-${titleSize} header-cell`">
             <jet-dropdown align="left" width="48" class="mr-2">
                 <template #trigger>
@@ -39,10 +39,9 @@
         </div>
 
         <div
-          v-for="field in board.fields"
+          v-for="field in visibleFields"
           :key="field.name"
           class="text-center"
-          :class="[field.name == 'owner' ? 'col-span-2' : '']"
         >
           <span v-if="isExpanded" class="font-bold">
             {{ field.title }}
@@ -63,7 +62,7 @@
         <draggable v-model="stage.items" @end="saveReorder" handle=".handle">
             <transition-group>
                 <div
-                    class="grid grid-cols-11 text-left h-11"
+                    class="grid item-group-row grid-cols-11 text-left h-11"
                     v-for="(item, index) in items"
                     :key="`item-${index}`"
                 >
@@ -90,10 +89,10 @@
                     </div>
 
                     <div
-                    v-for="field in board.fields"
+                    v-for="field in visibleFields"
                     :key="field.name"
                     class="border-white border-2 text-center item-group-cell w-full"
-                    :class="[ getBg(field, item, field.name), field.name == 'owner' ? 'col-span-2' : '']"
+                    :class="[ getBg(field, item, field.name)]"
                     >
                     <item-group-cell
                         :field-name="field.name"
@@ -177,8 +176,12 @@ export default {
     };
   },
   computed: {
+      visibleFields() {
+        return this.board.fields.filter(field => !field.hide)
+      },
+
       titleSize() {
-          return 10 - this.board.fields.length - 1;
+          return 10 - this.visibleFields.length - 1;
       }
   },
   methods: {
@@ -272,5 +275,14 @@ export default {
 
 .item-line-cell {
   min-height: 35px;
+}
+
+.item-group {
+    overflow: auto;
+    padding-bottom: 15px;
+}
+
+.item-group-row {
+    grid-template-columns: repeat(11, minmax(175px, 1fr)) !important;
 }
 </style>
