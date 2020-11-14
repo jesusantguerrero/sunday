@@ -1,5 +1,9 @@
 <template>
-    <el-tooltip class="item" effect="dark" :content="label" placement="right">
+    <div class="divider" v-if="!label">
+        <div class="divider__inner"></div>
+    </div>
+
+    <el-tooltip v-else class="item" effect="dark" :content="label" placement="right">
         <inertia-link
             class="side-item flex px-2 py-1 items-center px-5"
             :class="{ active: isPath(to) }"
@@ -49,6 +53,17 @@ export default {
 </script>
 
 <style lang="scss">
+.divider {
+    height: 1px;
+    width: 100%;
+    padding: 0 5px;
+    margin: 20px 0;
+    &__inner {
+        height: 1px;
+        width: 100%;
+        background: white;
+    }
+}
 .side-item {
     display: flex;
     justify-content: center;
