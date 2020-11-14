@@ -31,6 +31,7 @@
                 :value="stage.name"
                 type="text"
                 ref="input"
+                @keypress.enter="saveStage(stage)"
                 @blur="saveStage(stage)"
             />
 
@@ -49,9 +50,9 @@
         </div>
       </div>
 
-      <template v-if="isExpanded">
-      <!-- items  -->
-        <draggable v-model="stage.items" @end="saveReorder" handle=".handle">
+        <!-- items  -->
+        <template v-if="isExpanded">
+            <draggable v-model="stage.items" @end="saveReorder" handle=".handle" class="w-full">
             <transition-group>
                 <div
                     class="grid item-group-row text-left h-11"
@@ -75,7 +76,7 @@
                         @saved="saveChanges(item, 'title', $event)"
                     >
                     </item-group-cell>
-                     <el-dropdown trigger="click" @command="($event) => handleCommand(item, $event)" @click.native.prevent>
+                        <el-dropdown trigger="click" @command="($event) => handleCommand(item, $event)" @click.native.prevent>
                         <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center">
                             <div class="flex items-center mr-2">
                                 <i class="fa fa-ellipsis-v"></i>
@@ -106,26 +107,26 @@
                 </div>
             </transition-group>
         </draggable>
+        </template>
         <!-- End of items -->
-      </template>
 
-      <!-- new item  -->
-      <div class="grid grid-cols-10 text-left item-line">
-        <div class="col-span-12 item-line-cell px-0 flex items-center">
-          <item-group-cell
-            class="w-full flex items-center"
-            field-name="title"
-            :is-title="true"
-            :index="-1"
-            :item="newItem"
-            :is-new="true"
-            @saved="newItem['title'] = $event"
-            @keydown.enter="addItem(stage)"
-          >
-          </item-group-cell>
+        <!-- new item  -->
+        <div class="grid grid-cols-10 text-left item-line">
+            <div class="col-span-12 item-line-cell px-0 flex items-center">
+            <item-group-cell
+                class="w-full flex items-center"
+                field-name="title"
+                :is-title="true"
+                :index="-1"
+                :item="newItem"
+                :is-new="true"
+                @saved="newItem['title'] = $event"
+                @keydown.enter="addItem(stage)"
+            >
+            </item-group-cell>
+            </div>
         </div>
-      </div>
-      <!-- End of new item -->
+        <!-- End of new item -->
     </div>
   </div>
 </template>
@@ -234,7 +235,7 @@ export default {
 
     saveStage(stage) {
       stage.name = this.$refs.input.value;
-      this.toggleEditMode();
+      this.isEditMode = false;
       this.$emit("stage-updated", {...stage});
     },
 

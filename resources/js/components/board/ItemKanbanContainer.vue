@@ -1,5 +1,5 @@
 <template>
-    <div class="flex">
+    <div class="flex kanban-container">
         <div
             v-for="(quadrant, name) in kanbanData"
             :key="name"
@@ -105,14 +105,17 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.task-item {
-    @apply py-4 px-2 bg-gray-200 my-2;
-}
+<style lang="scss" scoped>
+.kanban-container {
+    .task-item {
+        @apply py-4 px-2 bg-gray-200 my-2;
+    }
 
-.item-container.section-card .body{
-    padding-top: 0;
-    padding-bottom: 0;
-    min-height: unset;
+    .item-container.section-card .body{
+        padding-top: 0;
+        padding-bottom: 0;
+        min-height: unset;
+    }
+
 }
 </style>
