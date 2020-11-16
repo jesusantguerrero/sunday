@@ -1,133 +1,165 @@
 <template>
-  <div class="item-group ic-scroller" :class="{ 'bg-gray-200': !isExpanded }">
-    <div>
-      <div class="item-group-row grid py-1  text-left">
-        <div :class="`col-span-${titleSize} header-cell`">
-            <jet-dropdown align="left" width="48" class="mr-2">
-                <template #trigger>
-                    <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                        <i class="fa fa-angle-down text-lg"></i>
-                    </button>
-                </template>
+  <div class="ic-list">
+      <div class="ic-list__body" :class="{ 'not-expanded': !isExpanded }">
+            <!-- end of column title -->
+            <div class="ic-list__title">
+                <div class="item-false__header sticky_header">
+                    <div class="header-cell item-group-row__header">
+                        <jet-dropdown align="left" width="48" class="mr-2">
+                            <template #trigger>
+                                <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                                    <i class="fa fa-angle-down text-lg"></i>
+                                </button>
+                            </template>
 
-                <template #content>
-                    <div class="block px-4 py-2 text-xs text-gray-400">
-                        Options
-                    </div>
-                </template>
-            </jet-dropdown>
-          <span class="toolbar-buttons mr-2" @click="toggleExpand">
-            <i class="fa fa-expand-alt"></i>
-          </span>
+                            <template #content>
+                                <div class="block px-4 py-2 text-xs text-gray-400">
+                                    Options
+                                </div>
+                            </template>
+                        </jet-dropdown>
 
-          <span
-            class="font-bold"
-            @click="toggleEditMode(true)"
-            v-if="!isEditMode">
-                {{ stage.title || stage.name }}
-          </span>
-          <div v-else>
-            <input
-                :value="stage.name"
-                type="text"
-                ref="input"
-                @keypress.enter="saveStage(stage)"
-                @blur="saveStage(stage)"
-            />
+                        <span class="toolbar-buttons mr-2" @click="toggleExpand">
+                            <i class="fa fa-expand-alt"></i>
+                        </span>
 
-          </div>
-          <span v-if="!isExpanded"> ({{ items.length }} items) </span>
-        </div>
+                        <span
+                            class="font-bold"
+                            @click="toggleEditMode(true)"
+                            v-if="!isEditMode">
+                                {{ stage.title || stage.name }}
+                        </span>
 
-        <div
-          v-for="field in visibleFields"
-          :key="field.name"
-          class="text-center"
-        >
-          <span v-if="isExpanded" class="font-bold">
-            {{ field.title }}
-          </span>
-        </div>
-      </div>
+                        <div v-else>
+                            <input
+                                :value="stage.name"
+                                type="text"
+                                ref="input"
+                                @keypress.enter="saveStage(stage)"
+                                @blur="saveStage(stage)"
+                            />
 
-        <!-- items  -->
-        <template v-if="isExpanded">
-            <draggable v-model="stage.items" @end="saveReorder" handle=".handle" class="w-full">
-            <transition-group>
-                <div
-                    class="grid item-group-row text-left h-11"
-                    v-for="(item, index) in items"
-                    :key="`item-${index}`"
-                >
-                    <div :class="`col-span-${titleSize} bg-gray-200 border-2 border-white flex`">
-                    <div
-                        class="checkbox-container bg-gray-300 mr-2 flex items-center px-2"
-                    >
-                        <input type="checkbox" name="" id="" v-model="item.done" @change="saveChanges(item, 'done', item.done)" :disabled="item.commit_date"/>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fa fa-align-justify handle"></i>
-                    </div>
-                    <item-group-cell
-                        class="flex items-center"
-                        field-name="title"
-                        :index="index"
-                        :item="item"
-                        @saved="saveChanges(item, 'title', $event)"
-                    >
-                    </item-group-cell>
-                        <el-dropdown trigger="click" @command="($event) => handleCommand(item, $event)" @click.native.prevent>
-                        <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center">
-                            <div class="flex items-center mr-2">
-                                <i class="fa fa-ellipsis-v"></i>
-                            </div>
                         </div>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="edit" icon="fa fa-edit">Edit</el-dropdown-item>
-                            <el-dropdown-item command="delete" icon="fa fa-trash">Delete</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
+                        <span v-if="!isExpanded"> ({{ items.length }} items) </span>
                     </div>
+                </div>
+                <div class="false-header"></div>
 
+                <div class="bg-red-500 grid" v-if="isExpanded">
+                    <draggable v-model="stage.items" @end="saveReorder" handle=".handle" class="w-full">
+                        <div :class="`item-false bg-gray-200 border-2 border-white flex`" v-for="(item, index) in stage.items" :key="`item-false__title-${item.id}`">
+                            <div
+                                class="checkbox-container bg-gray-300 mr-2 flex items-center px-2"
+                            >
+                                <input type="checkbox" name="" id="" v-model="item.done" @change="saveChanges(item, 'done', item.done)" :disabled="item.commit_date"/>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa fa-align-justify handle"></i>
+                            </div>
+                            <item-group-cell
+                                class="flex items-center"
+                                field-name="title"
+                                :index="index"
+                                :item="item"
+                                @saved="saveChanges(item, 'title', $event)"
+                            >
+                            </item-group-cell>
+                            <el-dropdown trigger="click" @command="($event) => handleCommand(item, $event)" @click.native.prevent>
+                                <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center">
+                                    <div class="flex items-center mr-2">
+                                        <i class="fa fa-ellipsis-v"></i>
+                                    </div>
+                                </div>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="edit" icon="fa fa-edit">Edit</el-dropdown-item>
+                                    <el-dropdown-item command="delete" icon="fa fa-trash">Delete</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
+                    </draggable>
+                </div>
+            </div>
+            <!-- End of column title -->
+
+            <div class="item-group ic-scroller ic-scroller-slim" v-if="isExpanded">
+                <div class="item-group-row grid py-1  text-left sticky_header">
                     <div
                     v-for="field in visibleFields"
                     :key="field.name"
-                    class="border-white border-2 text-center item-group-cell w-full"
-                    :class="[ getBg(field, item, field.name)]"
+                    class="item-group-row__header"
                     >
-                    <item-group-cell
-                        :field-name="field.name"
-                        :field="field"
-                        :index="index"
-                        :item="item"
-                        @saved="saveChanges(item, field.name, $event)"
-                    >
-                    </item-group-cell>
+                    <span v-if="isExpanded" class="font-bold">
+                        {{ field.title }}
+                    </span>
                     </div>
                 </div>
-            </transition-group>
-        </draggable>
-        </template>
-        <!-- End of items -->
 
-        <!-- new item  -->
-        <div class="grid grid-cols-10 text-left item-line">
-            <div class="col-span-12 item-line-cell px-0 flex items-center">
-            <item-group-cell
-                class="w-full flex items-center"
-                field-name="title"
-                :is-title="true"
-                :index="-1"
-                :item="newItem"
-                :is-new="true"
-                @saved="newItem['title'] = $event"
-                @keydown.enter="addItem(stage)"
-            >
-            </item-group-cell>
+                <div class="false-header"></div>
+
+                <!-- items  -->
+                <template v-if="isExpanded">
+                    <div class="grid item-group-row text-left h-11"
+                        v-for="(item, index) in items"
+                        :key="`item-${index}`">
+
+                        <div
+                            v-for="field in visibleFields"
+                            :key="field.name"
+                            class="custom-field border-white border-2 text-center "
+                            :class="[ getBg(field, item, field.name)]"
+                        >
+                            <item-group-cell
+                                :field-name="field.name"
+                                :field="field"
+                                :index="index"
+                                :item="item"
+                                @saved="saveChanges(item, field.name, $event)"
+                            >
+                            </item-group-cell>
+                        </div>
+                    </div>
+                </template>
+                <!-- End of items -->
             </div>
-        </div>
-        <!-- End of new item -->
-    </div>
+
+            <!-- column add -->
+            <div class="ic-list__add" v-if="isExpanded">
+                <div class="item-false__header sticky_header">
+                    <div class="item-group-row__header">
+                        <i class="fa fa-plus"></i>
+                    </div>
+                </div>
+
+                <div class="false-header"></div>
+
+                <div class="bg-red-500 grid">
+                    <div class="item-false" v-for="item in stage.items" :key="`item-false-${item.id}`">
+
+                    </div>
+                </div>
+            </div>
+            <!-- end of column add -->
+      </div>
+
+      <!-- new item  -->
+      <div class="ic-list__footer">
+            <div class="grid grid-cols-10 text-left item-line">
+                <div class="col-span-12 item-line-cell px-0 flex items-center">
+                <item-group-cell
+                    class="w-full flex items-center"
+                    field-name="title"
+                    :is-title="true"
+                    :index="-1"
+                    :item="newItem"
+                    :is-new="true"
+                    @saved="newItem['title'] = $event"
+                    @keydown.enter="addItem(stage)"
+                >
+                </item-group-cell>
+                </div>
+            </div>
+      </div>
+     <!-- End of new item -->
   </div>
 </template>
 
@@ -284,10 +316,87 @@ export default {
 
 .item-group {
     overflow: auto;
-    padding-bottom: 15px;
+}
+
+.ic-list__title, .item-group, .ic-list__add {
+    position: relative;
+
+}
+
+.ic-list {
+    overflow: hidden;
+    &__body {
+        display: grid;
+        grid-template-columns: 1fr 2fr 80px;
+        position: relative;
+
+        &.not-expanded {
+           @apply bg-gray-200;
+           width: 100%;
+           display: flex;
+        }
+    }
 }
 
 .item-group-row {
-    grid-template-columns: repeat(10, minmax(175px, 100%));
+    grid-template-columns: repeat(6, minmax(180px, 100%));
+
+    &__header {
+        @apply text-center;
+        height: 34px;
+    }
+}
+
+.item-false {
+    @apply bg-gray-200;
+    height: 44px;
+    width: 100%;
+    border: 2px solid white;
+
+    &__header {
+        @apply text-center font-bold;
+        height: 34px;
+        margin: 4px;
+    }
+}
+
+.false-header {
+    height: 34px;
+    margin: 4px;
+    display: none;
+
+    &.active {
+        display: block;
+    }
+}
+
+.sticky-active {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: white !important;
+    width: 100%;
+    height: 50px;
+    z-index: 1000;
+    .item-group-row__header {
+        border-top: 2px solid purple;
+        height: 50px;
+        width: 100%;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &.header-cell {
+            justify-content: left;
+        }
+    }
+
+    &.item-false__header {
+        margin-left: 0;
+        display: flex;
+        align-items: center;
+
+    }
 }
 </style>

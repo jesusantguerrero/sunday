@@ -604,6 +604,21 @@ export default {
         width: 8px;
         height: 10px;
     }
+
+    &-slim {
+        transition: all ease .3s;
+        &::-webkit-scrollbar {
+            height: 0;
+        }
+
+        &:hover {
+            &::-webkit-scrollbar {
+                height: 3px;
+            }
+        }
+    }
 }
+
+
 </style>
 
