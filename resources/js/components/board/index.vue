@@ -297,6 +297,34 @@ export default {
             return Object.values(this.views).map( view => view.name)
         }
     },
+    mounted() {
+        window.document.onscroll = function() {
+            requestAnimationFrame(() => {
+                setStickyHeaders()
+            })
+        };
+
+        function setStickyHeaders() {
+            const tables = document.querySelectorAll(".ic-list")
+            tables.forEach((table, index) => {
+                const falseHeader = table.querySelectorAll('.false-header');
+
+                if (window.pageYOffset >= (table.offsetTop - 60) && window.pageYOffset <= (table.offsetTop + table.offsetHeight - 157)) {
+                    table.querySelectorAll('.sticky_header').forEach((header)=> {
+                        header.classList.add("sticky-active")
+                        falseHeader.forEach((fh) => fh.classList.add('active'))
+                        header.style.transform = `translate3d(0px, ${window.pageYOffset - table.offsetTop + 60}px, 1px)`
+                    })
+                } else {
+                    table.querySelectorAll('.sticky_header').forEach((header)=> {
+                        header.classList.remove("sticky-active")
+                        falseHeader.forEach((fh) => fh.classList.remove('active'))
+                        header.style.transform = ``
+                    })
+                }
+            })
+        }
+    },
     methods: {
         addItem(item, reload = true) {
             const method = item.id ? "PUT" : "POST";

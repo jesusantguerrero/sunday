@@ -100,7 +100,7 @@
                                 v-model="task.done"
                             />
                             <span class="font-bold">
-                                [{{ task.stage.name }}]
+                                [{{ task.stage }}]
                             </span>
                             <span>
                                 {{ task.title }}

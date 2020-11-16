@@ -1,5 +1,5 @@
 <template>
-  <div class="item-group-cell w-full px-2 h-full flex items-center"
+  <div class="item-group-cell"
   :class="{'editable-mode': isEditMode, 'new-item': isTitle }">
 
     <div v-if="isTitle && !isEditMode" class="new-item-button" @click="toggleEditMode()">
@@ -50,18 +50,21 @@
       <div class="h-8 px-2"
         v-else-if="['label', 'select'].includes(field.type)"
       >
-        <multiselect
-            v-model="selectValue"
+         <el-select
+            v-model="value"
+            placeholder="Select"
             ref="input"
-            label="name"
-            track-by="id"
-            :show-labels="false"
-            :options="field.options"
-            class="w-full"
-            @select="value = $event.name"
-            @close="saveChanges()"
+            @change="saveChanges()"
+            :filterable="true"
+            :automatic-dropdown="true"
         >
-        </multiselect>
+            <el-option
+                v-for="item in field.options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+            </el-option>
+        </el-select>
       </div>
 
       <input
@@ -217,6 +220,10 @@ export default {
       border: 0;
   }
 
+}
+
+.item-group-cell {
+    @apply w-full px-2 h-full flex items-center;
 }
 
 .item-group-cell.new-item {
