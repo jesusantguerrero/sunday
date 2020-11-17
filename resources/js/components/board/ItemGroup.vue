@@ -1,6 +1,6 @@
 <template>
-  <div class="ic-list">
-      <div class="ic-list__body" :class="{ 'not-expanded': !isExpanded }">
+  <div class="ic-list" :data-table-size="tableSize">
+      <div class="ic-list__body" :class="{ 'not-expanded': !isExpanded, 'loaded': isLoaded }">
             <!-- end of column title -->
             <div class="ic-list__title">
                 <div class="item-false__header sticky_header">
@@ -125,7 +125,7 @@
             <!-- column add -->
             <div class="ic-list__add" v-if="isExpanded">
                 <div class="item-false__header sticky_header">
-                    <div class="item-group-row__header">
+                    <div class="item-group-row__header" @click="addField">
                         <i class="fa fa-plus"></i>
                     </div>
                 </div>
@@ -196,16 +196,33 @@ export default {
       newItem: {},
       isEditMode: false,
       isExpanded: true,
-      isItemModalOpen: false
+      isItemModalOpen: false,
+      isLoaded: false
     };
+  },
+  mounted() {
+      debugger
+      setTimeout(() => {
+          this.isLoaded= true
+      }, 500)
+  },
+  watch: {
+    tableSize: {
+        handler() {
+            const documentRoot = document.documentElement;
+            documentRoot.style.setProperty("--board-column-size", this.tableSize)
+        },
+        deep: true,
+        immediate: true
+    }
   },
   computed: {
       visibleFields() {
         return this.board.fields.filter(field => !field.hide)
       },
 
-      titleSize() {
-          return 10 - this.visibleFields.length;
+      tableSize() {
+        return this.visibleFields.length;
       }
   },
   methods: {
@@ -251,6 +268,24 @@ export default {
         this.newItem.order = lastItemOrder + 1;
         this.$emit("saved", {...this.newItem}, reload);
         this.newItem = {};
+    },
+
+    addField() {
+        const field = {
+            board_id: this.board.id,
+            name: `field_${this.board.fields.length}`,
+            title: `Field ${this.board.fields.length}`,
+            type: "text",
+            manual: true
+
+        }
+         axios({
+                url: `/api/fields`,
+                method: "post",
+                data: field
+            }).then(() => {
+                    this.$inertia.reload({ preserveScroll: true });
+            });
     },
 
     saveChanges(item, field, value) {
@@ -327,8 +362,14 @@ export default {
     overflow: hidden;
     &__body {
         display: grid;
-        grid-template-columns: 1fr 2fr 80px;
+        grid-template-columns: 1fr 1fr 80px;
         position: relative;
+        opacity: 5;
+        transition: all ease .3s;
+
+        &.loaded {
+            opacity: 1;
+        }
 
         &.not-expanded {
            @apply bg-gray-200;
@@ -339,7 +380,7 @@ export default {
 }
 
 .item-group-row {
-    grid-template-columns: repeat(6, minmax(180px, 100%));
+    grid-template-columns: repeat(var(--board-column-size), minmax(180px, 100%));
 
     &__header {
         @apply text-center;
