@@ -89,7 +89,9 @@
                     class="item-group-row__header"
                     >
                     <span v-if="isExpanded" class="font-bold">
-                        {{ field.title }}
+                        <field-popover :field-data="field" :board="board" @saved="onFieldAdded">
+                            {{ field.title }}
+                        </field-popover>
                     </span>
                     </div>
                 </div>
@@ -125,8 +127,10 @@
             <!-- column add -->
             <div class="ic-list__add" v-if="isExpanded">
                 <div class="item-false__header sticky_header">
-                    <div class="item-group-row__header" @click="addField">
-                        <i class="fa fa-plus"></i>
+                    <div class="item-group-row__header">
+                        <field-popover :field-data="newField" :board="board" @saved="onFieldAdded">
+                            <i class="fa fa-plus" slot="reference"></i>
+                        </field-popover>
                     </div>
                 </div>
 
@@ -167,12 +171,14 @@
 import ItemGroupCell from "./ItemGroupCell";
 import JetDropdown from "../../Jetstream/Dropdown";
 import Draggable from "vuedraggable";
+import FieldPopover from './FieldPopover.vue';
 
 export default {
   components: {
     ItemGroupCell,
     Draggable,
-    JetDropdown
+    JetDropdown,
+    FieldPopover
   },
   props: {
     createMode: {
@@ -194,17 +200,12 @@ export default {
   data() {
     return {
       newItem: {},
+      newField: {},
       isEditMode: false,
       isExpanded: true,
       isItemModalOpen: false,
       isLoaded: false
     };
-  },
-  mounted() {
-      debugger
-      setTimeout(() => {
-          this.isLoaded= true
-      }, 500)
   },
   watch: {
     tableSize: {
@@ -270,22 +271,9 @@ export default {
         this.newItem = {};
     },
 
-    addField() {
-        const field = {
-            board_id: this.board.id,
-            name: `field_${this.board.fields.length}`,
-            title: `Field ${this.board.fields.length}`,
-            type: "text",
-            manual: true
-
-        }
-         axios({
-                url: `/api/fields`,
-                method: "post",
-                data: field
-            }).then(() => {
-                    this.$inertia.reload({ preserveScroll: true });
-            });
+    onFieldAdded() {
+        this.newField = {}
+        this.$inertia.reload({ preserveScroll: true });
     },
 
     saveChanges(item, field, value) {
@@ -364,12 +352,6 @@ export default {
         display: grid;
         grid-template-columns: 1fr 1fr 80px;
         position: relative;
-        opacity: 5;
-        transition: all ease .3s;
-
-        &.loaded {
-            opacity: 1;
-        }
 
         &.not-expanded {
            @apply bg-gray-200;
