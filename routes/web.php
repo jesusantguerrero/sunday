@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FieldController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\LinkController;
@@ -58,6 +59,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/stages', StageController::class);
     Route::apiResource('/standups', StandupController::class);
     Route::apiResource('/api/boards', BoardController::class);
+    Route::apiResource('/api/fields', FieldController::class);
     Route::apiResource('/links', LinkController::class);
     Route::apiResource('/time-entries', TimeEntryController::class);
     Route::post('/services/google', [ServiceController::class, 'google']);
