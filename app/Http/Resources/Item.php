@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\URL;
 
 class Item extends JsonResource
 {
@@ -20,7 +21,8 @@ class Item extends JsonResource
             'done' => $this->done,
             'commit_date' => $this->commit_date,
             'stage' => $this->stage ? $this->stage->name : "",
-            'duration' => $this->timeEntries->sum('duration')
+            'duration' => $this->timeEntries->sum('duration'),
+            'board_id' =>  $this->stage ? $this->stage->board_id : '',
         ];
 
         foreach ($this->fields as $field) {

@@ -5,7 +5,7 @@
     trigger="click">
     <div class="field-popover">
         <input type="text" class="form-control" v-model="field.title" @keydown.enter="addField()">
-        <div class="form-group">
+        <div class="form-group"  v-if="!field.id || field.manual">
             <label for="">Property Type</label>
             <el-select
                 v-model="field.type"
@@ -20,6 +20,10 @@
                     :key="item.name"
                     :label="item.title"
                     :value="item.name">
+                        <div>
+                            <i :class="item.icon" class="mr-2"/>
+                            <span>{{ item.title }}</span>
+                        </div>
                 </el-option>
             </el-select>
         </div>
@@ -71,22 +75,32 @@ export default {
             fieldTypes: [
                 {
                     name: "text",
+                    icon: "fa fa-align-left",
                     title: "Text"
                 },
                 {
                     name: "date",
+                    icon: "far fa-calendar-alt",
                     title: "Date"
                 },
                 {
+                    name: "time",
+                    icon: "far fa-clock",
+                    title: "Time"
+                },
+                {
                     name: "number",
-                    title: "number"
+                    icon: "fa fa-hashtag",
+                    title: "Number"
                 },
                 {
                     name: "label",
+                    icon: "fa fa-tags",
                     title: "Selects",
                 },
                 {
                     name: "person",
+                    icon: "fa fa-user-friends",
                     title: "Person"
                 }
             ]
