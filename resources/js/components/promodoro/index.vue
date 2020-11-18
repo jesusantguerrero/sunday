@@ -32,35 +32,6 @@
                 <i class="material-icons">{{ icon }}</i>
             </div>
         </div>
-        <div class="outer-controls-container">
-            <div class="session-control">
-                <h4>Session</h4>
-                <div class="cs-row">
-                    <button @click="removeTime('session')">
-                        <i class="material-icons">navigate_before</i></button
-                    ><span class="value">{{ modes.session.minutes }}</span
-                    ><button @click="addTime('session')">
-                        <i class="material-icons">navigate_next</i>
-                    </button>
-                </div>
-            </div>
-            <div class="separator">
-                <h4>Reset</h4>
-                <div class="cs-row"><button @click="reset">Reset</button></div>
-            </div>
-            <div class="rest-control">
-                <h4>Rest</h4>
-                <div class="cs-row">
-                    <button @click="removeTime('break')">
-                        <i class="material-icons">navigate_before</i></button
-                    ><span class="value">{{ modes.break.minutes }}</span
-                    ><button @click="addTime('break')">
-                        <i class="material-icons">navigate_next</i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <div class="promodoro__footer">
             <div class="w-full">
                 <multiselect

@@ -10,15 +10,27 @@
             v-model="task.done"
         />
             <span class="font-bold">
-            [{{ task.stage }}]
+            <inertia-link :href="`/boards/${task.board_id}`">
+                [{{ task.stage }}]
+            </inertia-link>
         </span>
         <span>
             {{ task.title }}
         </span>
         </label>
     </div>
-    <div class="actions-container">
-            <span class="mr-2">
+    <div class="actions-container flex items-center">
+        <span class="mr-5">
+            {{ priorityText }}
+        </span>
+            <el-tooltip class="item" effect="dark" :content="task.priority" placement="left">
+                <div class="priority-level inline-block mr-4">
+                    <div class="priority-level__inner">
+
+                    </div>
+                </div>
+            </el-tooltip>
+        <span class="mr-2">
             {{ durationFromMs }}
         </span>
         <button @click="$emit('item-clicked', task)" class="play-button" v-if="!task.commit_date">
@@ -42,6 +54,10 @@ export default {
         }
     },
 
+    mounted: {
+
+    },
+
     computed: {
         isTracker() {
             return this.tracker && this.tracker.timeEntry.item_id == this.task.id;
@@ -49,8 +65,36 @@ export default {
         durationFromMs() {
             const currentDuration = this.isTracker ? this.tracker.duration || 0: 0;
             return Tracker.durationFromMs(this.task.duration+currentDuration);
+        },
+        priorityText() {
+            const emojis = {
+                "high": "🔥🔥🔥",
+                "medium": "🔥🔥",
+                "low": "🔥"
+            }
+            return this.task && emojis[this.task.priority] || "";
         }
     },
 }
 </script>
 
+<style lang="scss" scoped>
+
+.priority-level {
+    --color: red;
+    border: solid 1px transparent;
+    border-radius: 0.20rem;
+    padding: 2px;
+    transition: all ease .3s;
+
+    &:hover {
+        border: solid 1px var(--color);
+    }
+    &__inner {
+        background-color: var(--color);
+        width: 12px;
+        height: 12px;
+        border-radius: 0.20rem;
+    }
+}
+</style>

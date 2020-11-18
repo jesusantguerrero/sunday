@@ -200,13 +200,7 @@ export default {
                     name: "kanban",
                     title: "Kanban",
                     icon: "fa fa-border-all"
-                },
-                schedule:
-                {
-                    name: "schedule",
-                    title: "Schedule",
-                    icon: "fa fa-calendar-alt"
-                },
+                }
 
             },
             itemToDelete: false,

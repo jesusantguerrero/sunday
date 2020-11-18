@@ -6,15 +6,43 @@
                 <div class="w-100 md:w-9/12 md:mx-4 pt-12">
                     <div class="flex justify-between flex-col md:flex-row mx-2 md:mr-2 md:ml-0">
                         <span class="text-3xl font-bold"> Today's Todos </span>
-                        <div class="controls h-12 bg-purple-700 rounded-lg">
-                            <button
-                                v-for="mode in modes"
-                                :key="mode"
-                                @click="modeSelected=mode"
-                                :class="{'bg-purple-400': mode == modeSelected }"
-                                class="px-8 h-full rounded-lg text-white capitalize">
-                                    {{ mode }}
-                            </button>
+
+                        <div class="flex items-center">
+                            <div class="w-40 mr-2">
+                                <multiselect
+                                    v-model="selectedStage"
+                                    ref="input"
+                                    :show-labels="false"
+                                    :options="stages"
+                                    class="w-full"
+                                >
+                                <template slot="singleLabel" slot-scope="props">
+                                    <span class="option__title">
+                                            <i  class="fa fa-briefcase mr-2"></i>
+                                            {{ props.option }}
+                                        </span>
+                                </template>
+                                <template slot="option" slot-scope="props">
+                                    <div class="option__desc">
+                                        <span class="option__title">
+                                            <i  class="fa fa-briefcase mr-2"></i>
+                                            {{ props.option }}
+                                        </span>
+                                    </div>
+                                </template>
+                                </multiselect>
+                            </div>
+                            <div class="controls h-10 bg-purple-700 rounded-lg">
+                                <button
+                                    v-for="mode in modes"
+                                    :key="mode"
+                                    @click="modeSelected=mode"
+                                    :class="{'bg-purple-400': mode == modeSelected }"
+                                    class="px-8 h-full rounded-lg text-white capitalize">
+                                        {{ mode }}
+                                </button>
+                            </div>
+
                         </div>
                     </div>
 
@@ -37,7 +65,7 @@
                     <board-item-container
                         v-show="showTodo"
                         title="To Do"
-                        :tasks="todo"
+                        :tasks="inbox"
                         :tracker="tracker"
                         @update-item="updateItem"
                         @item-clicked="setTaskToTimer"
@@ -139,6 +167,7 @@
     import LinkViewer from "../components/links/Viewer"
     import PrimaryButton from "../Jetstream/Button"
     import { subDays, toDate } from "date-fns";
+    import { uniq, orderBy } from "lodash-es";
 
     export default {
         components: {
@@ -197,8 +226,9 @@
         },
         data() {
             return {
-                modes: ['all', 'todos', 'committed'],
-                modeSelected: 'all',
+                modes: ['inbox', 'committed', 'all'],
+                selectedStage: "",
+                modeSelected: 'inbox',
                 promodoroColor: "red",
                 localCommitDate: new Date,
                 isLoading: false,
@@ -220,10 +250,17 @@
                 return this.todo.filter(item => item.done).length;
             },
             showTodo() {
-                return ['all', 'todos'].includes(this.modeSelected)
+                return ['all', 'inbox'].includes(this.modeSelected)
             },
             showCommitted() {
                 return ['all', 'committed'].includes(this.modeSelected)
+            },
+            stages() {
+                return uniq(this.todo.map((item) => item.stage));
+            },
+            inbox() {
+                const inbox = this.selectedStage ? this.todo.filter((item) => item.stage == this.selectedStage) : this.todo;
+                return orderBy(this.todo,["priority","stage","title"]);
             }
         },
         mounted() {

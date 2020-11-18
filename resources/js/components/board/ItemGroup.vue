@@ -5,27 +5,12 @@
             <div class="ic-list__title">
                 <div class="item-false__header sticky_header">
                     <div class="header-cell item-group-row__header">
-                        <jet-dropdown align="left" width="48" class="mr-2">
-                            <template #trigger>
-                                <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                                    <i class="fa fa-angle-down text-lg"></i>
-                                </button>
-                            </template>
-
-                            <template #content>
-                                <div class="block px-4 py-2 text-xs text-gray-400">
-                                    Options
-                                </div>
-                            </template>
-                        </jet-dropdown>
-
                         <span class="toolbar-buttons mr-2" @click="toggleExpand">
-                            <i class="fa fa-expand-alt"></i>
+                            <i class="fa" :class="[isExpanded ? 'fa-chevron-down' : 'fa-chevron-right']"></i>
                         </span>
 
                         <span
-                            class="font-bold"
-                            @click="toggleEditMode(true)"
+                            class="font-bold handle"
                             v-if="!isEditMode">
                                 {{ stage.title || stage.name }}
                         </span>
@@ -40,7 +25,20 @@
                             />
 
                         </div>
+
                         <span v-if="!isExpanded"> ({{ items.length }} items) </span>
+                        <i class="fa fa-edit mx-2"  @click="toggleEditMode(true)"></i>
+                          <el-dropdown trigger="click" @command="handleBoardCommands" @click.native.prevent>
+                                <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center">
+                                    <div class="flex items-center justify-center mr-2">
+                                        <i class="fa fa-ellipsis-v"></i>
+                                    </div>
+                                </div>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="edit" icon="fa fa-edit">Edit</el-dropdown-item>
+                                    <el-dropdown-item command="delete" icon="fa fa-trash">Delete</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
                     </div>
                 </div>
                 <div class="false-header"></div>
@@ -169,7 +167,6 @@
 
 <script>
 import ItemGroupCell from "./ItemGroupCell";
-import JetDropdown from "../../Jetstream/Dropdown";
 import Draggable from "vuedraggable";
 import FieldPopover from './FieldPopover.vue';
 
@@ -177,7 +174,6 @@ export default {
   components: {
     ItemGroupCell,
     Draggable,
-    JetDropdown,
     FieldPopover
   },
   props: {
@@ -302,6 +298,19 @@ export default {
         this.$inertia.reload({ preserveScroll: true })
     },
 
+    handleBoardCommands(command) {
+        switch (command) {
+            case 'delete':
+                this.$emit('board-deleted', item)
+                break
+            case 'edit':
+                this.toggleEditMode();
+                break
+            default:
+            break;
+        }
+    },
+
     handleCommand(item, command) {
         switch (command) {
             case 'delete':
@@ -322,15 +331,6 @@ export default {
 .header-cell {
   @apply flex items-center pl-2 ;
   height: 34px;
-  .toolbar-buttons {
-    display: none;
-  }
-
-  &:hover {
-    .toolbar-buttons {
-      display: inline-flex;
-    }
-  }
 }
 
 .item-line-cell {
@@ -419,7 +419,6 @@ export default {
         margin-left: 0;
         display: flex;
         align-items: center;
-
     }
 }
 </style>

@@ -1,5 +1,19 @@
-import Vue from 'vue';
-import { DatePicker, TimePicker, Dialog, Tooltip, Dropdown, DropdownItem, DropdownMenu, Select, Option, OptionGroup, Input, Popover} from 'element-ui';
+import Vue from "vue";
+import {
+    DatePicker,
+    TimePicker,
+    Dialog,
+    Tooltip,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    Select,
+    Option,
+    OptionGroup,
+    Input,
+    Popover,
+    Time
+} from "element-ui";
 
 Vue.use(DatePicker);
 Vue.use(Tooltip);
@@ -13,3 +27,5 @@ Vue.use(Option);
 Vue.use(Input);
 Vue.use(OptionGroup);
 Vue.use(Popover);
+Vue.use(TimePicker);
+
