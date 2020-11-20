@@ -4,10 +4,13 @@ namespace App\Libraries;
 use App\Models\User;
 use App\Models\Board;
 use App\Models\Automation;
-use Google_Service_Gmail;
-use Google_Client;
+use App\Models\Item;
+use Carbon\Carbon;
 use DateTime;
-use PhpMimeMailParser\Parser;
+use Google_Service_Gmail;
+use Google_Service_Calendar;
+use Google_Client;
+use PhpMimeMailParser\Parser as EmailParser;
 # Imports the Google Cloud client library
 use Google\Cloud\PubSub\PubSubClient;
 
@@ -21,7 +24,7 @@ class GmailService
     public static function setTokens($data, $userId) {
         $client = new Google_Client();
         $client->setAuthConfig(app_path().'\..\credentials.json');
-        $client->setRedirectUri('http://localhost:8080');
+        $client->setRedirectUri('http://localhost:8000');
         if ($data->code) {
             $tokenResponse = $client->fetchAccessTokenWithAuthCode($data->code);
             session(['g_token', json_encode($tokenResponse)]);
@@ -58,7 +61,46 @@ class GmailService
         return $client;
     }
 
-    public static function createItemFromMessage($userId, $automationId) {
+    public static function createItemFromCalendar(int $userId, int $automationId) {
+        $automation = Automation::find($automationId);
+        $track = json_decode($automation->track, true);
+        $automationConfig = json_decode($automation->config);
+        $track['historyId'] = $track['historyId'] ?? 0;
+
+        $client = self::getClient($userId);
+        $service = new Google_Service_Calendar($client);
+        $calendarId = 'primary';
+        $results = $service->events->listEvents($calendarId, [
+            'maxResults' => 10,
+            'orderBy' => 'startTime',
+            'singleEvents' => true,
+            'timeMin' => date('c'),
+            'timeMax' => Carbon::tomorrow()->format('c')
+        ]);
+        $events = $results->getItems();
+        foreach ($events as $event) {
+            $board = Board::find($automation->board_id);
+            $stage = $board->stages[0];
+            $date = new DateTime($event->start->dateTime);
+            echo "{$date->format('H:i')} \n";
+            $item = [
+                'title' => $event->getSummary(),
+                'board_id' => $stage->board_id,
+                'stage_id' => $stage->id,
+                'user_id' => $stage->user_id,
+                'team_id' => $stage->team_id,
+                'fields' => [
+                    ['name' => 'date', 'type'=> 'date', 'value' => $date->format('Y-m-d')],
+                    ['name' => 'time', 'type' => 'time', 'value' => $date->format('H:i')],
+                    ['name' => 'itemType', 'value' => 'event', 'hide' => 1],
+                    ['name' => 'automation_id', 'value' => $automationId, 'hide' => 1],
+                ]
+            ];
+            Item::createEvent($item);
+        }
+    }
+
+    public static function createItemFromMessage(int $userId, int $automationId) {
         $automation = Automation::find($automationId);
         $track = json_decode($automation->track, true);
         $automationConfig = json_decode($automation->config);
@@ -70,78 +112,54 @@ class GmailService
         $results = $service->users_threads->listUsersThreads($user, ['maxResults' => 50, 'q' => "$automationConfig->condition <$automationConfig->value>"]);
         $messages = [];
 
+        try {
         forEach($results->getThreads() as $index => $thread) {
-            $theadResponse = $service->users_threads->get($user, $thread->id, ['format' => 'MINIMAL']);
-            $message = $theadResponse->getMessages()[0];
-            if ($message && ($message->historyId > $track['historyId'])) {
-                $raw = $service->users_messages->get($user, $message->id, ['format' => 'raw']);
-                $parser = self::parseEmail($raw);
+                $theadResponse = $service->users_threads->get($user, $thread->id, ['format' => 'MINIMAL']);
+                $message = $theadResponse->getMessages()[0];
+                if ($message && ($message->historyId > $track['historyId'])) {
+                    $raw = $service->users_messages->get($user, $message->id, ['format' => 'raw']);
+                    $parser = self::parseEmail($raw);
 
-                $body = $parser->getMessageBody('html');
-                $mail = [
-                    'index' => $index,
-                    'subject' => $parser->getHeader('subject'),
-                    'id' => $message->id,
-                    'threadId' => $message->threadId,
-                    'historyId' => $message->historyId
-                ];
+                    $body = $parser->getMessageBody('html');
+                    $mail = [
+                        'index' => $index,
+                        'subject' => $parser->getHeader('subject'),
+                        'id' => $message->id,
+                        'threadId' => $message->threadId,
+                        'historyId' => $message->historyId
+                    ];
 
-                if ($index == 0) {
-                    $automation->track = json_encode($mail);
-                    $automation->save();
+                    if ($index == 0) {
+                        $automation->track = json_encode($mail);
+                        $automation->save();
+                    }
+
+                    $mail['message'] = $body;
+                    $board = Board::find($automation->board_id);
+                    $stage = $board->stages[0];
+                    $item = [
+                        'title' => $mail['subject'],
+                        'board_id' => $stage->board_id,
+                        'user_id' => $stage->user_id,
+                        'team_id' => $stage->team_id,
+                    ];
+                    $stage->items()->create($item);
+                    dump($item['title']);
+                    $messages[] = $message;
+
                 }
 
-                $mail['message'] = $body;
-                $board = Board::find($automation->board_id);
-                $stage = $board->stages[0];
-                $stage->items()->create([
-                    'title' => $mail['subject'],
-                    'board_id' => $stage->board_id,
-                    'user_id' => $stage->user_id,
-                    'team_id' => $stage->team_id,
-                ]);
-                $messages[] = $mail;
+            };
+        } catch (\Exception $e) {
+            dump($index);
+        }
 
-            }
-        };
-
-        return $messages;
+        return $messages[0];
     }
 
     public static function parseEmail($raw) {
         $switched = str_replace(['-', '_'], ['+', '/'], $raw['raw']);
         $raw = base64_decode($switched);
-        return (new Parser)->setText($raw);
-    }
-
-    public static function listen() {
-        # Your Google Cloud Platform project ID
-        $projectId = "sunday-1601040613995";
-
-        # Instantiates a client
-        $pubsub = new PubSubClient([
-            'projectId' => $projectId
-        ]);
-
-        # The name for the new topic
-        $topicName = 'gmail';
-
-        # Creates the new topic
-        $topic = $pubsub->createTopic($topicName);
-
-        echo 'Topic ' . $topic->name() . ' created.';
-    }
-
-    function pull_messages($projectId, $subscriptionName)
-    {
-        $pubsub = new PubSubClient([
-            'projectId' => $projectId
-        ]);
-        $subscription = $pubsub->subscription($subscriptionName);
-        foreach ($subscription->pull() as $message) {
-           printf('Message: %s' . PHP_EOL, $message->data());
-           // Acknowledge the Pub/Sub message has been received, so it will not be pulled multiple times.
-           $subscription->acknowledge($message);
-        }
+        return (new EmailParser)->setText($raw);
     }
 }

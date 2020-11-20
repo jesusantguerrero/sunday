@@ -19,6 +19,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('gmail {service} {userId} {automationId}', function ($service, $userId, $automationId) {
+Artisan::command('daily:automation {service} {userId} {automationId}', function ($service, $userId, $automationId) {
     GmailService::$service($userId, $automationId);
-})->purpose('List Gmail Labels');
+})->purpose('call services');

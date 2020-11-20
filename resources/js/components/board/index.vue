@@ -4,6 +4,15 @@
             <div class="flex text-left">
                 <div class="flex justify-between mr-2">
                     <span class="text-3xl font-bold"> {{ board.name }} </span>
+                    <div>
+                        <span class="automation" v-for="automation in automations" :key="`automation-${automation.id}`">
+                            <img :src="automation.service_logo" v-if="automation.service_logo" class="automation-logo">
+                            <div v-else>
+                                {{ automation.name[0] }}
+
+                            </div>
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -170,6 +179,10 @@ export default {
     props: {
         board: {
             type: Object,
+            required: true
+        },
+        automations: {
+            type: Array,
             required: true
         },
         users: {
@@ -446,5 +459,16 @@ a {
 
 .form-input {
     @apply shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight;
+}
+
+.automation-logo {
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid crimson;
 }
 </style>

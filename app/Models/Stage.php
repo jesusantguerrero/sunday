@@ -11,6 +11,10 @@ class Stage extends Model
     protected $with = ['items'];
     protected $fillable = ['name','order', 'color', 'board_id', 'user_id', 'team_id'];
 
+    public function board() {
+        return $this->belongsTo('App\Models\Board', 'board_id', 'id');
+    }
+
     public function items() {
         return $this->hasMany('App\Models\Item', 'stage_id', 'id')->orderBy('order');
     }

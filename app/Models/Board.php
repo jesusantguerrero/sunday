@@ -132,6 +132,24 @@ class Board extends Model
         }
     }
 
+    public function findOrCreateField($fieldData) {
+        $fieldToSearch = isset($fieldData['name']) ? 'name' : 'id';
+        $valueToSearch = $fieldData['name'] ?? $fieldData['field_id'] ?? "";
+        $field = $this->fields()->where(["$fieldToSearch" =>  "$valueToSearch"])->limit(1)->get();
+        $field = count($field) ? $field[0] : null;
+        if (!$field) {
+            $field = $this->fields()->create([
+                'user_id' => $this->user_id,
+                'team_id' => $this->team_id,
+                'name' => $fieldData['name'],
+                'title' => empty($fieldData['title']) ? \ucwords($fieldData['name']) : $fieldData['title'],
+                'type' => $fieldData['type'] ?? 'text',
+                'hide' => $fieldData['hide'] ?? 0,
+            ]);
+        }
+        return $field;
+    }
+
     public function deleteStages() {
         $stages = $this->stages();
 
