@@ -21,14 +21,14 @@ services:
   db:
     image: mysql:5.7
     container_name: sunday-db
-    restart: unless-stopped
+    restart: always
     ports:
       - "3306:3306"
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_USER: ${DB_USERNAME}@%%
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
