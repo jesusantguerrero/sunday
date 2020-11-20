@@ -20,7 +20,7 @@
         "laravel/jetstream": "^1.0",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.0",
-        "php-mailparse": "*",
+        "ext-mailparse": "*",
         "php-mime-mail-parser/php-mime-mail-parser": "^6.0",
         "twilio/sdk": "^6.10"
     },
