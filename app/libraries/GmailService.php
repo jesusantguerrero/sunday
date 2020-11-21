@@ -11,8 +11,6 @@ use Google_Service_Gmail;
 use Google_Service_Calendar;
 use Google_Client;
 use PhpMimeMailParser\Parser as EmailParser;
-# Imports the Google Cloud client library
-use Google\Cloud\PubSub\PubSubClient;
 
 class GmailService
 {
@@ -59,6 +57,16 @@ class GmailService
         }
 
         return $client;
+    }
+
+    public static function listenAutomations() {
+        $automations = Automation::all();
+        foreach ($automations as $automation) {
+            $service = $automation->recipe->name;
+            echo "$automation->name";
+            self::$service($automation->user_id, $automation->id);
+        }
+
     }
 
     public static function createItemFromCalendar(int $userId, int $automationId) {
@@ -154,7 +162,7 @@ class GmailService
             dump($index);
         }
 
-        return $messages[0];
+        return $messages;
     }
 
     public static function parseEmail($raw) {

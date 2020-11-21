@@ -19,6 +19,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('daily:automation {service} {userId} {automationId}', function ($service, $userId, $automationId) {
+Artisan::command('daily:automation', function () {
+    GmailService::listenAutomations();
+})->purpose('call services');
+
+Artisan::command('daily:service {service} {userId} {automationId}', function ($service, $userId, $automationId) {
     GmailService::$service($userId, $automationId);
 })->purpose('call services');
