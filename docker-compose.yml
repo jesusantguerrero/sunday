@@ -16,6 +16,7 @@ services:
       - ./:/var/www
       - ./docker-compose/web/timezone:/etc/timezone
       - ./docker-compose/web/cron/scheduler-cron:/etc/cron.d/scheduler-cron
+      - sunday_db:/var/lib/mysql
     networks:
       - sunday
   db:
@@ -28,11 +29,14 @@ services:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}@%%
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
       - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+      - sunday_db:/var/lib/mysql
+      - ./docker-compose/mysql:/home/root/cache/
     networks:
       - sunday
   nginx:
@@ -49,3 +53,6 @@ services:
 networks:
   sunday:
     driver: bridge
+volumes:
+  sunday_db:
+    driver: local
