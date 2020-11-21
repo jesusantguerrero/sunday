@@ -11,10 +11,10 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- Volcando estructura para tabla sunday.automations
-DROP TABLE IF EXISTS `automations`;
+-- Volcando estructura para tabla sunda.automations
 CREATE TABLE IF NOT EXISTS `automations` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `automation_recipe_id` bigint(20) unsigned DEFAULT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `team_id` bigint(20) unsigned NOT NULL,
   `board_id` bigint(20) unsigned NOT NULL,
@@ -26,12 +26,34 @@ CREATE TABLE IF NOT EXISTS `automations` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.boards
-DROP TABLE IF EXISTS `boards`;
+-- Volcando estructura para tabla sunda.automation_recipes
+CREATE TABLE IF NOT EXISTS `automation_recipes` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `automation_service_id` bigint(20) DEFAULT NULL,
+  `name` varchar(50) NOT NULL DEFAULT '0',
+  `service_name` varchar(50) DEFAULT '0',
+  `mapper` text,
+  `sentence` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+-- La exportación de datos fue deseleccionada.
+
+-- Volcando estructura para tabla sunda.automation_services
+CREATE TABLE IF NOT EXISTS `automation_services` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `logo` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+-- La exportación de datos fue deseleccionada.
+
+-- Volcando estructura para tabla sunda.boards
 CREATE TABLE IF NOT EXISTS `boards` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
@@ -40,12 +62,27 @@ CREATE TABLE IF NOT EXISTS `boards` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.failed_jobs
-DROP TABLE IF EXISTS `failed_jobs`;
+-- Volcando estructura para tabla sunda.checklists
+CREATE TABLE IF NOT EXISTS `checklists` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `team_id` bigint(20) unsigned NOT NULL,
+  `item_id` bigint(20) unsigned DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order` int(11) DEFAULT '0',
+  `done` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- La exportación de datos fue deseleccionada.
+
+-- Volcando estructura para tabla sunda.failed_jobs
 CREATE TABLE IF NOT EXISTS `failed_jobs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -60,43 +97,42 @@ CREATE TABLE IF NOT EXISTS `failed_jobs` (
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.fields
-DROP TABLE IF EXISTS `fields`;
+-- Volcando estructura para tabla sunda.fields
 CREATE TABLE IF NOT EXISTS `fields` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
   `team_id` bigint(20) unsigned NOT NULL,
-  `stage_id` bigint(20) unsigned NOT NULL,
+  `board_id` bigint(20) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `options` json DEFAULT NULL,
+  `hide` tinyint(3) unsigned DEFAULT '0',
+  `manual` tinyint(3) unsigned DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.field_rules
-DROP TABLE IF EXISTS `field_rules`;
+-- Volcando estructura para tabla sunda.field_rules
 CREATE TABLE IF NOT EXISTS `field_rules` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
   `team_id` bigint(20) unsigned NOT NULL,
-  `stage_id` bigint(20) unsigned NOT NULL,
+  `board_id` bigint(20) unsigned NOT NULL,
   `field_id` bigint(20) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `reference` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.field_values
-DROP TABLE IF EXISTS `field_values`;
+-- Volcando estructura para tabla sunda.field_values
 CREATE TABLE IF NOT EXISTS `field_values` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
@@ -107,18 +143,18 @@ CREATE TABLE IF NOT EXISTS `field_values` (
   `field_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_value` date DEFAULT NULL,
+  `time_value` time DEFAULT NULL,
   `decimal_value` decimal(8,2) DEFAULT NULL,
   `check_value` tinyint(1) DEFAULT NULL,
   `text_value` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=840 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.items
-DROP TABLE IF EXISTS `items`;
+-- Volcando estructura para tabla sunda.items
 CREATE TABLE IF NOT EXISTS `items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
@@ -130,19 +166,18 @@ CREATE TABLE IF NOT EXISTS `items` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `done` tinyint(1) NOT NULL DEFAULT '0',
   `commit_date` date DEFAULT NULL,
-  `order` int(11) NOT NULL DEFAULT '0',
+  `order` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.labels
-DROP TABLE IF EXISTS `labels`;
+-- Volcando estructura para tabla sunda.labels
 CREATE TABLE IF NOT EXISTS `labels` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
   `team_id` bigint(20) unsigned NOT NULL,
-  `stage_id` bigint(20) unsigned NOT NULL,
+  `board_id` bigint(20) unsigned NOT NULL,
   `field_id` bigint(20) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `label` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -150,23 +185,35 @@ CREATE TABLE IF NOT EXISTS `labels` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.migrations
-DROP TABLE IF EXISTS `migrations`;
+-- Volcando estructura para tabla sunda.links
+CREATE TABLE IF NOT EXISTS `links` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `team_id` bigint(20) unsigned NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `url` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- La exportación de datos fue deseleccionada.
+
+-- Volcando estructura para tabla sunda.migrations
 CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.password_resets
-DROP TABLE IF EXISTS `password_resets`;
+-- Volcando estructura para tabla sunda.password_resets
 CREATE TABLE IF NOT EXISTS `password_resets` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -176,8 +223,7 @@ CREATE TABLE IF NOT EXISTS `password_resets` (
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.personal_access_tokens
-DROP TABLE IF EXISTS `personal_access_tokens`;
+-- Volcando estructura para tabla sunda.personal_access_tokens
 CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -191,12 +237,11 @@ CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.sessions
-DROP TABLE IF EXISTS `sessions`;
+-- Volcando estructura para tabla sunda.sessions
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
@@ -211,8 +256,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.stages
-DROP TABLE IF EXISTS `stages`;
+-- Volcando estructura para tabla sunda.stages
 CREATE TABLE IF NOT EXISTS `stages` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
@@ -224,12 +268,11 @@ CREATE TABLE IF NOT EXISTS `stages` (
   `color` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `order` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.standups
-DROP TABLE IF EXISTS `standups`;
+-- Volcando estructura para tabla sunda.standups
 CREATE TABLE IF NOT EXISTS `standups` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
@@ -238,12 +281,11 @@ CREATE TABLE IF NOT EXISTS `standups` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.teams
-DROP TABLE IF EXISTS `teams`;
+-- Volcando estructura para tabla sunda.teams
 CREATE TABLE IF NOT EXISTS `teams` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
@@ -253,12 +295,11 @@ CREATE TABLE IF NOT EXISTS `teams` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `teams_user_id_index` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.team_user
-DROP TABLE IF EXISTS `team_user`;
+-- Volcando estructura para tabla sunda.team_user
 CREATE TABLE IF NOT EXISTS `team_user` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `team_id` bigint(20) unsigned NOT NULL,
@@ -272,8 +313,27 @@ CREATE TABLE IF NOT EXISTS `team_user` (
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla sunday.users
-DROP TABLE IF EXISTS `users`;
+-- Volcando estructura para tabla sunda.time_entries
+CREATE TABLE IF NOT EXISTS `time_entries` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `team_id` bigint(20) unsigned NOT NULL,
+  `item_id` bigint(20) unsigned DEFAULT NULL,
+  `label_ids` json DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `billable` tinyint(1) NOT NULL DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `start` timestamp NOT NULL,
+  `end` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `duration` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- La exportación de datos fue deseleccionada.
+
+-- Volcando estructura para tabla sunda.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -287,14 +347,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   `profile_photo_path` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tokenable_id` bigint(20) unsigned NOT NULL,
+  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tokenable_id` bigint(20) unsigned DEFAULT NULL,
   `hash` text COLLATE utf8mb4_unicode_ci,
   `token` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`),
   KEY `users_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- La exportación de datos fue deseleccionada.
 
