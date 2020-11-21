@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Automation;
+use App\Http\Resources\Automation as AutomationResource;
 use Illuminate\Http\Request;
 use App\Models\Board;
 use Illuminate\Http\Response;
@@ -95,6 +97,11 @@ class BoardController extends Controller
                             ];
                 }),
                 'filters' => $request->all('search', 'done'),
+                'automations' => AutomationResource::collection(Automation::where([
+                    'team_id' => $user->current_team_id,
+                    'user_id' => $user->id,
+                    'board_id' => $id
+                ])->get()),
                 'board' => [
                     'id' => $board->id,
                     'name' => $board->name,

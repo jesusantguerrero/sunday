@@ -3,7 +3,7 @@
         <div class="">
                 <div class="w-12/12 mx-2 pt-12">
                     <div class="overflow-hidden">
-                        <Board :board="board" :users="users"></Board>
+                        <Board :board="board" :users="users" :automations="automations"></Board>
                     </div>
                 </div>
             </div>
@@ -32,6 +32,12 @@
                 type: Object,
                 default() {
                     return {}
+                }
+            },
+            automations: {
+                type: Array,
+                refault() {
+                    return []
                 }
             },
             users: {

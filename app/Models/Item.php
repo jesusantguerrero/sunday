@@ -40,7 +40,8 @@ class Item extends Model
     public function saveFields($fields) {
         if ($fields) {
             foreach ($fields as $field) {
-                $fieldInstance = FieldValue::where(['field_id' => $field['field_id'], 'entity_id' => $this->id])->get();
+                $boardField = $this->stage->board->findOrCreateField($field);
+                $fieldInstance = FieldValue::where(['field_id' => $boardField->id, 'entity_id' => $this->id])->get();
                 if (count($fieldInstance) && isset($fieldInstance[0])) {
                     $fieldInstance[0]->value = isset($field['value']) ? $field['value'] : '';
                     $fieldInstance[0]->save();
@@ -49,14 +50,17 @@ class Item extends Model
                         'user_id' => $this->user_id,
                         'team_id' => $this->team_id,
                         'resource' => 'item',
-                        'field_id' => $field['field_id'],
-                        'field_name' => $field['field_name'],
-                        'value' => $field['value'] ?? ''
+                        'field_id' => $boardField->id,
+                        'field_name' => $boardField->name,
+                        'value' => $field['value'] ?? '',
+                        'hide' => $field['hide'] ?? 0
                     ]);
                 }
             }
         }
     }
+
+
 
     public function saveChecklist($list) {
         if ($list) {
@@ -77,6 +81,11 @@ class Item extends Model
 
     public function timeEntries() {
         return $this->hasMany('App\Models\TimeEntry', 'item_id', 'id');
+    }
+
+    public static function createEvent($eventData) {
+        $item = Item::create($eventData);
+        $item->saveFields($eventData['fields']);
     }
 
     public static function getByCustomField($entry, $user) {

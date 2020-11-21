@@ -23,74 +23,20 @@
         </span>
 
         <template v-else>
-            <div class="h-8 px-2" v-if="['person'].includes(field.type)">
-                <el-select
-                    v-model="selectValue"
-                    placeholder="Select"
-                    ref="input"
-                    value-key="name"
-                    :filterable="true"
-                    :automatic-dropdown="true"
-                    @visible-change="!$event && saveChanges()"
-                >
-                    <el-option
-                        v-for="item in users"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.name"
-                    >
-                    </el-option>
-                </el-select>
-            </div>
-
-            <div class="h-8 px-2" v-else-if="['date'].includes(field.type)">
-                <el-date-picker
-                    ref="input"
-                    v-model="value"
-                    type="date"
-                    @input="saveChanges('date')"
-                    @blur="isEditMode=false"
-                    input-class="w-full"
-                    placeholder="selecciona una fecha"
-                >
-                </el-date-picker>
-            </div>
-
-            <div class="h-8 px-2" v-else-if="['time'].includes(field.type)">
-                <el-time-picker
-                    ref="input"
-                    v-model="value"
-                    :picker-options="{
-                        selectableRange: '00:00:00 - 23:30:59'
-                    }"
-                    @change="saveChanges('time')"
-                    @blur="isEditMode=false"
-                    placeholder="Arbitrary time"
-                >
-                </el-time-picker>
-            </div>
 
             <div
                 class="h-8 px-2"
-                v-else-if="['label', 'select'].includes(field.type)"
+                v-if="isCustomField"
             >
-                <el-select
+                <component
                     v-model="value"
-                    placeholder="Select"
                     ref="input"
-                    @change="saveChanges()"
-                    @visible-change="!$event && saveChanges()"
-                    :filterable="true"
-                    :automatic-dropdown="true"
-                >
-                    <el-option
-                        v-for="item in field.options"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.name"
-                    >
-                    </el-option>
-                </el-select>
+                    :is="component"
+                    :users="users"
+                    :options="field.options"
+                    @saved="saveChanges"
+                    @closed="isEditMode=false"
+                />
             </div>
 
             <input
@@ -111,10 +57,20 @@
 
 <script>
 import { format, toDate } from "date-fns";
+import InputLabel from "./cellTypes/Label";
+import InputDate from "./cellTypes/Date";
+import InputPerson from "./cellTypes/Person";
+import InputTime  from "./cellTypes/Time";
 
 export default {
     name: "ItemGroupCell",
     inject: ["users"],
+    components: {
+        InputDate,
+        InputLabel,
+        InputPerson,
+        InputTime,
+    },
     props: {
         fieldName: {
             type: String
@@ -170,6 +126,7 @@ export default {
             }
         }
     },
+
     data() {
         return {
             value: "",
@@ -177,30 +134,19 @@ export default {
             isEditMode: false
         };
     },
+
     computed: {
         displayValue() {
-            if (["select", "label"].includes(this.field.type)) {
-                const option = this.field.options.find(option => {
-                    return option.name == this.value;
-                });
-                return option
-                    ? option.label || option.name
-                    : this.item[this.fieldName];
-            } else if (["date"].includes(this.field.type)) {
-                if (this.item[this.fieldName]) {
-                    return typeof this.item[this.fieldName] == "string"
-                        ? this.item[this.fieldName]
-                        : format(
-                              new Date(this.item[this.fieldName]),
-                              "yyyy-MM-dd"
-                          );
-                }
-                return "";
-            } else {
-                return this.item[this.fieldName];
-            }
+            return this.formatValue(this.value, this.field.type, 'display')
+        },
+        component() {
+            return `input-${this.field.type}`;
+        },
+        isCustomField() {
+            return this.field.type && ['label', 'select','time', 'date', 'person'].includes(this.field.type)
         }
     },
+
     methods: {
         formatValue(value, type = "default", operation = "read") {
             const formatters = {
@@ -214,6 +160,18 @@ export default {
                         return value && typeof value == "string"
                             ? this.setDate(value)
                             : value;
+                    },
+                    display: (value = "") => {
+                        const isString = typeof value == "string";
+                        if (isString) {
+                            return value
+                        } else {
+                            try {
+                                return format(value, "yyyy-MM-dd");
+                            } catch (e) {
+                                return value;
+                            }
+                        }
                     }
                 },
                 time: {
@@ -227,17 +185,37 @@ export default {
                             ? this.setTime(value)
                             : value;
                         return theValue;
+                    },
+                    display: (value = "") => {
+                        const isString = typeof value == "string";
+                        if (isString) {
+                            return value
+                        } else {
+                            try {
+                                return format(value, "hh:mm");
+                            } catch (e) {
+                                return value;
+                            }
+                        }
+                    }
+                },
+                label: {
+                    display: (value) => {
+                        const option = this.field.options.find(option => {
+                            return option.name == this.value;
+                        });
+                        return option ? option.label || option.name : value;
                     }
                 },
                 default: {
                     read: value => value,
-                    write: value => value
+                    write: value => value,
+                    display: value => value
                 }
             };
-            return formatters[type]
-                ? formatters[type][operation](value)
-                : value;
+            return formatters[type] && formatters[type][operation]  ? formatters[type][operation](value) : value;
         },
+
         setDate(dateValue) {
             const date = dateValue ? dateValue.split("-") : null;
             return date ? new Date(date[0], date[1] - 1, date[2]) : null;
@@ -264,10 +242,12 @@ export default {
                 }
             });
         },
+
         saveChanges(type = "default") {
             this.$emit("saved", this.formatValue(this.value, type, "write"));
             this.toggleEditMode();
         },
+
         saveItem($event) {
             this.saveChanges();
             this.$emit("keydown", $event);
