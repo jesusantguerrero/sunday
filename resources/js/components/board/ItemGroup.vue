@@ -401,6 +401,7 @@ export default {
     width: 100%;
     height: 50px;
     z-index: 1000;
+    will-change: transform;
     .item-group-row__header {
         border-top: 2px solid purple;
         height: 50px;

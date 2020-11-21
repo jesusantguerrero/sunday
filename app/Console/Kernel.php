@@ -25,10 +25,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $automations = Automation::all();
-        foreach ($automations as $automation) {
-            $schedule->command("gmail createItemFromMessage $automation->users_id $automation->id")->everyMinute();
-        }
+
+        $schedule->command("daily:automation")->everyMinute();
     }
 
     /**

@@ -54,10 +54,6 @@ export default {
         }
     },
 
-    mounted: {
-
-    },
-
     computed: {
         isTracker() {
             return this.tracker && this.tracker.timeEntry.item_id == this.task.id;

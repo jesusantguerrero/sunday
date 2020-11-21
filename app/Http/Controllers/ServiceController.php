@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Libraries\GmailService;
+use App\Libraries\GoogleService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,11 +15,11 @@ class ServiceController extends Controller
 
     public function google(Request $request)
     {
-       return GmailService::setTokens($request, $request->user()->id);
+       return GoogleService::setTokens($request, $request->user()->id);
     }
 
     public function getMessages(Request $request)
     {
-       return GmailService::getMessages($request->user()->id);
+       return GoogleService::getMessages($request->user()->id);
     }
 }
