@@ -1,6 +1,6 @@
 <?php
 
-use App\Libraries\GmailService;
+use App\Libraries\GoogleService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -20,9 +20,9 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Artisan::command('daily:automation', function () {
-    GmailService::listenAutomations();
+    GoogleService::listenAutomations();
 })->purpose('call services');
 
 Artisan::command('daily:service {service} {userId} {automationId}', function ($service, $userId, $automationId) {
-    GmailService::$service($userId, $automationId);
+    GoogleService::$service($userId, $automationId);
 })->purpose('call services');
