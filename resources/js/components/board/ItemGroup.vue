@@ -12,7 +12,7 @@
                         <span
                             class="font-bold handle"
                             v-if="!isEditMode">
-                                {{ stage.title || stage.name }}
+                                {{ stage.title || stage.name }} {{ isSelectMode ? '(Selection Mode)' : '' }}
                         </span>
 
                         <div v-else>
@@ -30,13 +30,14 @@
                         <i class="fa fa-edit mx-2"  @click="toggleEditMode(true)"></i>
                           <el-dropdown trigger="click" @command="handleBoardCommands" @click.native.prevent>
                                 <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center">
-                                    <div class="flex items-center justify-center mr-2">
+                                    <div class="flex items-center justify-center">
                                         <i class="fa fa-ellipsis-v"></i>
                                     </div>
                                 </div>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item command="edit" icon="fa fa-edit">Edit</el-dropdown-item>
                                     <el-dropdown-item command="delete" icon="fa fa-trash">Delete</el-dropdown-item>
+                                    <el-dropdown-item command="selection" icon="fa fa-check">Select Mode</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                     </div>
@@ -47,7 +48,14 @@
                     <draggable v-model="stage.items" @end="saveReorder" handle=".handle" class="w-full">
                         <div :class="`item-false bg-gray-200 border-2 border-white flex`" v-for="(item, index) in stage.items" :key="`item-false__title-${item.id}`">
                             <div
-                                class="checkbox-container bg-gray-300 mr-2 flex items-center px-2"
+                                v-if="isSelectMode"
+                                class="item-checkbox selection"
+                            >
+                                <input type="checkbox" v-model="selectedItems" :value="item.id"/>
+                            </div>
+                            <div
+                                v-else
+                                class="item-checkbox"
                             >
                                 <input type="checkbox" name="" id="" v-model="item.done" @change="saveChanges(item, 'done', item.done)" :disabled="item.commit_date"/>
                             </div>
@@ -57,8 +65,10 @@
                             <item-group-cell
                                 class="flex items-center"
                                 field-name="title"
+                                :select-mode="isSelectMode"
                                 :index="index"
                                 :item="item"
+                                @selected="handleSelect"
                                 @saved="saveChanges(item, 'title', $event)"
                             >
                             </item-group-cell>
@@ -197,6 +207,8 @@ export default {
     return {
       newItem: {},
       newField: {},
+      selectedItems: [],
+      isSelectMode: false,
       isEditMode: false,
       isExpanded: true,
       isItemModalOpen: false,
@@ -267,6 +279,10 @@ export default {
         this.newItem = {};
     },
 
+    handleSelect() {
+
+    },
+
     onFieldAdded() {
         this.newField = {}
         this.$inertia.reload({ preserveScroll: true });
@@ -305,6 +321,9 @@ export default {
                 break
             case 'edit':
                 this.toggleEditMode();
+                break
+            case 'selection':
+                this.isSelectMode = !this.isSelectMode;
                 break
             default:
             break;
@@ -367,6 +386,14 @@ export default {
     &__header {
         @apply text-center;
         height: 34px;
+    }
+}
+
+.item-checkbox {
+    @apply bg-gray-300 mr-2 flex items-center px-2;
+
+    &.selection {
+        @apply bg-blue-400;
     }
 }
 
