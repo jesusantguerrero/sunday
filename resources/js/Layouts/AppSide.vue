@@ -40,21 +40,21 @@
         >
         <template v-for="route in headerMenu">
             <app-side-item
-            :icon="route.icon"
-            :label="route.label"
-            :to="route.to"
-            v-if="!route.childs"
-            :key="route.label"
+                :icon="route.icon"
+                :label="route.label"
+                :to="route.to"
+                v-if="!route.childs"
+                :key="route.label"
             />
 
             <app-side-item-group
-            v-else
-            :track-id="route.label"
-            :icon="route.icon"
-            :label="route.label"
-            v-model="activeGroup"
-            :childs="route.childs"
-            :key="route.label"
+                v-else
+                :track-id="route.label"
+                :icon="route.icon"
+                :label="route.label"
+                v-model="activeGroup"
+                :childs="route.childs"
+                :key="route.label"
             />
         </template>
         </div>

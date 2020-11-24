@@ -91,11 +91,11 @@ export default {
     },
 
     textToggleMostrar() {
-      return this.mostrarTodos ? "Al aire" : "Programas Anteriores";
+      return this.mostrarTodos ? "Current" : "Past Events";
     },
 
     iconToggleMostrar() {
-      return this.mostrarTodos ? "Al aire" : "Programas Anteriores";
+      return this.mostrarTodos ? "Current" : "Past Events";
     },
 
     formattedAgenda() {

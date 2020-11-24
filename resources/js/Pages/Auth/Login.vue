@@ -120,7 +120,10 @@ export default {
                         this.$inertia.visit('dashboard')
                     })
                     .catch(err => {
-                            console.log(err);
+                        this.$notify({
+                            title: "Invalid credentials",
+                            type: "error",
+                            message: err.response.data.message})
                     })
                     .finally(() => {
                         this.isLoading = false;

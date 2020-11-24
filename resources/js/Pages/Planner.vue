@@ -49,11 +49,7 @@
                             </button>
                         </header>
                          <div class="body text-gray-600">
-                             <link-viewer
-                                :links="links"
-                                @edit="openLinkForm"
 
-                             ></link-viewer>
                         </div>
                     </div>
                     <div class="section-card committed mt-5">
@@ -66,11 +62,7 @@
                             </button>
                         </header>
                          <div class="body text-gray-600">
-                             <link-viewer
-                                :links="links"
-                                @edit="openLinkForm"
 
-                             ></link-viewer>
                         </div>
                     </div>
                     <div class="section-card committed mt-5">
@@ -83,11 +75,8 @@
                             </button>
                         </header>
                          <div class="body text-gray-600">
-                             <link-viewer
-                                :links="links"
-                                @edit="openLinkForm"
 
-                             ></link-viewer>
+
                         </div>
                     </div>
                     <div class="section-card committed mt-5">
@@ -100,11 +89,7 @@
                             </button>
                         </header>
                          <div class="body text-gray-600">
-                             <link-viewer
-                                :links="links"
-                                @edit="openLinkForm"
 
-                             ></link-viewer>
                         </div>
                     </div>
 
@@ -149,12 +134,6 @@
                     return []
                 }
             },
-            todo: {
-                type: [Array, Object],
-                default() {
-                    return []
-                }
-            },
             scheduled: {
                 type: [Array, Object],
                 default() {
@@ -162,21 +141,8 @@
                 }
             },
             date: {
-                type: String,
-                required: true
+                type: String
             },
-            links: {
-                type: Array,
-                default() {
-                    return []
-                }
-            },
-            committed: {
-                type: [Array, Object],
-                default() {
-                    return []
-                }
-            }
         },
         data() {
             return {

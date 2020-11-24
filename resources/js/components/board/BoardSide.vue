@@ -1,9 +1,9 @@
 <template>
     <div class="board-side bg-white py-5">
         <h1 class="font-bold flex justify-between items-centerv px-5">
-            <span class="text-2xl"> My Boards </span>
+            <span class="text-2xl"> {{ sectionName }} </span>
         </h1>
-        <div class="mt-5 text-gray-500 flex rounded overflow-hidden px-5">
+        <div class="mt-5 text-gray-500 flex rounded overflow-hidden px-5" v-if="!isHeaderMenu">
             <input
                 type="search"
                 class="w-full p-2"
@@ -14,35 +14,31 @@
             </button>
         </div>
 
-        <div class="mt-2">
-            <inertia-link
-                class="board-item flex px-2 py-1 items-center px-5"
-                :class="{ active: isPath(board.link) }"
-                :href="board.link"
-                v-for="board in boards"
-                :key="board.id"
-            >
-                <span class="board-item__avatar">
-                    {{ board.name.slice(0, 1) }}
-                </span>
+        <div class="mt-2" :class="{'mt-12': isHeaderMenu}">
+            <template v-if="!isHeaderMenu">
+                <board-side-item
+                    @option="handleCommand"
+                    :is-active="isPath(board.link)"
+                    :board="board"
+                    :key="board.link"
+                    v-for="board in boards"
+                >
+                </board-side-item>
+            </template>
+            <template v-else>
+                <board-side-item-link
+                    v-for="(section, index) in isHeaderMenu.side"
+                    :section="section"
+                    :is-active="isPath(section.to)"
+                    :key="`${section.to}-${index}`"
+                >
+                </board-side-item-link>
+            </template>
 
-                <span class="w-full block">
-                    {{ board.name }}
-                </span>
-
-                <el-dropdown trigger="click" @command="($event) => handleCommand(board, $event)" @click.native.prevent>
-                    <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center">
-                     <i class="fa fa-ellipsis-v"></i>
-                    </div>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="delete" icon="fa fa-trash">Delete</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </inertia-link>
         </div>
         <div
             class="mt-2 text-gray-500 flex rounded overflow-hidden mx-5"
-            v-if="!showAdd"
+            v-if="!showAdd && !isHeaderMenu"
         >
             <button
                 class="flex justify-center items-center px-2 h-10 w-full border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white"
@@ -53,7 +49,7 @@
         </div>
         <div
             class="mt-2 text-gray-500 flex rounded overflow-hidden mx-5"
-            v-if="showAdd"
+            v-if="showAdd && !isHeaderMenu"
         >
             <input
                 type="text"
@@ -75,6 +71,9 @@
 </template>
 
 <script>
+import BoardSideItem from "./BoardSideITem";
+import BoardSideItemLink from "./BoardSideITemLink";
+
 export default {
     props: {
         boards: {
@@ -82,7 +81,17 @@ export default {
             default() {
                 return [];
             }
+        },
+        headerMenu: {
+            type: Array,
+            default() {
+                return [];
+            }
         }
+    },
+    components: {
+        BoardSideItem,
+        BoardSideItemLink
     },
     data() {
         return {
@@ -90,9 +99,23 @@ export default {
             showAdd: ""
         };
     },
+    computed: {
+        isHeaderMenu() {
+            const headerMenu = this.headerMenu.find( menuItem => this.isPath(menuItem.to, true));
+            return headerMenu;
+        },
+        sectionName() {
+           return this.isHeaderMenu ? this.isHeaderMenu.label : "My Boards";
+        }
+    },
     methods: {
-        isPath(url) {
+        isPath(url = "", includes) {
             const link = url.replace(window.location.origin, "");
+            if (includes) {
+                const root = link.split("/");
+                const isPath = window.location.pathname.includes(root[1]);
+                return isPath
+            }
             return link == window.location.pathname;
         },
         addBoard() {
