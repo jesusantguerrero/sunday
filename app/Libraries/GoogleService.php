@@ -5,9 +5,10 @@ use App\Jobs\ProcessCalendar;
 use App\Jobs\ProcessGmail;
 use App\Models\User;
 use App\Models\Automation;
-use Google_Service_Gmail;
-use Google_Service_Calendar;
+use Facade\FlareClient\Http\Response;
 use Google_Client;
+use Google_Service_Calendar;
+use GuzzleHttp\Psr7\Request;
 
 class GoogleService
 {
@@ -59,36 +60,26 @@ class GoogleService
     public static function listenAutomations() {
         $automations = Automation::all();
         foreach ($automations as $automation) {
+            echo "$automation->name \n";
             $service = $automation->recipe->name;
-            echo "$automation->name";
-            self::$service($automation->user_id, $automation->id);
+            self::$service($automation->id);
         }
 
     }
 
-    public static function createItemFromCalendar(int $userId, int $automationId) {
+    public static function createItemFromCalendar(int $automationId) {
         $automation = Automation::find($automationId);
-
-        $client = self::getClient($userId);
-        $service = new Google_Service_Calendar($client);
-        $calendarId = 'primary';
-        $results = $service->events->listEvents($calendarId, [
-            'maxResults' => 10,
-            'orderBy' => 'startTime',
-            'singleEvents' => true,
-            'timeMin' => date('c')
-        ]);
-        $events = $results->getItems();
-        ProcessCalendar::dispatch($automation, $events);
+        ProcessCalendar::dispatch($automation);
     }
 
-    public static function createItemFromMessage(int $userId, int $automationId) {
-        $automation = Automation::find($automationId);
-        $automationConfig = json_decode($automation->config);
-
+    public static function listCalendars(int $userId) {
         $client = self::getClient($userId);
-        $service = new Google_Service_Gmail($client);
-        $results = $service->users_threads->listUsersThreads("me", ['maxResults' => 50, 'q' => "$automationConfig->condition <$automationConfig->value>"]);
-        ProcessGmail::dispatch($automation, $results->getThreads());
+        $service = new Google_Service_Calendar($client);
+        return $service->calendarList->listCalendarList();
+    }
+
+    public static function createItemFromMessage(int $automationId) {
+        $automation = Automation::find($automationId);
+        ProcessGmail::dispatch($automation);
     }
 }

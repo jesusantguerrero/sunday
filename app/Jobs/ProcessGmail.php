@@ -24,10 +24,9 @@ class ProcessGmail implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Automation $automation, Array $gmailThreads)
+    public function __construct(Automation $automation)
     {
         $this->automation = $automation;
-        $this->gmailThreads = $gmailThreads;
     }
 
     /**
@@ -37,6 +36,6 @@ class ProcessGmail implements ShouldQueue
      */
     public function handle()
     {
-        CreateTaskFromGmail::create($this->automation, $this->gmailThreads);
+        CreateTaskFromGmail::create($this->automation);
     }
 }

@@ -8,7 +8,7 @@ use App\Models\Checklist;
 
 class Item extends Model
 {
-    protected $fillable = ['board_id', 'team_id', 'stage_id', 'title', 'order', 'user_id', 'done','commit_date'];
+    protected $fillable = ['board_id', 'team_id', 'stage_id','resource_id', 'resource_origin', 'title', 'order', 'user_id', 'done','commit_date'];
     protected $with = ['fields', 'checklist'];
     use HasFactory;
 
@@ -83,9 +83,20 @@ class Item extends Model
         return $this->hasMany('App\Models\TimeEntry', 'item_id', 'id');
     }
 
-    public static function createEvent($eventData) {
-        $item = Item::create($eventData);
-        $item->saveFields($eventData['fields']);
+    public static function createEvent($eventData, $uniqueBy = null) {
+        $isSaved = null;
+        if ($uniqueBy) {
+            $savedItem = Item::where($uniqueBy)->limit(1)->get();
+            $isSaved = count($savedItem);
+        }
+
+        if(!$isSaved) {
+            $item = Item::create($eventData);
+            $item->saveFields($eventData['fields']);
+        } else {
+            $savedItem[0]->update($eventData);
+            $savedItem[0]->saveFields($eventData['fields']);
+        }
     }
 
     public static function getByCustomField($entry, $user) {

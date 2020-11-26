@@ -3,9 +3,9 @@
     class="w-full overflow-hidden"
   >
     <div class="w-full ">
-      <controls v-model="diaActivo" @input="diaActivo = $event"></controls>
+      <controls v-model="selectedDay"></controls>
       <grid
-        :selected-date="diaActivo"
+        :selected-date="selectedDay"
         :schedule="schedule"
         :allow-add="allowAdd"
         :allow-delete="allowDelete"
@@ -46,6 +46,10 @@ export default {
         default() {
             return []
         }
+    },
+    value: {
+        type: Date,
+        required: true
     }
   },
   components: {
@@ -59,7 +63,7 @@ export default {
       isFormOpen: false,
       formData: {},
       currentTime: new Date(),
-      diaActivo: new Date(),
+      selectedDay: null,
       horaActiva: 0,
       modoManual: false,
       mostrarTodos: false,
@@ -69,6 +73,20 @@ export default {
     setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
+  },
+  watch: {
+    selectedDay: {
+      handler() {
+        this.$emit("input", this.selectedDay);
+      },
+      immediate: true
+    },
+    value: {
+      handler(newDate) {
+        this.selectedDay = newDate || new Date();
+      },
+      immediate: true
+    }
   },
   computed: {
     horaActual() {

@@ -7,7 +7,6 @@ use App\Http\Resources\Item as ItemResource;
 use App\Models\Board;
 use App\Models\Item;
 use App\Models\Link;
-use Illuminate\Http\Response;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\URL;
 use App\Models\Standup;
@@ -71,7 +70,7 @@ class DashboardController extends Controller
                     'link' =>  URL::route('boards', $board),
                 ];
             }),
-
+            'date' => $date,
             'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $date], $request->user()))
         ]);
     }

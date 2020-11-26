@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AutomationServiceController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldController;
@@ -60,8 +61,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/standups', StandupController::class);
     Route::apiResource('/api/boards', BoardController::class);
     Route::apiResource('/api/fields', FieldController::class);
+    Route::apiResource('/api/automation-services', AutomationServiceController::class);
+    Route::apiResource('/api/automation-recipies', AutomationRecipeController::class);
     Route::apiResource('/links', LinkController::class);
     Route::apiResource('/time-entries', TimeEntryController::class);
     Route::post('/services/google', [ServiceController::class, 'google']);
     Route::get('/services/messages', [ServiceController::class, 'getMessages']);
+    Route::get('/api/calendars', [ServiceController::class, 'listCalendars']);
 });

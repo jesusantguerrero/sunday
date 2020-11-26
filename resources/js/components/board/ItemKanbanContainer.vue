@@ -116,7 +116,7 @@ export default {
                          value: quadrant.attributes.name
                      })
                 } else {
-                    field.value = quadrant.attributes.field_name
+                    this.$set(field, 'value', quadrant.attributes.name)
                 }
 
                 this.$emit('saved', event.added.element)
@@ -126,7 +126,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .kanban-container {
     .task-item {
         @apply py-4 px-2 bg-gray-200 my-2;
@@ -137,6 +137,16 @@ export default {
         padding-bottom: 0;
         min-height: unset;
     }
+}
 
+.sortable-ghost {
+    background: white !important;
+    opacity: 1;
+    transition: all ease .3s;
+    transform: rotate(45deg);
+}
+
+[draggable=true] {
+    border: 1px solid crimson !important;
 }
 </style>

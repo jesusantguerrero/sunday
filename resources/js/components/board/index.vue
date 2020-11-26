@@ -12,6 +12,9 @@
 
                             </div>
                         </span>
+                        <!-- <span class="automation" @click="isAutomationModalOpen=true">
+                            <i class="fa fa-plus"></i>
+                        </span> -->
                     </div>
                 </div>
             </div>
@@ -71,9 +74,9 @@
         <div class="">
             <draggable
                 v-model="board.stages"
-                @end="saveReorder"
                 v-if="modeSelected == 'list'"
                 handle=".handle"
+                @end="saveReorder"
             >
                 <transition-group>
                     <item-group
@@ -147,6 +150,14 @@
             :record-data="openedItem"
             :is-open="isItemModalOpen">
         </item-modal>
+
+        <automation-modal
+            @cancel="isAutomationModalOpen=false"
+            @saved="isAutomationModalOpen=false"
+            :record-data="{}"
+            :board="board"
+            :is-open="isAutomationModalOpen">
+        </automation-modal>
     </div>
 </template>
 
@@ -156,6 +167,7 @@ import JetDangerButton from "../../Jetstream/DangerButton";
 import JetSecondaryButton from "../../Jetstream/SecondaryButton";
 import ItemGroup from "./ItemGroup.vue";
 import ItemModal from "./ItemModal";
+import AutomationModal from "./AutomationModal";
 import ItemKanbanContainer from "./ItemKanbanContainer.vue";
 import Draggable from "vuedraggable";
 import { throttle } from "lodash-es";
@@ -165,6 +177,7 @@ export default {
     components: {
         ItemGroup,
         ItemModal,
+        AutomationModal,
         Draggable,
         ItemKanbanContainer,
         JetConfirmationModal,
@@ -251,7 +264,8 @@ export default {
                 done: this.filters.done
             },
             openedItem: {},
-            isItemModalOpen: false
+            isItemModalOpen: false,
+            isAutomationModalOpen: false
         };
     },
     watch: {

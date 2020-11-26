@@ -1,15 +1,48 @@
 <template>
     <app-layout :boards="boards">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard
-            </h2>
-        </template>
+        <div class="px-8">
+            <div class="board__toolbar flex justify-between px-8 pb-24 pt-12">
+                <div class="flex text-left">
+                    <div class="flex justify-between mr-2">
+                        <span class="text-3xl font-bold"> Integrations </span>
+                    </div>
+                </div>
 
-        <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
-                <google-signin-btn label="Sign In" customClass="my-button" @click="signIn" />
+                <div class="flex items-center">
+                    <input
+                        type="search"
+                        class="form-input ml-2 w-48"
+                        name=""
+                        id=""
+                        v-model="searchOptions.search"
+                        placeholder="search"
+                    />
+                    <span class="ml-2 toolbar-buttons">
+                        <i class="fa fa-user"></i>
+                    </span>
+                    <span class="ml-2 toolbar-buttons"
+                        :class="{active: searchOptions.done}"
+                        @click="toggleDone()"
+                        ><i class="fa fa-eye"></i
+                    ></span>
+                    <span class="ml-2 toolbar-buttons">
+                        <i class="fa fa-thumbtack"></i
+                    ></span>
+                    <span class="ml-2 toolbar-buttons">
+                        <i class="fa fa-filter"></i>
+                    </span>
+                    <span class="ml-2 toolbar-buttons">
+                        <i class="fa fa-sort"></i>
+                    </span>
+                </div>
             </div>
+
+            <div class="py-12">
+                <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
+                    <google-signin-btn label="Sign In" customClass="my-button" @click="signIn" />
+                </div>
+            </div>
+
         </div>
     </app-layout>
 </template>
@@ -21,6 +54,11 @@
         name: "Integrations",
         components: {
             AppLayout
+        },
+        data() {
+            return {
+                searchOptions: {}
+            }
         },
         methods: {
             async signIn() {
