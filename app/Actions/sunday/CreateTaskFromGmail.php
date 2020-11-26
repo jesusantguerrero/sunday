@@ -18,14 +18,16 @@ class CreateTaskFromGmail
      * @param  Google_Calendar_Events  $calendarEvents
      * @return void
      */
-    public static function create(Automation $automation, Array $gmailThreads)
+    public static function create(Automation $automation)
     {
         $track = json_decode($automation->track, true);
         $track['historyId'] = $track['historyId'] ?? 0;
+        $automationConfig = json_decode($automation->config);
         $client = GoogleService::getClient($automation->user_id);
         $service = new Google_Service_Gmail($client);
+        $results = $service->users_threads->listUsersThreads("me", ['maxResults' => 50, 'q' => "$automationConfig->condition <$automationConfig->value>"]);
 
-        forEach($gmailThreads as $index => $thread) {
+        forEach($results->getThreads() as $index => $thread) {
             $theadResponse = $service->users_threads->get("me", $thread->id, ['format' => 'MINIMAL']);
             $message = $theadResponse->getMessages()[0];
             if ($message && ($message->historyId > $track['historyId'])) {

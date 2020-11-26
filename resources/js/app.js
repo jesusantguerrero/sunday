@@ -32,7 +32,7 @@ Vue.use(VueGoogleApi, config);
 Vue.mixin(ConfirmModalMixin);
 Vue.component("multiselect", Multiselect);
 
-InertiaProgress.init();
+// InertiaProgress.init();
 
 const app = document.querySelector("[data-page]");
 

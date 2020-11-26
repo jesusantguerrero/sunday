@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Libraries\GoogleService;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -18,8 +19,9 @@ class ServiceController extends Controller
        return GoogleService::setTokens($request, $request->user()->id);
     }
 
-    public function getMessages(Request $request)
+    public function listCalendars(Request $request, Response $response)
     {
-       return GoogleService::getMessages($request->user()->id);
+       $calendars = GoogleService::listCalendars($request->user()->id);
+       return $response->setContent($calendars->getItems());
     }
 }

@@ -2,10 +2,9 @@
     <app-layout :boards="boards">
         <div class="">
             <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row">
-
                 <!-- Main board -->
                 <div class="w-100 md:w-9/12 md:mx-4 pt-12">
-                    <div class="flex justify-between flex-col md:flex-row mx-2 md:mr-2 md:ml-0">
+                    <div class="flex justify-between flex-col md:flex-row mx-2 md:mr-2 md:ml-6">
                         <span class="text-3xl font-bold"> Planner </span>
                         <div class="controls h-12 bg-purple-700 rounded-lg">
                             <button
@@ -19,8 +18,9 @@
                         </div>
                     </div>
 
-                    <div class="mt-5">
+                    <div class="mt-5 md:ml-6">
                         <schedule-view
+                            v-model="localDate"
                             :schedule="scheduled"
                             id-field=""
                             time-field=""
@@ -149,7 +149,7 @@
                 modes: ['daily', 'weekly', 'monthly', 'quarter'],
                 modeSelected: 'daily',
                 promodoroColor: "red",
-                localCommitDate: new Date,
+                localDate: null,
                 isLoading: false,
                 isStandupOpen: false,
                 isLinkFormOpen: false,
@@ -158,11 +158,22 @@
             }
         },
         watch: {
-            localCommitDate(newDate, oldDate) {
-                if (oldDate &&  (newDate.toISOString().slice(0, 10) != oldDate.toISOString().slice(0, 10))) {
-                    this.getCommitsByDate();
-                }
+            localDate: {
+                handler(newDate, oldDate) {
+                    if (this.date && newDate &&  (newDate.toISOString().slice(0, 10) != this.date)) {
+                        debugger
+                        console.log("searching", newDate)
+                        this.getCommitsByDate();
+                    }
+                },
+                immediate: true
             },
+            date: {
+                handler(date) {
+                    this.setCommitDate();
+                },
+                immediate: true
+            }
         },
         computed: {
             hasCommited() {
@@ -175,95 +186,22 @@
                 return ['all', 'committed'].includes(this.modeSelected)
             }
         },
-        created() {
-            this.setCommitDate()
-        },
         methods: {
             setCommitDate() {
-                let date = new Date();
-                if (this.date) {
-                    date = this.date.split("-");
-                    date = toDate(new Date(date[0], date[1] - 1, date[2]));
-                }
-                this.localCommitDate = date;
-            },
-
-            completeDay() {
-                this.isLoading = true;
-                const yesterday = subDays(new Date(), 1)
-                    .toISOString()
-                    .slice(0, 10);
-                const now = new Date().toISOString().slice(0, 10);
-                let completed = this.todo.filter(item => item.done);
-                completed = completed.map(item => {
-                    item.commit_date = yesterday;
-                    return item;
-                });
-
-                completed.forEach(async item => {
-                    await this.updateItem(item);
-                });
-
-                this.updateDayly(now)
-                this.isStandupOpen = false;
-                this.isLoading = false;
-                this.$inertia.reload({ preserveScroll: true })
+                let date = null
+                date = this.date.split("-");
+                date = new Date(date[0], date[1] - 1, date[2]);
+                this.localDate = date;
             },
 
             getCommitsByDate() {
-                const params = `?commit-date=${this.localCommitDate.toISOString().slice(0, 10)}`
-                this.$inertia.replace(`/${params}`,
+                const params = `?date=${this.localDate.toISOString().slice(0, 10)}`
+                this.$inertia.replace(`/planner${params}`,
                  {
-                    only: ['committed'],
+                    only: ['scheduled', 'date'],
                     preserveState: true
                  })
             },
-
-            updateItem(item) {
-                const method = item.id ? 'PUT' : 'POST';
-                const param = item.id ? `/${item.id}`: ''
-                axios({
-                    url: `/items${param}`,
-                    method,
-                    data: item
-                }).then(() => {
-                    this.$inertia.reload({
-                        preserveScroll: true
-                    });
-                    return true;
-                })
-            },
-
-            updateDayly(date) {
-                axios({
-                    url: 'standups',
-                    method: 'post',
-                    data: {
-                        date
-                    }
-                })
-            },
-
-            closeLinkForm() {
-                this.linkData = {};
-                this.isLinkFormOpen = false
-            },
-
-            openLinkForm(formData) {
-                this.linkData = formData;
-                this.isLinkFormOpen = true
-            },
-
-            onLinkSaved() {
-                this.closeLinkForm();
-                this.$inertia.reload({
-                    preserveScroll: true
-                })
-            },
-
-            setTaskToTimer(task) {
-                this.$refs.Promodoro.setTask(task);
-            }
         }
     }
 </script>
