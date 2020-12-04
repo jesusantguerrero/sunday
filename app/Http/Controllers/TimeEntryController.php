@@ -27,7 +27,7 @@ class TimeEntryController extends Controller
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,
                 'status' => 1
-            ])->get(),
+            ])->orderBy('start', 'DESC')->get(),
             'boards' => Board::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id
