@@ -119,7 +119,7 @@
 
                 <template #content>
                     <div>
-                        <p v-for="task in todo" :key="`task-${task.id}`">
+                        <p v-for="task in standupSummary" :key="`task-${task.id}`">
                             <label class="checkbox-label">
                             <input
                                 type="checkbox"
@@ -231,6 +231,7 @@
                 selectedStage: "",
                 modeSelected: 'inbox',
                 promodoroColor: "red",
+                standupSummary: [],
                 localCommitDate: new Date,
                 isLoading: false,
                 isStandupOpen: false,
@@ -265,7 +266,8 @@
             }
         },
         mounted() {
-            if (!this.standup.length) {
+            if (!this.standup.length && this.todo.length) {
+                this.standupSummary = {...this.todo};
                 this.isStandupOpen = true;
             }
         },
