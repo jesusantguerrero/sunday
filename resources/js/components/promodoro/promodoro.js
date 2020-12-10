@@ -1,7 +1,7 @@
 const SESSION_MINUTES= 25;
 const BREAK_MINUTES= 5;
 const LONG_BREAK_MINUTES= 15;
-const TIME_SECONDS= 10;
+const TIME_SECONDS= 0;
 const PROMODORO_TEMPLATE = [
     'session',
     'break',

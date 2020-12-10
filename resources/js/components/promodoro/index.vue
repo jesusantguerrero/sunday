@@ -164,29 +164,6 @@ export default {
             }
         },
 
-        stop() {
-            this.stopTracker();
-            clearInterval(this.timer);
-            this.run = 2;
-            this.icon = "play_arrow";
-        },
-
-        stopTracker() {
-            if (this.track) {
-                this.track.stopTimer();
-                this.$set(this.tracker, 'duration', this.tracker.getDuration());
-                this.$inertia.on('success', (event) => {
-                    this.$nextTick(() => {
-                        this.track = null;
-                    })
-                })
-                this.$inertia.reload({
-                    only: ['todo'],
-                    preserveState: true
-                });
-            }
-        },
-
         showNotification() {
             const permission = localStorage.getItem('permission')
             if (Notification && permission === 'granted') {
@@ -214,11 +191,38 @@ export default {
             this.modeSelected = "session";
         },
 
+        stop() {
+            this.stopTracker();
+            clearInterval(this.timer);
+            this.run = 2;
+            this.icon = "play_arrow";
+        },
+
+        stopTracker() {
+            if (this.track) {
+                this.track.stopTimer();
+                this.$set(this.tracker, 'duration', this.tracker.getDuration());
+                this.$inertia.on('success', (event) => {
+                    this.$nextTick(() => {
+                        this.track = null;
+                    })
+                })
+                this.$inertia.reload({
+                    only: ['todo'],
+                    preserveState: true
+                });
+            }
+        },
+
         clear() {
             this.stop();
             if (confirm(`the time of the ${this.modeSelected} has finished`)) {
                 const isLastMode = this.promodoroTemplate.length - 1 == this.round;
+                console.group()
+                console.log({isLastMode, round: this.round})
                 this.round = isLastMode ? 0 : this.round + 1;
+                console.log({isLastMode, nextTound: this.round})
+                console.groupEnd()
                 const nextMode = this.promodoroTemplate[this.round];
                 this.setMode(nextMode);
                 this.run = 0;
@@ -266,7 +270,7 @@ export default {
                     this.playSound()
                     setTimeout(() => {
                         this.clear();
-                    }, 200)
+                    }, 100)
                 }
             } else {
                 this.time.seconds--;
