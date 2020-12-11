@@ -5,6 +5,4 @@ mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'pub
     require('tailwindcss'),
 ]);
 
-// mix.browserSync({
-//     proxy: 'http://sunday.test'
-// });
+mix.browserSync('http://localhost:8000');

@@ -339,6 +339,7 @@
                 <!-- Left Side -->
                 <board-side
                     :boards="boards"
+                    :header-menu="headerMenu"
                     class="mb-10 h-full"
                 >
                 </board-side>

@@ -48,14 +48,16 @@ export default {
     return {
       week: [],
       today: new Date(),
-      selectedDay: new Date(),
+      selectedDay: null,
       firstDayOfWeek: 0
     };
   },
   watch: {
     selectedDay: {
-      handler() {
-        this.$emit("input", this.selectedDay);
+      handler(selectedDate) {
+          if (this.value && selectedDate && format(this.value, 'yyyy-MM-dd') != format(this.selectedDay, 'yyyy-MM-dd')) {
+              this.$emit("input", this.selectedDay);
+          }
       },
       immediate: true
     },

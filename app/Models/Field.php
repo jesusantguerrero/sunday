@@ -9,7 +9,7 @@ class Field extends Model
 {
     use HasFactory;
     protected $with = ['options','rules'];
-    protected $fillable = ['name','board_id', 'title', 'type', 'options', 'user_id', 'team_id', "manual"];
+    protected $fillable = ['name','board_id', 'title', 'type', 'options', 'user_id', 'team_id', "manual", 'hide'];
 
     public function options() {
         return $this->hasMany('App\Models\Label', 'field_id', 'id');

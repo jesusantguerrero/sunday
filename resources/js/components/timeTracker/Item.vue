@@ -124,7 +124,6 @@ export default {
 
   computed: {
     duration() {
-        console.log(this)
       return this.durationFromMs(this.timeEntry.duration) || this.localDuration;
     },
 
@@ -271,6 +270,7 @@ export default {
   border: none;
   height: 100%;
   width: 100%;
+  padding-left: 40px;
 
   &:focus {
     outline: none;

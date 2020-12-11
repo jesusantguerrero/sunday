@@ -16,17 +16,15 @@ class ProcessCalendar implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $automation;
-    protected $calendarEvents;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Automation $automation, Array $calendarEvents)
+    public function __construct(Automation $automation)
     {
         $this->automation = $automation;
-        $this->calendarEvents = $calendarEvents;
     }
 
     /**
@@ -36,6 +34,6 @@ class ProcessCalendar implements ShouldQueue
      */
     public function handle()
     {
-        CreateTaskFromCalendar::create($this->automation, $this->calendarEvents);
+        CreateTaskFromCalendar::create($this->automation);
     }
 }

@@ -15,8 +15,20 @@ export default {
       },
       {
           label: "Settings",
-          to: "/settings",
-          icon:"cogs"
+          to: "/user/profile",
+          icon:"cogs",
+          side: [
+           {
+               label: "User",
+               to: "/user/profile",
+               icon: "user"
+           },
+           {
+                label: "Api Tokens",
+                to: "/user/api-tokens",
+                icon: "user"
+            },
+          ]
       }
   ],
   menu: [

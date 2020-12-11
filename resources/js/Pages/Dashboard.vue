@@ -3,7 +3,7 @@
         <div class="">
             <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row">
                 <!-- Main board -->
-                <div class="w-100 md:w-9/12 md:mx-4 pt-12">
+                <div class="w-100 md:w-7/12 lg:w-8/12 md:mx-4 pt-12">
                     <div class="flex justify-between flex-col md:flex-row mx-2 md:mr-2 md:ml-0">
                         <span class="text-3xl font-bold"> Today's Todos </span>
 
@@ -13,6 +13,7 @@
                                     v-model="selectedStage"
                                     ref="input"
                                     :show-labels="false"
+                                    placeholder="Filter by stage"
                                     :options="stages"
                                     class="w-full"
                                 >
@@ -75,7 +76,7 @@
                 <!-- End of main board -->
 
                 <!-- Right Side -->
-                <div class="w-100 md:w-3/12 md:ml-4 pt-12">
+                <div class="w-100 md:w-5/12 lg:w-4/12 md:ml-4 pt-12">
                     <span class="text-3xl ml-2 font-bold"> Fast Access </span>
 
                     <div class="section-card committed mt-5">
@@ -100,6 +101,7 @@
                          <div :class="`bg-${promodoroColor}-400 text-gray-600 font-bold px-0`">
                             <promodoro
                                 ref="Promodoro"
+                                :settings="settings"
                                 :tracker.sync="tracker"
                                 :timer-color.sync="promodoroColor"
                                 :tasks="todo"
@@ -118,7 +120,7 @@
 
                 <template #content>
                     <div>
-                        <p v-for="task in todo" :key="`task-${task.id}`">
+                        <p v-for="task in standupSummary" :key="`task-${task.id}`">
                             <label class="checkbox-label">
                             <input
                                 type="checkbox"
@@ -222,6 +224,12 @@
                 default() {
                     return []
                 }
+            },
+            settings: {
+                type: Object,
+                default() {
+                    return {}
+                }
             }
         },
         data() {
@@ -230,6 +238,7 @@
                 selectedStage: "",
                 modeSelected: 'inbox',
                 promodoroColor: "red",
+                standupSummary: [],
                 localCommitDate: new Date,
                 isLoading: false,
                 isStandupOpen: false,
@@ -260,11 +269,12 @@
             },
             inbox() {
                 const inbox = this.selectedStage ? this.todo.filter((item) => item.stage == this.selectedStage) : this.todo;
-                return orderBy(this.todo,["priority","stage","title"]);
+                return orderBy(inbox,["priority", "stage", "title"]);
             }
         },
         mounted() {
-            if (!this.standup.length) {
+            if (!this.standup.length && this.todo.length) {
+                this.standupSummary = {...this.todo};
                 this.isStandupOpen = true;
             }
         },

@@ -28,23 +28,25 @@
                 </el-dropdown>
             </div>
             <div class="pr-4 pt-5">
-                <div v-for="task in quadrant.childs" :key="`task-${task.id}`" class="task-item">
-                    <label class="checkbox-label">
-                        <input
-                            type="checkbox"
-                            @change="$emit('update-item', task)"
-                            name=""
-                            :id="task.id"
-                            v-model="task.done"
-                        />
-                        <span class="font-bold">
-                            <!-- [{{ task.stage.name }}] -->
-                        </span>
-                        <span>
-                            {{ task.title }}
-                        </span>
-                    </label>
-                </div>
+                <draggable :list="quadrant.childs" group="tasks" @change="($event) => changeStatus($event, quadrant)">
+                    <div v-for="task in quadrant.childs" :key="`task-${task.id}`" class="task-item">
+                        <label class="checkbox-label">
+                            <input
+                                type="checkbox"
+                                @change="$emit('update-item', task)"
+                                name=""
+                                :id="task.id"
+                                v-model="task.done"
+                            />
+                            <span class="font-bold">
+                                <!-- [{{ task.stage.name }}] -->
+                            </span>
+                            <span>
+                                {{ task.title }}
+                            </span>
+                        </label>
+                    </div>
+                </draggable>
                 <item-group-cell
                     class="w-full flex items-center"
                     field-name="title"
@@ -63,6 +65,7 @@
 
 <script>
 import ItemGroupCell from "./ItemGroupCell";
+import Draggable from "vuedraggable";
 
 export default {
     props: {
@@ -80,7 +83,8 @@ export default {
         }
     },
     components: {
-        ItemGroupCell
+        ItemGroupCell,
+        Draggable
     },
     methods: {
         addItem(quadrant) {
@@ -101,11 +105,28 @@ export default {
             this.$emit("saved", {...newItem}, true);
             quadrant.newTask = {};
         },
+        changeStatus(event, quadrant) {
+            if (event.added) {
+                let field = event.added.element.fields.find(field => field.field_id == quadrant.attributes.field_id)
+                if (!field) {
+                     field = this.fields.find( field => field.id == quadrant.attributes.field_id);
+                     event.added.element.fields.push({
+                         field_id: field.id,
+                         field_name: field.name,
+                         value: quadrant.attributes.name
+                     })
+                } else {
+                    this.$set(field, 'value', quadrant.attributes.name)
+                }
+
+                this.$emit('saved', event.added.element)
+            }
+        }
     }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .kanban-container {
     .task-item {
         @apply py-4 px-2 bg-gray-200 my-2;
@@ -116,6 +137,16 @@ export default {
         padding-bottom: 0;
         min-height: unset;
     }
+}
 
+.sortable-ghost {
+    background: white !important;
+    opacity: 1;
+    transition: all ease .3s;
+    transform: rotate(45deg);
+}
+
+[draggable=true] {
+    border: 1px solid crimson !important;
 }
 </style>

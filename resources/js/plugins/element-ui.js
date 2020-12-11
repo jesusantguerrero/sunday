@@ -1,4 +1,6 @@
 import Vue from "vue";
+import lang from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale'
 import {
     DatePicker,
     TimePicker,
@@ -12,8 +14,12 @@ import {
     OptionGroup,
     Input,
     Popover,
-    Time
+    Time,
+    Notification
 } from "element-ui";
+
+// configure language
+locale.use(lang)
 
 Vue.use(DatePicker);
 Vue.use(Tooltip);
@@ -29,3 +35,4 @@ Vue.use(OptionGroup);
 Vue.use(Popover);
 Vue.use(TimePicker);
 
+Vue.prototype.$notify = Notification;
