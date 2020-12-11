@@ -101,6 +101,7 @@
                          <div :class="`bg-${promodoroColor}-400 text-gray-600 font-bold px-0`">
                             <promodoro
                                 ref="Promodoro"
+                                :settings="settings"
                                 :tracker.sync="tracker"
                                 :timer-color.sync="promodoroColor"
                                 :tasks="todo"
@@ -222,6 +223,12 @@
                 type: [Array, Object],
                 default() {
                     return []
+                }
+            },
+            settings: {
+                type: Object,
+                default() {
+                    return {}
                 }
             }
         },

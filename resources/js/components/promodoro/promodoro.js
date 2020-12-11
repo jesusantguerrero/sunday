@@ -14,6 +14,16 @@ const PROMODORO_TEMPLATE = [
 ]
 
 export default {
+    props: {
+        settings: {
+            type: Object,
+            default() {
+                return {
+
+                }
+            }
+        }
+    },
     data() {
         return {
             audio: null,
@@ -48,11 +58,12 @@ export default {
         }
     },
     methods: {
-        init() {
-            if (localStorage.getItem('promodoroTemplate')) {
-                this.promodoroTemplate = JSON.parse(localStorage.getItem('promodoroTemplate'))
+        init(settings) {
+            const localSettings = settings || this.settings;
+            if (localSettings.promodoro_template) {
+                this.promodoroTemplate = JSON.parse(localSettings.promodoro_template)
             }
-            const modes = JSON.parse(localStorage.getItem('modes'));
+            const modes = localSettings.promodoro_modes.trim() && JSON.parse(localSettings.promodoro_modes);
             const { session, break: rest, longBreak} = this.modes;
             if (modes) {
                 session.minutes = modes.session.minutes;

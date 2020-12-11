@@ -48,6 +48,7 @@
         </div>
 
         <promodoro-configuration-modal
+            :settings="settings"
             :is-open="isConfigurationOpen"
             @cancel="toggleConfiguration"
             @saved="toggleConfiguration">
@@ -61,6 +62,7 @@ const time = { minutes: 0, seconds: 10 };
 import Tracker from "../timeTracker/tracker";
 import PromodoroConfigurationModal from "./Configuration"
 import promodoroMixin from "./promodoro"
+import { MessageBox } from "element-ui";
 
 export default {
     mixins: [promodoroMixin],
@@ -216,8 +218,14 @@ export default {
 
         clear() {
             this.stop();
-            if (confirm(`the time of the ${this.modeSelected} has finished`)) {
-                const isLastMode = this.promodoroTemplate.length - 1 == this.round;
+            MessageBox.confirm(`The time of the ${this.modeSelected} has finished`).then(() => {
+                this.findNextMode();
+                this.run = 0;
+            })
+        },
+
+        findNextMode() {
+            const isLastMode = this.promodoroTemplate.length - 1 == this.round;
                 console.group()
                 console.log({isLastMode, round: this.round})
                 this.round = isLastMode ? 0 : this.round + 1;
@@ -225,8 +233,6 @@ export default {
                 console.groupEnd()
                 const nextMode = this.promodoroTemplate[this.round];
                 this.setMode(nextMode);
-                this.run = 0;
-            }
         },
 
         initTimer(selfMode) {
@@ -318,9 +324,9 @@ export default {
             this.time.seconds = this.modes[modeName].seconds;
         },
 
-        toggleConfiguration() {
+        toggleConfiguration(settings) {
             if (this.isConfigurationOpen) {
-                this.init();
+                this.init(settings);
             }
             this.isConfigurationOpen = !this.isConfigurationOpen;
         }

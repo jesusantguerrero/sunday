@@ -27,22 +27,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Inertia::share('users', function (Request $request) {
-            if ($user = $request->user()) {
-                $currentTeamId = $user->current_team_id;
-                if (!$currentTeamId) {
-                    $team =Team::where([
-                        "user_id" => $user->id,
-                        "personal_team" => 1
-                    ])->limit(1)->get()[0];
-
-                } else {
-                    $team = Team::find($currentTeamId);
-                }
-                return  $team->allUsers();
-            }
-        });
-
         JsonResource::withoutWrapping();
 
     }
