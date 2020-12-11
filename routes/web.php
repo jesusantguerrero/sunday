@@ -10,6 +10,7 @@ use App\Http\Controllers\StageController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\StandupController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TimeEntryController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,7 @@ Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function() {
+Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     // Dashboards
     Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -65,6 +66,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/api/automation-recipies', AutomationRecipeController::class);
     Route::apiResource('/links', LinkController::class);
     Route::apiResource('/time-entries', TimeEntryController::class);
+    Route::apiResource('/api/settings', SettingController::class);
     Route::post('/services/google', [ServiceController::class, 'google']);
     Route::get('/services/messages', [ServiceController::class, 'getMessages']);
     Route::get('/api/calendars', [ServiceController::class, 'listCalendars']);

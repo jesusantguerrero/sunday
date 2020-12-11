@@ -19,6 +19,9 @@ services:
       - sunday_db:/var/lib/mysql
     networks:
       - sunday
+    depends_on:
+      - db
+      - redis
   db:
     image: mysql:5.7
     container_name: sunday-db
@@ -50,6 +53,27 @@ services:
       - ./docker-compose/nginx:/etc/nginx/conf.d/
     networks:
       - sunday
+  # redis:
+    # image: 'redis:alpine'
+    # ports:
+    #   - '${FORWARD_REDIS_PORT:-6379}:6379'
+    # volumes:
+    #   - ./docker-compose/redis:/data
+    # networks:
+    #   - sunday
+  # memcached:
+  #     image: 'memcached:alpine'
+  #     ports:
+  #         - '11211:11211'
+  #     networks:
+  #         - sail
+  # mailhog:
+  #   image: 'mailhog/mailhog:latest'
+  #   ports:
+  #     - 1025:1025
+  #     - 8025:8025
+  #   networks:
+  #     - sunday
 networks:
   sunday:
     driver: bridge

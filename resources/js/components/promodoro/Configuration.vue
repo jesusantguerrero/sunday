@@ -105,9 +105,9 @@
 </template>
 
 <script>
-import DialogModal from "../../Jetstream/DialogModal"
-import PrimaryButton from "../../Jetstream/Button"
-import promodoroMixin from "./promodoro"
+import DialogModal from "../../Jetstream/DialogModal";
+import PrimaryButton from "../../Jetstream/Button";
+import promodoroMixin from "./promodoro";
 
 export default {
     mixins: [promodoroMixin],
@@ -152,12 +152,19 @@ export default {
     },
     methods: {
         save() {
-            localStorage.setItem('promodoroTemplate', JSON.stringify(this.promodoroTemplate))
+            const settings = {};
+            settings.promodoro_template = JSON.stringify(this.promodoroTemplate)
             Object.keys(this.modes).forEach((key) => {
                 this.modes[key].minutes = Number(this.modes[key].minutes) || 1;
             })
-            localStorage.setItem('modes', JSON.stringify(this.modes))
-            this.$emit('saved');
+            settings.promodoro_modes = JSON.stringify(this.modes)
+            axios({
+                url: "/api/settings",
+                method: "POST",
+                data: settings
+            }).then(() => {
+                this.$emit('saved', settings);
+            })
         },
 
         addWorkflowItem(item) {

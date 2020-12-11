@@ -70,8 +70,7 @@ class DashboardController extends Controller
                     'link' =>  URL::route('boards', $board),
                 ];
             }),
-            'date' => $date,
-            'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $date], $request->user()))
+            'date' => $date
         ]);
     }
     public function blank(Request $request)
