@@ -8,7 +8,13 @@
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "server:build": " docker-compose build web",
+        "server:up": "docker-compose up -d",
+        "server:install":"docker-compose exec web composer install",
+        "server:generate":"docker-compose exec web php artisan key:generate",
+        "server:migrate":"docker-compose exec web php artisan migrate",
+        "serve": "npm run server:build && npm run server:up && npm run server:install && npm run server:generate && npm run server:migrate"
     },
     "devDependencies": {
         "@inertiajs/inertia": "^0.3.1",
