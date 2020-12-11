@@ -318,7 +318,7 @@ CREATE TABLE `time_entries` (
   `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `billable` tinyint(1) NOT NULL DEFAULT '0',
   `status` tinyint(1) NOT NULL DEFAULT '0',
-  `start` timestamp NOT NULL,
+  `start` timestamp NULL DEFAULT NULL,
   `end` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
