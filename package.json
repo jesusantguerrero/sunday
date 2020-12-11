@@ -1,5 +1,6 @@
 {
     "private": true,
+    "license": "MIT",
     "scripts": {
         "build-image": "docker build -t ic-sunday .",
         "dev": "npm run development",
