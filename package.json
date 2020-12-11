@@ -10,11 +10,12 @@
         "prod": "npm run production",
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
         "server:build": " docker-compose build web",
-        "server:up": "docker-compose up -d",
-        "server:install":"docker-compose exec web composer install",
-        "server:generate":"docker-compose exec web php artisan key:generate",
-        "server:migrate":"docker-compose exec web php artisan migrate",
-        "serve": "npm run server:build && npm run server:up && npm run server:install && npm run server:generate && npm run server:migrate"
+        "serve:up": "docker-compose up -d",
+        "serve:down": "docker-compose down",
+        "serve:install":"docker-compose exec web composer install",
+        "serve:generate":"docker-compose exec web php artisan key:generate",
+        "serve:migrate":"docker-compose exec web php artisan migrate",
+        "serve": "npm run serve:up && npm run serve:install && npm run serve:generate && npm run serve:migrate"
     },
     "devDependencies": {
         "@inertiajs/inertia": "^0.3.1",

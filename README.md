@@ -47,17 +47,9 @@ Setup With Docker
 #build dockerfile for webapp
 docker-compose build web
 
-#run docker compose
-docker-compose up -d
+#start docker enviroment
+npm run serve
 
-# composer install
-docker-compose exec web composer install
-
-# generate key
-docker-compose exec web php artisan key:generate
-
-# run migrations
-docker-compose exec web php artisan migrate
 ```
 
 Setup Without Docker
@@ -68,6 +60,12 @@ composer install
 php artisan key:generate
 # run migrations
 php artisan migrate
+```
+
+Frontend development
+```bash
+# development
+npm run watch
 ```
 
 ## License
