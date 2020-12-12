@@ -77,27 +77,9 @@
 
                 <!-- Right Side -->
                 <div class="w-100 md:w-5/12 lg:w-4/12 md:ml-4 pt-12">
-                    <span class="text-3xl ml-2 font-bold"> Fast Access </span>
+                    <span class="text-3xl ml-2 font-bold"> Tools </span>
 
-                    <div class="section-card committed mt-5">
-                        <header class="bg-blue-400 text-white font-bold flex justify-between">
-                            <span>
-                                Links
-                            </span>
-                            <button class="bg-transparent text-white" @click="isLinkFormOpen = !isLinkFormOpen">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </header>
-                         <div class="body text-gray-600">
-                             <link-viewer
-                                :links="links"
-                                @edit="openLinkForm"
-
-                             ></link-viewer>
-                        </div>
-                    </div>
-
-                    <div class="section-card committed">
+                      <div class="section-card committed mt-5">
                          <div :class="`bg-${promodoroColor}-400 text-gray-600 font-bold px-0`">
                             <promodoro
                                 ref="Promodoro"
@@ -107,6 +89,24 @@
                                 :tasks="todo"
                             >
                             </promodoro>
+                        </div>
+                    </div>
+
+                    <div class="section-card committed">
+                        <header class="bg-purple-400 text-white font-bold flex justify-between">
+                            <span>
+                                Links
+                            </span>
+                            <button class="bg-transparent text-white" @click="isLinkFormOpen = !isLinkFormOpen">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </header>
+                         <div class="body bg-purple-400 text-gray-600">
+                             <link-viewer
+                                :links="links"
+                                @edit="openLinkForm"
+
+                             ></link-viewer>
                         </div>
                     </div>
                 </div>
@@ -373,7 +373,7 @@
 
 <style lang="scss">
 .section-card {
-    @apply bg-white overflow-hidden shadow-xl mx-2 mb-4;
+    @apply bg-white overflow-hidden shadow-xl mx-2 mb-4 rounded-md;
     &.margin-0 {
         @apply m-0;
     }

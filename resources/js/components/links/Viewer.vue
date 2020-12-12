@@ -58,10 +58,9 @@ export default {
     display: inline-block;
     transition: all ease .3s;
     position: relative;
-
-    &__caller {
-        border-bottom: 1px dashed dodgerblue;
-    }
+    background: white;
+    padding: 2px 10px;
+    border-radius: 5px !important;
 
     &__buttons {
         margin: 0 5px;

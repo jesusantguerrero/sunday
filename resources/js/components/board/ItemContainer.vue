@@ -1,6 +1,6 @@
 <template>
     <div class="item-container section-card committed mt-5">
-        <header class="bg-purple-400 text-white font-bold">
+        <header class="font-bold text-lg text-cool-gray-600">
             {{ title }}
         </header>
         <slot> </slot>
