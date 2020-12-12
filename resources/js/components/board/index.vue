@@ -384,7 +384,7 @@ export default {
             stage.name = stage.name || `Stage ${this.board.stages.length + 1}`;
 
             return axios({
-                url: `/stages${param}`,
+                url: `/api/stages${param}`,
                 method,
                 data: stage
             }).then(({ data }) => {

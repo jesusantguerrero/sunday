@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb1e57e56710b7c73718c20a1e86dafe",
+    "content-hash": "9b9e11b63cdc9b5e4d2b580bfc8c5bb5",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -831,6 +831,45 @@
                 "php"
             ],
             "time": "2020-03-25T18:49:23+00:00"
+        },
+        {
+            "name": "freesgen/querify",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jesusantguerrero/php-querify.git",
+                "reference": "c79887fdc8dc881dbcb94a8eb532489eee01e4b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jesusantguerrero/php-querify/zipball/c79887fdc8dc881dbcb94a8eb532489eee01e4b6",
+                "reference": "c79887fdc8dc881dbcb94a8eb532489eee01e4b6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Freesgen": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "freesgen",
+                    "email": "jesusant.guerrero@gmail.com"
+                }
+            ],
+            "description": "Build db query from params",
+            "support": {
+                "source": "https://github.com/jesusantguerrero/php-querify/tree/master",
+                "issues": "https://github.com/jesusantguerrero/php-querify/issues"
+            },
+            "time": "2020-05-26T08:16:06+00:00"
         },
         {
             "name": "fruitcake/laravel-cors",
@@ -5519,56 +5558,6 @@
             "time": "2020-07-13T06:12:54+00:00"
         },
         {
-            "name": "twilio/sdk",
-            "version": "6.15.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/twilio/twilio-php.git",
-                "reference": "5bea779890315fd46673b4e2e584eba761eb7027"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/5bea779890315fd46673b4e2e584eba761eb7027",
-                "reference": "5bea779890315fd46673b4e2e584eba761eb7027",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1.0"
-            },
-            "require-dev": {
-                "guzzlehttp/guzzle": "^6.3 || ^7.0",
-                "phpunit/phpunit": ">=4.5",
-                "theseer/phpdox": "^0.12.0"
-            },
-            "suggest": {
-                "guzzlehttp/guzzle": "An HTTP client to execute the API requests"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Twilio\\": "src/Twilio/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Twilio API Team",
-                    "email": "api@twilio.com"
-                }
-            ],
-            "description": "A PHP wrapper for Twilio's API",
-            "homepage": "http://github.com/twilio/twilio-php",
-            "keywords": [
-                "api",
-                "sms",
-                "twilio"
-            ],
-            "time": "2020-12-08T20:38:42+00:00"
-        },
-        {
             "name": "vlucas/phpdotenv",
             "version": "v5.2.0",
             "source": {
@@ -6022,16 +6011,16 @@
         },
         {
             "name": "fzaninotto/faker",
-            "version": "v1.9.1",
+            "version": "v1.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzaninotto/Faker.git",
-                "reference": "fc10d778e4b84d5bd315dad194661e091d307c6f"
+                "reference": "848d8125239d7dbf8ab25cb7f054f1a630e68c2e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/fc10d778e4b84d5bd315dad194661e091d307c6f",
-                "reference": "fc10d778e4b84d5bd315dad194661e091d307c6f",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/848d8125239d7dbf8ab25cb7f054f1a630e68c2e",
+                "reference": "848d8125239d7dbf8ab25cb7f054f1a630e68c2e",
                 "shasum": ""
             },
             "require": {
@@ -6069,7 +6058,7 @@
                 "fixtures"
             ],
             "abandoned": true,
-            "time": "2019-12-12T13:22:17+00:00"
+            "time": "2020-12-11T09:56:16+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -7820,7 +7809,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "freesgen/querify": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

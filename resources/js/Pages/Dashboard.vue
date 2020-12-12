@@ -93,7 +93,7 @@
                     </div>
 
                     <div class="section-card committed">
-                        <header class="bg-purple-400 text-white font-bold flex justify-between">
+                        <header class="bg-blue-400 text-white font-bold flex justify-between">
                             <span>
                                 Links
                             </span>
@@ -101,7 +101,7 @@
                                 <i class="fa fa-plus"></i>
                             </button>
                         </header>
-                         <div class="body bg-purple-400 text-gray-600">
+                         <div class="body bg-blue-400 text-gray-600">
                              <link-viewer
                                 :links="links"
                                 @edit="openLinkForm"

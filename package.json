@@ -13,9 +13,10 @@
         "server:build": " docker-compose build web",
         "serve:up": "docker-compose up -d",
         "serve:down": "docker-compose down",
-        "serve:install":"docker-compose exec web composer install",
-        "serve:generate":"docker-compose exec web php artisan key:generate",
-        "serve:migrate":"docker-compose exec web php artisan migrate",
+        "serve:install": "docker-compose exec web composer install",
+        "serve:update": "docker-compose exec web composer update",
+        "serve:generate": "docker-compose exec web php artisan key:generate",
+        "serve:migrate": "docker-compose exec web php artisan migrate",
         "serve": "npm run serve:up && npm run serve:install && npm run serve:generate && npm run serve:migrate"
     },
     "devDependencies": {
@@ -41,6 +42,7 @@
     },
     "dependencies": {
         "@inertiajs/progress": "^0.2.2",
+        "@vueuse/core": "^4.0.0-rc.8",
         "date-fns": "^2.16.1",
         "duration": "^0.2.2",
         "element-ui": "^2.14.1",

@@ -63,7 +63,6 @@
         methods: {
             async signIn() {
                     gapi.load('auth2', () => {
-                        debugger
                         gapi.auth2.init({
                             apiKey: process.env.MIX_GOOGLE_APP_KEY,
                             clientId: process.env.MIX_GOOGLE_CLIENT_ID,

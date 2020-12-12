@@ -7,6 +7,12 @@
         "laravel"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/jesusantguerrero/php-querify"
+        }
+    ],
     "require": {
         "php": "^7.3",
         "doctrine/dbal": "^2.12",
@@ -22,7 +28,7 @@
         "laravel/tinker": "^2.0",
         "ext-mailparse": "*",
         "php-mime-mail-parser/php-mime-mail-parser": "^6.0",
-        "twilio/sdk": "^6.10"
+        "freesgen/querify": "dev-master"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
