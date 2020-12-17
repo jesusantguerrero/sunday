@@ -53,14 +53,14 @@ services:
       - ./docker-compose/nginx:/etc/nginx/conf.d/
     networks:
       - sunday
-  # redis:
-    # image: 'redis:alpine'
-    # ports:
-    #   - '${FORWARD_REDIS_PORT:-6379}:6379'
-    # volumes:
-    #   - ./docker-compose/redis:/data
-    # networks:
-    #   - sunday
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - ./docker-compose/redis:/data
+    networks:
+      - sunday
   # memcached:
   #     image: 'memcached:alpine'
   #     ports:

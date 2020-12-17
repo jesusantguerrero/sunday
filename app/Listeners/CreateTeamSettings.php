@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Models\Setting;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Laravel\Jetstream\Events\TeamCreated;
 
 class CreateTeamSettings
@@ -31,31 +29,30 @@ class CreateTeamSettings
         $settings = [
             [
                 "name" => "promodoro_template",
-                "value" => '["session","longBreak"]'
+                "value" => json_encode(["session","longBreak"])
             ],
             [
                 "name" => "promodoro_modes",
-                "value" => "
-                  {
-                      'session': {
-                            'name':'Session',
-                            'minutes': 1,
-                            'seconds': 0,
-                            'color':'red'
-                        },
-                        'break':{
-                            'name':'Break',
-                            'minutes':5,
-                            'seconds':0,
-                            'color':'blue'
-                        },
-                        longBreak: {
-                            'name':'Long Break',
-                            'minutes':15,
-                            'seconds':0,
-                            'color':'green'
-                        }}
-                "
+                "value" => json_encode([
+                      "session" => [
+                            "name" => "Session",
+                            "minutes" => 1,
+                            "seconds" => 0,
+                            "color" =>"red"
+                      ],
+                        "break" => [
+                            "name" => "Break",
+                            "minutes" => 5,
+                            "seconds" => 0,
+                            "color" => "blue"
+                        ],
+                        "longBreak" => [
+                            "name" => "Long Break",
+                            "minutes" => 15,
+                            "seconds" => 0,
+                            "color" => "green"
+                        ]
+                ])
             ]
         ];
 

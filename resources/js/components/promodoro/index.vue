@@ -226,11 +226,7 @@ export default {
 
         findNextMode() {
             const isLastMode = this.promodoroTemplate.length - 1 == this.round;
-                console.group()
-                console.log({isLastMode, round: this.round})
                 this.round = isLastMode ? 0 : this.round + 1;
-                console.log({isLastMode, nextTound: this.round})
-                console.groupEnd()
                 const nextMode = this.promodoroTemplate[this.round];
                 this.setMode(nextMode);
         },

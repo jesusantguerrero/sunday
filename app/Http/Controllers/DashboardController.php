@@ -42,7 +42,6 @@ class DashboardController extends Controller
                 'user_id' => $user->id,
                 'commit_date' => $commitDate
             ])->with('stage')->get()),
-            'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $commitDate], $request->user())),
             'links' => Link::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,
@@ -70,6 +69,7 @@ class DashboardController extends Controller
                     'link' =>  URL::route('boards', $board),
                 ];
             }),
+            'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $date], $request->user())),
             'date' => $date
         ]);
     }

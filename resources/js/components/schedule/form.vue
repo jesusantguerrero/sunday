@@ -507,8 +507,7 @@ export default {
 }
 
 .btn {
-  @apply bg-green-500 text-white px-5 py-2;
-  border-radius: 14px;
+  @apply px-5 py-2 rounded-md;
 }
 
 .el-date-editor.el-input {

@@ -42,7 +42,6 @@ export default {
         },
         localValue() {
              if (this.formatValue(this.localValue, 'date', 'read') != this.formatValue(this.value, 'date', 'read')) {
-                 debugger
                 this.$emit('input', this.localValue)
                 this.$emit('saved', 'date')
             } else {

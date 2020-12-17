@@ -126,7 +126,7 @@ export default {
 $primary-color: var(--primary-color);
 
 .controls {
-  @apply text-left bg-white mb-1 p-2 border-gray-100 border-2;
+  @apply text-left bg-white mb-1 p-2;
   border-radius: 12px;
 }
 

@@ -77,27 +77,9 @@
 
                 <!-- Right Side -->
                 <div class="w-100 md:w-5/12 lg:w-4/12 md:ml-4 pt-12">
-                    <span class="text-3xl ml-2 font-bold"> Fast Access </span>
+                    <span class="text-3xl ml-2 font-bold"> Tools </span>
 
-                    <div class="section-card committed mt-5">
-                        <header class="bg-blue-400 text-white font-bold flex justify-between">
-                            <span>
-                                Links
-                            </span>
-                            <button class="bg-transparent text-white" @click="isLinkFormOpen = !isLinkFormOpen">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </header>
-                         <div class="body text-gray-600">
-                             <link-viewer
-                                :links="links"
-                                @edit="openLinkForm"
-
-                             ></link-viewer>
-                        </div>
-                    </div>
-
-                    <div class="section-card committed">
+                      <div class="section-card committed mt-5">
                          <div :class="`bg-${promodoroColor}-400 text-gray-600 font-bold px-0`">
                             <promodoro
                                 ref="Promodoro"
@@ -107,6 +89,24 @@
                                 :tasks="todo"
                             >
                             </promodoro>
+                        </div>
+                    </div>
+
+                    <div class="section-card committed">
+                        <header class="bg-blue-400 text-white font-bold flex justify-between">
+                            <span>
+                                Links
+                            </span>
+                            <button class="bg-transparent text-white" @click="isLinkFormOpen = !isLinkFormOpen">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </header>
+                         <div class="body bg-blue-400 text-gray-600">
+                             <link-viewer
+                                :links="links"
+                                @edit="openLinkForm"
+
+                             ></link-viewer>
                         </div>
                     </div>
                 </div>
@@ -168,7 +168,7 @@
     import LinkFormModal from "../components/links/Form"
     import LinkViewer from "../components/links/Viewer"
     import PrimaryButton from "../Jetstream/Button"
-    import { subDays, toDate } from "date-fns";
+    import { subDays, toDate, format } from "date-fns";
     import { uniq, orderBy } from "lodash-es";
 
     export default {
@@ -293,10 +293,8 @@
 
             completeDay() {
                 this.isLoading = true;
-                const yesterday = subDays(new Date(), 1)
-                    .toISOString()
-                    .slice(0, 10);
-                const now = new Date().toISOString().slice(0, 10);
+                const yesterday = format(subDays(new Date(), 1),"yyyy-MM-dd");
+                const now = format(new Date(), "yyyy-MM-dd");
                 let completed = this.todo.filter(item => item.done);
                 completed = completed.map(item => {
                     item.commit_date = yesterday;
@@ -307,7 +305,7 @@
                     await this.updateItem(item);
                 });
 
-                this.updateDayly(now)
+                this.updateDaily(now)
                 this.isStandupOpen = false;
                 this.isLoading = false;
                 this.$inertia.reload({ preserveScroll: true })
@@ -337,7 +335,7 @@
                 })
             },
 
-            updateDayly(date) {
+            updateDaily(date) {
                 axios({
                     url: 'standups',
                     method: 'post',
@@ -373,7 +371,7 @@
 
 <style lang="scss">
 .section-card {
-    @apply bg-white overflow-hidden shadow-xl mx-2 mb-4;
+    @apply bg-white overflow-hidden shadow-xl mx-2 mb-4 rounded-md;
     &.margin-0 {
         @apply m-0;
     }

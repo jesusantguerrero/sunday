@@ -48,7 +48,7 @@ class SettingController extends Controller
                 'name' => $settingName
             ])->limit(1)->get();
 
-            if (count($setting)) {
+            if (count($resource)) {
                 $resource[0]->update($setting);
             } else {
                 $resource = Setting::create($setting);
