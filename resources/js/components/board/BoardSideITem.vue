@@ -15,7 +15,7 @@
 
         <el-dropdown
             trigger="click"
-            @command="$emit(board, $event)"
+            @command="$emit('option', board, $event)"
             @click.native.prevent
         >
             <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center">

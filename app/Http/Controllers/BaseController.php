@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-// use Freesgen\Traits\Querify;
+use Freesgen\Traits\Querify;
 
 abstract class BaseController extends Controller
 {
@@ -16,6 +16,23 @@ abstract class BaseController extends Controller
     protected $includes = [];
     protected $appends = [];
     protected $filters = [];
+    use Querify;
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $queryParams = $request->query() ?? [];
+        $queryParams['limit'] = $queryParams['limit'] ?? 50;
+
+        return $this->getModelQuery($request);
+    }
+
+
 
     /**
      * Store a newly created resource in storage.

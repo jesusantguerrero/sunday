@@ -58,7 +58,7 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
 // resource route
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/items', ItemController::class);
-    Route::apiResource('/stages', StageController::class);
+    Route::apiResource('/api/stages', StageController::class);
     Route::apiResource('/standups', StandupController::class);
     Route::apiResource('/api/boards', BoardController::class);
     Route::apiResource('/api/fields', FieldController::class);

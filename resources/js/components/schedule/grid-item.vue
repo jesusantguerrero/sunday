@@ -68,9 +68,6 @@
                     </span>
                 </div>
             </div>
-            <span class="ml-3" v-if="!isCurrent">
-                <i class="fas fa-chevron-down"></i>
-            </span>
         </div>
     </div>
 </template>
@@ -202,11 +199,10 @@ export default {
 }
 
 .on-air-program {
+    @apply border-purple-400;
     height: 152px !important;
     min-height: 152px !important;
-    .content-body {
-        color: white;
-    }
+    color: #707070;
 
     .program-name {
         margin-left: 25px;
@@ -215,11 +211,6 @@ export default {
     .day-slot__title,
     .day-slot__description {
         margin-left: 5px;
-        color: white;
-    }
-
-    .hours-container {
-        color: white;
     }
 
     .hours-container {
@@ -228,7 +219,6 @@ export default {
         &__divider {
             height: 67.796px;
             width: 1px;
-            background: white;
         }
 
         &__item {
