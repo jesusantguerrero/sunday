@@ -168,7 +168,7 @@
     import LinkFormModal from "../components/links/Form"
     import LinkViewer from "../components/links/Viewer"
     import PrimaryButton from "../Jetstream/Button"
-    import { subDays, toDate } from "date-fns";
+    import { subDays, toDate, format } from "date-fns";
     import { uniq, orderBy } from "lodash-es";
 
     export default {
@@ -293,10 +293,8 @@
 
             completeDay() {
                 this.isLoading = true;
-                const yesterday = subDays(new Date(), 1)
-                    .toISOString()
-                    .slice(0, 10);
-                const now = new Date().toISOString().slice(0, 10);
+                const yesterday = format(subDays(new Date(), 1),"yyyy-MM-dd");
+                const now = format(new Date(), "yyyy-MM-dd");
                 let completed = this.todo.filter(item => item.done);
                 completed = completed.map(item => {
                     item.commit_date = yesterday;
@@ -307,7 +305,7 @@
                     await this.updateItem(item);
                 });
 
-                this.updateDayly(now)
+                this.updateDaily(now)
                 this.isStandupOpen = false;
                 this.isLoading = false;
                 this.$inertia.reload({ preserveScroll: true })
@@ -337,7 +335,7 @@
                 })
             },
 
-            updateDayly(date) {
+            updateDaily(date) {
                 axios({
                     url: 'standups',
                     method: 'post',

@@ -14,7 +14,7 @@
                                 Planner
 
                             </span>
-                            <button class="btn" @click="openItem()">
+                            <button class="btn bg-purple-400 text-white font-bold" @click="openItem()">
                                 Add Event
                             </button>
                         </div>
@@ -123,7 +123,7 @@
 
             <item-modal
                 @cancel="isItemModalOpen = false"
-                @saved="isItemModalOpen = false"
+                @saved="onItemSaved"
                 :boards="boards"
                 type="event"
                 :record-data="openedItem"
@@ -212,6 +212,9 @@ export default {
     computed: {
         hasCommited() {
             return this.todo.filter(item => item.done).length;
+        },
+        params() {
+           return `?date=${this.localDate.toISOString().slice(0, 10)}`;
         }
     },
     methods: {
@@ -223,8 +226,7 @@ export default {
         },
 
         getCommitsByDate() {
-            const params = `?date=${this.localDate.toISOString().slice(0, 10)}`;
-            this.$inertia.replace(`/planner${params}`, {
+            this.$inertia.replace(`/planner${this.params}`, {
                 only: ["scheduled", "date"],
                 preserveState: true
             });
@@ -233,6 +235,16 @@ export default {
         openItem(item = {}) {
             this.isItemModalOpen = true;
             this.openedItem = item;
+        },
+
+        onItemSaved() {
+            this.$nextTick(() => {
+                this.isItemModalOpen = false
+                this.$inertia.reload(`/planner${this.params}`, {
+                    only: ["scheduled"],
+                    preserveState: true
+                });
+            })
         }
     }
 };

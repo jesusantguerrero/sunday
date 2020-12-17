@@ -235,21 +235,6 @@ export default {
 </script>
 
 <style lang="scss">
-.on-air-program {
-    min-height: 180px;
-    color: white;
-    background: linear-gradient(-146.1079deg, #0365f5, #3031c2);
-    border-color: transparent;
-    box-shadow: 4px 4px 6px var(--primary-color-5);
-}
-
-.badge-on-air {
-    @apply px-2;
-    border-radius: 2rem;
-    color: #338de3;
-    background: white;
-}
-
 .past-hour {
     display: none;
 }
@@ -270,7 +255,7 @@ export default {
 .on-air-program {
     padding: 0 10px;
     .image_cover {
-        @apply bg-gray-400;
+        font-size: 50px;
         width: 132px;
         min-width: 132px;
         height: 132px;

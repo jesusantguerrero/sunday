@@ -190,10 +190,31 @@ export default {
     },
     computed: {
         visibleFields() {
-            return (
-                this.formData.board &&
-                this.formData.board.fields.filter(field => !field.hide)
-            );
+            if (this.formData.board && this.formData.board.fields) {
+                return this.formData.board.fields
+                .map(field => {
+                    field.order = this.fieldOrder.findIndex(fieldname => field.name == fieldname);
+                    return field;
+                })
+                .filter(field => !field.hide)
+                .sort((a, b) => a.order - b.order)
+            }
+            return []
+        },
+        fieldOrder() {
+            const fields = {
+                event: [
+                    "owner",
+                    "status",
+                    "priority",
+                    "date",
+                    "time",
+                    "due_date",
+                    "end_time"
+                ]
+            }
+
+            return fields[this.type] || [];
         },
         typeFields() {
             const fields = {
@@ -208,14 +229,34 @@ export default {
         }
     },
     methods: {
+        prepareForm() {
+            const formData = { ...this.formData }
+            if (this.formData.board) {
+                formData.board_id = this.formData.board.id
+            }
+
+            if (this.formData.stage) {
+                formData.stage_id = this.formData.stage.id
+            }
+
+            delete formData.board
+            delete formData.stage
+            return formData
+        },
+
         save() {
             const method = this.formData.id ? "PUT" : "POST";
             const param = this.formData.id ? `/${this.formData.id}` : "";
-            const formData = { ...this.formData }
-            formData.board_id = this.formData.board.id
-            formData.stage_id = this.formData.stage.id
-            delete formData.board
-            delete formData.stage
+            const formData = this.prepareForm();
+
+            if (!formData.title || !formData.board_id) {
+                this.$notify({
+                    type: "info",
+                    message: `Board and title are required`,
+                });
+                return
+            }
+
             formData.fields = this.formData.board.fields.map(field => {
                 return {
                     field_id: field.id,
@@ -225,6 +266,7 @@ export default {
                     value: formData[field.name],
                 }
             })
+
             axios({
                 url: `/items${param}`,
                 method,
@@ -258,12 +300,19 @@ export default {
                     stages
                 );
 
+                this.$set(
+                    this.formData,
+                    "stage",
+                    stages[0]
+                );
+
                 const fieldNames = fields.map(field => field.name);
                 this.typeFields.forEach((field) => {
                     if (!fieldNames.includes(field.name)) {
                         fields.push(field);
                     }
                 });
+
 
                 this.$set(
                     this.formData.board,
@@ -347,9 +396,12 @@ h1 {
 
 .form-cell {
     .item-group-cell {
+        @apply border-2 border-gray-200 px-0;
+
         span {
-            @apply border-2 border-gray-200;
             height: 100%;
+            display: flex;
+            align-items: center;
         }
         height: 37px;
 
