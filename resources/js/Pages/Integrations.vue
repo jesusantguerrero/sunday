@@ -55,6 +55,14 @@
         components: {
             AppLayout
         },
+        props: {
+            boards: {
+                type: Array,
+                default() {
+                    return []
+                }
+            },
+        },
         data() {
             return {
                 searchOptions: {}
