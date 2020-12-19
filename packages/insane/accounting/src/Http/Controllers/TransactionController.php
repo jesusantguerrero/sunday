@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Insane\Accounting\Http\Controllers;
 
 use App\Http\Controllers\Api\BaseController;
 use Insane\Accounting\Models\Transaction;

@@ -1,10 +1,11 @@
 <?php
 
-use App\Models\Transaction;
-use App\Models\TransactionLine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Insane\Accounting\Models\Transaction;
+use Insane\Accounting\Models\TransactionLine;
 use Laravel\Jetstream\Jetstream;
+use Ramsey\Uuid\Type\Integer;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,11 +26,18 @@ Route::group(['middleware' => config('jetstream.middleware', ['web'])], function
             return Jetstream::inertia()->render($request,"Accounting/Accounts");
         })->name('accounts');
 
+        // Transactions
         Route::get('/transactions', function(Request $request) {
             return Jetstream::inertia()->render($request, "Accounting/Transactions/Transactions", [
                 'transactions' => Transaction::all()
             ]);
         })->name('transactions');
+
+        Route::get('/transactions/{id}', function(Request $request, int $id) {
+            return Jetstream::inertia()->render($request, "Accounting/Transactions/Transactions", [
+                'transaction' => Transaction::find($id)
+            ]);
+        })->name('transactions-edit');
     });
 });
 

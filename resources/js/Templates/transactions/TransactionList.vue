@@ -14,12 +14,12 @@
             ></app-search>
           </div>
           <div class="action-buttons">
-            <router-link
-              :to="{ name: `${section}sCreate` }"
+            <inertia-link
+              :href="{ name: `${section}-create` }"
               class="btn btn-primary w-100 d-flex"
             >
               Add {{ section }}
-            </router-link>
+            </inertia-link>
           </div>
         </div>
 
@@ -29,11 +29,11 @@
           @cell-click="editInvoice"
         >
           <template v-slot:date="{ scope }">
-            <router-link
-              :to="{ name: `${section}sEdit`, params: { id: scope.row.id } }"
+            <inertia-link
+              :href="`${section}s/${scope.row.id}}`"
             >
               {{ scope.row.date | formatDateFilter }}
-            </router-link>
+            </inertia-link>
           </template>
 
           <template v-slot:status="{ scope }">
@@ -101,7 +101,6 @@ export default {
     return {
       cols,
       searchText: "",
-
       tableData: []
     };
   },
@@ -112,7 +111,12 @@ export default {
 
   filters: {
     formatDateFilter(date) {
-      return formatDate(date, "YYYY-MM-DD");
+        try {
+            return formatDate(date, "YYYY-MM-DD") || date;
+
+        } catch {
+            return date;
+        }
     }
   },
 
@@ -183,10 +187,7 @@ export default {
         return;
       }
 
-      this.$router.push({
-        name: `${this.section}sEdit`,
-        params: { id: invoice.id }
-      });
+      this.$inertia.visit(`transactions/${invoice.id}`);
     },
 
     formatDate(date) {

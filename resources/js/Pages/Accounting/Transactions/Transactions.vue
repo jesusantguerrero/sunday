@@ -4,45 +4,24 @@
             <div class="board__toolbar flex justify-between px-8 pb-24 pt-12">
                 <div class="flex text-left">
                     <div class="flex justify-between mr-2">
-                        <span class="text-3xl font-bold"> Trasanctions </span>
+                        <span class="text-3xl font-bold"> Transanctions </span>
                     </div>
-                </div>
-
-                <div class="flex items-center">
-                    <input
-                        type="search"
-                        class="form-input ml-2 w-48"
-                        name=""
-                        id=""
-                        v-model="searchOptions.search"
-                        placeholder="search"
-                    />
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-user"></i>
-                    </span>
-                    <span class="ml-2 toolbar-buttons"
-                        :class="{active: searchOptions.done}"
-                        @click="toggleDone()"
-                        ><i class="fa fa-eye"></i
-                    ></span>
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-thumbtack"></i
-                    ></span>
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-filter"></i>
-                    </span>
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-sort"></i>
-                    </span>
                 </div>
             </div>
 
             <div class="py-12">
                 <transaction-list
+                    v-if="!transaction"
                     :data="transactions"
                 >
-
                 </transaction-list>
+
+                <transaction-form
+                    v-else
+                    :data="transaction"
+                >
+
+                </transaction-form>
             </div>
 
         </div>
@@ -51,13 +30,15 @@
 
 <script>
     import AppLayout from './../../../Layouts/AppLayout';
-import TransactionList from '../../../Templates/transactions/TransactionList.vue';
+    import TransactionList from '../../../Templates/transactions/TransactionList.vue';
+    import TransactionForm from '../../../Templates/transactions/TransactionForm.vue';
 
     export default {
         name: "Integrations",
         components: {
             AppLayout,
-            TransactionList
+            TransactionList,
+            TransactionForm
         },
         props: {
             boards: {
@@ -72,6 +53,9 @@ import TransactionList from '../../../Templates/transactions/TransactionList.vue
                     return []
                 }
             },
+            transaction: {
+                type: Object
+            }
 
         },
         data() {

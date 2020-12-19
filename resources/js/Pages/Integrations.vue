@@ -7,34 +7,6 @@
                         <span class="text-3xl font-bold"> Integrations </span>
                     </div>
                 </div>
-
-                <div class="flex items-center">
-                    <input
-                        type="search"
-                        class="form-input ml-2 w-48"
-                        name=""
-                        id=""
-                        v-model="searchOptions.search"
-                        placeholder="search"
-                    />
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-user"></i>
-                    </span>
-                    <span class="ml-2 toolbar-buttons"
-                        :class="{active: searchOptions.done}"
-                        @click="toggleDone()"
-                        ><i class="fa fa-eye"></i
-                    ></span>
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-thumbtack"></i
-                    ></span>
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-filter"></i>
-                    </span>
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-sort"></i>
-                    </span>
-                </div>
             </div>
 
             <div class="py-12">
