@@ -1,17 +1,27 @@
 <template>
     <app-layout :boards="boards">
-        <div class="px-8">
-            <div class="board__toolbar flex justify-between px-8 pb-24 pt-12">
-                <div class="flex text-left">
-                    <div class="flex justify-between mr-2">
+        <div class="">
+            <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row">
+                <div class="w-100 md:w-full lg:w-8/12 md:mx-4 pt-12">
+                    <div class="flex mr-2">
                         <span class="text-3xl font-bold"> Integrations </span>
+                        <button
+                            class="btn bg-purple-400 text-white font-bold"
+                            @click="toggleAppConnection">
+                            Add Connection
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div class="py-12">
                 <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
-                    <google-signin-btn label="Sign In" customClass="my-button" @click="signIn" />
+                    <div class="apps-form">
+                        <div class="app-service__item" v-for="service in services" :key="service.id">
+                            {{ service.name }}
+                        </div>
+                    </div>
+                    <google-signin-btn label="Sign In" customClass="my-button"  />
                 </div>
             </div>
 
@@ -34,13 +44,40 @@
                     return []
                 }
             },
+            services: {
+                type: Array,
+                default() {
+                    return []
+                }
+            },
+            integrations: {
+                type: Array,
+                default() {
+                    return []
+                }
+            },
         },
         data() {
             return {
-                searchOptions: {}
+                searchOptions: {},
+                showAddConnection: false
             }
         },
         methods: {
+            toggleAppConnection() {
+                this.showAddConnection = !this.showAddConnection;
+            },
+
+            onItemSaved() {
+                this.$nextTick(() => {
+                    this.isItemModalOpen = false
+                    this.$inertia.reload(`/planner${this.params}`, {
+                        only: ["scheduled"],
+                        preserveState: true
+                    });
+                })
+            },
+
             async signIn() {
                     gapi.load('auth2', () => {
                         gapi.auth2.init({

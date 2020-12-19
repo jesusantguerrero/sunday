@@ -7856,6 +7856,5 @@
         "php": "^7.3",
         "ext-mailparse": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "platform-dev": []
 }

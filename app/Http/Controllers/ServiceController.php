@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Libraries\GoogleService;
+use App\Models\AutomationService;
+use App\Models\Integration;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,7 +13,10 @@ class ServiceController extends Controller
 {
     public function index() {
 
-        return Inertia::render('Integrations');
+        return Inertia::render('Integrations', [
+            "services" => AutomationService::all(),
+            "connections" => Integration::all()
+        ]);
     }
 
     public function google(Request $request)
