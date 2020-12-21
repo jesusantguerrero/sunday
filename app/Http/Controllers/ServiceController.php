@@ -11,11 +11,15 @@ use Inertia\Inertia;
 
 class ServiceController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
+        $user = $request->user();
 
         return Inertia::render('Integrations', [
             "services" => AutomationService::all(),
-            "integrations" => Integration::all()
+            "integrations" => Integration::where([
+                'team_id' => $user->current_team_id,
+                'user_id' => $user->id
+            ])->with(['automations'])->get()
         ]);
     }
 

@@ -18,7 +18,7 @@ class GoogleService
         return User::find($userId);
     }
 
-    public static function setTokens($data, $userId) {
+    public static function setTokens($data, $userId, $integrationId) {
         $client = new Google_Client();
         $client->setAuthConfig(app_path().'\..\credentials.json');
         $client->setRedirectUri('http://localhost:8080');
@@ -28,7 +28,7 @@ class GoogleService
         } else {
             $tokenResponse = $data;
         }
-        $user = User::find($userId);
+        $user = user::find($userId);
         $integration = new Integration();
         $integration->team_id = $user->current_team_id;
         $integration->user_id = $user->id;
@@ -40,23 +40,23 @@ class GoogleService
         return $tokenResponse;
     }
 
-    public static function getClient( $userId) {
-        $user = User::find($userId);
+    public static function getClient($integrationId) {
+        $integration = Integration::find($integrationId);
         $client = new Google_Client();
         $client->setAuthConfig(app_path().'\..\credentials.json');
         if (!$accessToken = session('g_token')) {
-            $accessToken = $client->fetchAccessTokenWithRefreshToken(decrypt($user->token));
+            $accessToken = $client->fetchAccessTokenWithRefreshToken(decrypt($integration->token));
         }
 
         $client->setAccessToken($accessToken);
 
         if ($client->isAccessTokenExpired()) {
-            if ($refreshToken = $client->refreshToken(decrypt($user->token))) {
+            if ($refreshToken = $client->refreshToken(decrypt($integration->token))) {
                 $accessToken = $client->fetchAccessTokenWithRefreshToken($refreshToken);
                 self::setTokens((object) [
                     'access_token' => $accessToken,
                     'refresh_token' => $refreshToken
-                ], $userId);
+                ], $integration->user_id, $integrationId);
                 $client->setAccessToken($accessToken);
             }
         }
@@ -67,26 +67,24 @@ class GoogleService
     public static function listenAutomations() {
         $automations = Automation::all();
         foreach ($automations as $automation) {
-            echo "$automation->name \n";
+            echo "$automation->name $automation->id \n";
             $service = $automation->recipe->name;
-            self::$service($automation->id);
+            self::$service($automation);
         }
 
     }
 
-    public static function createItemFromCalendar(int $automationId) {
-        $automation = Automation::find($automationId);
+    public static function createItemFromCalendar($automation) {
         ProcessCalendar::dispatch($automation);
     }
 
-    public static function listCalendars(int $userId) {
-        $client = self::getClient($userId);
+    public static function listCalendars(int $integrationId) {
+        $client = self::getClient($integrationId);
         $service = new Google_Service_Calendar($client);
         return $service->calendarList->listCalendarList();
     }
 
-    public static function createItemFromMessage(int $automationId) {
-        $automation = Automation::find($automationId);
+    public static function createItemFromMessage($automation) {
         ProcessGmail::dispatch($automation);
     }
 }

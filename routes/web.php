@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AutomationController;
+use App\Http\Controllers\AutomationRecipeController;
 use App\Http\Controllers\AutomationServiceController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldController;
+use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\LinkController;
@@ -57,17 +60,28 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
 
 // resource route
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
-    Route::apiResource('/items', ItemController::class);
-    Route::apiResource('/api/stages', StageController::class);
-    Route::apiResource('/standups', StandupController::class);
     Route::apiResource('/api/boards', BoardController::class);
     Route::apiResource('/api/fields', FieldController::class);
+    Route::apiResource('/api/stages', StageController::class);
+    Route::apiResource('/items', ItemController::class);
+    Route::apiResource('/standups', StandupController::class);
+
+    // Automations
+    Route::apiResource('/api/integrations', IntegrationController::class);
+    Route::apiResource('/api/automations', AutomationController::class);
     Route::apiResource('/api/automation-services', AutomationServiceController::class);
     Route::apiResource('/api/automation-recipies', AutomationRecipeController::class);
-    Route::apiResource('/links', LinkController::class);
-    Route::apiResource('/time-entries', TimeEntryController::class);
-    Route::apiResource('/api/settings', SettingController::class);
+
+    // Automation Services
     Route::post('/services/google', [ServiceController::class, 'google']);
     Route::get('/services/messages', [ServiceController::class, 'getMessages']);
     Route::get('/api/calendars', [ServiceController::class, 'listCalendars']);
+
+    // Links
+    Route::apiResource('/links', LinkController::class);
+
+    // Time entries
+    Route::apiResource('/time-entries', TimeEntryController::class);
+    Route::apiResource('/api/settings', SettingController::class);
+
 });

@@ -17,6 +17,7 @@
         "serve:update": "docker-compose exec web composer update",
         "serve:generate": "docker-compose exec web php artisan key:generate",
         "serve:migrate": "docker-compose exec web php artisan migrate",
+        "serve:schedule": "docker-compose exec web php artisan schedule:work",
         "serve": "npm run serve:up && npm run serve:install && npm run serve:generate && npm run serve:migrate"
     },
     "devDependencies": {

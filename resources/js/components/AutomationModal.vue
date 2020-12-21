@@ -7,15 +7,6 @@
         <template #content>
             <form action="" @submit.prevent="save">
                 <div class="form-group">
-                    <label for="title"> Title </label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="formData.title"
-                    />
-                </div>
-
-                <div class="form-group">
                     <label for="title"> Service </label>
                         <multiselect
                             v-model="formData.service"
@@ -36,6 +27,32 @@
                                 {{ props.option.name }}
                             </div>
                         </template>
+                        </multiselect>
+                </div>
+
+                <div class="form-group" v-if="serviceIntegrations">
+                    <label for="title"> Connection </label>
+                        <multiselect
+                            v-model="formData.integration"
+                            ref="input"
+                            :show-labels="false"
+                            label="hash"
+                            :options="serviceIntegrations"
+                            class="w-full"
+                        >
+                        </multiselect>
+                </div>
+
+                <div class="form-group" v-if="formData.service">
+                    <label for="title"> Recipe </label>
+                        <multiselect
+                            v-model="formData.recipe"
+                            ref="input"
+                            :show-labels="false"
+                            label="name"
+                            :options="automationRecipies"
+                            class="w-full"
+                        >
                         </multiselect>
                 </div>
 
@@ -96,28 +113,6 @@
                         </template>
                     </multiselect>
                 </div>
-
-                <div v-if="isLoading">
-                    Loading fields...
-                </div>
-
-                <div v-if="visibleFields" class="grid grid-cols-2">
-                    <div
-                        v-for="(field, index) in visibleFields"
-                        :key="field.name"
-                        class="form-group form-cell pb-5"
-                    >
-                        <label for=""> {{ field.title }} </label>
-                        <item-group-cell
-                            :field-name="field.name"
-                            :field="field"
-                            :index="index"
-                            :item="formData"
-                            @saved="formData[field.name] = $event"
-                        >
-                        </item-group-cell>
-                    </div>
-                </div>
             </form>
         </template>
 
@@ -134,18 +129,13 @@
 
 <script>
 import DialogModal from "../Jetstream/DialogModal";
-import ItemGroupCell from "./board/ItemGroupCell";
 import PrimaryButton from "../Jetstream/Button";
-import Draggable from "vuedraggable";
 
 export default {
     components: {
-        ItemGroupCell,
         DialogModal,
-        PrimaryButton,
-        Draggable
+        PrimaryButton
     },
-    inject: ["users"],
     props: {
         isOpen: {
             type: Boolean
@@ -164,16 +154,18 @@ export default {
         return {
             isLoading: false,
             formData: {
-
+                service: null
             },
             newCheck: {},
             services: [],
             recipies: [],
+            integrations: [],
             calendarList: [],
         };
     },
     created() {
         this.getServices();
+        this.getIntegrations();
         this.getRecipies();
         this.getCalendarList();
     },
@@ -220,19 +212,35 @@ export default {
                 ]
             }
             return fields[this.type] || [];
+        },
+        automationRecipies() {
+            return this.recipies.filter( recipe => recipe.automation_service_id == this.formData.service.id)
+        },
+        serviceIntegrations() {
+            return this.integrations.filter( integration => integration.automation_service_id == this.formData.service.id)
         }
     },
     methods: {
         prepareForm() {
             const formData = { ...this.formData }
+            formData.automation_recipe_id = this.formData.recipe.id
+            formData.name = this.formData.recipe.name
+            formData.description = this.formData.recipe.name
+            formData.sentence = this.formData.recipe.name
+
+            formData.config = {};
+            if (this.formData.integration) {
+                formData.integration_id = this.formData.integration.id
+            }
+
             if (this.formData.board) {
                 formData.board_id = this.formData.board.id
             }
 
             if (this.formData.stage) {
-                formData.stage_id = this.formData.stage.id
+                formData.config['stage_id'] = this.formData.stage.id
             }
-
+            formData.config = JSON.stringify(formData.config);
             delete formData.board
             delete formData.stage
             return formData
@@ -243,7 +251,7 @@ export default {
             const param = this.formData.id ? `/${this.formData.id}` : "";
             const formData = this.prepareForm();
 
-            if (!formData.title || !formData.board_id) {
+            if (!formData.board_id) {
                 this.$notify({
                     type: "info",
                     message: `Board and title are required`,
@@ -251,18 +259,8 @@ export default {
                 return
             }
 
-            formData.fields = this.formData.board.fields.map(field => {
-                return {
-                    field_id: field.id,
-                    field_name: field.name,
-                    name: field.name,
-                    type: field.type,
-                    value: formData[field.name],
-                }
-            })
-
             axios({
-                url: `/items${param}`,
+                url: `/api/automations${param}`,
                 method,
                 data: formData
             }).then(() => {
@@ -322,6 +320,14 @@ export default {
                 url: "/api/automation-services"
             }).then(({data}) => {
                 this.services = data;
+            })
+        },
+
+        getIntegrations() {
+            axios({
+                url: "/api/integrations"
+            }).then(({data}) => {
+                this.integrations = data.data;
             })
         },
 

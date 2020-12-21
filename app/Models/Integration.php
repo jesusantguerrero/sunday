@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Integration extends Model
 {
     use HasFactory;
+
+    public function automations()
+    {
+        return $this->hasMany('App\Models\Automation', 'integration_id', 'id');
+    }
 }

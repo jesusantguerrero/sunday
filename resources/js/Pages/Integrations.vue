@@ -53,7 +53,7 @@
                             </div>
 
                             <div class="automations text-right">
-                                {{ 0 }}
+                                {{ service.automations.length }}
                             </div>
 
                             <div class="options text-right">
