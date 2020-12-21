@@ -62,36 +62,6 @@
             return {
                 searchOptions: {}
             }
-        },
-        methods: {
-            async signIn() {
-                    gapi.load('auth2', () => {
-                        gapi.auth2.init({
-                            apiKey: process.env.MIX_GOOGLE_APP_KEY,
-                            clientId: process.env.MIX_GOOGLE_CLIENT_ID,
-                            accessType: 'offline',
-                            scope: 'profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly',
-                            discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
-                        }).then((auth) => {
-                                const authInstance = gapi.auth2.getAuthInstance();
-                                const user = authInstance.currentUser.get();
-                                authInstance.grantOfflineAccess({
-                                    authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
-                                }).then(({ code }) => {
-                                    const credentials = { code };
-                                    axios({
-                                        url: '/services/google',
-                                        method: 'post',
-                                        data: credentials
-                                    }).catch(() => {
-                                        console.log(e)
-                                    })
-                                })
-                        })
-
-
-                })
-            }
         }
     }
 </script>

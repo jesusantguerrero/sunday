@@ -5,6 +5,7 @@ use App\Jobs\ProcessCalendar;
 use App\Jobs\ProcessGmail;
 use App\Models\User;
 use App\Models\Automation;
+use App\Models\Integration;
 use Facade\FlareClient\Http\Response;
 use Google_Client;
 use Google_Service_Calendar;
@@ -20,7 +21,7 @@ class GoogleService
     public static function setTokens($data, $userId) {
         $client = new Google_Client();
         $client->setAuthConfig(app_path().'\..\credentials.json');
-        $client->setRedirectUri('http://localhost:8000');
+        $client->setRedirectUri('http://localhost:8080');
         if ($data->code) {
             $tokenResponse = $client->fetchAccessTokenWithAuthCode($data->code);
             session(['g_token', json_encode($tokenResponse)]);
@@ -28,8 +29,14 @@ class GoogleService
             $tokenResponse = $data;
         }
         $user = User::find($userId);
-        $user->token = encrypt($tokenResponse['refresh_token']);
-        $user->save();
+        $integration = new Integration();
+        $integration->team_id = $user->current_team_id;
+        $integration->user_id = $user->id;
+        $integration->name = $data->service_name;
+        $integration->automation_service_id = $data->service_id;
+        $integration->token = encrypt($tokenResponse['refresh_token']);
+        $integration->hash = $data->user['wt']['cu'];
+        $integration->save();
         return $tokenResponse;
     }
 

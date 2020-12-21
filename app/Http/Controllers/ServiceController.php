@@ -15,13 +15,13 @@ class ServiceController extends Controller
 
         return Inertia::render('Integrations', [
             "services" => AutomationService::all(),
-            "connections" => Integration::all()
+            "integrations" => Integration::all()
         ]);
     }
 
     public function google(Request $request)
     {
-       return GoogleService::setTokens($request, $request->user()->id);
+       return GoogleService::setTokens((object) $request->post('credentials'), $request->user()->id);
     }
 
     public function listCalendars(Request $request, Response $response)
