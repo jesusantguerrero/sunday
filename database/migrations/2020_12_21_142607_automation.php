@@ -15,6 +15,7 @@ class Automation extends Migration
     {
         Schema::table('automations', function (Blueprint $table) {
             $table->bigInteger('integration_id')->nullable();
+            $table->json('track')->nullable()->change();
         });
     }
 

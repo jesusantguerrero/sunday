@@ -7,12 +7,12 @@
                 <div class="w-100 md:w-full lg:w-8/12 md:mx-4 pt-12">
                     <div class="flex mr-2">
                         <span class="text-3xl font-bold"> Integrations </span>
-                        <button
+                        <!-- <button
                             class="btn bg-purple-400 text-white font-bold ml-2 rounded-lg px-5"
                             @click="toggleAppConnection"
                         >
                             Add Connection
-                        </button>
+                        </button> -->
 
                         <button
                             class="btn bg-purple-400 text-white font-bold ml-2 rounded-lg px-5"
@@ -26,18 +26,21 @@
 
             <div class="py-12">
                 <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                    <div class="apps-form w-full" v-if="showAddConnection">
+                    <div class="apps-form w-full flex" >
                         <div
-                            class="app-service__item bg-white text-gray-500 my-2 cursor-pointer px-5 py-3 font-bold"
+                            class="app-service__integration m-2"
                             v-for="service in services"
                             @click="handleCommand(service)"
                             :key="service.id"
                         >
-                            {{ service.name }}
+                            <img :src="service.logo" alt="" srcset="" width="50px" height="50px">
+                            <p class="mt-2 font-bold">
+                                {{ service.name }}
+                            </p>
                         </div>
                     </div>
 
-                    <div class="integrations-form w-full" v-else>
+                    <div class="integrations-form w-full">
                         <div
                             class="app-service__item bg-white text-gray-500 my-2 cursor-pointer px-5 py-3 font-bold grid grid-cols-3"
                             v-for="service in integrations"
@@ -132,9 +135,9 @@ export default {
 
         onItemSaved() {
             this.$nextTick(() => {
-                this.isItemModalOpen = false;
-                this.$inertia.reload(`/planner${this.params}`, {
-                    only: ["scheduled"],
+                this.isAutomationModalOpen = false;
+                this.$inertia.reload(`/integrations`, {
+                    only: ["integrations"],
                     preserveState: true
                 });
             });
@@ -161,7 +164,7 @@ export default {
             };
             const scope = scopes[scopeName];
 
-            gapi.load("auth2", () => {
+            gapi.load("client:auth2", () => {
                 gapi.auth2
                     .init({
                         apiKey: process.env.MIX_GOOGLE_APP_KEY,
@@ -232,5 +235,15 @@ button {
     &:focus {
         outline: 0 !important;
     }
+}
+
+.app-service__integration {
+    @apply bg-white text-gray-500 my-2 cursor-pointer px-5 py-3 font-bold;
+    @apply border-2 border-gray-300 rounded-md;
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 </style>

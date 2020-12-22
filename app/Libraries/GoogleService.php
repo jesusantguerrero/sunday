@@ -18,10 +18,10 @@ class GoogleService
         return User::find($userId);
     }
 
-    public static function setTokens($data, $userId, $integrationId) {
+    public static function setTokens($data, $userId, $integrationId = null) {
         $client = new Google_Client();
         $client->setAuthConfig(app_path().'\..\credentials.json');
-        $client->setRedirectUri('http://localhost:8080');
+        $client->setRedirectUri(config('app.url'));
         if ($data->code) {
             $tokenResponse = $client->fetchAccessTokenWithAuthCode($data->code);
             session(['g_token', json_encode($tokenResponse)]);

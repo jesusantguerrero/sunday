@@ -18,6 +18,7 @@ class CreateIntegrationsTable extends Migration
             $table->bigInteger('team_id');
             $table->bigInteger('user_id');
             $table->bigInteger('automation_service_id');
+            $table->string('name');
             $table->text('hash');
             $table->text('token');
             $table->timestamps();
