@@ -6,6 +6,7 @@ use App\Libraries\GoogleService;
 use App\Models\Automation;
 use App\Models\Board;
 use App\Models\Item;
+use App\Models\Stage;
 use DateTime;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
@@ -23,7 +24,7 @@ class CreateTaskFromCalendar
     {
 
 
-        $client = GoogleService::getClient($automation->user_id);
+        $client = GoogleService::getClient($automation->integration_id);
         $service = new Google_Service_Calendar($client);
         $calendarId = 'primary';
         $results = $service->events->listEvents($calendarId, [
@@ -35,8 +36,10 @@ class CreateTaskFromCalendar
         $calendarEvents = $results->getItems();
 
         foreach ($calendarEvents as $event) {
+            $config = json_decode($automation->config);
+            var_dump($config, $automation->board_id, $automation->id);
             $board = Board::find($automation->board_id);
-            $stage = $board->stages[0];
+            $stage = !empty($config->stage_id) ? Stage::find($config->stage_id) : $board->stages[0];
             $date = new DateTime($event->start->dateTime);
             $endDate = new DateTime($event->end->dateTime);
 
@@ -60,7 +63,8 @@ class CreateTaskFromCalendar
 
             Item::createEvent($item, [
                 'resource_id' => $item['resource_id'],
-                "resource_origin" =>'calendar'
+                "resource_origin" => 'calendar',
+                "stage_id" => $item['stage_id']
             ]);
         }
     }

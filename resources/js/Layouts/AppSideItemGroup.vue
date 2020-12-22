@@ -6,12 +6,12 @@
       @click="emitValue"
     >
       <span class="content side-item">
-        <font-awesome-icon :icon="icon" />
+        <i :class="`fa fa-icon`" />
         {{ label }}
       </span>
 
       <span class="indicator">
-        <font-awesome-icon :icon="arrowIcon" />
+        <i class="fa fa-arrowIcon" />
       </span>
     </div>
 

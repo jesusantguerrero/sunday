@@ -12,7 +12,6 @@
                         <div>
                             <span class="text-3xl font-bold">
                                 Planner
-
                             </span>
                             <button class="btn bg-purple-400 text-white font-bold" @click="openItem()">
                                 Add Event
