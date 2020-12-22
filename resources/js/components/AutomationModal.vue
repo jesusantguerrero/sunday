@@ -1,7 +1,9 @@
 <template>
     <dialog-modal :show="isOpen" @close="$emit('closed')">
         <template #title>
-            Add Automation
+            <span class="text-lg">
+                Add Automation
+            </span>
         </template>
 
         <template #content>
@@ -214,10 +216,10 @@ export default {
             return fields[this.type] || [];
         },
         automationRecipies() {
-            return this.recipies.filter( recipe => recipe.automation_service_id == this.formData.service.id)
+            return this.formData.service ? this.recipies.filter( recipe => recipe.automation_service_id == this.formData.service.id) : []
         },
         serviceIntegrations() {
-            return this.integrations.filter( integration => integration.automation_service_id == this.formData.service.id)
+            return this.formData.service ? this.integrations.filter( integration => integration.automation_service_id == this.formData.service.id) : []
         }
     },
     methods: {
@@ -425,5 +427,16 @@ h1 {
     padding: 2px 5px;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.automation-logo {
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid crimson;
 }
 </style>
