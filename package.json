@@ -12,7 +12,7 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
         "serve:build": " docker-compose build web",
         "serve:up": "docker-compose up -d",
-        "serve:up-prod": "docker-compose -f 'docker-compose.prod.yml' up -d --build",
+        "serve:up-prod": "docker-compose -f 'docker-compose.prod.yml' up -d",
         "serve:down": "docker-compose down",
         "serve:install": "docker-compose exec web composer install",
         "serve:update": "docker-compose exec web composer update",

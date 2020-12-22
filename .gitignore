@@ -2,6 +2,9 @@
 /public/hot
 /public/storage
 /storage/*.key
+/docker-compose/nginx/*
+!/docker-compose/nginx/sunday.conf
+!/docker-compose/redis/*
 /vendor
 .env
 .env.backup
