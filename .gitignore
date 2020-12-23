@@ -3,8 +3,8 @@
 /public/storage
 /storage/*.key
 /docker-compose/nginx/*
-!/docker-compose/nginx/sunday.conf
 !/docker-compose/redis/*
+!/docker-compose/nginx/vhosts/
 /vendor
 .env
 .env.backup
