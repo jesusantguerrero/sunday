@@ -21,27 +21,6 @@
         name: "Integrations",
         components: {
             AppLayout
-        },
-        methods: {
-            async signIn() {
-                    this.$gapi.signIn().then(async() => {
-                    const baseGapi = await this.$gapi._load();
-                    const authInstance = baseGapi.auth2.getAuthInstance();
-                    const user = authInstance.currentUser.get();
-
-                    authInstance.grantOfflineAccess({
-                        authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
-                    }).then(({ code }) => {
-                        const credentials = { code };
-                        axios({
-                            url: 'services/google',
-                            method: 'post',
-                            data: credentials
-                        })
-                    })
-
-                })
-            }
         }
     }
 </script>

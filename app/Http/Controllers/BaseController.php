@@ -43,8 +43,10 @@ abstract class BaseController extends Controller
     public function store(Request $request)
     {
         $this->validateLocal($request);
-
-        $resource = $this->model::create($request->post());
+        $data = $request->post();
+        $data['user_id'] = $request->user()->id;
+        $data['team_id'] = $request->user()->current_team_id;
+        $resource = $this->model::create($data);
         return [
             "message" => $this->createdMessage,
             "data" => $resource

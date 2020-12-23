@@ -1,96 +1,217 @@
 <template>
     <app-layout :boards="boards">
-        <div class="px-8">
-            <div class="board__toolbar flex justify-between px-8 pb-24 pt-12">
-                <div class="flex text-left">
-                    <div class="flex justify-between mr-2">
+        <div class="">
+            <div
+                class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row"
+            >
+                <div class="w-100 md:w-full lg:w-8/12 md:mx-4 pt-12">
+                    <div class="flex mr-2">
                         <span class="text-3xl font-bold"> Integrations </span>
-                    </div>
-                </div>
+                        <!-- <button
+                            class="btn bg-purple-400 text-white font-bold ml-2 rounded-lg px-5"
+                            @click="toggleAppConnection"
+                        >
+                            Add Connection
+                        </button> -->
 
-                <div class="flex items-center">
-                    <input
-                        type="search"
-                        class="form-input ml-2 w-48"
-                        name=""
-                        id=""
-                        v-model="searchOptions.search"
-                        placeholder="search"
-                    />
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-user"></i>
-                    </span>
-                    <span class="ml-2 toolbar-buttons"
-                        :class="{active: searchOptions.done}"
-                        @click="toggleDone()"
-                        ><i class="fa fa-eye"></i
-                    ></span>
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-thumbtack"></i
-                    ></span>
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-filter"></i>
-                    </span>
-                    <span class="ml-2 toolbar-buttons">
-                        <i class="fa fa-sort"></i>
-                    </span>
+                        <button
+                            class="btn bg-purple-400 text-white font-bold ml-2 rounded-lg px-5"
+                            @click="openAutomationModal"
+                        >
+                            Add Automation
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <div class="py-12">
-                <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
-                    <google-signin-btn label="Sign In" customClass="my-button" @click="signIn" />
+                <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
+                    <div class="apps-form w-full flex" >
+                        <div
+                            class="app-service__integration m-2"
+                            v-for="service in services"
+                            @click="handleCommand(service)"
+                            :key="service.id"
+                        >
+                            <img :src="service.logo" alt="" srcset="" width="50px" height="50px">
+                            <p class="mt-2 font-bold">
+                                {{ service.name }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="integrations-form w-full">
+                        <div
+                            class="app-service__item bg-white text-gray-500 my-2 cursor-pointer px-5 py-3 font-bold grid grid-cols-3"
+                            v-for="service in integrations"
+                            :key="service.id"
+                        >
+                            <div class="left">
+                                <div class="head">
+                                    {{ service.name }} {{ service.hash }}
+                                </div>
+                                <div class="tagline">
+                                    {{ service.hash }} {{ service.created_at }}
+                                </div>
+                            </div>
+
+                            <div class="automations text-right">
+                                {{ service.automations.length }}
+                            </div>
+
+                            <div class="options text-right">
+                                options
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+             <automation-modal
+                @cancel="isAutomationModalOpen = false"
+                @saved="onItemSaved"
+                :boards="boards"
+                type="event"
+                :record-data="openedAutomation"
+                :is-open="isAutomationModalOpen"
+            >
+            </automation-modal>
         </div>
     </app-layout>
 </template>
 
 <script>
-    import AppLayout from './../Layouts/AppLayout'
+import AppLayout from "./../Layouts/AppLayout";
+import AutomationModal from "../components/AutomationModal";
 
-    export default {
-        name: "Integrations",
-        components: {
-            AppLayout
-        },
-        data() {
-            return {
-                searchOptions: {}
+export default {
+    name: "Integrations",
+    components: {
+        AppLayout,
+        AutomationModal
+    },
+    props: {
+        boards: {
+            type: Array,
+            default() {
+                return [];
             }
         },
-        methods: {
-            async signIn() {
-                    gapi.load('auth2', () => {
-                        gapi.auth2.init({
-                            apiKey: process.env.MIX_GOOGLE_APP_KEY,
-                            clientId: process.env.MIX_GOOGLE_CLIENT_ID,
-                            accessType: 'offline',
-                            scope: 'profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly',
-                            discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
-                        }).then((auth) => {
-                                const authInstance = gapi.auth2.getAuthInstance();
-                                const user = authInstance.currentUser.get();
-                                authInstance.grantOfflineAccess({
-                                    authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
-                                }).then(({ code }) => {
-                                    const credentials = { code };
-                                    axios({
-                                        url: '/services/google',
-                                        method: 'post',
-                                        data: credentials
-                                    }).catch(() => {
-                                        console.log(e)
-                                    })
-                                })
-                        })
-
-
-                })
+        services: {
+            type: Array,
+            default() {
+                return [];
+            }
+        },
+        integrations: {
+            type: Array,
+            default() {
+                return [];
             }
         }
+    },
+    data() {
+        return {
+            searchOptions: {},
+            showAddConnection: false,
+            authInstance: null,
+            isAutomationModalOpen: false,
+            openedAutomation: {}
+
+        };
+    },
+    methods: {
+        toggleAppConnection() {
+            this.showAddConnection = !this.showAddConnection;
+        },
+
+        openAutomationModal(board, stage) {
+            this.isAutomationModalOpen = true;
+            this.openedAutomation = {
+                board,
+                stage
+            };
+        },
+
+        onItemSaved() {
+            this.$nextTick(() => {
+                this.isAutomationModalOpen = false;
+                this.$inertia.reload(`/integrations`, {
+                    only: ["integrations"],
+                    preserveState: true
+                });
+            });
+        },
+
+        handleCommand(service) {
+            switch (service.name.toLowerCase()) {
+                case "gmail":
+                case "calendar":
+                    this.google(service.name.toLowerCase(), service);
+                    break;
+                case "github":
+                    //
+                    break;
+                default:
+                    break;
+            }
+        },
+
+        async google(scopeName, service) {
+            const scopes = {
+                gmail: "https://www.googleapis.com/auth/gmail.readonly",
+                calendar: "https://www.googleapis.com/auth/calendar.readonly"
+            };
+            const scope = scopes[scopeName];
+
+            gapi.load("client:auth2", () => {
+                gapi.auth2
+                    .init({
+                        apiKey: process.env.MIX_GOOGLE_APP_KEY,
+                        clientId: process.env.MIX_GOOGLE_CLIENT_ID,
+                        accessType: "offline",
+                        scope: `profile ${scope}`,
+                        discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
+                    })
+                    .then(async auth => {
+                        const authInstance = gapi.auth2.getAuthInstance();
+                        this.authInstance = authInstance;
+                        const user = authInstance.currentUser.get();
+                        if (!user.getAuthResponse().session_state) {
+                            await authInstance.signIn();
+                        }
+
+                        await authInstance
+                            .grantOfflineAccess({
+                                authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
+                            })
+                            .then(({ code }) => {
+                                const credentials = {
+                                    code,
+                                    service_id: service.id,
+                                    service_name: service.name,
+                                    user
+                                };
+                                console.log({ credentials })
+
+                                axios({
+                                    url: "/services/google",
+                                    method: "post",
+                                    data: {
+                                        credentials
+                                    }
+                                })
+                            }).catch(e => {
+                                console.log("hi")
+                            })
+
+                        authInstance.signOut();
+                        authInstance.disconnect();
+                    })
+            });
+        }
     }
+};
 </script>
 
 <style lang="scss">
@@ -114,5 +235,15 @@ button {
     &:focus {
         outline: 0 !important;
     }
+}
+
+.app-service__integration {
+    @apply bg-white text-gray-500 my-2 cursor-pointer px-5 py-3 font-bold;
+    @apply border-2 border-gray-300 rounded-md;
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 </style>

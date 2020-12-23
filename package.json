@@ -10,14 +10,18 @@
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "server:build": " docker-compose build web",
+        "serve:build": " docker-compose build web",
         "serve:up": "docker-compose up -d",
+        "serve:up-prod": "docker-compose -f 'docker-compose.prod.yml' up -d",
         "serve:down": "docker-compose down",
         "serve:install": "docker-compose exec web composer install",
         "serve:update": "docker-compose exec web composer update",
         "serve:generate": "docker-compose exec web php artisan key:generate",
         "serve:migrate": "docker-compose exec web php artisan migrate",
-        "serve": "npm run serve:up && npm run serve:install && npm run serve:generate && npm run serve:migrate"
+        "serve:schedule": "docker-compose exec web php artisan schedule:work",
+        "serve:seed": "docker-compose exec web php artisan db:seed",
+        "serve:dev": "npm run serve:up && npm run serve:install && npm run serve:generate && npm run serve:migrate",
+        "serve": "npm run serve:up-prod && npm run serve:install && npm run serve:generate && npm run serve:migrate"
     },
     "devDependencies": {
         "@inertiajs/inertia": "^0.3.1",
