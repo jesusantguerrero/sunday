@@ -1,5 +1,42 @@
 version: "3.7"
 services:
+  # sunday-proxy:
+  #   image: jwilder/nginx-proxy
+  #   container_name: sunday-proxy
+  #   restart: unless-stopped
+  #   ports:
+  #     - '80:80'
+  #     - '443:443'
+  #   volumes:
+  #     - ./:/var/www
+  #     - ./docker-compose/nginx:/etc/nginx/conf.d/
+  #     - ./docker-compose/nginx:/etc/nginx/certs:ro
+  #     - /var/run/docker.sock:/tmp/docker.sock:ro
+  #     - ./docker-compose/nginx/vhosts:/etc/nginx/vhost.d
+  #     - /usr/share/nginx/html
+  #   networks:
+  #     - sunday
+  # ssl-companion:
+    # image: jrcs/letsencrypt-nginx-proxy-companion
+    # container_name: ssl-companion
+    # volumes:
+    #   - ./docker-compose/nginx:/etc/nginx/certs:rw
+    #   - /var/run/docker.sock:/var/run/docker.sock:ro
+    # volumes_from:
+    #   - sunday-proxy
+    # depends_on:
+    #   - sunday-proxy
+  nginx:
+    image: nginx:alpine
+    container_name: sunday-nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx/vhosts:/etc/nginx/conf.d/
+    networks:
+      - sunday
   web:
     build:
       args:
@@ -12,6 +49,13 @@ services:
     container_name: sunday-app
     restart: unless-stopped
     working_dir: /var/www/
+    depends_on:
+      - db
+    environment:
+      - VIRTUAL_HOST=sunday.icservice-soft.com
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=sunday.icservice-soft.com
+      - LETSENCRYPT_EMAIL=jesusant.guerrero@gmail.com
     volumes:
       - ./:/var/www
       - ./docker-compose/web/timezone:/etc/timezone
@@ -39,15 +83,12 @@ services:
       - ./docker-compose/mysql:/home/root/cache/
     networks:
       - sunday
-  nginx:
-    image: nginx:alpine
-    container_name: sunday-nginx
-    restart: unless-stopped
+  redis:
+    image: 'redis:alpine'
     ports:
-      - "80:80"
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
     volumes:
-      - ./:/var/www
-      - ./docker-compose/nginx:/etc/nginx/conf.d/
+      - ./docker-compose/redis:/data
     networks:
       - sunday
 networks:
