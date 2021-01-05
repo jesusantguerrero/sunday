@@ -35,6 +35,7 @@ class DashboardController extends Controller
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,
             ])->get(),
+            'agenda' => ItemResource::collection(Item::getByCustomField(['date', now()->format('Y-m-d')], $request->user())),
             'standup' => Standup::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,

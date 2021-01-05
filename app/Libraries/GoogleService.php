@@ -84,7 +84,7 @@ class GoogleService
         return $service->calendarList->listCalendarList();
     }
 
-    public static function createItemFromMessage($automation) {
+    public static function createItemFromGmail($automation) {
         ProcessGmail::dispatch($automation);
     }
 }
