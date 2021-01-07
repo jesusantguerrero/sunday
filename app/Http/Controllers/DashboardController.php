@@ -49,16 +49,6 @@ class DashboardController extends Controller
         $date = $request->query('date') ?? now()->format('Y-m-d');
 
         return Inertia::render('Planner', [
-            'boards' => Board::where([
-                'team_id' => $user->current_team_id,
-                'user_id' => $user->id
-            ])->get()->map(function ($board) {
-                return [
-                    'id' => $board->id,
-                    'name' => $board->name,
-                    'link' =>  URL::route('boards', $board),
-                ];
-            }),
             'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $date], $request->user())),
             'date' => $date
         ]);

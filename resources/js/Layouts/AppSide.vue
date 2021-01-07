@@ -65,7 +65,6 @@
 <script>
 import AppSideItem from "./AppSideItem";
 import AppSideItemGroup from "./AppSideItemGroup";
-import AppClock from "./AppClock";
 
 export default {
   props: {
@@ -80,8 +79,7 @@ export default {
   },
   components: {
     AppSideItem,
-    AppSideItemGroup,
-    AppClock
+    AppSideItemGroup
   },
   data() {
     return {

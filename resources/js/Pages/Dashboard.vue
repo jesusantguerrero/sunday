@@ -66,6 +66,8 @@
                     <board-item-container
                         v-show="showTodo"
                         title="To Do"
+                        :allow-add="true"
+                        :boards="boards"
                         :tasks="inbox"
                         :tracker="tracker"
                         @update-item="updateItem"

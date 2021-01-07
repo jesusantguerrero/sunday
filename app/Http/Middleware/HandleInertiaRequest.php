@@ -51,6 +51,7 @@ class HandleInertiaRequest
                 return [
                     'id' => $board->id,
                     'name' => $board->name,
+                    'stages' => $board->stages()->without('items')->get(),
                     'link' =>  URL::route('boards', $board),
                 ];
             }),
