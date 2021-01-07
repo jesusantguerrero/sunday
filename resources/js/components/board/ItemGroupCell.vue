@@ -36,32 +36,35 @@
             </div>
 
             <div v-else class="flex h-full w-full items-center">
-                   <div class="controls">
-                    <el-tooltip effect="dark" content="Stage" placement="top">
-                            <div class="flex items-center">
-                                <i class="fas fa-layer-group mx-2"></i>
-                                <div class="ml-2 font-bold">
-                                    {{ itemStage }}
-                                </div>
-                            </div>
-                        </el-tooltip>
-                   </div>
+                <div class="controls">
+                    <board-selector
+                        :options="item.board.stages"
+                        icon-class="fas fa-layer-group"
+                        v-model="item.stage"
+                    >
+                    </board-selector>
+                </div>
                 <input
                     ref="input"
-                    @blur="saveChanges()"
                     type="text"
-                    class="form-input h-8 px-2 mx-0 rounded-none w-full"
+                    class="form-input h-8 px-2 mx-0 border-none rounded-none w-full"
                     :class="{ 'new-item': isTitle }"
                     :name="`${index}-${fieldName}`"
                     id=""
                     :placeholder="placeholder"
                     v-model="value"
+                    @blur="saveChanges()"
                     @keydown.enter="saveItem"
                 />
                 <div class="controls flex h-full" v-if="showControls">
-                    <el-tooltip effect="dark" content="Board" placement="top">
-                        <i class="fas fa-list mx-2"></i>
-                    </el-tooltip>
+                    <board-selector
+                        :options="boards"
+                        tooltip="Board"
+                        icon-class="fas fa-list"
+                        :show-label="false"
+                        v-model="item.board"
+                    >
+                    </board-selector>
                     <el-tooltip
                         effect="dark"
                         content="reminder date"
@@ -92,6 +95,7 @@ import InputLabel from "./cellTypes/Label";
 import InputDate from "./cellTypes/Date";
 import InputPerson from "./cellTypes/Person";
 import InputTime from "./cellTypes/Time";
+import BoardSelector from './BoardSelector.vue';
 
 export default {
     name: "ItemGroupCell",
@@ -100,7 +104,8 @@ export default {
         InputDate,
         InputLabel,
         InputPerson,
-        InputTime
+        InputTime,
+        BoardSelector
     },
     props: {
         fieldName: {
@@ -130,6 +135,16 @@ export default {
         },
         showControls: {
             type: Boolean
+        },
+        boards: {
+            type: Array,
+            default() {
+                return []
+            }
+        },
+        closeOnBlur: {
+            type: Boolean,
+            default: true
         },
         placeholder: {
             type: String,
@@ -296,7 +311,9 @@ export default {
 
         saveChanges(type = "default") {
             this.$emit("saved", this.formatValue(this.value, type, "write"));
-            this.toggleEditMode();
+            if (this.closeOnBlur) {
+                this.toggleEditMode();
+            }
         },
 
         saveItem($event) {

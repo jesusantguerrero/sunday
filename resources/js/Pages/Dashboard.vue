@@ -51,6 +51,7 @@
                         v-show="showCommitted"
                         title="Commited"
                         :tasks="committed"
+                        @item-deleted="deleteLocalItem($event, committed)"
                         @update-item="updateItem"
                     >
                      <template>
@@ -71,6 +72,7 @@
                         :tasks="inbox"
                         :tracker="tracker"
                         @update-item="updateItem"
+                        @item-deleted="deleteLocalItem($event, 'todo')"
                         @item-clicked="setTaskToTimer"
                     >
                     </board-item-container>
@@ -294,7 +296,7 @@
                 return uniq(this.todo.map((item) => item.stage));
             },
             inbox() {
-                const inbox = this.selectedStage ? this.todo.filter((item) => item.stage == this.selectedStage) : this.todo;
+                const inbox = this.selectedStage ? this.todo.filter((item) => item.stage == this.selectedStage) : this.todo.filter(task => task);
                 return orderBy(inbox,["priority", "stage", "title"]);
             }
         },
@@ -390,6 +392,11 @@
 
             setTaskToTimer(task) {
                 this.$refs.Promodoro.setTask(task);
+            },
+
+            deleteLocalItem(item, listName) {
+                const taskIndex = this[listName].findIndex( task => task.id == item.id);
+                this[listName].splice(taskIndex, 1);
             }
         }
     }

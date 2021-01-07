@@ -5,7 +5,7 @@
         </header>
         <slot> </slot>
         <div class="body text-gray-600 mb-5">
-             <item-group-cell
+            <item-group-cell
                 v-if="allowAdd"
                 class="w-full flex items-center mb-10"
                 field-name="title"
@@ -13,19 +13,24 @@
                 :index="-1"
                 :item="newTask"
                 :show-controls="true"
+                :close-on-blur="false"
                 :is-new="true"
+                :boards="boards"
                 placeholder="Task title"
                 @saved="newTask['title'] = $event"
                 @keydown.enter="addItem()"
             >
             </item-group-cell>
-
+            <div v-if="isLoading" class="w-full text-center text-purple-400">
+                Adding new task...
+            </div>
             <item-container-task
                 v-for="task in tasks"
                 :key="`task-${task.id}`"
                 :task="task"
                 :tracker="tracker"
                 @item-clicked="$emit('item-clicked', task)"
+                @item-deleted="confirmDeleteItem($event, true)"
                 @update-item="$emit('update-item', $event)"
             >
             </item-container-task>
@@ -72,51 +77,85 @@ export default {
     },
     data() {
         return {
+            isLoading: false,
             newTask: {
-                title: ""
+                title: "",
+                board: null,
+                stage: null
             }
-        }
+        };
     },
     async created() {
         if (this.boards.length) {
-            this.newTask = {
-                board: this.boards[0],
-                stage: this.boards[0].stages[0]
-            }
-            await this.getFieldsData()
+            this.newTask.board = this.boards[0];
+            this.newTask.stage = this.boards[0].stages[0];
+            await this.getFieldsData();
         }
     },
     methods: {
         getFieldsData() {
-           return axios({
-                    url: "/api/fields",
-                    params: {
-                        "filter[board_id]": this.newTask.board.id
-                    }
+            return axios({
+                url: "/api/fields",
+                params: {
+                    "filter[board_id]": this.newTask.board.id
+                }
             }).then(({ data }) => {
-                this.$set(
-                    this.newTask,
-                    "fieldsData",
-                    data.data
-                );
+                this.$set(this.newTask, "fieldsData", data.data);
             });
         },
+
         addItem() {
-            const newItem = {...this.newTask}
-            const field = newItem.fieldsData.find( field => field.name == 'status' )
-            const option = field && field.options.find( option => option.name == 'todo')
+            const newItem = { ...this.newTask };
+            const field = newItem.fieldsData.find(
+                field => field.name == "status"
+            );
+            const option =
+                field && field.options.find(option => option.name == "todo");
             newItem.fields = [
                 {
                     field_id: field.id,
                     field_name: field.name,
                     value: option && option.name
                 }
-            ]
+            ];
             newItem.board_id = newItem.board.id;
             newItem.stage_id = newItem.stage.id;
             delete newItem.fieldsData;
-            this.$emit('update-item', newItem);
-            this.$set(this.newTask, "title", "");
+            this.updateItem(newItem);
+            this.newTask.title = "";
+        },
+
+        updateItem(item) {
+            const method = item.id ? "PUT" : "POST";
+            const param = item.id ? `/${item.id}` : "";
+            this.isLoading = true;
+            axios({
+                url: `/items${param}`,
+                method,
+                data: item
+            }).then(() => {
+                this.$inertia.reload({
+                    preserveScroll: true
+                });
+            }).finally(() => {
+                this.isLoading = false
+            });
+        },
+
+        confirmDeleteItem(item, reload = true) {
+            this.showConfirm({
+                title: `Delete ${item.title} task`,
+                content: "Are you sure you want to delete this task?",
+                confirmationButtonText: "Yes, delete",
+                confirm: () => {
+                    axios({
+                        url: `/items/${item.id}`,
+                        method: "delete"
+                    }).then(() => {
+                        this.$emit("item-deleted", item);
+                    });
+                }
+            });
         }
     }
 };

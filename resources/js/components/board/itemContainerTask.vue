@@ -40,6 +40,10 @@
         <button @click="$emit('item-clicked', task)" class="play-button" v-if="!task.commit_date">
             <i class="fa" :class="[isTracker ? 'fa-pause' : 'fa fa-play']"/>
         </button>
+
+        <button @click="$emit('item-deleted', task)" class="ml-2 text-gray-300 hover:text-red-400">
+            <i class="fa fa-trash"/>
+        </button>
     </div>
 </div>
 </template>
