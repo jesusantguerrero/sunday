@@ -5,7 +5,12 @@
                 <div class="flex justify-between mr-2">
                     <span class="text-3xl font-bold"> {{ board.name }} </span>
                     <div>
-                        <span class="automation" v-for="automation in automations" :key="`automation-${automation.id}`">
+                        <span
+                            class="automation"
+                            v-for="automation in automations"
+                            :key="`automation-${automation.id}`"
+                            @click="runAutomation(automation.id)"
+                        >
                             <img :src="automation.service_logo" v-if="automation.service_logo" class="automation-logo">
                             <div v-else>
                                 {{ automation.name[0] }}
@@ -391,6 +396,20 @@ export default {
                 if (reload) {
                     this.$inertia.reload({ preserveScroll: true });
                 }
+            });
+        },
+
+        runAutomation(automationId) {
+            return axios({
+                url: `/api/automations/${automationId}/run`,
+                method: "POST"
+            }).then(({ data }) => {
+                    this.$notify({
+                        type: "success",
+                        title: "Automation sync",
+                        message: "Updated"
+                    })
+                    this.$inertia.reload({ preserveScroll: true });
             });
         },
 

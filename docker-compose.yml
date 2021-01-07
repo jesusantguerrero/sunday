@@ -47,10 +47,10 @@ services:
     container_name: sunday-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - ./:/var/www
-      - ./docker-compose/nginx:/etc/nginx/conf.d/
+      - ./docker-compose/nginx/vhosts:/etc/nginx/conf.d/
     networks:
       - sunday
   redis:
@@ -67,13 +67,22 @@ services:
   #         - '11211:11211'
   #     networks:
   #         - sail
-  # mailhog:
-  #   image: 'mailhog/mailhog:latest'
-  #   ports:
-  #     - 1025:1025
-  #     - 8025:8025
-  #   networks:
-  #     - sunday
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - sunday
+  cron:
+    build:
+      context: .
+      dockerfile: cron.dockerfile
+    container_name: cron
+    volumes:
+      - ./:/var/www
+    networks:
+      - sunday
 networks:
   sunday:
     driver: bridge

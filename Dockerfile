@@ -27,15 +27,6 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* && \
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy cron file to the cron.d directory
-COPY ./docker-compose/web/cron/scheduler-cron /etc/cron.d/scheduler-cron
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/scheduler-cron && \
-# Apply cron job
-crontab /etc/cron.d/scheduler-cron && \
-# Create the log file
-touch /var/log/cron.log && \
-cron
 
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root,crontab -u $uid -d /home/$user $user

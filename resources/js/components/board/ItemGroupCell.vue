@@ -10,7 +10,7 @@
         >
             <i class="fa fa-plus mr-3"></i>
             <span>
-                Add Item
+                {{ placeholder }}
             </span>
         </div>
 
@@ -23,11 +23,7 @@
         </span>
 
         <template v-else>
-
-            <div
-                class="h-8 px-2"
-                v-if="isCustomField"
-            >
+            <div class="h-8 px-2" v-if="isCustomField">
                 <component
                     v-model="value"
                     ref="input"
@@ -35,22 +31,57 @@
                     :users="users"
                     :options="field.options"
                     @saved="saveChanges"
-                    @closed="isEditMode=false"
+                    @closed="isEditMode = false"
                 />
             </div>
 
-            <input
-                v-else
-                ref="input"
-                @blur="saveChanges()"
-                type="text"
-                class="form-input h-8 px-2 mx-0 rounded-none"
-                :class="{ 'new-item': isTitle }"
-                :name="`${index}-${fieldName}`"
-                id=""
-                v-model="value"
-                @keydown.enter="saveItem"
-            />
+            <div v-else class="flex h-full w-full items-center">
+                   <div class="controls">
+                    <el-tooltip effect="dark" content="Stage" placement="top">
+                            <div class="flex items-center">
+                                <i class="fas fa-layer-group mx-2"></i>
+                                <div class="ml-2 font-bold">
+                                    {{ itemStage }}
+                                </div>
+                            </div>
+                        </el-tooltip>
+                   </div>
+                <input
+                    ref="input"
+                    @blur="saveChanges()"
+                    type="text"
+                    class="form-input h-8 px-2 mx-0 rounded-none w-full"
+                    :class="{ 'new-item': isTitle }"
+                    :name="`${index}-${fieldName}`"
+                    id=""
+                    :placeholder="placeholder"
+                    v-model="value"
+                    @keydown.enter="saveItem"
+                />
+                <div class="controls flex h-full" v-if="showControls">
+                    <el-tooltip effect="dark" content="Board" placement="top">
+                        <i class="fas fa-list mx-2"></i>
+                    </el-tooltip>
+                    <el-tooltip
+                        effect="dark"
+                        content="reminder date"
+                        placement="top"
+                    >
+                        <i class="fas fa-clock mx-2"></i>
+                    </el-tooltip>
+                    <el-tooltip
+                        effect="dark"
+                        content="Delegate"
+                        placement="top"
+                    >
+                        <i class="fas fa-user mx-2"></i>
+                    </el-tooltip>
+
+                    <el-tooltip effect="dark" content="Status" placement="top">
+                        <i class="fas fa-tag mx-2"></i>
+                    </el-tooltip>
+                </div>
+            </div>
         </template>
     </div>
 </template>
@@ -60,7 +91,7 @@ import { format, toDate } from "date-fns";
 import InputLabel from "./cellTypes/Label";
 import InputDate from "./cellTypes/Date";
 import InputPerson from "./cellTypes/Person";
-import InputTime  from "./cellTypes/Time";
+import InputTime from "./cellTypes/Time";
 
 export default {
     name: "ItemGroupCell",
@@ -69,7 +100,7 @@ export default {
         InputDate,
         InputLabel,
         InputPerson,
-        InputTime,
+        InputTime
     },
     props: {
         fieldName: {
@@ -96,6 +127,13 @@ export default {
         },
         isTitle: {
             type: Boolean
+        },
+        showControls: {
+            type: Boolean
+        },
+        placeholder: {
+            type: String,
+            default: "Add item"
         }
     },
     watch: {
@@ -137,13 +175,23 @@ export default {
 
     computed: {
         displayValue() {
-            return this.formatValue(this.value, this.field.type, 'display')
+            return this.formatValue(this.value, this.field.type, "display");
         },
         component() {
             return `input-${this.field.type}`;
         },
+        itemStage() {
+            return this.item && this.item.stage && this.item.board
+                ? `${this.item.stage.name}`
+                : "";
+        },
         isCustomField() {
-            return this.field.type && ['label', 'select','time', 'date', 'person'].includes(this.field.type)
+            return (
+                this.field.type &&
+                ["label", "select", "time", "date", "person"].includes(
+                    this.field.type
+                )
+            );
         }
     },
 
@@ -164,7 +212,7 @@ export default {
                     display: (value = "") => {
                         const isString = typeof value == "string";
                         if (isString) {
-                            return value
+                            return value;
                         } else {
                             try {
                                 return format(value, "yyyy-MM-dd");
@@ -181,15 +229,16 @@ export default {
                             : format(value, "hh:mm");
                     },
                     read: (value = "") => {
-                        const theValue = value && typeof value == "string"
-                            ? this.setTime(value)
-                            : value;
+                        const theValue =
+                            value && typeof value == "string"
+                                ? this.setTime(value)
+                                : value;
                         return theValue;
                     },
                     display: (value = "") => {
                         const isString = typeof value == "string";
                         if (isString) {
-                            return value
+                            return value;
                         } else {
                             try {
                                 return format(value, "hh:mm");
@@ -200,7 +249,7 @@ export default {
                     }
                 },
                 label: {
-                    display: (value) => {
+                    display: value => {
                         const option = this.field.options.find(option => {
                             return option.name == this.value;
                         });
@@ -213,7 +262,9 @@ export default {
                     display: value => value
                 }
             };
-            return formatters[type] && formatters[type][operation]  ? formatters[type][operation](value) : value;
+            return formatters[type] && formatters[type][operation]
+                ? formatters[type][operation](value)
+                : value;
         },
 
         setDate(dateValue) {

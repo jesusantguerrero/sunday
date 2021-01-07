@@ -2,16 +2,12 @@
 <div  class="task-item">
     <div>
         <label class="checkbox-label">
-        <input
-            type="checkbox"
-            @change="$emit('update-item', task)"
-            name=""
-            :id="task.id"
-            v-model="task.done"
-        />
             <span class="font-bold">
             <inertia-link :href="`/boards/${task.board_id}`">
-                [{{ task.stage }}]
+                <span class="font-bold">
+                    <i class="fas fa-layer-group mx-2"></i>
+                    {{ task.stage }}
+                </span>
             </inertia-link>
         </span>
         <span>
@@ -20,10 +16,18 @@
         </label>
     </div>
     <div class="actions-container flex items-center">
+        <input
+            type="checkbox"
+            @change="$emit('update-item', task)"
+            name=""
+            class="checkbox"
+            :id="task.id"
+            v-model="task.done"
+        />
         <span class="mr-5">
             {{ priorityText }}
         </span>
-            <el-tooltip class="item" effect="dark" :content="task.priority" placement="left">
+            <el-tooltip class="item" effect="dark" :content="task.priority || 'none'" placement="left">
                 <div class="priority-level inline-block mr-4">
                     <div class="priority-level__inner">
 
@@ -75,7 +79,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .priority-level {
     --color: red;
     border: solid 1px transparent;

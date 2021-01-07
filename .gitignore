@@ -5,6 +5,7 @@
 /docker-compose/nginx/*
 !/docker-compose/redis/*
 !/docker-compose/nginx/vhosts/
+docker-compose/redis/dump.rdb
 /vendor
 .env
 .env.backup
