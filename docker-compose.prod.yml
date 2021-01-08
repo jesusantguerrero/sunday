@@ -56,7 +56,6 @@ services:
     image: sunday
     container_name: sunday-app
     restart: unless-stopped
-    working_dir: /var/www/
     depends_on:
       - db
     volumes:
