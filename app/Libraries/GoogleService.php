@@ -20,7 +20,7 @@ class GoogleService
 
     public static function setTokens($data, $userId, $integrationId = null) {
         $client = new Google_Client();
-        $client->setAuthConfig(app_path()."\\..\\credentials.json");
+        $client->setAuthConfig(env("GOOGLE_CREDENTIALS_PATH"));
         $client->setRedirectUri(config('app.url'));
         if ($data->code) {
             $tokenResponse = $client->fetchAccessTokenWithAuthCode($data->code);
@@ -35,7 +35,7 @@ class GoogleService
         $integration->name = $data->service_name;
         $integration->automation_service_id = $data->service_id;
         $integration->token = encrypt($tokenResponse['refresh_token']);
-        $integration->hash = $data->user['wt']['cu'];
+        $integration->hash = $data->user;
         $integration->save();
         return $tokenResponse;
     }
@@ -43,7 +43,7 @@ class GoogleService
     public static function getClient($integrationId) {
         $integration = Integration::find($integrationId);
         $client = new Google_Client();
-        $client->setAuthConfig(app_path().'\..\credentials.json');
+        $client->setAuthConfig(env("GOOGLE_CREDENTIALS_PATH"));
         if (!$accessToken = session('g_token')) {
             $accessToken = $client->fetchAccessTokenWithRefreshToken(decrypt($integration->token));
         }

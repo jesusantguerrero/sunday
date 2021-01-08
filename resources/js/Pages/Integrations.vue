@@ -176,6 +176,8 @@ export default {
                             await authInstance.signIn();
                         }
 
+                        const profile = user.getBasicProfile();
+
                         await authInstance
                             .grantOfflineAccess({
                                 authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
@@ -185,7 +187,7 @@ export default {
                                     code,
                                     service_id: service.id,
                                     service_name: service.name,
-                                    user
+                                    user: profile.getEmail()
                                 };
 
                                 axios({
@@ -194,6 +196,8 @@ export default {
                                     data: {
                                         credentials
                                     }
+                                }).then(() => {
+                                    this.$inertia.reload(`/integrations`);
                                 })
                             })
                     })

@@ -31,10 +31,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN useradd -G www-data,root,crontab -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user && \
-    chown -R $user:$user /var/www/html && \
-    chown -R www-data:www-data /var/www/html
+    chown -R $user:$user /var/www && \
+    chown -R www-data:www-data /var/www
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 USER $user

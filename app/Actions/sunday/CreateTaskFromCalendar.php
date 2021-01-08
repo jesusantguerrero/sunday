@@ -9,7 +9,6 @@ use App\Models\Item;
 use App\Models\Stage;
 use DateTime;
 use Google_Service_Calendar;
-use Google_Service_Calendar_Event;
 
 class CreateTaskFromCalendar
 {

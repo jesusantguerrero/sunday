@@ -28,7 +28,8 @@ class CreateTaskFromGmail
         $config = json_decode($automation->config);
         $client = GoogleService::getClient($automation->integration_id);
         $service = new Google_Service_Gmail($client);
-        $results = $service->users_threads->listUsersThreads("me", ['maxResults' => $maxResults, 'q' => "$config->condition($config->value)"]);
+        $condition = $config->condition && $config->value ? "$config->condition($config->value)" : "";
+        $results = $service->users_threads->listUsersThreads("me", ['maxResults' => $maxResults, 'q' => "$condition"]);
 
         forEach($results->getThreads() as $index => $thread) {
             $theadResponse = $service->users_threads->get("me", $thread->id, ['format' => 'MINIMAL']);
