@@ -145,6 +145,7 @@ export default {
 
         handleCommand(service) {
             switch (service.name.toLowerCase()) {
+                case "google":
                 case "gmail":
                 case "calendar":
                     this.google(service.name.toLowerCase(), service);
@@ -162,7 +163,6 @@ export default {
                 gmail: "https://www.googleapis.com/auth/gmail.readonly",
                 calendar: "https://www.googleapis.com/auth/calendar.readonly"
             };
-            const scope = scopes[scopeName];
 
             gapi.load("client:auth2", () => {
                 gapi.auth2
@@ -170,16 +170,12 @@ export default {
                         apiKey: process.env.MIX_GOOGLE_APP_KEY,
                         clientId: process.env.MIX_GOOGLE_CLIENT_ID,
                         accessType: "offline",
-                        scope: `profile ${scope}`,
+                        scope: `profile ${scopes.calendar} ${scopes.gmail}`,
                         discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
                     })
                     .then(async auth => {
                         const authInstance = gapi.auth2.getAuthInstance();
-                        this.authInstance = authInstance;
                         const user = authInstance.currentUser.get();
-                        if (!user.getAuthResponse().session_state) {
-                            await authInstance.signIn();
-                        }
 
                         await authInstance
                             .grantOfflineAccess({
@@ -192,7 +188,6 @@ export default {
                                     service_name: service.name,
                                     user
                                 };
-                                console.log({ credentials })
 
                                 axios({
                                     url: "/services/google",
@@ -201,12 +196,7 @@ export default {
                                         credentials
                                     }
                                 })
-                            }).catch(e => {
-                                console.log("hi")
                             })
-
-                        authInstance.signOut();
-                        authInstance.disconnect();
                     })
             });
         }

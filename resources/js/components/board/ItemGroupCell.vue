@@ -36,7 +36,7 @@
             </div>
 
             <div v-else class="flex h-full w-full items-center">
-                <div class="controls">
+                <div class="controls" v-if="showControls && item.board">
                     <board-selector
                         :options="item.board.stages"
                         icon-class="fas fa-layer-group"

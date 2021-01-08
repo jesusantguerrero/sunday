@@ -6,20 +6,28 @@
         >
             <span> Promodoro </span>
             <div class="flex">
-                <div class="actions rounded-lg flex h-8"
-                :class="`bg-${promodoroColor}-700`"
+                <div
+                    class="actions rounded-lg flex h-8"
+                    :class="`bg-${promodoroColor}-700`"
                 >
                     <button
                         v-for="(mode, key) in modes"
                         :key="key"
                         class="px-2 h-full rounded-lg"
-                        :class="{ [`bg-${promodoroColor}-100 text-${promodoroColor}-700`]: modeSelected == key }"
+                        :class="{
+                            [`bg-${promodoroColor}-100 text-${promodoroColor}-700`]:
+                                modeSelected == key
+                        }"
                         @click="setMode(key)"
                     >
                         {{ mode.name }}
                     </button>
                 </div>
-                <button @click="toggleConfiguration" class="ml-2" title="Promodoro configuration">
+                <button
+                    @click="toggleConfiguration"
+                    class="ml-2"
+                    title="Promodoro configuration"
+                >
                     <i class="fa fa-cog"></i>
                 </button>
             </div>
@@ -51,7 +59,8 @@
             :settings="settings"
             :is-open="isConfigurationOpen"
             @cancel="toggleConfiguration"
-            @saved="toggleConfiguration">
+            @saved="toggleConfiguration"
+        >
         </promodoro-configuration-modal>
     </div>
 </template>
@@ -60,8 +69,9 @@
 const time = { minutes: 0, seconds: 10 };
 
 import Tracker from "../timeTracker/tracker";
-import PromodoroConfigurationModal from "./Configuration"
-import promodoroMixin from "./promodoro"
+import Duration from "luxon/src/duration";
+import PromodoroConfigurationModal from "./Configuration";
+import promodoroMixin from "./promodoro";
 import { MessageBox } from "element-ui";
 
 export default {
@@ -86,6 +96,9 @@ export default {
     data() {
         return {
             time,
+            startTime: null,
+            expectedDuration: null,
+            currentDuration: null,
             icon: "play_arrow",
             run: 0,
             timer: "",
@@ -98,7 +111,7 @@ export default {
         };
     },
     mounted() {
-        this.init()
+        this.init();
     },
 
     beforeDestroy() {
@@ -108,20 +121,27 @@ export default {
 
     watch: {
         track() {
-            this.$emit('update:tracker', this.track)
+            this.$emit("update:tracker", this.track);
         },
         promodoroColor() {
-            this.$emit('update:timerColor', this.promodoroColor)
+            this.$emit("update:timerColor", this.promodoroColor);
         },
-        time: {
+        formattedTime: {
             deep: true,
-            handler() {
-                const title = this.run ? `(${this.formattedTime}) Daily` : 'Daily'
-                document.getElementsByTagName('title')[0].text = title;
+            handler(formattedTime) {
+                const title = this.run
+                    ? `(${formattedTime}) Daily`
+                    : "Daily";
+                document.getElementsByTagName("title")[0].text = title;
+                let [min, sec] = formattedTime.split(":")
+                min = Number(min)
+                sec = Number(sec)
+                this.time.minutes = min >= 0 ? min : 0;
+                this.time.seconds = sec >= 0 ? sec : 0;
+                this.checkTime()
             }
         }
     },
-
 
     computed: {
         message() {
@@ -136,14 +156,22 @@ export default {
         },
 
         promodoroColor() {
-            return this.modeSelected && this.modes[this.modeSelected].color ? this.modes[this.modeSelected].color : 'red';
+            return this.modeSelected && this.modes[this.modeSelected].color
+                ? this.modes[this.modeSelected].color
+                : "red";
+        },
+
+        rawTime() {
+            let duration = 0;
+            const expected = this.expectedDuration || Duration.fromMillis(0);
+            if (this.startTime) {
+                duration = Duration.fromMillis(this.currentDuration);
+            }
+            return duration ? expected.minus(duration) : expected;
         },
 
         formattedTime() {
-            let { minutes, seconds } = this.time;
-            seconds = seconds < 10 ? (seconds = "0" + seconds) : seconds;
-            minutes = minutes < 10 ? (minutes = "0" + minutes) : minutes;
-            return `${minutes}:${seconds}`;
+            return this.rawTime.toFormat("mm:ss")
         }
     },
     mounted() {
@@ -167,19 +195,25 @@ export default {
         },
 
         showNotification() {
-            const permission = localStorage.getItem('permission')
-            if (Notification && permission === 'granted') {
+            const permission = localStorage.getItem("permission");
+            if (Notification && permission === "granted") {
                 setTimeout(() => {
                     const notification = new Notification("Expired");
-                }, 5000)
-            } else if (permission !== 'denied') {
+                }, 5000);
+            } else if (permission !== "denied") {
                 Notification.requestPermission().then(permission => {
-                    localStorage.setItem('permission', permission)
+                    localStorage.setItem("permission", permission);
                     new Notification("Expired", {
                         body: "Time has expired"
                     });
-                })
+                });
             }
+        },
+
+        updateExpectedDuration() {
+            this.expectedDuration = Duration.fromISO(
+                `PT${this.time.minutes}M${this.time.seconds}S`
+            );
         },
 
         reset() {
@@ -190,6 +224,7 @@ export default {
                 minutes: this.modes.session.minutes,
                 seconds: this.modes.session.seconds
             };
+            this.updateExpectedDuration();
             this.modeSelected = "session";
         },
 
@@ -203,14 +238,14 @@ export default {
         stopTracker() {
             if (this.track) {
                 this.track.stopTimer();
-                this.$set(this.tracker, 'duration', this.tracker.getDuration());
-                this.$inertia.on('success', (event) => {
+                this.$set(this.tracker, "duration", this.tracker.getDuration());
+                this.$inertia.on("success", event => {
                     this.$nextTick(() => {
                         this.track = null;
-                    })
-                })
+                    });
+                });
                 this.$inertia.reload({
-                    only: ['todo'],
+                    only: ["todo"],
                     preserveState: true
                 });
             }
@@ -218,17 +253,19 @@ export default {
 
         clear() {
             this.stop();
-            MessageBox.confirm(`The time of the ${this.modeSelected} has finished`).then(() => {
+            MessageBox.confirm(
+                `The time of the ${this.modeSelected} has finished`
+            ).then(() => {
                 this.findNextMode();
                 this.run = 0;
-            })
+            });
         },
 
         findNextMode() {
             const isLastMode = this.promodoroTemplate.length - 1 == this.round;
-                this.round = isLastMode ? 0 : this.round + 1;
-                const nextMode = this.promodoroTemplate[this.round];
-                this.setMode(nextMode);
+            this.round = isLastMode ? 0 : this.round + 1;
+            const nextMode = this.promodoroTemplate[this.round];
+            this.setMode(nextMode);
         },
 
         initTimer(selfMode) {
@@ -239,6 +276,8 @@ export default {
                 this.time.minutes = this.modes[this.modeSelected].minutes;
             }
 
+            this.updateExpectedDuration();
+
             if (this.modeSelected == "session" && this.task.id) {
                 this.track = new Tracker({
                     description: this.task.title,
@@ -247,12 +286,17 @@ export default {
                 this.track.startTimer();
             }
 
+            this.startTime = Date.now();
             this.timer = setInterval(() => {
                 if (this.tracker) {
-                    this.$set(this.tracker, 'duration', this.tracker.getDuration());
+                    this.$set(
+                        this.tracker,
+                        "duration",
+                        this.tracker.getDuration()
+                    );
                 }
                 this.countDown();
-            }, 1000);
+            }, 100);
         },
 
         setTask(task) {
@@ -263,26 +307,24 @@ export default {
             this.play();
         },
 
-        countDown() {
-            if (this.time.seconds == 0) {
-                if (this.time.minutes > 0) {
-                    this.time.minutes--;
-                    this.time.seconds = 59;
-                } else {
-                    this.playSound()
-                    setTimeout(() => {
-                        this.clear();
-                    }, 100)
-                }
-            } else {
-                this.time.seconds--;
+        checkTime() {
+            if (this.time.seconds == 0 && this.time.minutes == 0) {
+                this.playSound();
+                this.clear();
             }
+
+        },
+
+        countDown() {
+            this.currentDuration = Date.now() - this.startTime;
+            this.checkTime();
         },
 
         addTime(property) {
             const self = this;
-            this.modes[property].minutes = Number(this.modes[property].minutes ) + 1;
-            const { minutes, seconds} = this.modes[property]
+            this.modes[property].minutes =
+                Number(this.modes[property].minutes) + 1;
+            const { minutes, seconds } = this.modes[property];
 
             if (property == "session" && this.round == 0) {
                 self.updateTime(minutes, seconds);
@@ -296,9 +338,9 @@ export default {
         removeTime(property) {
             const self = this;
             if (this.modes[property].minutes > 0) {
-                this.modes[property].minutes-=1;
+                this.modes[property].minutes -= 1;
             }
-            const { minutes, seconds} = this.modes[property]
+            const { minutes, seconds } = this.modes[property];
 
             if (property == "session" && this.round == 0) {
                 self.updateTime(minutes, seconds);
