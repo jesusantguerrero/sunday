@@ -5,4 +5,4 @@ mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'pub
     require('tailwindcss'),
 ])
 .webpackConfig(require('./webpack.config'))
-.browserSync('http://localhost:8000');
+.browserSync('http://localhost:8080');

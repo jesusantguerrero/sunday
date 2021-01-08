@@ -51,6 +51,7 @@
                         v-show="showCommitted"
                         title="Commited"
                         :tasks="committed"
+                        @item-deleted="deleteLocalItem($event, committed)"
                         @update-item="updateItem"
                     >
                      <template>
@@ -66,9 +67,12 @@
                     <board-item-container
                         v-show="showTodo"
                         title="To Do"
+                        :allow-add="true"
+                        :boards="boards"
                         :tasks="inbox"
                         :tracker="tracker"
                         @update-item="updateItem"
+                        @item-deleted="deleteLocalItem($event, 'todo')"
                         @item-clicked="setTaskToTimer"
                     >
                     </board-item-container>
@@ -107,6 +111,30 @@
                                 @edit="openLinkForm"
 
                              ></link-viewer>
+                        </div>
+                    </div>
+
+                    <div class="section-card committed">
+                        <header class="bg-blue-400 text-white font-bold flex justify-between">
+                            <span>
+                                Agenda
+                            </span>
+                            <inertia-link class="bg-transparent text-white" href="/planner">
+                                Go to Planner
+                            </inertia-link>
+                        </header>
+                         <div class="body bg-blue-400 text-gray-600">
+                            <div
+                                class="text-white cursor-pointer hover:bg-blue-500 p-2 rounded-md"
+                                v-for="event in agenda"
+                                :key="`event-${event.id}`">
+                                    <span class="font-bold mr-2">
+                                        {{event.time }}
+                                    </span>
+                                    <span class="capitalize">
+                                        {{ event.title }}
+                                    </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -197,7 +225,7 @@
                     return []
                 }
             },
-            scheduled: {
+            agenda: {
                 type: [Array, Object],
                 default() {
                     return []
@@ -234,7 +262,7 @@
         },
         data() {
             return {
-                modes: ['inbox', 'committed', 'all'],
+                modes: ['inbox', 'daily'],
                 selectedStage: "",
                 modeSelected: 'inbox',
                 promodoroColor: "red",
@@ -259,16 +287,16 @@
                 return this.todo.filter(item => item.done).length;
             },
             showTodo() {
-                return ['all', 'inbox'].includes(this.modeSelected)
+                return ['daily', 'inbox'].includes(this.modeSelected)
             },
             showCommitted() {
-                return ['all', 'committed'].includes(this.modeSelected)
+                return ['daily', 'committed'].includes(this.modeSelected)
             },
             stages() {
                 return uniq(this.todo.map((item) => item.stage));
             },
             inbox() {
-                const inbox = this.selectedStage ? this.todo.filter((item) => item.stage == this.selectedStage) : this.todo;
+                const inbox = this.selectedStage ? this.todo.filter((item) => item.stage == this.selectedStage) : this.todo.filter(task => task);
                 return orderBy(inbox,["priority", "stage", "title"]);
             }
         },
@@ -364,6 +392,11 @@
 
             setTaskToTimer(task) {
                 this.$refs.Promodoro.setTask(task);
+            },
+
+            deleteLocalItem(item, listName) {
+                const taskIndex = this[listName].findIndex( task => task.id == item.id);
+                this[listName].splice(taskIndex, 1);
             }
         }
     }

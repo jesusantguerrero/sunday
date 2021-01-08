@@ -2,7 +2,7 @@
     <inertia-link
         class="board-item flex py-1 items-center px-5"
         :class="{ active: isActive }"
-        :href="board.link"
+        :href="`/boards/${board.id}`"
         :key="board.id"
     >
         <span class="board-item__avatar">

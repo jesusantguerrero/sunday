@@ -7,16 +7,6 @@
         "laravel"
     ],
     "license": "MIT",
-    "repositories": {
-        "insane-accounting": {
-            "url": "packages/insane/accounting",
-            "type": "path",
-            "options": {
-                "symlink": true
-            }
-        }
-
-    },
     "require": {
         "php": "^7.3",
         "doctrine/dbal": "^2.12",
@@ -32,8 +22,7 @@
         "laravel/tinker": "^2.0",
         "ext-mailparse": "*",
         "php-mime-mail-parser/php-mime-mail-parser": "^6.0",
-        "freesgen/querify": "dev-master",
-        "insane/accounting": "@dev"
+        "freesgen/querify": "dev-master"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

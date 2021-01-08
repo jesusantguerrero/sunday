@@ -7,7 +7,7 @@
             <input
                 type="search"
                 class="w-full p-2"
-                placeholder="search boards..."
+                placeholder="search in my boards..."
             />
             <button class="bg-purple-400 text-white p-2">
                 Search
