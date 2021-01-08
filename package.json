@@ -20,6 +20,7 @@
         "serve:migrate": "docker-compose exec -T web php artisan migrate",
         "serve:schedule": "docker-compose exec web php artisan schedule:work",
         "serve:seed": "docker-compose exec web php artisan db:seed",
+        "serve:artisan": "docker-compose exec web php artisan",
         "serve:dev": "npm run serve:up && npm run serve:install && npm run serve:generate && npm run serve:migrate",
         "serve": "npm run serve:up-prod && npm run serve:install && npm run serve:generate && npm run serve:migrate"
     },

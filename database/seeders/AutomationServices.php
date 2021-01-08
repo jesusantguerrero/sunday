@@ -15,27 +15,23 @@ class AutomationServices extends Seeder
     public function run()
     {
         DB::table('automation_services')->insert([
-            'name' => 'Calendar',
+            'name' => 'Google',
             'logo' => '/images/calendar.png',
         ]);
 
         DB::table('automation_recipes')->insert([
             'automation_service_id' => 1,
             'name' => 'createItemFromCalendar',
-            'service_name' => 'Calendar',
+            'service_name' => 'Google:Calendar',
             'mapper' => json_encode(["input" => ["board_id", "stage_id"]]),
             'sentence' => "When event created in {calendar} create an item in {stage} of {board}"
         ]);
 
-        DB::table('automation_services')->insert([
-            'name' => 'Gmail',
-            'logo' => '/images/gmail.png',
-        ]);
 
         DB::table('automation_recipes')->insert([
-            'automation_service_id' => 2,
+            'automation_service_id' => 1,
             'name' => 'createItemFromGmail',
-            'service_name' => 'Gmail',
+            'service_name' => 'Google:Gmail',
             'mapper' => json_encode(["input" => ["board_id", "stage_id"]]),
             'sentence' => "When email received with {conditions} create an item in {stage} of {board}"
         ]);

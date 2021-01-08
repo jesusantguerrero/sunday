@@ -138,7 +138,6 @@ export default {
                 sec = Number(sec)
                 this.time.minutes = min >= 0 ? min : 0;
                 this.time.seconds = sec >= 0 ? sec : 0;
-                this.checkTime()
             }
         }
     },
@@ -194,28 +193,6 @@ export default {
             }
         },
 
-        showNotification() {
-            const permission = localStorage.getItem("permission");
-            if (Notification && permission === "granted") {
-                setTimeout(() => {
-                    const notification = new Notification("Expired");
-                }, 5000);
-            } else if (permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    localStorage.setItem("permission", permission);
-                    new Notification("Expired", {
-                        body: "Time has expired"
-                    });
-                });
-            }
-        },
-
-        updateExpectedDuration() {
-            this.expectedDuration = Duration.fromISO(
-                `PT${this.time.minutes}M${this.time.seconds}S`
-            );
-        },
-
         reset() {
             this.stop();
             this.run = 0;
@@ -253,19 +230,13 @@ export default {
 
         clear() {
             this.stop();
+            this.currentDuration = 0;
             MessageBox.confirm(
                 `The time of the ${this.modeSelected} has finished`
             ).then(() => {
                 this.findNextMode();
                 this.run = 0;
             });
-        },
-
-        findNextMode() {
-            const isLastMode = this.promodoroTemplate.length - 1 == this.round;
-            this.round = isLastMode ? 0 : this.round + 1;
-            const nextMode = this.promodoroTemplate[this.round];
-            this.setMode(nextMode);
         },
 
         initTimer(selfMode) {
@@ -299,6 +270,24 @@ export default {
             }, 100);
         },
 
+        countDown() {
+            this.currentDuration = Date.now() - this.startTime;
+            this.checkTime();
+        },
+
+        updateExpectedDuration() {
+            this.expectedDuration = Duration.fromISO(
+                `PT${this.time.minutes}M${this.time.seconds}S`
+            );
+        },
+
+        checkTime() {
+            if (this.time.seconds == 0 && this.time.minutes == 0) {
+                this.playSound();
+                this.clear();
+            }
+        },
+
         setTask(task) {
             if (!this.task || this.task.id != task.id) {
                 this.reset();
@@ -307,60 +296,35 @@ export default {
             this.play();
         },
 
-        checkTime() {
-            if (this.time.seconds == 0 && this.time.minutes == 0) {
-                this.playSound();
-                this.clear();
-            }
-
-        },
-
-        countDown() {
-            this.currentDuration = Date.now() - this.startTime;
-            this.checkTime();
-        },
-
-        addTime(property) {
-            const self = this;
-            this.modes[property].minutes =
-                Number(this.modes[property].minutes) + 1;
-            const { minutes, seconds } = this.modes[property];
-
-            if (property == "session" && this.round == 0) {
-                self.updateTime(minutes, seconds);
-            } else if (property == "break" && this.round == 1) {
-                self.updateTime(minutes, seconds);
-            }
-
-            this.stop();
-        },
-
-        removeTime(property) {
-            const self = this;
-            if (this.modes[property].minutes > 0) {
-                this.modes[property].minutes -= 1;
-            }
-            const { minutes, seconds } = this.modes[property];
-
-            if (property == "session" && this.round == 0) {
-                self.updateTime(minutes, seconds);
-            } else if (property == "break" && this.round == 1) {
-                self.updateTime(minutes, seconds);
-            }
-
-            this.stop();
-        },
-
-        updateTime(mins, secs = 0) {
-            this.time.minutes = mins;
-            this.time.seconds = secs;
-        },
-
         setMode(modeName) {
             this.modeSelected = modeName;
             this.time.minutes = this.modes[modeName].minutes;
             this.time.seconds = this.modes[modeName].seconds;
+            this.currentDuration = 0;
             this.updateExpectedDuration();
+        },
+
+        findNextMode() {
+            const isLastMode = this.promodoroTemplate.length - 1 == this.round;
+            this.round = isLastMode ? 0 : this.round + 1;
+            const nextMode = this.promodoroTemplate[this.round];
+            this.setMode(nextMode);
+        },
+
+        showNotification() {
+            const permission = localStorage.getItem("permission");
+            if (Notification && permission === "granted") {
+                setTimeout(() => {
+                    const notification = new Notification("Expired");
+                }, 5000);
+            } else if (permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    localStorage.setItem("permission", permission);
+                    new Notification("Expired", {
+                        body: "Time has expired"
+                    });
+                });
+            }
         },
 
         toggleConfiguration(settings) {
@@ -385,7 +349,7 @@ export default {
 }
 
 .clock {
-    @apply py-5;
+    @apply py-2;
     background: transparent;
     min-height: 200px;
     width: 100%;
@@ -429,7 +393,7 @@ export default {
 }
 
 .time {
-    font-size: 90px;
+    font-size: 70px;
 }
 
 .inner-controls {
@@ -458,49 +422,6 @@ export default {
 
 .outer-controls-container [class*="-control"] {
     margin: 5px;
-    color: white;
-}
-
-.cs-row {
-    width: 100%;
-    height: 48px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-.cs-row button {
-    border: 0;
-    height: 100%;
-    color: white;
-    padding: 5px;
-    background: transparent;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    display: inline-flex;
-    cursor: pointer;
-}
-
-.cs-row button.reset-btn {
-    margin: 5px 0;
-}
-
-.cs-row button:hover {
-    background: transparent;
-}
-
-.cs-row .value {
-    display: inline-block;
-    height: 100%;
-    padding: 0 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    background: transparent;
     color: white;
 }
 

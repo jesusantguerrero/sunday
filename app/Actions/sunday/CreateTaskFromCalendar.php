@@ -37,7 +37,6 @@ class CreateTaskFromCalendar
 
         foreach ($calendarEvents as $event) {
             $config = json_decode($automation->config);
-            var_dump($config, $automation->board_id, $automation->id);
             $board = Board::find($automation->board_id);
             $stage = !empty($config->stage_id) ? Stage::find($config->stage_id) : $board->stages[0];
             $date = new DateTime($event->start->dateTime);

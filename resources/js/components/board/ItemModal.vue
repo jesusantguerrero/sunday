@@ -223,6 +223,17 @@ export default {
                     {name : 'time', 'type': 'time', title: "Time"},
                     {name : 'due_date', 'type': 'date',title: "Due Date" },
                     {name : 'end_time', 'type': 'time', title: "End Time"}
+                ],
+                daily: [
+                    {name : 'repeat_on_week', type: 'checkbox_multiple', title: "Repeat On"},
+                    {name : 'repeat_on_month', type: 'radio_single', title: "Repeat On"},
+                    {name : 'repeat_every', type: 'text', title: "Repeat Every"},
+                    {name : 'due_date', type: 'date',title: "Due Date" },
+                ],
+                habit: [
+                    {name : 'is_positive', 'type': 'checkbox', title: "Positive"},
+                    {name : 'is_negative', 'type': 'checkbox', title: "Negative"},
+                    {name : 'reset_streak', 'type': 'label', title: "Reset Streak" },
                 ]
             }
             return fields[this.type] || [];

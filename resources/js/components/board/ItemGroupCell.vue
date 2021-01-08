@@ -17,7 +17,8 @@
         <span
             @click="toggleEditMode()"
             v-else-if="!isEditMode"
-            class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2"
+            :title="displayValue"
+            class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2 overflow-hidden"
         >
             {{ displayValue }}
         </span>
@@ -350,6 +351,7 @@ export default {
 
 .item-group-cell {
     @apply w-full px-2 h-full flex items-center;
+    overflow: hidden !important;
 }
 
 .item-group-cell.new-item {

@@ -463,9 +463,6 @@ li.link {
     display: inline-block;
     margin: 0 10px;
 }
-a {
-    color: #42b983;
-}
 
 .btn {
     @apply font-bold py-2 px-4 rounded;
