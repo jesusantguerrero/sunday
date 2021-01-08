@@ -360,6 +360,7 @@ export default {
             this.modeSelected = modeName;
             this.time.minutes = this.modes[modeName].minutes;
             this.time.seconds = this.modes[modeName].seconds;
+            this.updateExpectedDuration();
         },
 
         toggleConfiguration(settings) {
