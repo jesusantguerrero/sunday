@@ -11,9 +11,7 @@ services:
     image: sunday
     container_name: sunday-app
     restart: unless-stopped
-    working_dir: /var/www/
     volumes:
-      - ./:/var/www
       - ./docker-compose/web/timezone:/etc/timezone
       - ./docker-compose/web/cron/scheduler-cron:/etc/cron.d/scheduler-cron
       - sunday_db:/var/lib/mysql

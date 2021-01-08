@@ -59,7 +59,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./:/var/www
+      - .:/var/www/html
       - ./docker-compose/web/timezone:/etc/timezone
       - ./docker-compose/web/cron/scheduler-cron:/etc/cron.d/scheduler-cron
       - sunday_db:/var/lib/mysql

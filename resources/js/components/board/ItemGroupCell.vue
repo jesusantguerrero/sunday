@@ -14,14 +14,28 @@
             </span>
         </div>
 
-        <span
-            @click="toggleEditMode()"
-            v-else-if="!isEditMode"
-            :title="displayValue"
-            class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2 overflow-hidden"
-        >
-            {{ displayValue }}
-        </span>
+        <template v-else-if="!isEditMode">
+            <span
+                @click="toggleEditMode()"
+                v-if="field.type == 'url'"
+                :title="displayValue"
+                class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2 overflow-hidden"
+            >
+                <a target="_blank" :href="displayValue" >
+                    {{ displayValue }}
+                </a>
+            </span>
+
+            <span
+                @click="toggleEditMode()"
+                v-else
+                :title="displayValue + '' + field.type"
+                class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2 overflow-hidden"
+            >
+                {{ displayValue }}
+            </span>
+
+        </template>
 
         <template v-else>
             <div class="h-8 px-2" v-if="isCustomField">
