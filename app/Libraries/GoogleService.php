@@ -20,7 +20,7 @@ class GoogleService
 
     public static function setTokens($data, $userId, $integrationId = null) {
         $client = new Google_Client();
-        $client->setAuthConfig(app_path().'\..\credentials.json');
+        $client->setAuthConfig(app_path().'\\..\\credentials.json');
         $client->setRedirectUri(config('app.url'));
         if ($data->code) {
             $tokenResponse = $client->fetchAccessTokenWithAuthCode($data->code);
