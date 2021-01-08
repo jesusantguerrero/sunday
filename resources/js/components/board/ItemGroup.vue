@@ -48,16 +48,14 @@
                     <draggable v-model="stage.items" @end="saveReorder" handle=".handle" class="w-full">
                         <div :class="`item-false bg-gray-200 border-2 border-white flex`" v-for="(item, index) in stage.items" :key="`item-false__title-${item.id}`">
                             <div
-                                v-if="isSelectMode"
                                 class="item-checkbox selection"
                             >
                                 <input type="checkbox" v-model="selectedItems" :value="item.id"/>
                             </div>
                             <div
-                                v-else
                                 class="item-checkbox"
                             >
-                                <input type="checkbox" name="" id="" v-model="item.done" @change="saveChanges(item, 'done', item.done)" :disabled="item.commit_date"/>
+                                <input type="checkbox" name="" id="" v-model="item.done" @change="saveChanges(item, 'done', item.done)"/>
                             </div>
                             <div class="flex items-center">
                                 <i class="fa fa-align-justify handle"></i>
@@ -196,6 +194,12 @@ export default {
     board: {
       type: Object,
     },
+    selectedItems: {
+      type: Array,
+      default() {
+          return []
+      }
+    },
     items: {
       type: Array,
       default() {
@@ -207,7 +211,6 @@ export default {
     return {
       newItem: {},
       newField: {},
-      selectedItems: [],
       isSelectMode: false,
       isEditMode: false,
       isExpanded: true,
@@ -223,7 +226,10 @@ export default {
         },
         deep: true,
         immediate: true
-    }
+    },
+    selectedItems() {
+        this.$emit('selected-items-updated', this.selectedItems);
+    },
   },
   computed: {
       visibleFields() {

@@ -76,6 +76,17 @@
             </div>
         </div>
 
+        <div v-if="options.selectedItems.length" class="flex bg-gray-800 text-white w-full px-5 py-3">
+            <div class="">
+                {{ options.selectedItems.length }} Items selected
+            </div>
+            <div>
+                <span class="ml-2 toolbar-buttons" @click="confirmDeleteItems(options.selectedItems, true)">
+                    <i class="fa fa-trash"></i>
+                </span>
+            </div>
+        </div>
+
         <div class="">
             <draggable
                 v-model="board.stages"
@@ -91,6 +102,8 @@
                         :board="board"
                         :items="stage.items"
                         :create-mode="createMode"
+                        :selected-items="options.selectedItems"
+                        @selected-items-updated="options.selectedItems = $event"
                         @saved="addItem"
                         @open-item="openItem"
                         @item-deleted="confirmDeleteItem"
@@ -269,6 +282,9 @@ export default {
                 done: this.filters.done
             },
             openedItem: {},
+            options: {
+                selectedItems: []
+            },
             isItemModalOpen: false,
             isAutomationModalOpen: false
         };
@@ -445,6 +461,24 @@ export default {
         openItem(item) {
             this.isItemModalOpen = true;
             this.openedItem = item;
+        },
+
+        confirmDeleteItems(items, reload = true) {
+            this.showConfirm({
+                title: `Deleting ${items.length} tasks`,
+                content: "Are you sure you want to delete these tasks?",
+                confirmationButtonText: "Yes, delete",
+                confirm: () => {
+                    axios({
+                        url: `/api/items/bulk/delete`,
+                        method: "post",
+                        data: items
+                    }).then(() => {
+                        this.options.selectedItems = [];
+                        this.$inertia.reload({ preserveScroll: true });
+                    });
+                }
+            });
         }
     }
 };
