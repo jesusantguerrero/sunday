@@ -39,8 +39,8 @@ services:
       - ./docker-compose/nginx/vhosts:/etc/nginx/conf.d/
       - ./:/usr/share/nginx/html
     environment:
-      - VIRTUAL_HOST=${VIRTUAL_APP_HOST}
       - VIRTUAL_PORT=8080
+      - VIRTUAL_HOST=${VIRTUAL_APP_HOST}
       - LETSENCRYPT_HOST=${VIRTUAL_APP_HOST}
       - LETSENCRYPT_EMAIL=jesusant.guerrero@gmail.com
     networks:
@@ -63,6 +63,22 @@ services:
       - ./docker-compose/web/timezone:/etc/timezone
       - ./docker-compose/web/cron/scheduler-cron:/etc/cron.d/scheduler-cron
       - sunday_db:/var/lib/mysql
+    networks:
+      - sunday
+  landing:
+    build:
+      context: ../sunday-web
+      dockerfile: Dockerfile
+    image: sunday-landing
+    container_name: sunday-landing
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      - VIRTUAL_PORT=3000
+      - VIRTUAL_HOST=${VIRTUAL_LANDING_HOST}
+      - LETSENCRYPT_HOST=${VIRTUAL_LANDING_HOST}
+      - LETSENCRYPT_EMAIL=jesusant.guerrero@gmail.com
     networks:
       - sunday
   db:
