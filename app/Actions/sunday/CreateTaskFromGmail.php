@@ -10,7 +10,6 @@ use App\Models\Stage;
 use Google_Service_Gmail;
 use PhpMimeMailParser\Parser as EmailParser;
 
-
 class CreateTaskFromGmail
 {
     /**
@@ -22,7 +21,7 @@ class CreateTaskFromGmail
      */
     public static function create(Automation $automation)
     {
-        $maxResults = 50;
+        $maxResults = 1;
         $track = json_decode($automation->track, true);
         $track['historyId'] = $track['historyId'] ?? 0;
         $config = json_decode($automation->config);
@@ -31,10 +30,10 @@ class CreateTaskFromGmail
         $condition = $config->condition && $config->value ? "$config->condition($config->value)" : "";
         $results = $service->users_threads->listUsersThreads("me", ['maxResults' => $maxResults, 'q' => "$condition"]);
 
-        forEach($results->getThreads() as $index => $thread) {
+        foreach ($results->getThreads() as $index => $thread) {
             $theadResponse = $service->users_threads->get("me", $thread->id, ['format' => 'MINIMAL']);
             $message = $theadResponse->getMessages()[0];
-            if ($message && ($message->historyId > $track['historyId'])) {
+            if ($message) {
                 $raw = $service->users_messages->get("me", $message->id, ['format' => 'raw']);
                 $parser = self::parseEmail($raw);
 
@@ -66,12 +65,10 @@ class CreateTaskFromGmail
                     "resource_origin" => 'message',
                     "resource_type" => 'gmail',
                     'fields' => [
-                        ['name' => 'url_id', 'type'=> 'url', 'value' => "https://mail.google.com/mail/#search/Rfc822msgid:{$mail['messageId']}", 'hide' => true],
-                        ['name' => 'url_subject', 'type'=> 'url', 'value' => "https://mail.google.com/mail/#search/subject:{$mail['subject']}", 'hide' => true],
-                        ['name' => 'date', 'type'=> 'date', 'value' => $message->internalDate],
+                        ['name' => 'url_id', 'type' => 'url', 'value' => "https://mail.google.com/mail/#search/Rfc822msgid:{$mail['messageId']}", 'hide' => 0],
+                        ['name' => 'url_subject', 'type'=> 'url', 'value' => "https://mail.google.com/mail/#search/subject:{$mail['subject']}", 'hide' => 0],
                         ['name' => 'snippet', 'type' => 'text', 'value' => $message->snippet],
-                        ['name' => 'snippet', 'type' => 'text', 'value' => $message->snippet],
-                        ['name' => 'automation_id', 'value' => $automation->id, 'hide' => true],
+                        ['name' => 'automation_id', 'value' => $automation->id, 'hide' => 1],
                     ]
                 ];
                 Item::createEvent($item, [
@@ -80,11 +77,11 @@ class CreateTaskFromGmail
                     "stage_id" => $item['stage_id']
                 ]);
             }
-
         };
     }
 
-    public static function parseEmail($raw) {
+    public static function parseEmail($raw)
+    {
         $switched = str_replace(['-', '_'], ['+', '/'], $raw['raw']);
         $raw = base64_decode($switched);
         return (new EmailParser)->setText($raw);

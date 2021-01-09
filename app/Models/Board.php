@@ -142,7 +142,7 @@ class Board extends Model
                 'user_id' => $this->user_id,
                 'team_id' => $this->team_id,
                 'name' => $fieldData['name'],
-                'title' => empty($fieldData['title']) ? \ucwords($fieldData['name']) : $fieldData['title'],
+                'title' => empty($fieldData['title']) ? \ucwords(str_replace("_", " ", $fieldData['name'])) : $fieldData['title'],
                 'type' => $fieldData['type'] ?? 'text',
                 'hide' => $fieldData['hide'] ?? 0,
             ]);

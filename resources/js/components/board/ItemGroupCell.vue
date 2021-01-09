@@ -15,26 +15,20 @@
         </div>
 
         <template v-else-if="!isEditMode">
+            <link-preview
+                    v-if="field.type == 'url' && displayValue"
+                    :value="displayValue"
+                    @edit="toggleEditMode()"
+                >
+            </link-preview>
             <span
-                @click="toggleEditMode()"
-                v-if="field.type == 'url'"
-                :title="displayValue"
-                class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2 overflow-hidden"
-            >
-                <a target="_blank" :href="displayValue" >
-                    {{ displayValue }}
-                </a>
-            </span>
-
-            <span
-                @click="toggleEditMode()"
                 v-else
-                :title="displayValue + '' + field.type"
+                @click="toggleEditMode()"
+                :title="displayValue"
                 class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2 overflow-hidden"
             >
                 {{ displayValue }}
             </span>
-
         </template>
 
         <template v-else>
@@ -106,6 +100,7 @@
 
 <script>
 import { format, toDate } from "date-fns";
+import LinkPreview from "./cellTypes/LinkPreview";
 import InputLabel from "./cellTypes/Label";
 import InputDate from "./cellTypes/Date";
 import InputPerson from "./cellTypes/Person";
@@ -120,6 +115,7 @@ export default {
         InputLabel,
         InputPerson,
         InputTime,
+        LinkPreview,
         BoardSelector
     },
     props: {
@@ -335,7 +331,7 @@ export default {
             this.saveChanges();
             this.$emit("keydown", $event);
             this.toggleEditMode();
-        }
+        },
     }
 };
 </script>

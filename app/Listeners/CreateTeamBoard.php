@@ -31,7 +31,7 @@ class CreateTeamBoard
         $board = new Board();
         $board->user_id =  $team->user_id;
         $board->team_id = $team->id;
-        $board->name = "$team->name Board";
+        $board->name = "Primary";
         $board->save();
         $board->createMainStage();
     }

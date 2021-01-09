@@ -49,12 +49,12 @@ class CreateTaskFromCalendar
                 'team_id' => $stage->team_id,
                 'resource_id' => $event->getId(),
                 'resource_origin' => 'calendar',
+                "resource_type" => 'event',
                 'fields' => [
                     ['name' => 'date', 'type'=> 'date', 'value' => $date->format('Y-m-d')],
                     ['name' => 'time', 'type' => 'time', 'value' => $date->format('H:i')],
                     ['name' => 'due_date', 'type'=> 'date', 'value' => $endDate->format('Y-m-d')],
                     ['name' => 'end_time', 'type' => 'time', 'value' => $endDate->format('H:i'), 'hide' => true],
-                    ['name' => 'itemType', 'value' => 'event', 'hide' => true],
                     ['name' => 'automation_id', 'value' => $automation->id, 'hide' => true],
                 ]
             ];
