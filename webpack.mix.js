@@ -5,4 +5,7 @@ mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'pub
     require('tailwindcss'),
 ])
 .webpackConfig(require('./webpack.config'))
-.browserSync('http://localhost:8080');
+.browserSync({
+    proxy: 'http://localhost:8080',
+    port: 5000
+});

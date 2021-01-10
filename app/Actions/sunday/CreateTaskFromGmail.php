@@ -21,13 +21,16 @@ class CreateTaskFromGmail
      */
     public static function create(Automation $automation)
     {
-        $maxResults = 1;
+        $maxResults = 50;
         $track = json_decode($automation->track, true);
         $track['historyId'] = $track['historyId'] ?? 0;
         $config = json_decode($automation->config);
         $client = GoogleService::getClient($automation->integration_id);
         $service = new Google_Service_Gmail($client);
-        $condition = $config->condition && $config->value ? "$config->condition($config->value)" : "";
+        $condition = isset($config->condition) && $config->value ? "$config->condition($config->value)" : "";
+        if (!$condition) {
+            $condition = $config->value ?? "";
+        }
         $results = $service->users_threads->listUsersThreads("me", ['maxResults' => $maxResults, 'q' => "$condition"]);
 
         foreach ($results->getThreads() as $index => $thread) {
@@ -40,6 +43,7 @@ class CreateTaskFromGmail
                 $body = $parser->getMessageBody('html');
                 $mail = [
                     'index' => $index,
+                    'from' => $parser->getHeader('from'),
                     'subject' => $parser->getHeader('subject'),
                     'messageId' => $parser->getHeader('message-id'),
                     'id' => $message->id,
@@ -65,9 +69,10 @@ class CreateTaskFromGmail
                     "resource_origin" => 'message',
                     "resource_type" => 'gmail',
                     'fields' => [
-                        ['name' => 'url_id', 'type' => 'url', 'value' => "https://mail.google.com/mail/#search/Rfc822msgid:{$mail['messageId']}", 'hide' => 0],
-                        ['name' => 'url_subject', 'type'=> 'url', 'value' => "https://mail.google.com/mail/#search/subject:{$mail['subject']}", 'hide' => 0],
+                        ['name' => 'url_id', 'type' => 'url', 'value' => "https://mail.google.com/mail/#search/Rfc822msgid:{$mail['messageId']}", 'hide' => 1],
+                        ['name' => 'url_subject', 'type'=> 'url', 'value' => "https://mail.google.com/mail/#search/subject:{$mail['subject']}", 'hide' => 1],
                         ['name' => 'snippet', 'type' => 'text', 'value' => $message->snippet],
+                        ['name' => 'sender', 'type' => 'text', 'value' => $mail['from']],
                         ['name' => 'automation_id', 'value' => $automation->id, 'hide' => 1],
                     ]
                 ];

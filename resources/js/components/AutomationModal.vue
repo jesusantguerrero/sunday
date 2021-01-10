@@ -10,52 +10,58 @@
             <form action="" @submit.prevent="save">
                 <div class="form-group">
                     <label for="title"> Service </label>
-                        <multiselect
-                            v-model="formData.service"
-                            ref="input"
-                            :show-labels="false"
-                            :options="services"
-                            class="w-full"
-                        >
+                    <multiselect
+                        v-model="formData.service"
+                        ref="input"
+                        :show-labels="false"
+                        :options="services"
+                        class="w-full"
+                    >
                         <template slot="singleLabel" slot-scope="props">
                             <div>
-                                <img :src="props.option.logo" class="automation-logo mr-2" />
+                                <img
+                                    :src="props.option.logo"
+                                    class="automation-logo mr-2"
+                                />
                                 {{ props.option.name }}
                             </div>
                         </template>
                         <template slot="option" slot-scope="props">
                             <div class="d-flex">
-                                <img :src="props.option.logo" class="automation-logo mr-2" />
+                                <img
+                                    :src="props.option.logo"
+                                    class="automation-logo mr-2"
+                                />
                                 {{ props.option.name }}
                             </div>
                         </template>
-                        </multiselect>
+                    </multiselect>
                 </div>
 
                 <div class="form-group" v-if="serviceIntegrations">
                     <label for="title"> Connection </label>
-                        <multiselect
-                            v-model="formData.integration"
-                            ref="input"
-                            :show-labels="false"
-                            label="hash"
-                            :options="serviceIntegrations"
-                            class="w-full"
-                        >
-                        </multiselect>
+                    <multiselect
+                        v-model="formData.integration"
+                        ref="input"
+                        :show-labels="false"
+                        label="hash"
+                        :options="serviceIntegrations"
+                        class="w-full"
+                    >
+                    </multiselect>
                 </div>
 
                 <div class="form-group" v-if="formData.service">
                     <label for="title"> Recipe </label>
-                        <multiselect
-                            v-model="formData.recipe"
-                            ref="input"
-                            :show-labels="false"
-                            label="name"
-                            :options="automationRecipies"
-                            class="w-full"
-                        >
-                        </multiselect>
+                    <multiselect
+                        v-model="formData.recipe"
+                        ref="input"
+                        :show-labels="false"
+                        label="name"
+                        :options="automationRecipies"
+                        class="w-full"
+                    >
+                    </multiselect>
                 </div>
 
                 <div class="form-group" v-if="boards">
@@ -64,6 +70,7 @@
                         v-model="formData.board"
                         ref="input"
                         :show-labels="false"
+                        :allow-empty="false"
                         placeholder="Select board"
                         :options="boards"
                         class="w-full"
@@ -95,6 +102,7 @@
                         v-model="formData.stage"
                         ref="input"
                         :show-labels="false"
+                        :allow-empty="false"
                         placeholder="Select board"
                         :options="formData.board.stages"
                         class="w-full"
@@ -114,6 +122,28 @@
                             </div>
                         </template>
                     </multiselect>
+                </div>
+
+                <div class="form-group" v-if="hasInput('condition')">
+                    <label for="title"> Condition </label>
+                    <multiselect
+                        v-model="formData.Condition"
+                        ref="input"
+                        :show-labels="false"
+                        label="name"
+                        :options="emailConditions"
+                        class="w-full"
+                    >
+                    </multiselect>
+                </div>
+
+                <div class="form-group" v-if="hasInput('value')">
+                    <label for="title"> value </label>
+                    <input
+                        v-model="formData.value"
+                        type="text"
+                        class="w-full form-control"
+                    />
                 </div>
             </form>
         </template>
@@ -156,13 +186,36 @@ export default {
         return {
             isLoading: false,
             formData: {
-                service: null
+                service: null,
+                recipe: null
             },
             newCheck: {},
             services: [],
             recipies: [],
             integrations: [],
             calendarList: [],
+            emailConditions: [
+                {
+                    id: "from:",
+                    name: "From"
+                },
+                {
+                    name: "To",
+                    id: "to:"
+                },
+                {
+                    name: "subject:",
+                    id: "Subject"
+                },
+                {
+                    name: "Includes",
+                    id: "has"
+                },
+                {
+                    id: "",
+                    name: "Custom"
+                }
+            ]
         };
     },
     created() {
@@ -180,14 +233,16 @@ export default {
         visibleFields() {
             if (this.formData.board && this.formData.board.fields) {
                 return this.formData.board.fields
-                .map(field => {
-                    field.order = this.fieldOrder.findIndex(fieldname => field.name == fieldname);
-                    return field;
-                })
-                .filter(field => !field.hide)
-                .sort((a, b) => a.order - b.order)
+                    .map(field => {
+                        field.order = this.fieldOrder.findIndex(
+                            fieldname => field.name == fieldname
+                        );
+                        return field;
+                    })
+                    .filter(field => !field.hide)
+                    .sort((a, b) => a.order - b.order);
             }
-            return []
+            return [];
         },
         fieldOrder() {
             const fields = {
@@ -200,52 +255,78 @@ export default {
                     "due_date",
                     "end_time"
                 ]
-            }
+            };
 
             return fields[this.type] || [];
         },
         typeFields() {
             const fields = {
                 event: [
-                    {name : 'date', 'type': 'date', title: "Date"},
-                    {name : 'time', 'type': 'time', title: "Time"},
-                    {name : 'due_date', 'type': 'date',title: "Due Date" },
-                    {name : 'end_time', 'type': 'time', title: "End Time"}
+                    { name: "date", type: "date", title: "Date" },
+                    { name: "time", type: "time", title: "Time" },
+                    { name: "due_date", type: "date", title: "Due Date" },
+                    { name: "end_time", type: "time", title: "End Time" }
                 ]
-            }
+            };
             return fields[this.type] || [];
         },
         automationRecipies() {
-            return this.formData.service ? this.recipies.filter( recipe => recipe.automation_service_id == this.formData.service.id) : []
+            return this.formData.service
+                ? this.recipies.filter(
+                      recipe =>
+                          recipe.automation_service_id ==
+                          this.formData.service.id
+                  )
+                : [];
         },
         serviceIntegrations() {
-            return this.formData.service ? this.integrations.filter( integration => integration.automation_service_id == this.formData.service.id) : []
+            return this.formData.service
+                ? this.integrations.filter(
+                      integration =>
+                          integration.automation_service_id ==
+                          this.formData.service.id
+                  )
+                : [];
         }
     },
     methods: {
         prepareForm() {
-            const formData = { ...this.formData }
-            formData.automation_recipe_id = this.formData.recipe.id
-            formData.name = this.formData.recipe.name
-            formData.description = this.formData.recipe.name
-            formData.sentence = this.formData.recipe.name
+            const formData = { ...this.formData };
+            formData.automation_recipe_id = this.formData.recipe.id;
+            formData.name = this.formData.recipe.name;
+            formData.description = this.formData.recipe.name;
+            formData.sentence = this.formData.recipe.name;
 
             formData.config = {};
             if (this.formData.integration) {
-                formData.integration_id = this.formData.integration.id
+                formData.integration_id = this.formData.integration.id;
             }
 
             if (this.formData.board) {
-                formData.board_id = this.formData.board.id
+                formData.board_id = this.formData.board.id;
             }
 
             if (this.formData.stage) {
-                formData.config['stage_id'] = this.formData.stage.id
+                formData.config["stage_id"] = this.formData.stage.id;
             }
+
+            if (this.formData.Condition) {
+                formData.config["condition"] = this.formData.Condition.id;
+            }
+
+            const inputs = this.getInputs();
+            if (inputs) {
+                inputs.map((inputName) => {
+                    if(!formData.config[inputName]) {
+                        formData.config[inputName] = formData[inputName];
+                    }
+                })
+            }
+
             formData.config = JSON.stringify(formData.config);
-            delete formData.board
-            delete formData.stage
-            return formData
+            delete formData.board;
+            delete formData.stage;
+            return formData;
         },
 
         save() {
@@ -256,9 +337,9 @@ export default {
             if (!formData.board_id) {
                 this.$notify({
                     type: "info",
-                    message: `Board and title are required`,
+                    message: `Board and title are required`
                 });
-                return
+                return;
             }
 
             axios({
@@ -271,7 +352,7 @@ export default {
         },
 
         getBoardData() {
-            this.isLoading = true
+            this.isLoading = true;
             Promise.all([
                 axios({
                     url: `/api/stages/`,
@@ -286,68 +367,69 @@ export default {
                     }
                 })
             ]).then(([stagesResponse, fieldsResponse]) => {
-                let fields = fieldsResponse.data.data
-                const stages = stagesResponse.data.data
-                this.$set(
-                    this.formData.board,
-                    "stages",
-                    stages
-                );
+                let fields = fieldsResponse.data.data;
+                const stages = stagesResponse.data.data;
+                this.$set(this.formData.board, "stages", stages);
 
-                this.$set(
-                    this.formData,
-                    "stage",
-                    stages[0]
-                );
+                this.$set(this.formData, "stage", stages[0]);
 
                 const fieldNames = fields.map(field => field.name);
-                this.typeFields.forEach((field) => {
+                this.typeFields.forEach(field => {
                     if (!fieldNames.includes(field.name)) {
                         fields.push(field);
                     }
                 });
 
-
-                this.$set(
-                    this.formData.board,
-                    "fields",
-                    fields
-                );
-                this.isLoading = false
+                this.$set(this.formData.board, "fields", fields);
+                this.isLoading = false;
             });
         },
 
         getServices() {
             axios({
                 url: "/api/automation-services"
-            }).then(({data}) => {
+            }).then(({ data }) => {
                 this.services = data;
-            })
+            });
         },
 
         getIntegrations() {
             axios({
                 url: "/api/integrations"
-            }).then(({data}) => {
+            }).then(({ data }) => {
                 this.integrations = data.data;
-            })
+            });
         },
 
         getRecipies() {
             axios({
                 url: "/api/automation-recipies"
-            }).then(({data}) => {
+            }).then(({ data }) => {
                 this.recipies = data;
-            })
+            });
         },
 
         getCalendarList() {
             axios({
                 url: "/api/calendars"
-            }).then(({data}) => {
+            }).then(({ data }) => {
                 this.calendarList = data;
-            })
+            });
         },
+
+        getInputs() {
+            if (this.formData.recipe) {
+                const mapper = JSON.parse(this.formData.recipe.mapper);
+                return mapper && mapper.input
+            }
+        },
+
+        hasInput(inputName) {
+            const inputs = this.getInputs();
+            if (inputs) {
+                return inputs.includes(inputName);
+            }
+        }
     }
 };
 </script>
@@ -416,7 +498,6 @@ h1 {
             align-items: center;
         }
         height: 37px;
-
     }
 }
 
