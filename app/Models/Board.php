@@ -9,6 +9,7 @@ class Board extends Model
 {
     use HasFactory;
     protected $with = ['labels', 'fields'];
+    protected $fillable = ['name'];
 
     public function stages() {
         return $this->hasMany('App\Models\Stage', 'board_id', 'id')->orderBy('order');

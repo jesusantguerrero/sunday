@@ -3,7 +3,7 @@
         <div class="">
                 <div class="w-12/12 mx-2 pt-12">
                     <div class="overflow-hidden">
-                        <Board :board="board" :users="users" :automations="automations"></Board>
+                        <board-section :board="board" :users="users" :automations="automations"></board-section>
                     </div>
                 </div>
             </div>
@@ -12,13 +12,13 @@
 
 <script>
     import AppLayout from './../Layouts/AppLayout'
-    import Board from "./../components/board";
+    import BoardSection from "./../components/board/BoardSection";
     import BoardSide from "../components/board/BoardSide"
 
     export default {
         components: {
             AppLayout,
-            Board,
+            BoardSection,
             BoardSide
         },
         props: {

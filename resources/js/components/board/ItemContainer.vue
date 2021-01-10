@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import ItemContainerTask from "./itemContainerTask";
+import ItemContainerTask from "./ItemContainerTask";
 import ItemGroupCell from "./ItemGroupCell";
 
 export default {
