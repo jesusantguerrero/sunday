@@ -170,7 +170,8 @@ export default {
             type: Object
         },
         type: {
-            type: String
+            type: String,
+            default: 'task'
         },
         boards: {
             type: Array
@@ -223,6 +224,17 @@ export default {
                     {name : 'time', 'type': 'time', title: "Time"},
                     {name : 'due_date', 'type': 'date',title: "Due Date" },
                     {name : 'end_time', 'type': 'time', title: "End Time"}
+                ],
+                daily: [
+                    {name : 'repeat_on_week', type: 'checkbox_multiple', title: "Repeat On"},
+                    {name : 'repeat_on_month', type: 'radio_single', title: "Repeat On"},
+                    {name : 'repeat_every', type: 'text', title: "Repeat Every"},
+                    {name : 'due_date', type: 'date',title: "Due Date" },
+                ],
+                habit: [
+                    {name : 'is_positive', 'type': 'checkbox', title: "Positive"},
+                    {name : 'is_negative', 'type': 'checkbox', title: "Negative"},
+                    {name : 'reset_streak', 'type': 'label', title: "Reset Streak" },
                 ]
             }
             return fields[this.type] || [];
@@ -230,7 +242,7 @@ export default {
     },
     methods: {
         prepareForm() {
-            const formData = { ...this.formData }
+            const formData = { ...this.formData, resource_type: this.type }
             if (this.formData.board) {
                 formData.board_id = this.formData.board.id
             }

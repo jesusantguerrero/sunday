@@ -9,6 +9,7 @@ class Board extends Model
 {
     use HasFactory;
     protected $with = ['labels', 'fields'];
+    protected $fillable = ['name'];
 
     public function stages() {
         return $this->hasMany('App\Models\Stage', 'board_id', 'id')->orderBy('order');
@@ -142,7 +143,7 @@ class Board extends Model
                 'user_id' => $this->user_id,
                 'team_id' => $this->team_id,
                 'name' => $fieldData['name'],
-                'title' => empty($fieldData['title']) ? \ucwords($fieldData['name']) : $fieldData['title'],
+                'title' => empty($fieldData['title']) ? \ucwords(str_replace("_", " ", $fieldData['name'])) : $fieldData['title'],
                 'type' => $fieldData['type'] ?? 'text',
                 'hide' => $fieldData['hide'] ?? 0,
             ]);

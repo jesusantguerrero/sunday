@@ -64,6 +64,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/api/fields', FieldController::class);
     Route::apiResource('/api/stages', StageController::class);
     Route::apiResource('/items', ItemController::class);
+    Route::post('/api/items/bulk/delete', [ItemController::class, 'bulkDelete']);
     Route::apiResource('/standups', StandupController::class);
 
     // Automations

@@ -9,7 +9,6 @@ use App\Models\Item;
 use App\Models\Stage;
 use DateTime;
 use Google_Service_Calendar;
-use Google_Service_Calendar_Event;
 
 class CreateTaskFromCalendar
 {
@@ -37,7 +36,6 @@ class CreateTaskFromCalendar
 
         foreach ($calendarEvents as $event) {
             $config = json_decode($automation->config);
-            var_dump($config, $automation->board_id, $automation->id);
             $board = Board::find($automation->board_id);
             $stage = !empty($config->stage_id) ? Stage::find($config->stage_id) : $board->stages[0];
             $date = new DateTime($event->start->dateTime);
@@ -51,12 +49,12 @@ class CreateTaskFromCalendar
                 'team_id' => $stage->team_id,
                 'resource_id' => $event->getId(),
                 'resource_origin' => 'calendar',
+                "resource_type" => 'event',
                 'fields' => [
                     ['name' => 'date', 'type'=> 'date', 'value' => $date->format('Y-m-d')],
                     ['name' => 'time', 'type' => 'time', 'value' => $date->format('H:i')],
                     ['name' => 'due_date', 'type'=> 'date', 'value' => $endDate->format('Y-m-d')],
                     ['name' => 'end_time', 'type' => 'time', 'value' => $endDate->format('H:i'), 'hide' => true],
-                    ['name' => 'itemType', 'value' => 'event', 'hide' => true],
                     ['name' => 'automation_id', 'value' => $automation->id, 'hide' => true],
                 ]
             ];

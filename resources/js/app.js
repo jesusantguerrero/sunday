@@ -2,8 +2,6 @@ require("./bootstrap");
 require("vue-multiselect/dist/vue-multiselect.min.css");
 
 import Vue from "vue";
-
-import { InertiaProgress } from "@inertiajs/progress";
 import { InertiaApp } from "@inertiajs/inertia-vue";
 import { InertiaForm } from "laravel-jetstream";
 import ConfirmModalMixin from "./plugins/ConfirmModalMixin";

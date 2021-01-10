@@ -159,23 +159,24 @@ export default {
         },
 
         async google(scopeName, service) {
-            const scopes = {
-                gmail: "https://www.googleapis.com/auth/gmail.readonly",
-                calendar: "https://www.googleapis.com/auth/calendar.readonly"
-            };
-
-            gapi.load("client:auth2", () => {
+            gapi.load("auth2", () => {
                 gapi.auth2
                     .init({
                         apiKey: process.env.MIX_GOOGLE_APP_KEY,
                         clientId: process.env.MIX_GOOGLE_CLIENT_ID,
                         accessType: "offline",
-                        scope: `profile ${scopes.calendar} ${scopes.gmail}`,
+                        scope: `profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly`,
                         discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
                     })
                     .then(async auth => {
                         const authInstance = gapi.auth2.getAuthInstance();
                         const user = authInstance.currentUser.get();
+
+                        if (!user.getAuthResponse().session_state) {
+                            await authInstance.signIn();
+                        }
+
+                        const profile = user.getBasicProfile();
 
                         await authInstance
                             .grantOfflineAccess({
@@ -186,7 +187,7 @@ export default {
                                     code,
                                     service_id: service.id,
                                     service_name: service.name,
-                                    user
+                                    user: profile.getEmail()
                                 };
 
                                 axios({
@@ -195,6 +196,8 @@ export default {
                                     data: {
                                         credentials
                                     }
+                                }).then(() => {
+                                    this.$inertia.reload(`/integrations`);
                                 })
                             })
                     })

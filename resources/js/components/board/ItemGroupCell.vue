@@ -14,13 +14,22 @@
             </span>
         </div>
 
-        <span
-            @click="toggleEditMode()"
-            v-else-if="!isEditMode"
-            class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2"
-        >
-            {{ displayValue }}
-        </span>
+        <template v-else-if="!isEditMode">
+            <link-preview
+                    v-if="field.type == 'url' && displayValue"
+                    :value="displayValue"
+                    @edit="toggleEditMode()"
+                >
+            </link-preview>
+            <span
+                v-else
+                @click="toggleEditMode()"
+                :title="displayValue"
+                class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2 overflow-hidden"
+            >
+                {{ displayValue }}
+            </span>
+        </template>
 
         <template v-else>
             <div class="h-8 px-2" v-if="isCustomField">
@@ -91,6 +100,7 @@
 
 <script>
 import { format, toDate } from "date-fns";
+import LinkPreview from "./cellTypes/LinkPreview";
 import InputLabel from "./cellTypes/Label";
 import InputDate from "./cellTypes/Date";
 import InputPerson from "./cellTypes/Person";
@@ -105,6 +115,7 @@ export default {
         InputLabel,
         InputPerson,
         InputTime,
+        LinkPreview,
         BoardSelector
     },
     props: {
@@ -320,7 +331,7 @@ export default {
             this.saveChanges();
             this.$emit("keydown", $event);
             this.toggleEditMode();
-        }
+        },
     }
 };
 </script>
@@ -350,6 +361,7 @@ export default {
 
 .item-group-cell {
     @apply w-full px-2 h-full flex items-center;
+    overflow: hidden !important;
 }
 
 .item-group-cell.new-item {

@@ -57,27 +57,11 @@
                             class="bg-blue-400 text-white font-bold flex justify-between"
                         >
                             <span>
-                                Priorities
+                                Dailies
                             </span>
                             <button
                                 class="bg-transparent text-white"
-                                @click="isLinkFormOpen = !isLinkFormOpen"
-                            >
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </header>
-                        <div class="body text-gray-600"></div>
-                    </div>
-                    <div class="section-card committed mt-5">
-                        <header
-                            class="bg-blue-500 text-white font-bold flex justify-between"
-                        >
-                            <span>
-                                Workout
-                            </span>
-                            <button
-                                class="bg-transparent text-white"
-                                @click="isLinkFormOpen = !isLinkFormOpen"
+                                @click="openItem({}, 'daily')"
                             >
                                 <i class="fa fa-plus"></i>
                             </button>
@@ -93,7 +77,7 @@
                             </span>
                             <button
                                 class="bg-transparent text-white"
-                                @click="isLinkFormOpen = !isLinkFormOpen"
+                                @click="openItem({}, 'habit')"
                             >
                                 <i class="fa fa-plus"></i>
                             </button>
@@ -124,7 +108,7 @@
                 @cancel="isItemModalOpen = false"
                 @saved="onItemSaved"
                 :boards="boards"
-                type="event"
+                :type="boardType"
                 :record-data="openedItem"
                 :is-open="isItemModalOpen"
             >
@@ -182,6 +166,7 @@ export default {
             modes: ["daily", "weekly", "monthly", "quarter"],
             modeSelected: "daily",
             promodoroColor: "red",
+            boardType: "",
             localDate: null,
             isLoading: false,
             openedItem: {},
@@ -231,9 +216,10 @@ export default {
             });
         },
 
-        openItem(item = {}) {
+        openItem(item = {}, type = "event") {
             this.isItemModalOpen = true;
             this.openedItem = item;
+            this.boardType = type;
         },
 
         onItemSaved() {

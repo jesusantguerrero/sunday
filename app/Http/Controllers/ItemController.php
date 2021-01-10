@@ -76,4 +76,17 @@ class ItemController extends Controller
         $item->delete();
         return $item;
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkDelete(Request $request)
+    {
+        $items = $request->post();
+        Item::whereIn('id', $items)->delete();
+        return $items;
+    }
 }

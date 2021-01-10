@@ -8,7 +8,7 @@ use App\Models\Checklist;
 
 class Item extends Model
 {
-    protected $fillable = ['board_id', 'team_id', 'stage_id','resource_id', 'resource_origin', 'title', 'order', 'user_id', 'done','commit_date'];
+    protected $fillable = ['board_id', 'team_id', 'stage_id','resource_id','resource_type', 'resource_origin', 'title', 'order', 'user_id', 'done','commit_date', 'points'];
     protected $with = ['fields', 'checklist'];
     use HasFactory;
 
