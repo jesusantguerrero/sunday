@@ -17,6 +17,8 @@
                     <h4 class="day-slot__title">
                         <div class="">
                             {{ daySlot.title }}
+
+                            [ {{ daySlot.resource_type || 'Task'}} ]
                         </div>
 
                         <!-- CRUD Controls  -->

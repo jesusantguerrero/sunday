@@ -4,7 +4,7 @@
             class="ic-list__body"
             :class="{ 'not-expanded': !isExpanded, loaded: isLoaded }"
         >
-            <!-- end of column title -->
+            <!-- Column title -->
             <div class="ic-list__title">
                 <div class="item-false__header sticky_header">
                     <div class="header-cell item-group-row__header">
@@ -85,110 +85,23 @@
                         handle=".handle"
                         class="w-full"
                     >
-                        <div
-                            :class="
-                                `item-false bg-gray-200 border-2 border-white flex`
-                            "
+                        <item-group-title
                             v-for="(item, index) in stage.items"
+                            class="item-false bg-gray-200 border-2 border-white flex"
                             :key="`item-false__title-${item.id}`"
+                            :item="item"
+                            :index="index"
+                            :selected-items="selectedItems"
+                            :is-select-mode="isSelectMode"
+                            @selected="handleSelect"
+                            @saved="saveChanges"
+                            @command="handleCommand"
                         >
-                            <div class="item-checkbox selection">
-                                <input
-                                    type="checkbox"
-                                    v-model="selectedItems"
-                                    :value="item.id"
-                                />
-                            </div>
-                            <div class="item-checkbox">
-                                <input
-                                    type="checkbox"
-                                    name=""
-                                    id=""
-                                    v-model="item.done"
-                                    @change="
-                                        saveChanges(item, 'done', item.done)
-                                    "
-                                />
-                            </div>
-                            <div class="flex items-center">
-                                <i
-                                    class="fa fa-align-justify handle"
-                                    :title="JSON.stringify(item.fields)"
-                                ></i>
-                            </div>
-                            <item-group-cell
-                                class="flex items-center"
-                                field-name="title"
-                                :select-mode="isSelectMode"
-                                :index="index"
-                                :item="item"
-                                @selected="handleSelect"
-                                @saved="saveChanges(item, 'title', $event)"
-                            >
-                            </item-group-cell>
-                            <el-dropdown
-                                trigger="click"
-                                @command="$event => handleCommand(item, $event)"
-                                @click.native.prevent
-                            >
-                                <div
-                                    class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center"
-                                >
-                                    <div class="flex items-center mr-2">
-                                        <i class="fa fa-ellipsis-v"></i>
-                                    </div>
-                                </div>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item
-                                        command="edit"
-                                        icon="fa fa-edit"
-                                        >Edit</el-dropdown-item
-                                    >
-                                    <el-dropdown-item
-                                        command="delete"
-                                        icon="fa fa-trash"
-                                        >Delete</el-dropdown-item
-                                    >
-                                    <a
-                                        :href="getFieldValue(item, 'url_id')"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <el-dropdown-item
-                                            command="go"
-                                            icon="fa fa-external-link-alt"
-                                            v-if="getFieldValue(item, 'url_id')"
-                                        >
-                                            Link by id
-                                        </el-dropdown-item>
-                                    </a>
-                                    <a
-                                        :href="
-                                            getFieldValue(item, 'url_subject')
-                                        "
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <el-dropdown-item
-                                            command="go"
-                                            icon="fa fa-external-link-alt"
-                                            v-if="
-                                                getFieldValue(
-                                                    item,
-                                                    'url_subject'
-                                                )
-                                            "
-                                        >
-                                            Link by Subject
-                                        </el-dropdown-item>
-                                    </a>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </div>
+                        </item-group-title>
                     </draggable>
                 </div>
             </div>
-            <!-- End of column title -->
+            <!-- Column title -->
 
             <div
                 class="item-group ic-scroller ic-scroller-slim"
@@ -294,12 +207,14 @@
 import ItemGroupCell from "./ItemGroupCell";
 import Draggable from "vuedraggable";
 import FieldPopover from "./FieldPopover.vue";
+import ItemGroupTitle from './ItemGroupTitle.vue';
 
 export default {
     components: {
         ItemGroupCell,
         Draggable,
-        FieldPopover
+        FieldPopover,
+        ItemGroupTitle
     },
     props: {
         createMode: {
@@ -472,12 +387,6 @@ export default {
                 default:
                     break;
             }
-        },
-        getFieldValue(item, name) {
-            const fieldValue = item.fields.find(
-                field => field.field_name == name
-            );
-            return fieldValue && fieldValue.value;
         }
     }
 };

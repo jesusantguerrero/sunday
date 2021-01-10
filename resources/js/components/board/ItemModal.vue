@@ -170,7 +170,8 @@ export default {
             type: Object
         },
         type: {
-            type: String
+            type: String,
+            default: 'task'
         },
         boards: {
             type: Array
@@ -241,7 +242,7 @@ export default {
     },
     methods: {
         prepareForm() {
-            const formData = { ...this.formData }
+            const formData = { ...this.formData, resource_type: this.type }
             if (this.formData.board) {
                 formData.board_id = this.formData.board.id
             }
