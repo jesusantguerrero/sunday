@@ -13,6 +13,7 @@
         <div class="item-checkbox">
             <input
                 type="checkbox"
+                class="checkbox-done"
                 name=""
                 id=""
                 v-model="item.done"
@@ -174,5 +175,57 @@ export default {
             outline: none;
         }
     }
+}
+
+.checkbox-done {
+      -webkit-appearance: none;
+      width: 1.2rem;
+      height: 1.2rem;
+      background: transparent;
+      display: block;
+      margin: 0 2px;
+      border-radius: 3px;
+      border: 2px solid #666;
+      border-radius: 50%;
+      position: relative;
+      cursor: pointer;
+      transition: all ease 0.3s;
+      display: inline-block;
+      &:focus {
+        outline: 0;
+      }
+
+    &:checked, &:hover {
+        background: #655;
+
+        &:before {
+            content: "\2718";
+            color: #fff;
+            left: 5%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+        }
+
+        &+[for*=""] {
+            text-decoration: line-through;
+        }
+    }
+
+    &:hover {
+        background: rgba(102, 85, 85, 0.527);;
+    }
+}
+
+
+[for^="check"] {
+    display: inline-block;
+    width: 80%;
+    font-size: 18px;
+    z-index: 200;
+    cursor: text;
+    color: #777;
+    font-size: 20px;
 }
 </style>
