@@ -26,5 +26,6 @@ export default {
 .bulk-selection-bar {
     @apply flex bg-gray-800 text-white px-5 py-3 fixed z-50 bottom-10 right-5;
     width: calc(100% - 22.5rem);
+    transition: all ease .3s;
 }
 </style>

@@ -8,19 +8,13 @@
             <div class="ic-list__title">
                 <div class="item-false__header sticky_header">
                     <div class="header-cell item-group-row__header">
-                        <span
-                            class="toolbar-buttons mr-2"
-                            @click="toggleExpand"
-                        >
-                            <i
-                                class="fa"
-                                :class="[
-                                    isExpanded
-                                        ? 'fa-chevron-down'
-                                        : 'fa-chevron-right'
-                                ]"
-                            ></i>
+                        <span class="toolbar-buttons" @click="toggleExpand">
+                            <i :class="[ isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
                         </span>
+
+                        <div class="item-group__selector">
+                            <input type="checkbox" v-model="stage.selected"  @change="toggleSelection()"/>
+                        </div>
 
                         <span class="font-bold handle" v-if="!isEditMode">
                             {{ stage.title || stage.name }}
@@ -78,7 +72,7 @@
                 </div>
                 <div class="false-header"></div>
 
-                <div class="bg-red-500 grid" v-if="isExpanded">
+                <div class="grid" v-if="isExpanded">
                     <draggable
                         v-model="stage.items"
                         @end="saveReorder"
@@ -387,6 +381,12 @@ export default {
                 default:
                     break;
             }
+        },
+
+        toggleSelection() {
+            this.stage.items.forEach(item => {
+                this.$set(item, 'selected', this.stage.selected)
+            })
         }
     }
 };
@@ -394,7 +394,8 @@ export default {
 
 <style lang="scss">
 .header-cell {
-    @apply flex items-center pl-2;
+    @apply flex items-center;
+    padding-left: 0.25rem;
     height: 34px;
 }
 
@@ -474,16 +475,15 @@ export default {
     position: absolute;
     left: 0;
     top: 0;
-    background: white !important;
+    background: #F8F8F8 !important;
     width: 100%;
     height: 50px;
     z-index: 1000;
     will-change: transform;
     .item-group-row__header {
-        border-top: 2px solid purple;
         height: 50px;
         width: 100%;
-        background: white;
+        background: #F8F8F8;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -498,5 +498,16 @@ export default {
         display: flex;
         align-items: center;
     }
+}
+
+.item-group__selector {
+    @apply flex justify-center items-center mr-2;
+    width: 30px;
+    height: 100%;
+}
+
+.ic-list__footer {
+    width: calc(100% - 40px);
+    margin-left: auto;
 }
 </style>

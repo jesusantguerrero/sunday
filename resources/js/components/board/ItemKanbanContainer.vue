@@ -32,15 +32,18 @@
                     <div v-for="task in quadrant.childs" :key="`task-${task.id}`" class="task-item">
                         <label class="checkbox-label">
                             <input
-                                type="checkbox"
-                                @change="$emit('update-item', task)"
-                                name=""
-                                :id="task.id"
                                 v-model="task.done"
+                                :id="task.id"
+                                class="checkbox-done"
+                                type="checkbox"
+                                name=""
+                                @change="$emit('update-item', task)"
+                                @click.stop=""
                             />
                             <span class="font-bold">
                                 <!-- [{{ task.stage.name }}] -->
                             </span>
+
                             <span>
                                 {{ task.title }}
                             </span>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Api\BaseController;
+use App\Jobs\ProcessCalendar;
 use App\Libraries\GoogleService;
 use App\Models\Automation;
 
@@ -16,10 +17,22 @@ class AutomationController extends BaseController
         $this->validationRules = [];
     }
 
-    public function run(int $automationId)
+    public function run($automationId)
     {
-            $automation = Automation::find($automationId);
-                $service = $automation->recipe->name;
-                GoogleService::$service($automation);
+        $automation = Automation::find($automationId);
+        if ($automation) {
+            $service = $automation->recipe->name;
+            GoogleService::$service($automation);
+        } else {
+            $automations = Automation::where([
+                "automation_recipe_id" => 1
+            ])->get();
+
+            if (count($automations)) {
+                foreach ($automations as $automation) {
+                    ProcessCalendar::dispatch($automation);
+                }
+            }
+        }
     }
 }
