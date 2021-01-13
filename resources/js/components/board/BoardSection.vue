@@ -88,9 +88,9 @@
         </div>
 
         <bulk-selection-bar
-            v-if="options.selectedItems.length"
-            :selected-items="options.selectedItems"
-            @delete-pressed="confirmDeleteItems(options.selectedItems, true)"
+            v-if="selectedItems.length"
+            :selected-items="selectedItems"
+            @delete-pressed="confirmDeleteItems(selectedItems, true)"
         >
         </bulk-selection-bar>
 
@@ -109,8 +109,6 @@
                         :board="board"
                         :items="stage.items"
                         :create-mode="createMode"
-                        :selected-items="options.selectedItems"
-                        @selected-items-updated="options.selectedItems = $event"
                         @saved="addItem"
                         @open-item="openItem"
                         @item-deleted="confirmDeleteItem"
@@ -256,9 +254,6 @@ export default {
                 done: this.filters.done
             },
             openedItem: {},
-            options: {
-                selectedItems: []
-            },
             isEditMode: false,
             isItemModalOpen: false,
             isAutomationModalOpen: false
@@ -312,6 +307,12 @@ export default {
         },
         viewsKeys() {
             return Object.values(this.views).map( view => view.name)
+        },
+        selectedItems() {
+            return this.board.stages.reduce((selectedItems, stage) => {
+                selectedItems.push(...stage.items.filter(item => item.selected))
+                return selectedItems
+            }, [])
         }
     },
     mounted() {
@@ -487,7 +488,6 @@ export default {
                         method: "post",
                         data: items
                     }).then(() => {
-                        this.options.selectedItems = [];
                         this.$inertia.reload({ preserveScroll: true });
                     });
                 }

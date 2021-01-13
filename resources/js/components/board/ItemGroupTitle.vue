@@ -5,7 +5,7 @@
     >
         <!-- Selection Checkbox  -->
         <div class="item-checkbox selection">
-            <input type="checkbox" v-model="selectedItems" :value="item.id" />
+            <input type="checkbox" v-model="item.selected" :value="item.id" />
         </div>
         <!-- /Selection Checkbox -->
 
@@ -13,6 +13,7 @@
         <div class="item-checkbox">
             <input
                 type="checkbox"
+                class="checkbox-done"
                 name=""
                 id=""
                 v-model="item.done"
@@ -25,7 +26,6 @@
         <div class="flex items-center">
             <i
                 class="fa fa-align-justify handle"
-                :title="JSON.stringify(item.fields)"
             ></i>
         </div>
         <!-- /handle -->
@@ -174,5 +174,10 @@ export default {
             outline: none;
         }
     }
+}
+
+.item-false {
+    margin-left: 40px;
+    width: calc(100% - 40px)
 }
 </style>

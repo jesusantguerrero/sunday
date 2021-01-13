@@ -20,20 +20,17 @@
             type="checkbox"
             @change="$emit('update-item', task)"
             name=""
-            class="checkbox"
+            class="checkbox-done"
             :id="task.id"
             v-model="task.done"
         />
-        <span class="mr-5">
-            {{ priorityText }}
-        </span>
-            <el-tooltip class="item" effect="dark" :content="task.priority || 'none'" placement="left">
-                <div class="priority-level inline-block mr-4">
-                    <div class="priority-level__inner">
+        <el-tooltip class="item" effect="dark" :content="task.priority || 'none'" placement="left">
+            <div class="priority-level inline-block ml-2 mr-4">
+                <div class="priority-level__inner">
 
-                    </div>
                 </div>
-            </el-tooltip>
+            </div>
+        </el-tooltip>
         <span class="mr-2">
             {{ durationFromMs }}
         </span>
@@ -68,7 +65,7 @@ export default {
         },
         durationFromMs() {
             const currentDuration = this.isTracker ? this.tracker.duration || 0: 0;
-            return Tracker.durationFromMs(this.task.duration+currentDuration);
+            return Tracker.durationFromMs(this.task.duration + currentDuration);
         },
         priorityText() {
             const emojis = {

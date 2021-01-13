@@ -119,9 +119,12 @@
                             <span>
                                 Agenda
                             </span>
-                            <inertia-link class="bg-transparent text-white" href="/planner">
-                                Go to Planner
-                            </inertia-link>
+                            <div>
+                                <i class="fa fa-robot cursor-pointer ml-4 inline-block" @click="runAgendaAutomations"></i>
+                                <inertia-link class="bg-transparent text-white" href="/planner">
+                                    Go to Planner
+                                </inertia-link>
+                            </div>
                         </header>
                          <div class="body bg-blue-400 text-gray-600">
                             <div
@@ -397,6 +400,20 @@
             deleteLocalItem(item, listName) {
                 const taskIndex = this[listName].findIndex( task => task.id == item.id);
                 this[listName].splice(taskIndex, 1);
+            },
+
+            runAgendaAutomations() {
+                return axios({
+                    url: `/api/automations/createTaskFromCalendar/run`,
+                    method: "POST"
+                }).then(({ data }) => {
+                        this.$notify({
+                            type: "success",
+                            title: "Automation sync",
+                            message: "Updated"
+                        })
+                        this.$inertia.reload({ preserveScroll: true });
+                });
             }
         }
     }

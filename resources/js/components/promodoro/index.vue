@@ -1,12 +1,18 @@
 <template>
-    <div class="promodoro-app">
+    <div class="promodoro-app" :class="{mini: isMiniLocal}">
         <header
             class=" text-white font-bold flex justify-between w-full items-center py-2"
             :class="`bg-${promodoroColor}-400`"
         >
-            <span> Promodoro </span>
+             <button
+                    @click="play()"
+                    class="ml-2"
+                >
+                <i class="material-icons">{{ icon }}</i>
+                </button>
+            <span> {{ title }} </span>
             <div class="flex">
-                <div
+                <!-- <div
                     class="actions rounded-lg flex h-8"
                     :class="`bg-${promodoroColor}-700`"
                 >
@@ -22,7 +28,7 @@
                     >
                         {{ mode.name }}
                     </button>
-                </div>
+                </div> -->
                 <button
                     @click="toggleConfiguration"
                     class="ml-2"
@@ -30,9 +36,18 @@
                 >
                     <i class="fa fa-cog"></i>
                 </button>
+                <button @click="toggleViewMode()"
+                    class="ml-2"
+                    title="Promodoro configuration"
+                >
+                    <i class="fa fa-chevron-down"></i>
+                </button>
             </div>
         </header>
-        <div class="clock" :class="{ rest: round, ticking: run == 1 }">
+        <p v-if="isMiniLocal" class="text-white mb-4 uppercase">
+            <span>{{ modes[modeSelected].name }}</span>
+        </p>
+        <div v-else class="clock" :class="{ rest: round, ticking: run == 1 }">
             <time class="time">{{ formattedTime }}</time
             ><span class="note">click here to {{ message }}</span
             ><span>{{ modes[modeSelected].name }}</span>
@@ -40,7 +55,7 @@
                 <i class="material-icons">{{ icon }}</i>
             </div>
         </div>
-        <div class="promodoro__footer">
+        <div class="promodoro__footer" v-if="!isMiniLocal">
             <div class="w-full">
                 <multiselect
                     v-model="task"
@@ -70,6 +85,7 @@ const time = { minutes: 0, seconds: 10 };
 
 import Tracker from "../timeTracker/tracker";
 import Duration from "luxon/src/duration";
+import Interval from "luxon/src/interval";
 import PromodoroConfigurationModal from "./Configuration";
 import promodoroMixin from "./promodoro";
 import { MessageBox } from "element-ui";
@@ -88,6 +104,14 @@ export default {
         },
         timerColor: {
             type: String
+        },
+        allowPause: {
+            type: Boolean,
+            default: false
+        },
+        isMini: {
+            type: Boolean,
+            default: true
         }
     },
     components: {
@@ -97,6 +121,7 @@ export default {
         return {
             time,
             startTime: null,
+            startTimeStamp: null,
             expectedDuration: null,
             currentDuration: null,
             icon: "play_arrow",
@@ -107,7 +132,8 @@ export default {
             promodoroTemplate: [],
             modeSelected: "session",
             task: [],
-            track: null
+            track: null,
+            isMiniLocal: true
         };
     },
     mounted() {
@@ -123,15 +149,20 @@ export default {
         track() {
             this.$emit("update:tracker", this.track);
         },
+        isMini() {
+            this.isMiniLocal = this.isMini;
+        },
+        isMiniLocal() {
+            this.$emit('update:is-mini', this.isMiniLocal)
+        },
         promodoroColor() {
             this.$emit("update:timerColor", this.promodoroColor);
         },
         formattedTime: {
             deep: true,
             handler(formattedTime) {
-                const title = this.run
-                    ? `(${formattedTime}) Daily`
-                    : "Daily";
+                this.tracker && this.$set(this.tracker, "duration", this.tracker.getDuration());
+                const title = this.run ? `(${formattedTime}) Daily` : "Daily";
                 document.getElementsByTagName("title")[0].text = title;
                 let [min, sec] = formattedTime.split(":")
                 min = Number(min)
@@ -148,7 +179,7 @@ export default {
                 case 0:
                     return "start";
                 case 1:
-                    return "pause";
+                    return this.allowPause ? "pause" : "stop";
                 case 2:
                     return "resume";
             }
@@ -169,6 +200,10 @@ export default {
             return duration ? expected.minus(duration) : expected;
         },
 
+        title() {
+           return this.isMiniLocal ? this.formattedTime : "Promodoro"
+        },
+
         formattedTime() {
             return this.rawTime.toFormat("mm:ss")
         }
@@ -178,6 +213,9 @@ export default {
     },
 
     methods: {
+        toggleViewMode() {
+            this.isMiniLocal = !this.isMiniLocal;
+        },
         play() {
             this.stopSound();
             switch (this.run) {
@@ -205,22 +243,27 @@ export default {
             this.modeSelected = "session";
         },
 
-        stop() {
-            this.stopTracker();
+        stop(timestamp) {
+            this.stopTracker(timestamp);
             clearInterval(this.timer);
-            this.run = 2;
+            this.run = this.allowPause ? 2 : 0;
             this.icon = "play_arrow";
+            if (!this.allowPause) {
+                this.setMode(this.modeSelected);
+            }
         },
 
-        stopTracker() {
+        stopTracker(stoppedTimestamp) {
             if (this.track) {
-                this.track.stopTimer();
+                this.track.stopTimer(stoppedTimestamp);
                 this.$set(this.tracker, "duration", this.tracker.getDuration());
                 this.$inertia.on("success", event => {
                     this.$nextTick(() => {
                         this.track = null;
                     });
+
                 });
+
                 this.$inertia.reload({
                     only: ["todo"],
                     preserveState: true
@@ -228,20 +271,23 @@ export default {
             }
         },
 
-        clear() {
-            this.stop();
+        endPromodoro(timestamp) {
+            this.stop(timestamp)
             this.currentDuration = 0;
             MessageBox.confirm(
                 `The time of the ${this.modeSelected} has finished`
             ).then(() => {
                 this.findNextMode();
                 this.run = 0;
+                if (this.modeSelected != 'session') {
+                    this.play();
+                }
             });
         },
 
         initTimer(selfMode) {
             this.run = 1;
-            this.icon = "pause";
+            this.icon = this.allowPause ? "pause" : "stop";
 
             if (!selfMode) {
                 this.time.minutes = this.modes[this.modeSelected].minutes;
@@ -252,20 +298,18 @@ export default {
             if (this.modeSelected == "session" && this.task.id) {
                 this.track = new Tracker({
                     description: this.task.title,
-                    item_id: this.task.id
+                    item_id: this.task.id,
+                    type: 'promodoro',
+                    target_duration: this.expectedDuration
                 });
-                this.track.startTimer();
+                this.startTimeStamp = this.track.startTimer();
+                this.startTime = this.startTimeStamp.getTime();
+                console.log(this.startTimeStamp);
+            } else {
+                this.startTime = Date.now();
             }
 
-            this.startTime = Date.now();
             this.timer = setInterval(() => {
-                if (this.tracker) {
-                    this.$set(
-                        this.tracker,
-                        "duration",
-                        this.tracker.getDuration()
-                    );
-                }
                 this.countDown();
             }, 100);
         },
@@ -284,7 +328,7 @@ export default {
         checkTime() {
             if (this.time.seconds == 0 && this.time.minutes == 0) {
                 this.playSound();
-                this.clear();
+                this.endPromodoro(new Date());
             }
         },
 
