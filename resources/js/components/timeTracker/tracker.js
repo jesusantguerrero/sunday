@@ -8,9 +8,10 @@ const timeEntry = {
 };
 
 import { cloneDeep } from "lodash-es";
-import { format as formatDate } from "date-fns";
+import { addMinutes, format as formatDate } from "date-fns";
 import axios from "axios";
-import Duration from "duration";
+import Duration from "luxon/src/duration";
+import Interval from "luxon/src/interval";
 
 export default class tracker {
         constructor(trackConfig = {}) {
@@ -23,8 +24,8 @@ export default class tracker {
 
         startTimer() {
             const formData = cloneDeep(this.timeEntry);
-
-            formData.start = formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+            const startDate = new Date();
+            formData.start = formatDate(startDate, "yyyy-MM-dd HH:mm:ss");
             formData.label_ids = JSON.stringify(timeEntry.label_ids);
 
             axios
@@ -40,6 +41,7 @@ export default class tracker {
                 type: "error"
                 });
             });
+            return startDate;
         }
 
         prepareForm() {
@@ -50,8 +52,10 @@ export default class tracker {
         }
 
         updateEntry(formData) {
-            formData = formData || this.prepareForm();
-            return axios.put(`/time-entries/${this.timeEntry.id}`, formData);
+            if (this.timeEntry.id) {
+                formData = formData || this.prepareForm();
+                return axios.put(`/time-entries/${this.timeEntry.id}`, formData);
+            }
         }
 
         setCurrentTimer(data) {
@@ -62,17 +66,25 @@ export default class tracker {
             }
         }
 
-        stopTimer() {
+        stopTimer(stoppedTimeStamp) {
+            const start = new Date(this.timeEntry.start);
+            if (stoppedTimeStamp && this.timeEntry.target_duration) {
+                const duration = Duration.fromISO(this.timeEntry.target_duration);
+                stoppedTimeStamp = addMinutes(start, duration.minutes);
+                this.timeEntry.promodoro_completed = true;
+            }
+            this.timeEntry.end = formatDate(stoppedTimeStamp || new Date(), "yyyy-MM-dd HH:mm:ss");
+
             const formData = cloneDeep(this.timeEntry);
-            formData.end = formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
-            formData.start = formatDate(new Date(this.timeEntry.start), "yyyy-MM-dd HH:mm:ss");
+            formData.start = formatDate(start, "yyyy-MM-dd HH:mm:ss");
             formData.label_ids = JSON.stringify(this.timeEntry.label_ids);
             formData.status = 1;
             formData.duration = this.getDuration();
+            formData.iso_duration = this.getDuration(false, 'ISO');
             this.updateEntry(formData).then(() => {
                 this.running = false;
                 clearInterval(this.interval)
-            this.resetTimer();
+                this.resetTimer();
             });
         }
 
@@ -88,25 +100,28 @@ export default class tracker {
             this.interval = setInterval(() => {
                 this.now = new Date();
                 this.timeEntry.duration = this.getDuration()
-            }, 1000);
+            }, 100);
         }
 
-        getDuration(formatted) {
+        getDuration(formatted, formatGet) {
             let duration = 0;
             if (this.timeEntry.start) {
-              const start = formatDate(new Date(this.timeEntry.start), "yyyy-MM-dd HH:mm:ss");
-              duration = new Duration(new Date(start), this.now);
+                const start = new Date(this.timeEntry.start);
+                const end = this.timeEntry.end && new Date(this.timeEntry.end)
+                duration = Interval.fromDateTimes(start, end || new Date()).toDuration();
             } else {
-                const date = new Date();
-                duration = new Duration(date, date);
+                duration = Duration.fromMillis(0);
             }
-            return formatted ? duration.toString("%H:%M:%S") : duration.seconds * 1000;
+            if (!formatted & !formatGet) {
+                return this.timeEntry.promodoro_completed ? duration.as('minutes') * 60 * 1000 : duration.as('milliseconds');
+            } else if (formatGet == 'ISO') {
+                return duration.toISO();
+            } else {
+                return duration.toFormat("hh:mm:ss");
+            }
         }
 
         static durationFromMs(ms) {
-            const date = new Date(ms);
-            return date.toISOString().slice(11, -2).split(':').map((unit) => {
-                return Math.floor(unit).toString().padStart(2,'0')
-            }).join(":")
+            return Duration.fromMillis(ms).toFormat('mm:ss');
         }
 }

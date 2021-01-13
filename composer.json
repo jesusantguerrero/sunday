@@ -9,8 +9,11 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
+        "ext-mailparse": "*",
+        "beyondcode/laravel-websockets": "^1.9",
         "doctrine/dbal": "^2.12",
         "fideloper/proxy": "^4.2",
+        "freesgen/querify": "dev-master",
         "fruitcake/laravel-cors": "^2.0",
         "google/apiclient": "2.7",
         "google/cloud-pubsub": "^1.29",
@@ -20,9 +23,7 @@
         "laravel/jetstream": "^1.0",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.0",
-        "ext-mailparse": "*",
-        "php-mime-mail-parser/php-mime-mail-parser": "^6.0",
-        "freesgen/querify": "dev-master"
+        "php-mime-mail-parser/php-mime-mail-parser": "^6.0"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

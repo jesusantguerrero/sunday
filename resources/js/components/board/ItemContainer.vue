@@ -36,7 +36,7 @@
             </item-container-task>
 
             <div
-                v-if="!tasks.length"
+                v-if="!tasks || !tasks.length"
                 class="task-item text-center font-bold text-gray-400"
             >
                 There's no items to show
@@ -61,7 +61,10 @@ export default {
         },
         boards: {
             type: Array,
-            required: false
+            required: false,
+            defauult() {
+                return []
+            }
         },
         allowAdd: {
             type: Boolean,
@@ -86,7 +89,7 @@ export default {
         };
     },
     async created() {
-        if (this.boards.length) {
+        if (this.boards && this.boards.length) {
             this.newTask.board = this.boards[0];
             this.newTask.stage = this.boards[0].stages[0];
             await this.getFieldsData();
