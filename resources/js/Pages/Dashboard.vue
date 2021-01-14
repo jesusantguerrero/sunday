@@ -261,6 +261,10 @@
                 default() {
                     return {}
                 }
+            },
+            user: {
+                type: Object,
+                required: true
             }
         },
         data() {
@@ -419,12 +423,19 @@
                     url: `/api/automations/createTaskFromCalendar/run`,
                     method: "POST"
                 }).then(({ data }) => {
-                        this.$notify({
-                            type: "success",
-                            title: "Automation sync",
-                            message: "Updated"
-                        })
-                        this.$inertia.reload({ preserveScroll: true });
+                    data.forEach((automation) => {
+                        Echo.private(`automations.${automation.id}`)
+                            .listen('AutomationCompleted', (e) => {
+                                console.log(e);
+                                this.$notify({
+                                    type: "success",
+                                    title: "Automation Completed",
+                                    message: "Updated"
+                                })
+                                this.$inertia.reload({ preserveScroll: true });
+                            });
+
+                    })
                 });
             }
         }

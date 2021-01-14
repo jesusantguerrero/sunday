@@ -54,7 +54,7 @@ export default class tracker {
         updateEntry(formData) {
             if (this.timeEntry.id) {
                 formData = formData || this.prepareForm();
-                return axios.put(`/time-entries/${this.timeEntry.id}`, formData);
+                return axios.put(`/api/time-entries/${this.timeEntry.id}`, formData);
             }
         }
 

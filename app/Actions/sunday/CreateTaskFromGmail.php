@@ -2,6 +2,7 @@
 
 namespace App\Actions\Sunday;
 
+use App\Events\AutomationCompleted;
 use App\Libraries\GoogleService;
 use App\Models\Automation;
 use App\Models\Board;
@@ -83,6 +84,8 @@ class CreateTaskFromGmail
                 ]);
             }
         };
+
+        AutomationCompleted::dispatch($automation);
     }
 
     public static function parseEmail($raw)

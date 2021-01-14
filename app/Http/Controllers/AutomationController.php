@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AutomationCompleted;
 use App\Http\Controllers\Api\BaseController;
 use App\Jobs\ProcessCalendar;
 use App\Libraries\GoogleService;
@@ -23,7 +24,7 @@ class AutomationController extends BaseController
         if ($automation) {
             $service = $automation->recipe->name;
             GoogleService::$service($automation, true);
-            return ["done" => true];
+            return ["done" => $automation];
         } else {
             $automations = Automation::where([
                 "automation_recipe_id" => 1
@@ -31,9 +32,11 @@ class AutomationController extends BaseController
 
             if (count($automations)) {
                 foreach ($automations as $automation) {
-                    ProcessCalendar::dispatchAfterResponse($automation);
+                    ProcessCalendar::dispatch($automation);
                 }
             }
+
+            return $automations;
         }
     }
 }
