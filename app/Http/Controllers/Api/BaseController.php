@@ -98,4 +98,17 @@ abstract class BaseController extends Controller
     public function validateLocal(Request $request) {
        return $request->validate($this->validationRules);
     }
+
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkDelete(Request $request)
+    {
+        $items = $request->post();
+        $this->model::whereIn('id', $items)->delete();
+        return $items;
+    }
 }

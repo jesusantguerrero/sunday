@@ -25,26 +25,3 @@
     }
 </script>
 
-<style lang="scss">
-.section-card {
-    @apply bg-white overflow-hidden shadow-xl mx-2 mb-4;
-    &.margin-0 {
-        @apply m-0;
-    }
-
-    header {
-        @apply p-4;
-    }
-
-    .body {
-        @apply p-4;
-        min-height: 5rem;
-    }
-}
-
-button {
-    &:focus {
-        outline: 0 !important;
-    }
-}
-</style>

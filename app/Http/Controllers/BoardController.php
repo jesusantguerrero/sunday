@@ -31,10 +31,10 @@ class BoardController extends Controller
     public function store(Request $request, Response $response)
     {
         $board = new Board();
-        $board->user_id =  $request->user()->id;
-        $board->team_id = $request->user()->current_team_id;
-        $board->name = $request->name;
-        $board->save();
+        $data = $request->post();
+        $data['user_id'] = $request->user()->id;
+        $data['team_id'] = $request->user()->current_team_id;
+        $board = Board::create($data);
         $board->createMainStage();
         return $response->send($board);
     }
@@ -105,7 +105,22 @@ class BoardController extends Controller
                             'items' => $stage->items()->filter($request->only('search', 'done'))->get()
                         ];
                     })
-                ]
+                ],
+                'boards' => Board::where([
+                    'team_id' => $user->current_team_id,
+                    'user_id' => $user->id,
+                    'board_type_id' => $board->board_type_id,
+                ])->get()->map(function ($board) {
+                    return [
+                        'id' => $board->id,
+                        'name' => $board->name,
+                        'stages' => $board->stages()->without('items')->get(),
+                        'link' =>  URL::route('boards', $board),
+                        'color' => $board->color,
+                        'template'=> $board->boardTemplate,
+                        'type' => $board->boardType
+                    ];
+                }),
             ]);
     }
 }

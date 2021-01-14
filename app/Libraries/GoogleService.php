@@ -74,8 +74,10 @@ class GoogleService
 
     }
 
-    public static function createItemFromCalendar($automation) {
-        ProcessCalendar::dispatch($automation);
+    public static function createItemFromCalendar($automation, $afterResponse = null) {
+        $method = $afterResponse ? "dispatchAfterResponse" : "dispatch";
+        ProcessCalendar::$method($automation);
+        return true;
     }
 
     public static function listCalendars(int $integrationId) {
@@ -84,7 +86,9 @@ class GoogleService
         return $service->calendarList->listCalendarList();
     }
 
-    public static function createItemFromGmail($automation) {
-        ProcessGmail::dispatch($automation);
+    public static function createItemFromGmail($automation, $afterResponse = null) {
+        $method = $afterResponse ? "dispatchAfterResponse" : "dispatch";
+       ProcessGmail::$method($automation);
+       return true;
     }
 }

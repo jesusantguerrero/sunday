@@ -7,6 +7,7 @@
             <input
                 type="search"
                 class="w-full p-2"
+                v-model="search"
                 placeholder="search in my boards..."
             />
             <button class="bg-purple-400 text-white p-2">
@@ -21,7 +22,7 @@
                     :is-active="isPath(board.link)"
                     :board="board"
                     :key="board.link"
-                    v-for="board in boards"
+                    v-for="board in filteredBoards"
                 >
                 </board-side-item>
             </template>
@@ -42,7 +43,7 @@
         >
             <button
                 class="flex justify-center items-center px-2 h-10 w-full border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white"
-                @click="showAddForm"
+                @click="openBoardForm()"
             >
                 <i class="fa fa-plus"></i>
             </button>
@@ -67,12 +68,20 @@
                 Add
             </button>
         </div>
+
+        <board-form-modal
+            :record-data="boardData"
+            :is-open="isBoardFormOpen"
+            @saved="addBoard"
+            @cancel="isBoardFormOpen=false">
+        </board-form-modal>
     </div>
 </template>
 
 <script>
 import BoardSideItem from "./BoardSideITem";
 import BoardSideItemLink from "./BoardSideITemLink";
+import BoardFormModal from "./BoardForm"
 
 export default {
     props: {
@@ -91,18 +100,25 @@ export default {
     },
     components: {
         BoardSideItem,
-        BoardSideItemLink
+        BoardSideItemLink,
+        BoardFormModal
     },
     data() {
         return {
             boardName: "",
-            showAdd: ""
+            showAdd: "",
+            search: "",
+            isBoardFormOpen: false,
+            boardData: null
         };
     },
     computed: {
         isHeaderMenu() {
             const headerMenu = this.headerMenu.find( menuItem => this.isPath(menuItem.to, true));
             return headerMenu;
+        },
+        filteredBoards() {
+            return this.boards.filter(board => board.name.toLowerCase().includes(this.search.toLowerCase()));
         },
         sectionName() {
            return this.isHeaderMenu ? this.isHeaderMenu.label : "My Boards";
@@ -118,20 +134,12 @@ export default {
             }
             return link == window.location.pathname;
         },
-        addBoard() {
-            if (this.boardName.trim()) {
-                axios({
-                    url: "/api/boards",
-                    method: "post",
-                    data: {
-                        name: this.boardName
-                    }
-                }).then(() => {
-                    this.$inertia.reload();
-                    this.boardName = "";
-                    this.showAdd = false;
-                });
-            }
+        openBoardForm(board = {}) {
+            this.isBoardFormOpen = true;
+            this.boardData = board;
+        },
+        addBoard(board) {
+            this.$inertia.reload();
         },
 
         showAddForm() {

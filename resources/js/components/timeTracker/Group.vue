@@ -6,19 +6,27 @@
         >
             <div class="flex w-full">
                 <div class="w-2/5 flex items-center">
-                    <div
-                        class="time-tracker-item__count"
-                        @click.stop="toggleExpand()"
-                    >
-                        {{ timeEntry.tracks.length }}
+                    <div class="item-checkbox selection mr-9">
+                        <input type="checkbox" v-model="selected" @change="toggleSelection" />
                     </div>
 
-                    <input
-                        type="text"
-                        class="time-tracker__description"
-                        placeholder="Add description"
-                        v-model="timeEntry.description"
-                    />
+                    <div class="flex">
+                        <div
+                            class="time-tracker-item__count"
+                            @click.stop="toggleExpand()"
+                        >
+                            {{ timeEntry.tracks.length }}
+                        </div>
+
+                        <span
+                            type="text"
+                            class="time-tracker__description mr-2"
+                        >
+                            {{ timeEntry.description }}
+                        </span>
+
+
+                    </div>
                 </div>
 
                 <div class="w-3/5 flex ml-auto">
@@ -90,7 +98,8 @@ export default {
     data() {
         return {
             now: new Date(),
-            isExpanded: false
+            isExpanded: false,
+            selected: false
         };
     },
 
@@ -129,6 +138,14 @@ export default {
 
         toggleExpand() {
             this.isExpanded = !this.isExpanded;
+        },
+
+        toggleSelection() {
+            this.selected
+            this.timeEntry.tracks.forEach(
+                track =>
+                this.$set(track, 'selected',this.selected)
+            );
         }
     }
 };

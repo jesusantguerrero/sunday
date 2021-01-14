@@ -1,5 +1,6 @@
 <template>
 <el-popover
+    v-if="false"
     placement="bottom"
     width="200"
     trigger="click">
@@ -41,10 +42,15 @@
     </div>
     <button slot="reference">
         <slot>
-            <i class="fa fa-plus" ></i>
+            <i class="fa fa-plus"></i>
         </slot>
     </button>
 </el-popover>
+<div v-else>
+    <slot>
+        <i class="fa fa-plus cursor-not-allowed"></i>
+    </slot>
+</div>
 </template>
 
 <script>

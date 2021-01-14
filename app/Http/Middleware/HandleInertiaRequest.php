@@ -46,13 +46,17 @@ class HandleInertiaRequest
             },
             'boards' => Board::where([
                 'team_id' => $user->current_team_id,
-                'user_id' => $user->id
+                'user_id' => $user->id,
+                'board_type_id' => 1
             ])->get()->map(function ($board) {
                 return [
                     'id' => $board->id,
                     'name' => $board->name,
                     'stages' => $board->stages()->without('items')->get(),
                     'link' =>  URL::route('boards', $board),
+                    'color' => $board->color,
+                    'template'=> $board->boardTemplate,
+                    'type' => $board->boardType
                 ];
             }),
             'settings' => function () use ($user) {

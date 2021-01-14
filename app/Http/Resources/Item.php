@@ -20,6 +20,7 @@ class Item extends JsonResource
             'resource_type' => $this->resource_type,
             'done' => $this->done,
             'commit_date' => $this->commit_date,
+            'color' => $this->color,
             'stage' => $this->stage ? $this->stage->name : "",
             'duration' => $this->timeEntries->sum('duration'),
             'board_id' =>  $this->stage ? $this->stage->board_id : '',

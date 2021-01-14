@@ -40,7 +40,8 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     Route::get('/planner', [DashboardController::class, 'planner'])->name('planner');
 
     // Apps
-    Route::get('/notes', [DashboardController::class, 'blank'])->name('blank');
+    Route::get('/notes', [DashboardController::class, 'notes'])->name('notes');
+    Route::get('/okrs', [DashboardController::class, 'okrs'])->name('okrs');
     Route::get('/reports', [DashboardController::class, 'blank'])->name('blank');
 
     // footer
@@ -83,7 +84,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/links', LinkController::class);
 
     // Time entries
-    Route::apiResource('/time-entries', TimeEntryController::class);
+    Route::apiResource('/api/time-entries', TimeEntryController::class);
+    Route::post('/api/time-entries/bulk/delete', [TimeEntryController::class, 'bulkDelete']);
     Route::apiResource('/api/settings', SettingController::class);
 
 });

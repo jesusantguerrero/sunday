@@ -29,7 +29,7 @@ export default class tracker {
             formData.label_ids = JSON.stringify(timeEntry.label_ids);
 
             axios
-            .post("/time-entries", formData)
+            .post("/api/time-entries", formData)
             .then(({ data }) => {
                 this.running = true;
                 this.timeEntry = data;
