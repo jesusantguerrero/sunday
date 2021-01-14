@@ -19,7 +19,7 @@ const config = {
 import Multiselect from "vue-multiselect";
 import PortalVue from "portal-vue";
 import Vuelidate from "vuelidate";
-import confetti from "canvas-confetti";
+import fireworks from "./plugins/fireworks";
 
 Vue.use(Vuelidate);
 Vue.use(InertiaApp);
@@ -27,17 +27,7 @@ Vue.use(InertiaForm);
 Vue.use(PortalVue);
 Vue.use(VueGoogleApi, config);
 Vue.mixin(ConfirmModalMixin);
-Vue.mixin({
-    methods: {
-        celebrate() {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }
-    }
-})
+Vue.mixin(fireworks)
 Vue.component("multiselect", Multiselect);
 
 // InertiaProgress.init();

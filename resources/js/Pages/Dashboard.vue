@@ -364,8 +364,15 @@
                         preserveScroll: true,
                         preserveState: true
                     });
+                    const deletedIndex = this.todo.findIndex(task => item.id == task.id);
+                    this.todo.splice(deletedIndex, 1);
+
                     if (item.done) {
-                        this.celebrate();
+                        if (!this.todo.length) {
+                            this.fireworks();
+                        } else {
+                            this.celebrate();
+                        }
                     }
                     return true;
                 })
