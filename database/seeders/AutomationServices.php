@@ -27,7 +27,6 @@ class AutomationServices extends Seeder
             'sentence' => "When event created in {calendar} create an item in {stage} of {board}"
         ]);
 
-
         DB::table('automation_recipes')->insert([
             'automation_service_id' => 1,
             'name' => 'createItemFromGmail',

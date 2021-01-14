@@ -11,6 +11,7 @@
                 <time-entry-form :current="current" @stopped="reloadTracks">
                 </time-entry-form>
             </div>
+
             <div class="mt-10 items-container">
                 <div
                     class="items-container__header flex justify-between px-8 mb-10"
@@ -44,6 +45,13 @@
                 </div>
             </div>
         </div>
+
+        <bulk-selection-bar
+            v-if="selectedItems.length"
+            :selected-items="selectedItems"
+            @delete-pressed="confirmDeleteItems(selectedItems, true)"
+        >
+        </bulk-selection-bar>
     </app-layout>
 </template>
 
@@ -51,6 +59,7 @@
 import AppLayout from "./../Layouts/AppLayout";
 import TimeEntryForm from "../components/timeTracker/Form";
 import TimeEntryGroup from "../components/timeTracker/Group";
+import BulkSelectionBar from "../components/BulkSelectionBar";
 import { format, isToday, parse } from "date-fns";
 
 export default {
@@ -58,7 +67,8 @@ export default {
     components: {
         AppLayout,
         TimeEntryForm,
-        TimeEntryGroup
+        TimeEntryGroup,
+        BulkSelectionBar
     },
     props: {
         current: {
@@ -121,6 +131,10 @@ export default {
                 }
             });
             return trackGroup;
+        },
+
+        selectedItems() {
+            return this.tracks.filter(item => item.selected).map(item => item.id);
         }
     },
     methods: {
@@ -133,28 +147,29 @@ export default {
         formattedDate(date) {
             const dateT = parse(date, 'yyyy-MM-dd', new Date());
             return isToday(dateT) ? 'Today' : format(dateT, 'E, dd LLL yyyy')
-        }
+        },
+
+        confirmDeleteItems(items, reload = true) {
+            this.showConfirm({
+                title: `Deleting ${items.length} tasks`,
+                content: "Are you sure you want to delete these tasks?",
+                confirmationButtonText: "Yes, delete",
+                confirm: () => {
+                    axios({
+                        url: `/api/time-entries/bulk/delete`,
+                        method: "post",
+                        data: items
+                    }).then(() => {
+                        this.$inertia.reload({ preserveScroll: true });
+                    });
+                }
+            });
+        },
     }
 };
 </script>
 
 <style lang="scss">
-.section-card {
-    @apply bg-white overflow-hidden shadow-xl mx-2 mb-4;
-    &.margin-0 {
-        @apply m-0;
-    }
-
-    header {
-        @apply p-4;
-    }
-
-    .body {
-        @apply p-4;
-        min-height: 5rem;
-    }
-}
-
 button {
     &:focus {
         outline: 0 !important;

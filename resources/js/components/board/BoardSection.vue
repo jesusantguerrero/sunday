@@ -67,23 +67,23 @@
                     v-model="searchOptions.search"
                     placeholder="search"
                 />
-                <span class="ml-2 toolbar-buttons">
+                <!-- <span class="ml-2 toolbar-buttons">
                     <i class="fa fa-user"></i>
-                </span>
+                </span> -->
                 <span class="ml-2 toolbar-buttons"
                     :class="{active: searchOptions.done}"
                     @click="toggleDone()"
                     ><i class="fa fa-eye"></i
                 ></span>
-                <span class="ml-2 toolbar-buttons">
+                <!-- <span class="ml-2 toolbar-buttons">
                     <i class="fa fa-thumbtack"></i
-                ></span>
-                <span class="ml-2 toolbar-buttons">
+                ></span> -->
+                <!-- <span class="ml-2 toolbar-buttons">
                     <i class="fa fa-filter"></i>
                 </span>
                 <span class="ml-2 toolbar-buttons">
                     <i class="fa fa-sort"></i>
-                </span>
+                </span> -->
             </div>
         </div>
 
@@ -102,7 +102,7 @@
                 @end="saveReorder"
             >
                 <transition-group>
-                    <item-group
+                    <list-view
                         v-for="stage in board.stages"
                         :key="stage.name"
                         :stage="stage"
@@ -115,18 +115,19 @@
                         @stage-updated="addStage"
                         class="mt-10"
                     >
-                    </item-group>
+                    </list-view>
                 </transition-group>
             </draggable>
 
-            <item-kanban-container
+            <component
                 v-else
+                :is="containerComponent"
                 :stages="board.stages"
                 :fields="board.fields"
                 :kanban-data="kanbanData"
                 @saved="addItem"
                 class="flex pt-5">
-            </item-kanban-container>
+            </component>
 
             <div class="w-full flex justify-center py-5" v-if="modeSelected == 'list'">
                 <button
@@ -156,10 +157,13 @@
 </template>
 
 <script>
-import ItemGroup from "./ItemGroup.vue";
+import ListView from "./views/List/ItemGroup";
+import KanbanView from "./views/kanban/KanbanContainer.vue";
+import HabiticaView from "./views/notes/NotesContainer.vue";
+import MatrixView from "./views/notes/NotesContainer.vue";
+import NoteView from "./views/notes/NotesContainer.vue";
 import ItemModal from "./ItemModal";
 import AutomationModal from "../AutomationModal";
-import ItemKanbanContainer from "./ItemKanbanContainer.vue";
 import BulkSelectionBar from '../BulkSelectionBar.vue';
 import Draggable from "vuedraggable";
 import { throttle } from "lodash-es";
@@ -167,11 +171,14 @@ import { throttle } from "lodash-es";
 export default {
     name: "Board",
     components: {
-        ItemGroup,
+        ListView,
+        KanbanView,
+        NoteView,
+        HabiticaView,
+        MatrixView,
         ItemModal,
         AutomationModal,
         Draggable,
-        ItemKanbanContainer,
         BulkSelectionBar
     },
     provide() {
@@ -210,14 +217,33 @@ export default {
                 list:{
                     name: "list",
                     title: "List",
+                    component: "ListView",
                     icon: "fa fa-th-list"
                 },
                 kanban:{
                     name: "kanban",
                     title: "Kanban",
+                    component: "KanbanView",
+                    icon: "fa fa-border-all"
+                },
+                notes:{
+                    name: "notes",
+                    title: "Notes",
+                    component: "NoteView",
+                    icon: "fa fa-border-all"
+                },
+                habitica:{
+                    name: "habitica",
+                    title: "Habitica",
+                    component: "HabiticaView",
+                    icon: "fa fa-border-all"
+                },
+                matrix:{
+                    name: "matrix",
+                    title: "Matrix",
+                    component: "MatrixView",
                     icon: "fa fa-border-all"
                 }
-
             },
             itemToDelete: false,
             items: [
@@ -271,6 +297,10 @@ export default {
         }
     },
     computed: {
+        containerComponent() {
+            return this.views[this.modeSelected].component
+        },
+
         kanbanData() {
             if (this.board.stages.length) {
                 const statusField = this.board.fields.find(
@@ -305,9 +335,11 @@ export default {
             }
             return {};
         },
+
         viewsKeys() {
             return Object.values(this.views).map( view => view.name)
         },
+
         selectedItems() {
             return this.board.stages.reduce((selectedItems, stage) => {
                 selectedItems.push(...stage.items.filter(item => item.selected))

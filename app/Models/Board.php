@@ -9,7 +9,7 @@ class Board extends Model
 {
     use HasFactory;
     protected $with = ['labels', 'fields'];
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'user_id', 'team_id', 'board_template_id', 'board_type_id', 'color'];
 
     public function stages() {
         return $this->hasMany('App\Models\Stage', 'board_id', 'id')->orderBy('order');
@@ -23,6 +23,14 @@ class Board extends Model
         return $this->hasMany('App\Models\Label', 'board_id', 'id');
     }
 
+    public function boardTemplate() {
+        return $this->belongsTo('App\Models\BoardTemplate');
+    }
+
+    public function boardType() {
+        return $this->belongsTo('App\Models\BoardType');
+    }
+
     public function createMainStage() {
         $this->stages()->create([
             'user_id' => $this->user_id,
@@ -34,100 +42,51 @@ class Board extends Model
     }
 
     public function setUp() {
-        $fields = [
-            [
-                "name" => 'owner',
-                "title" => "Owner",
-                "type" => "person"
-            ],
-            [
-                "name" => 'status',
-                "title" => "Status",
-                "type" => "label",
-                "labels" => [
-                    [
-                        "name" => "backlog",
-                        "label" => "Backlog",
-                        "color" => "white"
-                    ],
-                    [
-                        "name" => "todo",
-                        "label" => "Todo",
-                        "color" => "green"
-                    ],
-                    [
-                        "name" => "schedule",
-                        "label" => "Schedule",
-                        "color" => "blue"
-                    ],
-                    [
-                        "name" => "delegate",
-                        "label" => "Delegate",
-                        "color" => "yellow"
-                    ],
-                    [
-                        "name" => "delete",
-                        "label" => "Delete",
-                        "color" => "red"
-                    ]
-                ]
-            ],
-            [
-                "name" => 'due_date',
-                "title" => "Due Date",
-                "type" => "date"
-            ],
-            [
-                "name" => 'priority',
-                "title" => "Priority",
-                "type" => "label",
-                "labels" => [
-                    [
-                        "name" => "low",
-                        "label" => "Low",
-                        "color" => "green"
-                    ],
-                    [
-                        "name" => "medium",
-                        "label" => "Medium",
-                        "color" => "yellow"
-                    ],
-                    [
-                        "name" => "high",
-                        "label" => "High",
-                        "color" => "red"
-                    ]
-                ]
-            ],
-        ];
+        $defaultTemplate = $this->boardTemplate ?? BoardTemplate::find(1);
+        $templateConfig = json_decode($defaultTemplate->config, true);
+        $fields = $templateConfig['fields'];
+        $stages = $templateConfig['stages'] ?? null;
 
-        foreach ($fields as $field) {
-            $fieldDB = $this->fields()->create([
-                'user_id' => $this->user_id,
-                'team_id' => $this->team_id,
-                'name' => $field['name'],
-                'title' => $field['title'],
-                'type' => $field['type'],
-            ]);
+        if (count($fields)) {
+            foreach ($fields as $field) {
+                $fieldDB = $this->fields()->create([
+                    'user_id' => $this->user_id,
+                    'team_id' => $this->team_id,
+                    'name' => $field['name'],
+                    'title' => $field['title'],
+                    'type' => $field['type'],
+                ]);
 
-            if (isset($field['labels'])) {
-                foreach ($field['labels'] as $label) {
-                    $fieldDB->labels()->create([
+                if (isset($field['labels'])) {
+                    foreach ($field['labels'] as $label) {
+                        $fieldDB->labels()->create([
+                            'user_id' => $fieldDB->user_id,
+                            'team_id' => $fieldDB->team_id,
+                            'board_id' => $fieldDB->board_id,
+                            'name' => $label['name'],
+                            'label' => $label['label'],
+                            'color' => $label['color'],
+                        ]);
+                    }
+
+                    $fieldDB->rules()->create([
                         'user_id' => $fieldDB->user_id,
                         'team_id' => $fieldDB->team_id,
                         'board_id' => $fieldDB->board_id,
-                        'name' => $label['name'],
-                        'label' => $label['label'],
-                        'color' => $label['color'],
+                        'name'=> 'bg',
+                        'reference' => 'options'
                     ]);
                 }
+            }
+        }
 
-                $fieldDB->rules()->create([
-                    'user_id' => $fieldDB->user_id,
-                    'team_id' => $fieldDB->team_id,
-                    'board_id' => $fieldDB->board_id,
-                    'name'=> 'bg',
-                    'reference' => 'options'
+        if ($stages) {
+            $this->stages[0]->delete();
+            foreach ($stages as $stageName) {
+                $this->stages()->create([
+                    'user_id' => $this->user_id,
+                    'team_id' => $this->team_id,
+                    'name' => $stageName
                 ]);
             }
         }

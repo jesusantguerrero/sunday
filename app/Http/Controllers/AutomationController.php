@@ -22,7 +22,8 @@ class AutomationController extends BaseController
         $automation = Automation::find($automationId);
         if ($automation) {
             $service = $automation->recipe->name;
-            GoogleService::$service($automation);
+            GoogleService::$service($automation, true);
+            return ["done" => true];
         } else {
             $automations = Automation::where([
                 "automation_recipe_id" => 1
@@ -30,7 +31,7 @@ class AutomationController extends BaseController
 
             if (count($automations)) {
                 foreach ($automations as $automation) {
-                    ProcessCalendar::dispatch($automation);
+                    ProcessCalendar::dispatchAfterResponse($automation);
                 }
             }
         }

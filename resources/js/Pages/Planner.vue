@@ -66,11 +66,11 @@
                                 <i class="fa fa-plus"></i>
                             </button>
                         </header>
-                        <div class="body text-gray-600"></div>
+                        <div class="body text-gray-600 bg-blue-400"></div>
                     </div>
                     <div class="section-card committed mt-5">
                         <header
-                            class="bg-blue-600 text-white font-bold flex justify-between"
+                            class="bg-blue-400 text-white font-bold flex justify-between"
                         >
                             <span>
                                 Habits
@@ -82,11 +82,11 @@
                                 <i class="fa fa-plus"></i>
                             </button>
                         </header>
-                        <div class="body text-gray-600"></div>
+                        <div class="body text-gray-600 bg-blue-400"></div>
                     </div>
                     <div class="section-card committed mt-5">
                         <header
-                            class="bg-blue-700 text-white font-bold flex justify-between"
+                            class="bg-blue-400 text-white font-bold flex justify-between"
                         >
                             <span>
                                 Notes
@@ -98,7 +98,7 @@
                                 <i class="fa fa-plus"></i>
                             </button>
                         </header>
-                        <div class="body text-gray-600"></div>
+                        <div class="body text-gray-600 bg-blue-400"></div>
                     </div>
                 </div>
                 <!-- End of Right Side -->
@@ -237,7 +237,7 @@ export default {
 
 <style lang="scss">
 .section-card {
-    @apply bg-white overflow-hidden shadow-xl mx-2 mb-4;
+    @apply bg-white overflow-hidden shadow-xl mx-2 mb-4 rounded-md;
     &.margin-0 {
         @apply m-0;
     }

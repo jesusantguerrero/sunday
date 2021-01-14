@@ -61,6 +61,11 @@ export default {
         to: "/notes"
     },
     {
+        label: "Okrs",
+        icon: "lightbulb",
+        to: "/okrs"
+    },
+    {
         label: "Reports",
         icon: "chart-line",
         to: "/reports"

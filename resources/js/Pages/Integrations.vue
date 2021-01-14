@@ -208,28 +208,6 @@ export default {
 </script>
 
 <style lang="scss">
-.section-card {
-    @apply bg-white overflow-hidden shadow-xl mx-2 mb-4;
-    &.margin-0 {
-        @apply m-0;
-    }
-
-    header {
-        @apply p-4;
-    }
-
-    .body {
-        @apply p-4;
-        min-height: 5rem;
-    }
-}
-
-button {
-    &:focus {
-        outline: 0 !important;
-    }
-}
-
 .app-service__integration {
     @apply bg-white text-gray-500 my-2 cursor-pointer px-5 py-3 font-bold;
     @apply border-2 border-gray-300 rounded-md;

@@ -53,6 +53,55 @@ class DashboardController extends Controller
             'date' => $date
         ]);
     }
+
+    public function notes(Request $request)
+    {
+        $user = $request->user();
+        $date = $request->query('date') ?? now()->format('Y-m-d');
+
+        return Inertia::render('Notes', [
+            'notebooks' =>  Board::where([
+                'team_id' => $user->current_team_id,
+                'user_id' => $user->id,
+                'board_type_id' => 2
+            ])->get()->map(function ($board) {
+                return [
+                    'id' => $board->id,
+                    'name' => $board->name,
+                    'stages' => $board->stages()->without('items')->get(),
+                    'link' =>  URL::route('boards', $board),
+                    'color' => $board->color,
+                    'template'=> $board->boardTemplate,
+                    'type' => $board->boardType
+                ];
+            }),
+        ]);
+    }
+
+    public function okrs(Request $request)
+    {
+        $user = $request->user();
+        $date = $request->query('date') ?? now()->format('Y-m-d');
+
+        return Inertia::render('Okrs', [
+            'okrs' =>  Board::where([
+                'team_id' => $user->current_team_id,
+                'user_id' => $user->id,
+                'board_type_id' => 3
+            ])->get()->map(function ($board) {
+                return [
+                    'id' => $board->id,
+                    'name' => $board->name,
+                    'stages' => $board->stages()->without('items')->get(),
+                    'link' =>  URL::route('boards', $board),
+                    'color' => $board->color,
+                    'template'=> $board->boardTemplate,
+                    'type' => $board->boardType
+                ];
+            }),
+        ]);
+    }
+
     public function blank(Request $request)
     {
         return Inertia::render('Blank');

@@ -201,7 +201,7 @@ export default {
       formData.label_ids = JSON.stringify(this.timeEntry.label_ids);
 
       axios
-        .post("/time-entries", formData)
+        .post("/api/time-entries", formData)
         .then(({ data }) => {
           this.running = true;
           this.timeEntry = data;
@@ -224,7 +224,7 @@ export default {
 
     updateEntry(formData) {
       formData = formData || this.prepareForm();
-      return axios.put(`/time-entries/${this.timeEntry.id}`, formData);
+      return axios.put(`/api/time-entries/${this.timeEntry.id}`, formData);
     },
 
     setCurrentTimer(data) {
