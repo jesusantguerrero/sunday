@@ -27,8 +27,8 @@
         "serve": "npm run serve:up-prod && npm run serve:install && npm run serve:generate && npm run serve:migrate"
     },
     "devDependencies": {
-        "@inertiajs/inertia": "^0.8.2",
-        "@inertiajs/inertia-vue": "^0.2.3",
+        "@inertiajs/inertia": "^0.3.2",
+        "@inertiajs/inertia-vue": "^0.1.3",
         "@tailwindcss/ui": "^0.1.3",
         "axios": "^0.21.1",
         "babel-plugin-component": "^1.1.1",
