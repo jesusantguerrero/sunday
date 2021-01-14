@@ -339,7 +339,7 @@
                 this.updateDaily(now)
                 this.isStandupOpen = false;
                 this.isLoading = false;
-                this.$inertia.reload({ preserveScroll: true })
+                this.$inertia.reload({ preserveScroll: true, preserveState: true })
             },
 
             getCommitsByDate() {
@@ -347,6 +347,7 @@
                 this.$inertia.replace(`/${params}`,
                  {
                     only: ['committed'],
+                    preserveScroll: true,
                     preserveState: true
                  })
             },
@@ -360,8 +361,12 @@
                     data: item
                 }).then(() => {
                     this.$inertia.reload({
-                        preserveScroll: true
+                        preserveScroll: true,
+                        preserveState: true
                     });
+                    if (item.done) {
+                        this.celebrate();
+                    }
                     return true;
                 })
             },

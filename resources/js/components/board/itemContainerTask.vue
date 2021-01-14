@@ -18,7 +18,7 @@
     <div class="actions-container flex items-center">
         <input
             type="checkbox"
-            @change="$emit('update-item', task)"
+            @change="updateTask(task)"
             name=""
             class="checkbox-done"
             :id="task.id"
@@ -76,6 +76,11 @@ export default {
             return this.task && emojis[this.task.priority] || "";
         }
     },
+    methods: {
+         updateTask() {
+            this.$emit('update-item', this.task)
+        },
+    }
 }
 </script>
 
