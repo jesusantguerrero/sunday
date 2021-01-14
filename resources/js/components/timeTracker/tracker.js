@@ -122,6 +122,6 @@ export default class tracker {
         }
 
         static durationFromMs(ms) {
-            return Duration.fromMillis(ms).toFormat('mm:ss');
+            return Duration.fromMillis(ms).toFormat('hh:mm:ss');
         }
 }

@@ -269,15 +269,23 @@ export default {
                 return
             }
 
-            formData.fields = this.formData.board.fields.map(field => {
-                return {
-                    field_id: field.id,
-                    field_name: field.name,
-                    name: field.name,
-                    type: field.type,
-                    value: formData[field.name],
-                }
-            })
+            if (this.formData.board && this.formData.board.fields) {
+                formData.fields = this.formData.board.fields.map(field => {
+                    return {
+                        field_id: field.id,
+                        field_name: field.name,
+                        name: field.name,
+                        type: field.type,
+                        value: formData[field.name],
+                    }
+                })
+            } else {
+                formData.fields = this.formData.fields.map(field => {
+                    field.name = field.field_name
+                    return field;
+                })
+            }
+
 
             axios({
                 url: `/items${param}`,
