@@ -6,10 +6,11 @@
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
-               Comming Soon
-            </div>
+        <div class="py-12" >
+            <input type="text" v-model="message">
+            <button  class="btn" @click="greet()">
+                Greet
+            </button>
         </div>
     </app-layout>
 </template>
@@ -27,8 +28,19 @@
                 }
             }
         },
+        data() {
+            return {
+                message: "Hello World"
+            }
+        },
         components: {
             AppLayout
+        },
+        methods: {
+            greet() {
+                const msg = new SpeechSynthesisUtterance(this.message);
+                speechSynthesis.speak(msg);
+            }
         }
     }
 </script>
