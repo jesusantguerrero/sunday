@@ -256,7 +256,6 @@ export default {
         stopTracker(stoppedTimestamp) {
             if (this.trackerLocal) {
                 this.trackerLocal.stopTimer(stoppedTimestamp);
-                console.log(this.tracker.getDuration(), "Here is the error?");
                 this.$set(this.tracker, "duration", this.tracker.getDuration());
                 this.$inertia.on("success", event => {
                     this.$nextTick(() => {
@@ -266,8 +265,7 @@ export default {
                 });
 
                 this.$inertia.reload({
-                    only: ["todo"],
-                    preserveState: true
+                    only: ["todo"]
                 });
             }
         },
