@@ -77,7 +77,7 @@ export default {
     },
 
     created() {
-        this.originalDuration = this.task = duration;
+        this.originalDuration = this.task.duration;
     },
 
     computed: {

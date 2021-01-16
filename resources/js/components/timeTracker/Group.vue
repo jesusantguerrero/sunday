@@ -6,7 +6,7 @@
         >
             <div class="flex w-full">
                 <div class="w-2/5 flex items-center">
-                    <div class="item-checkbox selection mr-9">
+                    <div class="mr-9">
                         <input type="checkbox" v-model="selected" @change="toggleSelection" />
                     </div>
 

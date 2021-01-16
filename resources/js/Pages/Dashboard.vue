@@ -84,7 +84,7 @@
                     <span class="text-3xl ml-2 font-bold"> Tools </span>
 
                       <div class="section-card committed mt-5">
-                         <div :class="`bg-${promodoroColor}-400 text-gray-600 font-bold px-0`">
+                         <div :class="`bg-${promodoroColor} text-gray-600 font-bold px-0`">
                             <promodoro
                                 ref="Promodoro"
                                 :settings="settings"
@@ -450,6 +450,23 @@
 </script>
 
 <style lang="scss">
+.bg-red {
+    @apply bg-red-400;
+}
+
+.bg-blue {
+    @apply bg-blue-400;
+}
+
+.bg-yellow {
+    @apply bg-yellow-400;
+
+}
+
+.bg-green {
+    @apply bg-green-400;
+}
+
 .section-card {
     @apply bg-white overflow-hidden shadow-xl mx-2 mb-4 rounded-md;
     &.margin-0 {
