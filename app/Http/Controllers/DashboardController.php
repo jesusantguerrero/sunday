@@ -101,6 +101,14 @@ class DashboardController extends Controller
             }),
         ]);
     }
+    public function about(Request $request)
+    {
+        return Inertia::render('About');
+    }
+    public function help(Request $request)
+    {
+        return Inertia::render('Help');
+    }
 
     public function blank(Request $request)
     {

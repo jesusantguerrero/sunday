@@ -2,7 +2,7 @@
   <div class="w-full time-tracker-item flex items-center bg-white px-8">
     <div class="flex w-full">
       <div class="w-2/5 flex items-center">
-       <div class="item-checkbox selection">
+       <div class="">
             <input type="checkbox" v-model="timeEntry.selected" :value="timeEntry.id" />
         </div>
         <input

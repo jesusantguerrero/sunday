@@ -8,7 +8,7 @@ const timeEntry = {
 };
 
 import { cloneDeep } from "lodash-es";
-import { addMinutes, format as formatDate } from "date-fns";
+import { addMinutes, format as formatDate, isThisSecond } from "date-fns";
 import axios from "axios";
 import Duration from "luxon/src/duration";
 import Interval from "luxon/src/interval";
@@ -32,7 +32,7 @@ export default class tracker {
             .post("/api/time-entries", formData)
             .then(({ data }) => {
                 this.running = true;
-                this.timeEntry = data;
+                this.timeEntry = data.data;
             })
             .catch(error => {
                 this.$notify({
@@ -54,7 +54,7 @@ export default class tracker {
         updateEntry(formData) {
             if (this.timeEntry.id) {
                 formData = formData || this.prepareForm();
-                return axios.put(`/time-entries/${this.timeEntry.id}`, formData);
+                return axios.put(`/api/time-entries/${this.timeEntry.id}`, formData);
             }
         }
 
@@ -108,12 +108,13 @@ export default class tracker {
             if (this.timeEntry.start) {
                 const start = new Date(this.timeEntry.start);
                 const end = this.timeEntry.end && new Date(this.timeEntry.end)
-                duration = Interval.fromDateTimes(start, end || new Date()).toDuration();
+                duration = Interval.fromDateTimes(start, end || this.now || new Date()).toDuration();
             } else {
                 duration = Duration.fromMillis(0);
             }
+
             if (!formatted & !formatGet) {
-                return this.timeEntry.promodoro_completed ? duration.as('minutes') * 60 * 1000 : duration.as('milliseconds');
+                return duration.as('milliseconds');
             } else if (formatGet == 'ISO') {
                 return duration.toISO();
             } else {
@@ -122,6 +123,6 @@ export default class tracker {
         }
 
         static durationFromMs(ms) {
-            return Duration.fromMillis(ms).toFormat('mm:ss');
+            return Duration.fromMillis(ms).toFormat('hh:mm:ss');
         }
 }

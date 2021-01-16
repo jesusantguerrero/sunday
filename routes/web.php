@@ -45,8 +45,8 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     Route::get('/reports', [DashboardController::class, 'blank'])->name('blank');
 
     // footer
-    Route::get('/help', [DashboardController::class, 'blank'])->name('blank');
-    Route::get('/about', [DashboardController::class, 'blank'])->name('blank');
+    Route::get('/help', [DashboardController::class, 'help'])->name('blank');
+    Route::get('/about', [DashboardController::class, 'about'])->name('blank');
     Route::get('/settings', [DashboardController::class, 'blank'])->name('blank');
 
     // Boards
@@ -65,6 +65,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/api/fields', FieldController::class);
     Route::apiResource('/api/stages', StageController::class);
     Route::apiResource('/items', ItemController::class);
+    Route::get('/api/items/todos', [ItemController::class, 'getTodos']);
     Route::post('/api/items/bulk/delete', [ItemController::class, 'bulkDelete']);
     Route::apiResource('/standups', StandupController::class);
 

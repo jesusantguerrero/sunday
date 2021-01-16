@@ -84,13 +84,14 @@
                     <span class="text-3xl ml-2 font-bold"> Tools </span>
 
                       <div class="section-card committed mt-5">
-                         <div :class="`bg-${promodoroColor}-400 text-gray-600 font-bold px-0`">
+                         <div :class="`bg-${promodoroColor} text-gray-600 font-bold px-0`">
                             <promodoro
                                 ref="Promodoro"
                                 :settings="settings"
                                 :tracker.sync="tracker"
                                 :timer-color.sync="promodoroColor"
                                 :tasks="todo"
+                                @stopped="getTodos"
                             >
                             </promodoro>
                         </div>
@@ -261,6 +262,10 @@
                 default() {
                     return {}
                 }
+            },
+            user: {
+                type: Object,
+                required: true
             }
         },
         data() {
@@ -339,7 +344,7 @@
                 this.updateDaily(now)
                 this.isStandupOpen = false;
                 this.isLoading = false;
-                this.$inertia.reload({ preserveScroll: true })
+                this.$inertia.reload({ preserveScroll: true, preserveState: true })
             },
 
             getCommitsByDate() {
@@ -347,6 +352,7 @@
                 this.$inertia.replace(`/${params}`,
                  {
                     only: ['committed'],
+                    preserveScroll: true,
                     preserveState: true
                  })
             },
@@ -360,8 +366,19 @@
                     data: item
                 }).then(() => {
                     this.$inertia.reload({
-                        preserveScroll: true
+                        preserveScroll: true,
+                        preserveState: true
                     });
+                    const deletedIndex = this.todo.findIndex(task => item.id == task.id);
+                    this.todo.splice(deletedIndex, 1);
+
+                    if (item.done) {
+                        if (!this.todo.length) {
+                            this.fireworks();
+                        } else {
+                            this.celebrate();
+                        }
+                    }
                     return true;
                 })
             },
@@ -397,6 +414,13 @@
                 this.$refs.Promodoro.setTask(task);
             },
 
+            getTodos() {
+                this.tracker = null;
+                axios("/api/items/todos").then(({ data }) => {
+                    this.todo = data
+                })
+            },
+
             deleteLocalItem(item, listName) {
                 const taskIndex = this[listName].findIndex( task => task.id == item.id);
                 this[listName].splice(taskIndex, 1);
@@ -407,12 +431,18 @@
                     url: `/api/automations/createTaskFromCalendar/run`,
                     method: "POST"
                 }).then(({ data }) => {
-                        this.$notify({
-                            type: "success",
-                            title: "Automation sync",
-                            message: "Updated"
-                        })
-                        this.$inertia.reload({ preserveScroll: true });
+                    data.forEach((automation) => {
+                        Echo.private(`automations.${automation.id}`)
+                            .listen('AutomationCompleted', (e) => {
+                                console.log(e);
+                                this.$notify({
+                                    type: "success",
+                                    title: "Automation Completed",
+                                    message: "Updated"
+                                })
+                                this.$inertia.reload({ preserveScroll: true });
+                            });
+                    })
                 });
             }
         }
@@ -420,6 +450,23 @@
 </script>
 
 <style lang="scss">
+.bg-red {
+    @apply bg-red-400;
+}
+
+.bg-blue {
+    @apply bg-blue-400;
+}
+
+.bg-yellow {
+    @apply bg-yellow-400;
+
+}
+
+.bg-green {
+    @apply bg-green-400;
+}
+
 .section-card {
     @apply bg-white overflow-hidden shadow-xl mx-2 mb-4 rounded-md;
     &.margin-0 {

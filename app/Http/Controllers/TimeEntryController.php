@@ -22,6 +22,28 @@ class TimeEntryController extends BaseController
         return [];
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->validateLocal($request);
+        $data = $request->post();
+        $data['user_id'] = (int) $request->user()->id;
+        $data['team_id'] = (int) $request->user()->current_team_id;
+
+        TimeEntry::stopRunningEntries($data['user_id'], $data['team_id'], $data['start']);
+
+        $resource = $this->model::create($data);
+        return [
+            "message" => $this->createdMessage,
+            "data" => $resource
+        ];
+    }
+
     public function list(Request $request) {
         $user = $request->user();
 
@@ -38,4 +60,5 @@ class TimeEntryController extends BaseController
             ])->orderBy('start', 'DESC')->get()
         ]);
     }
+
 }

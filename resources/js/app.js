@@ -6,7 +6,6 @@ import { InertiaApp } from "@inertiajs/inertia-vue";
 import { InertiaForm } from "laravel-jetstream";
 import ConfirmModalMixin from "./plugins/ConfirmModalMixin";
 import VueGoogleApi from "vue-google-api";
-import VCalendar from "v-calendar";
 import "./plugins/element-ui";
 
 const config = {
@@ -20,14 +19,15 @@ const config = {
 import Multiselect from "vue-multiselect";
 import PortalVue from "portal-vue";
 import Vuelidate from "vuelidate";
+import fireworks from "./plugins/fireworks";
 
 Vue.use(Vuelidate);
 Vue.use(InertiaApp);
 Vue.use(InertiaForm);
 Vue.use(PortalVue);
-Vue.use(VCalendar);
 Vue.use(VueGoogleApi, config);
 Vue.mixin(ConfirmModalMixin);
+Vue.mixin(fireworks)
 Vue.component("multiselect", Multiselect);
 
 // InertiaProgress.init();

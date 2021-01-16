@@ -132,7 +132,7 @@ export default {
             promodoroTemplate: [],
             modeSelected: "session",
             task: [],
-            track: null,
+            trackerLocal: null,
             isMiniLocal: true
         };
     },
@@ -146,8 +146,8 @@ export default {
     },
 
     watch: {
-        track() {
-            this.$emit("update:tracker", this.track);
+        trackerLocal() {
+            this.$emit("update:tracker", this.trackerLocal);
         },
         isMini() {
             this.isMiniLocal = this.isMini;
@@ -244,8 +244,9 @@ export default {
         },
 
         stop(timestamp) {
-            this.stopTracker(timestamp);
             clearInterval(this.timer);
+            this.stopTracker(timestamp);
+            this.currentDuration = 0;
             this.run = this.allowPause ? 2 : 0;
             this.icon = "play_arrow";
             if (!this.allowPause) {
@@ -254,26 +255,15 @@ export default {
         },
 
         stopTracker(stoppedTimestamp) {
-            if (this.track) {
-                this.track.stopTimer(stoppedTimestamp);
+            if (this.trackerLocal) {
+                this.trackerLocal.stopTimer(stoppedTimestamp);
                 this.$set(this.tracker, "duration", this.tracker.getDuration());
-                this.$inertia.on("success", event => {
-                    this.$nextTick(() => {
-                        this.track = null;
-                    });
-
-                });
-
-                this.$inertia.reload({
-                    only: ["todo"],
-                    preserveState: true
-                });
+                this.$emit('stopped')
             }
         },
 
         endPromodoro(timestamp) {
             this.stop(timestamp)
-            this.currentDuration = 0;
             MessageBox.confirm(
                 `The time of the ${this.modeSelected} has finished`
             ).then(() => {
@@ -296,13 +286,13 @@ export default {
             this.updateExpectedDuration();
 
             if (this.modeSelected == "session" && this.task.id) {
-                this.track = new Tracker({
+                this.trackerLocal = new Tracker({
                     description: this.task.title,
                     item_id: this.task.id,
                     type: 'promodoro',
                     target_duration: this.expectedDuration
                 });
-                this.startTimeStamp = this.track.startTimer();
+                this.startTimeStamp = this.trackerLocal.startTimer();
                 this.startTime = this.startTimeStamp.getTime();
                 console.log(this.startTimeStamp);
             } else {

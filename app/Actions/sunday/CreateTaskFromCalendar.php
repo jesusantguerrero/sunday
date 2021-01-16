@@ -2,6 +2,7 @@
 
 namespace App\Actions\Sunday;
 
+use App\Events\AutomationCompleted;
 use App\Libraries\GoogleService;
 use App\Models\Automation;
 use App\Models\Board;
@@ -65,5 +66,7 @@ class CreateTaskFromCalendar
                 "stage_id" => $item['stage_id']
             ]);
         }
+
+        AutomationCompleted::dispatch($automation);
     }
 }

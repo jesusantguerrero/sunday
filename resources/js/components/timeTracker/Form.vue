@@ -53,7 +53,7 @@
                 for="time-tracker-billable"
                 id="time-tracker-tag-select"
                 class="custom-check  dropdown-toggle"
-                :class="{ selected: timeEntry.label_ids.length }"
+                :class="{ selected: hasLabels }"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
@@ -67,7 +67,7 @@
                   name="time-tracker-billable"
                   class="hide"
                   id="time-tracker-tags"
-                  :checked="timeEntry.label_ids.length"
+                  :checked="hasLabels"
                 />
               </label>
 
@@ -183,6 +183,10 @@ export default {
 
     timerButtonIcon() {
       return this.running ? "fa-stop" : "fa-play";
+    },
+
+    hasLabels() {
+       return this.timeEntry.label_ids && this.timeEntry.label_ids.length
     }
   },
 
@@ -204,7 +208,7 @@ export default {
         .post("/api/time-entries", formData)
         .then(({ data }) => {
           this.running = true;
-          this.timeEntry = data;
+          this.timeEntry = data.data;
         })
         .catch(error => {
           this.$notify({

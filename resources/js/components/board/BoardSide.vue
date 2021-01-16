@@ -139,6 +139,7 @@ export default {
             this.boardData = board;
         },
         addBoard(board) {
+            this.isBoardFormOpen = false;
             this.$inertia.reload();
         },
 

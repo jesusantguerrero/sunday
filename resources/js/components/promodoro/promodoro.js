@@ -77,13 +77,13 @@ export default {
         },
 
         playSound() {
-            const audio = new Audio(`/audio/${this.alarmSound}.mp3`)
-            audio.id = "audio"
-            document.body.appendChild(audio);
-            audio.currentTime = 0
-            audio.play()
-            this.audio = audio
-            window.navigator.vibrate([1000, 100, 1000, 100, 1000, 100, 1000]);
+            // const audio = new Audio(`/audio/${this.alarmSound}.mp3`)
+            // audio.id = "audio"
+            // document.body.appendChild(audio);
+            // audio.currentTime = 0
+            // audio.play()
+            // this.audio = audio
+            // window.navigator.vibrate([1000, 100, 1000, 100, 1000, 100, 1000]);
         },
 
         stopSound() {
