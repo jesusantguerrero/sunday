@@ -244,8 +244,9 @@ export default {
         },
 
         stop(timestamp) {
-            this.stopTracker(timestamp);
             clearInterval(this.timer);
+            this.stopTracker(timestamp);
+            this.currentDuration = 0;
             this.run = this.allowPause ? 2 : 0;
             this.icon = "play_arrow";
             if (!this.allowPause) {
@@ -258,13 +259,11 @@ export default {
                 this.trackerLocal.stopTimer(stoppedTimestamp);
                 this.$set(this.tracker, "duration", this.tracker.getDuration());
                 this.$emit('stopped')
-
             }
         },
 
         endPromodoro(timestamp) {
             this.stop(timestamp)
-            this.currentDuration = 0;
             MessageBox.confirm(
                 `The time of the ${this.modeSelected} has finished`
             ).then(() => {
