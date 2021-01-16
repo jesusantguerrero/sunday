@@ -415,9 +415,9 @@
             },
 
             getTodos() {
+                this.tracker = null;
                 axios("/api/items/todos").then(({ data }) => {
-                    this.tracker = null;
-                    this.todos = data 
+                    this.todo = data
                 })
             },
 

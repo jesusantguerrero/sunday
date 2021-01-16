@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import tracker from './../timeTracker/tracker';
 import Tracker from "./../timeTracker/tracker";
 
 export default {
@@ -59,13 +60,35 @@ export default {
         }
     },
 
+    data() {
+        return {
+            originalDuration: null
+        }
+    },
+
+    watch: {
+        tracker(tracker) {
+            if (tracker) {
+                this.originalDuration = this.task.duration
+            } else {
+                this.originalDuration = this.task.duration
+            }
+        }
+    },
+
+    created() {
+        this.originalDuration = this.task = duration;
+    },
+
     computed: {
         isTracker() {
             return this.tracker && this.tracker.timeEntry.item_id == this.task.id;
         },
         durationFromMs() {
             const currentDuration = this.isTracker ? this.tracker.duration || 0: 0;
-            return Tracker.durationFromMs(this.task.duration + currentDuration);
+
+            this.$set(this.task, 'duration', this.originalDuration + currentDuration);
+            return Tracker.durationFromMs(this.task.duration);
         },
         priorityText() {
             const emojis = {

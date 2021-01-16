@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Item as ResourcesItem;
 use Illuminate\Http\Request;
 use App\Models\Item;
 use Illuminate\Http\Response;
@@ -91,6 +92,6 @@ class ItemController extends Controller
     }
 
     public function getTodos(Request $request) {
-        return ItemResource::collection(Item::getByCustomField(['status', 'todo'], $request->user()));
+        return ResourcesItem::collection(Item::getByCustomField(['status', 'todo'], $request->user()));
     }
 }
