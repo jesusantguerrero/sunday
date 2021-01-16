@@ -91,6 +91,7 @@
                                 :tracker.sync="tracker"
                                 :timer-color.sync="promodoroColor"
                                 :tasks="todo"
+                                @stopped="getTodos"
                             >
                             </promodoro>
                         </div>
@@ -413,6 +414,13 @@
                 this.$refs.Promodoro.setTask(task);
             },
 
+            getTodos() {
+                axios("/api/items/todos").then(({ data }) => {
+                    this.tracker = null;
+                    this.todos = data 
+                })
+            },
+
             deleteLocalItem(item, listName) {
                 const taskIndex = this[listName].findIndex( task => task.id == item.id);
                 this[listName].splice(taskIndex, 1);
@@ -434,7 +442,6 @@
                                 })
                                 this.$inertia.reload({ preserveScroll: true });
                             });
-
                     })
                 });
             }

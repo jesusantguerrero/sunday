@@ -89,4 +89,8 @@ class ItemController extends Controller
         Item::whereIn('id', $items)->delete();
         return $items;
     }
+
+    public function getTodos(Request $request) {
+        return ItemResource::collection(Item::getByCustomField(['status', 'todo'], $request->user()));
+    }
 }

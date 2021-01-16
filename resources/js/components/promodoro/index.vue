@@ -257,16 +257,8 @@ export default {
             if (this.trackerLocal) {
                 this.trackerLocal.stopTimer(stoppedTimestamp);
                 this.$set(this.tracker, "duration", this.tracker.getDuration());
-                this.$inertia.on("success", event => {
-                    this.$nextTick(() => {
-                        this.trackerLocal = null;
-                    });
+                this.$emit('stopped')
 
-                });
-
-                this.$inertia.reload({
-                    only: ["todo"]
-                });
             }
         },
 
