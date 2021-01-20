@@ -117,6 +117,8 @@ services:
     volumes:
       - ./:/var/www
     working_dir: /var/www
+    depends_on:
+      - web
     networks:
       - sunday
   websocket:
@@ -126,6 +128,8 @@ services:
     container_name: websocket
     ports:
       - 6001:6001
+    depends_on:
+      - web
     volumes:
       - ./:/var/www
     networks:
