@@ -85,7 +85,7 @@ class CreateTaskFromGmail
             }
         };
 
-        AutomationCompleted::dispatch($automation);
+        AutomationCompleted::dispasstch($automation);
     }
 
     public static function parseEmail($raw)

@@ -6,6 +6,7 @@
         <slot> </slot>
         <div class="body text-gray-600 mb-5">
             <item-group-cell
+                ref="ItemGroupCell"
                 v-if="allowAdd"
                 class="w-full flex items-center mb-10"
                 field-name="title"
@@ -39,7 +40,9 @@
                 v-if="!tasks || !tasks.length"
                 class="task-item text-center font-bold text-gray-400"
             >
-                There's no items to show
+                <slot name="empty">
+                    There's no items to show
+                </slot>
             </div>
         </div>
     </div>

@@ -8,11 +8,11 @@
         :selected-date="selectedDay"
         :schedule="schedule"
         :allow-add="allowAdd"
+        :link-fields="linkFields"
         :allow-delete="allowDelete"
         :allow-update="allowUpdate"
         @delete-called="deleteItem"
-        @update-called="openForm"
-        @add-called="openForm"
+        @update-called="editItem"
       >
       </grid>
     </div>
@@ -22,7 +22,6 @@
 <script>
 import { format } from "date-fns";
 import Controls from "./controls";
-import ScheduleForm from "./form";
 import Grid from "./grid";
 import axios from "axios";
 import { MessageBox } from "element-ui";
@@ -47,6 +46,12 @@ export default {
             return []
         }
     },
+    linkFields: {
+        type: Object,
+        default() {
+
+        }
+    },
     value: {
         type: Date,
         required: true
@@ -54,13 +59,10 @@ export default {
   },
   components: {
     Controls,
-    Grid,
-    ScheduleForm
+    Grid
   },
   data() {
     return {
-      msg: "Horario Mahanahim",
-      isFormOpen: false,
       formData: {},
       currentTime: new Date(),
       selectedDay: null,
@@ -83,7 +85,10 @@ export default {
     },
     value: {
       handler(newDate) {
-        this.selectedDay = newDate || new Date();
+          const selectedDay = newDate || new Date();
+          if (!this.selectedDay || (format(selectedDay, "yyyy-MM-dd") != format(this.selectedDay, 'yyyy-MM-dd'))) {
+              this.selectedDay = selectedDay;
+          }
       },
       immediate: true
     }
@@ -116,42 +121,12 @@ export default {
       );
     },
 
-    openForm(formData) {
-      this.formData = formData;
-      this.isFormOpen = true;
-    },
-
-    onSaved(item) {
-      this.getSchedules();
-      this.isFormOpen = false;
-      this.formData = {};
-      console.log(item);
-    },
-
-    onCanceled() {
-      this.isFormOpen = false;
-      this.formData = {};
-    },
-
     deleteItem(item) {
-      MessageBox.confirm(
-        "Este programa se eliminará",
-        "Eliminar programa"
-      ).then(action => {
-        if (action == "confirm") {
-          axios({
-            url: `${this.endpoint}/${item.id}`,
-            method: "delete",
-            data: {
-              delete_related: true
-            }
-          })
-            .then(() => {
-              this.getSchedules();
-            })
-            .catch(() => {});
-        }
-      });
+        this.$emit("delete", item)
+    },
+
+    editItem(item) {
+        this.$emit("edit", item)
     }
   }
 };

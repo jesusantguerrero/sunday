@@ -16,7 +16,8 @@
             v-for="(daySlot, index) in formattedAgenda"
             :key="`${daySlot.horaExacta}-${index}`"
             :day-slot="daySlot"
-            :show-all="mostrarTodos"
+            :show-all="showAll"
+            :link-fields="linkFields"
             :current-time="currentTime"
             :allow-delete="allowDelete"
             :allow-update="allowUpdate"
@@ -68,14 +69,20 @@ export default {
         dateEndField: {
             type: String,
             default: "due_date"
-        }
+        },
+        linkFields: {
+            type: Object,
+                default() {
+
+            }
+        },
     },
     data() {
         return {
             currentTime: new Date(),
             agenda: [],
             modoManual: false,
-            mostrarTodos: false
+            showAll: false
         };
     },
     created() {
@@ -97,11 +104,11 @@ export default {
         },
 
         textToggleMostrar() {
-            return this.mostrarTodos ? "Current" : "Past Events";
+            return this.showAll ? "Current" : "Past Events";
         },
 
         iconToggleMostrar() {
-            return this.mostrarTodos ? "Current" : "Past Events";
+            return this.showAll ? "Current" : "Past Events";
         },
 
         formattedAgenda() {
@@ -201,19 +208,19 @@ export default {
                 return (
                     segundahoraString < horaActualString &&
                     this.isToday &&
-                    !this.mostrarTodos
+                    !this.showAll
                 );
             } else {
                 const hours = programa.hora;
                 return (
                     Number(hours) < this.horaActual &&
                     this.isToday &&
-                    !this.mostrarTodos
+                    !this.showAll
                 );
             }
         },
         toggleViewAll() {
-            this.mostrarTodos = !this.mostrarTodos;
+            this.showAll = !this.showAll;
         },
 
         isHourBetween(horaInicial = "", horaFinal = "", fechaActual, bigger) {

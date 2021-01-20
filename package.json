@@ -24,8 +24,8 @@
         "serve:artisan": "docker-compose exec web php artisan",
         "deploy:dev": "git push live-sunday development:master",
         "deploy": "git push live-sunday master",
-        "serve:dev": "npm run serve:up && npm run serve:install && npm run serve:generate && npm run serve:migrate",
-        "serve": "npm run serve:up-prod && npm run serve:install && npm run serve:generate && npm run serve:migrate"
+        "serve:dev": "npm run serve:up && npm run serve:install && npm run serve:migrate",
+        "serve": "npm run serve:up-prod && npm run serve:install && npm run serve:migrate"
     },
     "devDependencies": {
         "@inertiajs/inertia": "^0.3.2",
@@ -53,6 +53,7 @@
     },
     "dependencies": {
         "@inertiajs/progress": "^0.2.4",
+        "@vue/composition-api": "^1.0.0-beta.26",
         "@vueuse/core": "^4.0.8",
         "canvas-confetti": "^1.3.2",
         "date-fns": "^2.16.1",

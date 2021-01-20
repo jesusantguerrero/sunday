@@ -29,6 +29,12 @@
                         {{ mode.name }}
                     </button>
                 </div> -->
+                <button @click="findNextMode()"
+                    class="ml-2"
+                    title="Next session"
+                >
+                    <i class="fa fa-forward"></i>
+                </button>
                 <button
                     @click="toggleConfiguration"
                     class="ml-2"

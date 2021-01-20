@@ -57,6 +57,8 @@ class CreateTaskFromCalendar
                     ['name' => 'due_date', 'type'=> 'date', 'value' => $endDate->format('Y-m-d')],
                     ['name' => 'end_time', 'type' => 'time', 'value' => $endDate->format('H:i'), 'hide' => true],
                     ['name' => 'automation_id', 'value' => $automation->id, 'hide' => true],
+                    ['name' => 'url_id', 'type' => 'url', 'value' => $event->hangoutLink, 'hide' => 1],
+                    ['name' => 'url_subject', 'type'=> 'url', 'value' => $event->htmlLink, 'hide' => 1],
                 ]
             ];
 

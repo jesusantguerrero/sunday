@@ -10,6 +10,7 @@ use App\Models\Link;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\URL;
 use App\Models\Standup;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -45,12 +46,14 @@ class DashboardController extends Controller
     }
     public function planner(Request $request)
     {
-        $user = $request->user();
         $date = $request->query('date') ?? now()->format('Y-m-d');
+        $date = new Carbon($date);
+        $date->timezone = "America/Santo_Domingo";
+        $formattedDate = $date->format('Y-m-d');
 
         return Inertia::render('Planner', [
-            'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $date], $request->user())),
-            'date' => $date
+            'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $formattedDate], $request->user())),
+            'date' => $date->toDateTimeString()
         ]);
     }
 

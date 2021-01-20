@@ -18,8 +18,17 @@
                         <div class="">
                             {{ daySlot.title }}
 
-                            [ {{ daySlot.resource_type || 'Task'}} ]
+                            <a
+                                class="day-slot__links"
+                                target="_blank"
+                                :href="daySlot[field]"
+                                v-for="(label, field) in linkFields" :key="field">
+                                <i class="fa fa-external-link-alt"></i>
+                                {{ label }}
+                            </a>
                         </div>
+
+
 
                         <!-- CRUD Controls  -->
                         <div class="crud-controls">
@@ -110,6 +119,12 @@ export default {
             type: String,
             default: "end_time"
         },
+        linkFields: {
+            type: Object,
+            default() {
+                return {}
+            }
+        },
         dateEndField: {
             type: String,
             default: "due_date"
@@ -179,6 +194,7 @@ export default {
     height: 80px;
     margin-bottom: 8px;
     padding: 15px 12px 16px 12px;
+    cursor: pointer;
 
     &::before {
         @apply bg-blue-400 rounded-lg;
@@ -188,6 +204,20 @@ export default {
         top: 25px;
         width: 5px;
         height: 20px;
+    }
+
+
+
+    &__links {
+        @apply border-2 border-gray-200 px-2 py-1 mr-2 text-sm;
+        opacity: 0;
+        transition: all ease .3s;
+    }
+
+    &:hover {
+        .day-slot__links {
+           opacity: 1;
+        }
     }
 }
 
@@ -340,6 +370,8 @@ export default {
 
     .day-slot__title {
         @apply flex-col;
+
+
     }
 
     .content-body {

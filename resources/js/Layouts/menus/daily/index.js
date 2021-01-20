@@ -55,16 +55,16 @@ export default {
     {
         divider:""
     },
-    {
-        label: "Notes",
-        icon: "lightbulb",
-        to: "/notes"
-    },
-    {
-        label: "Okrs",
-        icon: "lightbulb",
-        to: "/okrs"
-    },
+    // {
+    //     label: "Notes",
+    //     icon: "lightbulb",
+    //     to: "/notes"
+    // },
+    // {
+    //     label: "Okrs",
+    //     icon: "lightbulb",
+    //     to: "/okrs"
+    // },
     {
         label: "Reports",
         icon: "chart-line",
