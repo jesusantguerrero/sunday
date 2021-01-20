@@ -116,6 +116,7 @@ services:
     container_name: cron
     volumes:
       - ./:/var/www
+    working_dir: /var/www
     networks:
       - sunday
   websocket:

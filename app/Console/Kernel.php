@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-        $schedule->command("daily:automation")->everyMinute();
+        $schedule->command("daily:automation")->everyMinute()->runInBackground();
     }
 
     /**
