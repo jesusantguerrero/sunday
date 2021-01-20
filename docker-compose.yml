@@ -80,6 +80,22 @@ services:
     container_name: cron
     volumes:
       - ./:/var/www
+    depends_on:
+      - web
+    networks:
+      - sunday
+  websocket:
+    build:
+      context: .
+      dockerfile: d-websocket.dockerfile
+    container_name: websocket
+    ports:
+      - 6001:6001
+    entrypoint: [ "php", "/var/www/artisan websockets:serve"]
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - web
     networks:
       - sunday
 networks:

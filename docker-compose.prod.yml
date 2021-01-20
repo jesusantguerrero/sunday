@@ -58,8 +58,6 @@ services:
     restart: unless-stopped
     depends_on:
       - db
-    ports:
-      - 6001:6001
     volumes:
       - ./:/var/www
       - ./docker-compose/web/timezone:/etc/timezone
@@ -67,22 +65,22 @@ services:
       - sunday_db:/var/lib/mysql
     networks:
       - sunday
-  # landing:
-  #   build:
-  #     context: ../sunday-web
-  #     dockerfile: Dockerfile
-  #   image: sunday-landing
-  #   container_name: sunday-landing
-  #   restart: unless-stopped
-  #   ports:
-  #     - 3000:3000
-  #   environment:
-  #     - VIRTUAL_PORT=3000
-  #     - VIRTUAL_HOST=${VIRTUAL_LANDING_HOST}
-  #     - LETSENCRYPT_HOST=${VIRTUAL_LANDING_HOST}
-  #     - LETSENCRYPT_EMAIL=jesusant.guerrero@gmail.com
-  #   networks:
-  #     - sunday
+  landing:
+    build:
+      context: ../sunday-web
+      dockerfile: Dockerfile
+    image: sunday-landing
+    container_name: sunday-landing
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      - VIRTUAL_PORT=3000
+      - VIRTUAL_HOST=${VIRTUAL_LANDING_HOST}
+      - LETSENCRYPT_HOST=${VIRTUAL_LANDING_HOST}
+      - LETSENCRYPT_EMAIL=jesusant.guerrero@gmail.com
+    networks:
+      - sunday
   db:
     image: mysql:5.7
     container_name: sunday-db
@@ -116,6 +114,17 @@ services:
       context: .
       dockerfile: cron.dockerfile
     container_name: cron
+    volumes:
+      - ./:/var/www
+    networks:
+      - sunday
+  websocket:
+    build:
+      context: .
+      dockerfile: d-websocket.dockerfile
+    container_name: websocket
+    ports:
+      - 6001:6001
     volumes:
       - ./:/var/www
     networks:

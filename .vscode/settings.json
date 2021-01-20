@@ -3,6 +3,7 @@
         "Jetstream",
         "Querify",
         "automations",
+        "entrypoint",
         "vhost",
         "vhosts"
     ]
