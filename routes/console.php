@@ -1,6 +1,7 @@
 <?php
 
 use App\Libraries\GoogleService;
+use App\Models\Checklist;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -23,6 +24,17 @@ Artisan::command('daily:automation', function () {
     GoogleService::listenAutomations();
 })->purpose('call services');
 
-Artisan::command('daily:service {service} {userId} {automationId}', function ($service, $userId, $automationId) {
-    GoogleService::$service($userId, $automationId);
+Artisan::command('daily:test', function () {
+    Checklist::create([
+        "team_id" => 1,
+        "user_id" => 1,
+        "title" => "hola",
+        "item_id" => 250,
+        "order" => 0,
+        "done" => 0
+    ]);
+})->purpose('call services');
+
+Artisan::command('daily:service {service} {automationId}', function ($service, $automationId) {
+    GoogleService::$service($automationId);
 })->purpose('call services');

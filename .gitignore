@@ -8,6 +8,7 @@
 /docker-compose/nginx/vhosts/default
 docker-compose/redis/dump.rdb
 /vendor
+jira_*
 .env
 .env.backup
 .phpunit.result.cache

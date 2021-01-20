@@ -518,7 +518,7 @@ export default {
                     axios({
                         url: `/api/items/bulk/delete`,
                         method: "post",
-                        data: items
+                        data: items.map(item => item.id)
                     }).then(() => {
                         this.$inertia.reload({ preserveScroll: true });
                     });
