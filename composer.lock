@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "062acdbc5a408f1ba0e966b3d80e38af",
+    "content-hash": "35f41c38d5a1166b0216a798f9712a20",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2284,12 +2284,12 @@
             "time": "2021-01-08T13:16:40+00:00"
         },
         {
-            "name": "insane/paypal",
+            "name": "insane/treasurer",
             "version": "dev-master",
             "dist": {
                 "type": "path",
-                "url": "packages/insane/paypal",
-                "reference": "6372c139ebb90dabce14745cb69f76c6eb9799e2"
+                "url": "packages/insane/treasurer",
+                "reference": "fa2d5ba263f7e29e199da7e46753e608aafba97a"
             },
             "require": {
                 "dompdf/dompdf": "^0.8.6|^1.0.1",
@@ -2310,22 +2310,22 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "12.x-dev"
+                    "dev-master": "1.x-dev"
                 },
                 "laravel": {
                     "providers": [
-                        "Insane\\Paypal\\PaypalServiceProvider"
+                        "Insane\\Treasurer\\TreasurerServiceProvider"
                     ]
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Insane\\Paypal\\": "src/"
+                    "Insane\\Treasurer\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "Insane\\Paypal\\Tests\\": "tests/"
+                    "Insane\\Treasurer\\Tests\\": "tests/"
                 }
             },
             "license": [
@@ -2342,70 +2342,6 @@
                 "symlink": true,
                 "relative": true
             }
-        },
-        {
-            "name": "insane/treasurer",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jesusantguerrero/insane-treasurer.git",
-                "reference": "67b5c8758f22c0835476ae4a06ea5125785971aa"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jesusantguerrero/insane-treasurer/zipball/67b5c8758f22c0835476ae4a06ea5125785971aa",
-                "reference": "67b5c8758f22c0835476ae4a06ea5125785971aa",
-                "shasum": ""
-            },
-            "require": {
-                "dompdf/dompdf": "^0.8.6|^1.0.1",
-                "ext-json": "*",
-                "moneyphp/money": "^3.2",
-                "nesbot/carbon": "^2.0",
-                "paypal/rest-api-sdk-php": "^1.14",
-                "php": "^7.2.5|^8.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.0",
-                "orchestra/testbench": "^4.0|^5.0|^6.0",
-                "phpunit/phpunit": "^8.0|^9.0"
-            },
-            "suggest": {
-                "ext-intl": "Allows for more locales besides the default \"en\" when formatting money values."
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Insane\\Paypal\\PaypalServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Insane\\Treasurer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "freesgen",
-                    "email": "jesusant.guerrero@gmail.com"
-                }
-            ],
-            "description": "Like cashier but for paypal",
-            "support": {
-                "issues": "https://github.com/jesusantguerrero/insane-treasurer/issues",
-                "source": "https://github.com/jesusantguerrero/insane-treasurer/tree/master"
-            },
-            "time": "2021-01-21T23:21:25+00:00"
         },
         {
             "name": "jaybizzle/crawler-detect",
@@ -11194,7 +11130,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "freesgen/querify": 20,
-        "insane/paypal": 20,
         "insane/treasurer": 20
     },
     "prefer-stable": true,
