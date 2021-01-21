@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\PaypalController;
+use App\Http\Controllers\PlansController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

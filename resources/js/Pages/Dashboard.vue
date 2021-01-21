@@ -342,6 +342,7 @@
             }
         },
         mounted() {
+            console.log(this.$inertia.form);
             if (!this.standup.length && this.todo.length) {
                 this.standupSummary = {...this.todo};
                 this.isStandupOpen = true;

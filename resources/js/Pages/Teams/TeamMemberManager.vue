@@ -24,19 +24,21 @@
                     <div class="col-span-6 sm:col-span-4">
                         <jet-label for="email" value="Email" />
                         <jet-input id="name" type="text" class="mt-1 block w-full" v-model="addTeamMemberForm.email" />
-                        <jet-input-error :message="addTeamMemberForm.error('email')" class="mt-2" />
+                        <jet-input-error :message="addTeamMemberform.errors.email" class="mt-2" />
                     </div>
 
                     <!-- Role -->
                     <div class="col-span-6 lg:col-span-4" v-if="availableRoles.length > 0">
                         <jet-label for="roles" value="Role" />
-                        <jet-input-error :message="addTeamMemberForm.error('role')" class="mt-2" />
+                        <jet-input-error :message="addTeamMemberform.errors.role" class="mt-2" />
 
                         <div class="mt-1 border border-gray-200 rounded-lg cursor-pointer">
                             <div class="px-4 py-3"
                                             :class="{'border-t border-gray-200': i > 0}"
                                             @click="addTeamMemberForm.role = role.key"
-                                            v-for="(role, i) in availableRoles">
+                                            v-for="(role, i) in availableRoles"
+                                            :key="role.id"
+                                        >
                                 <div :class="{'opacity-50': addTeamMemberForm.role && addTeamMemberForm.role != role.key}">
                                     <!-- Role Name -->
                                     <div class="flex items-center">
@@ -106,7 +108,7 @@
                                 <!-- Leave Team -->
                                 <button class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
                                                     @click="confirmLeavingTeam"
-                                                    v-if="$page.user.id === user.id">
+                                                    v-if="$page.props.user.id === user.id">
                                     Leave
                                 </button>
 
@@ -309,7 +311,7 @@
             },
 
             leaveTeam() {
-                this.leaveTeamForm.delete('/teams/' + this.team.id + '/members/' + this.$page.user.id)
+                this.leaveTeamForm.delete('/teams/' + this.team.id + '/members/' + this.$page.props.user.id)
             },
 
             confirmTeamMemberRemoval(teamMember) {

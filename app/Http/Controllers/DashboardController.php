@@ -11,6 +11,9 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\URL;
 use App\Models\Standup;
 use Carbon\Carbon;
+use Insane\Paypal\Models\Plan;
+use Insane\Paypal\Models\Subscription;
+use Insane\Paypal\PaypalService;
 
 class DashboardController extends Controller
 {
@@ -107,6 +110,25 @@ class DashboardController extends Controller
     public function about(Request $request)
     {
         return Inertia::render('About');
+    }
+    public function billing(Request $request)
+    {
+        $user = $request->user();
+        return Inertia::render('Billing', [
+            "plans" => Plan::all(),
+            "subscriptions" => Subscription::where([
+                "user_id" => $user->id
+            ])->get()->map( function ($sub) {
+                return [
+                    "name" => $sub->name,
+                    "id" => $sub->id,
+                    "status" => $sub->status,
+                    "quantity" => $sub->quantity,
+                    "agreement_id" => $sub->agreement_id,
+                    "agreements" => $sub->agreements(),
+                ];
+            })
+        ]);
     }
     public function help(Request $request)
     {

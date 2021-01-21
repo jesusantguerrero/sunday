@@ -11,6 +11,7 @@ use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\PlansController;
 use App\Http\Controllers\StandupController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
@@ -57,6 +58,9 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
 
     // Tracker
     Route::get('/tracker', [TimeEntryController::class, 'list'])->name('tracker');
+
+    // Billing
+    Route::get('/user/billing', [DashboardController::class, 'billing'])->name('billing');
 });
 
 // resource route
@@ -88,5 +92,4 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/api/time-entries', TimeEntryController::class);
     Route::post('/api/time-entries/bulk/delete', [TimeEntryController::class, 'bulkDelete']);
     Route::apiResource('/api/settings', SettingController::class);
-
 });

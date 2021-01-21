@@ -24,7 +24,6 @@ class Item extends JsonResource
             'stage' => $this->stage ? $this->stage->name : "",
             'duration' => $this->timeEntries->sum('duration'),
             'board_id' =>  $this->stage ? $this->stage->board_id : '',
-            'fields' => $this->fields
         ];
 
         foreach ($this->fields as $field) {

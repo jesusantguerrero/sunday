@@ -1,0 +1,13 @@
+{
+    "name": "insane/packages",
+    "description": "Collection of laravel packages",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "freesgen",
+            "email": "jesusant.guerrero@gmail.com"
+        }
+    ],
+    "require": {}
+}

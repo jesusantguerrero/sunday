@@ -28,6 +28,11 @@ export default {
                 to: "/user/api-tokens",
                 icon: "user"
             },
+           {
+                label: "Billing",
+                to: "/user/billing",
+                icon: "user"
+            },
           ]
       }
   ],
