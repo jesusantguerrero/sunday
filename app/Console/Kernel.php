@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
         foreach ($automations as $automation) {
             $schedule->command("daily:service {$automation->name} {$automation->id}")->everyMinute()->runInBackground();
         }
+        $schedule->command('websockets:clean')->daily();
     }
 
     /**
