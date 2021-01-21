@@ -12,6 +12,7 @@ jira_*
 .env
 .env.backup
 .phpunit.result.cache
+packages/insane/paypal/*
 Homestead.json
 Homestead.yaml
 npm-debug.log
