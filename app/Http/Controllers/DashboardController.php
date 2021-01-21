@@ -11,9 +11,8 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\URL;
 use App\Models\Standup;
 use Carbon\Carbon;
-use Insane\Paypal\Models\Plan;
-use Insane\Paypal\Models\Subscription;
-use Insane\Paypal\PaypalService;
+use Insane\Treasurer\Models\Plan;
+use Insane\Treasurer\Models\Subscription;
 
 class DashboardController extends Controller
 {

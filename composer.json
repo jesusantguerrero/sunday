@@ -7,14 +7,13 @@
         "laravel"
     ],
     "repositories": {
-        "insane-paypal": {
-            "url": "packages/insane/paypal",
+        "insane-treasurer": {
+            "url": "packages/insane/treasurer",
             "type": "path",
             "options": {
                 "symlink": true
             }
         }
-
     },
     "license": "MIT",
     "require": {
@@ -29,6 +28,7 @@
         "google/cloud-pubsub": "^1.29",
         "guzzlehttp/guzzle": "^7.0.1",
         "inertiajs/inertia-laravel": "^0.3.5",
+        "insane/treasurer": "1.x-dev",
         "laravel/cashier": "^12.6",
         "laravel/framework": "^8.0",
         "laravel/jetstream": "^2.0",
@@ -36,8 +36,7 @@
         "laravel/tinker": "^2.0",
         "php-mime-mail-parser/php-mime-mail-parser": "^6.0",
         "pusher/pusher-php-server": "~3.0",
-        "tightenco/ziggy": "^1.0",
-        "insane/paypal": "@dev"
+        "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

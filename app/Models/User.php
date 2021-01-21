@@ -9,7 +9,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
-use Insane\Paypal\Billable;
+use Insane\Treasurer\Billable;
 
 class User extends Authenticatable
 {
