@@ -129,6 +129,27 @@ class DashboardController extends Controller
             })
         ]);
     }
+
+    public function payments(Request $request)
+    {
+        $user = $request->user();
+        return Inertia::render('Payments', [
+            "plans" => Plan::all(),
+            "subscriptions" => Subscription::where([
+                "user_id" => $user->id
+            ])->get()->map( function ($sub) {
+                return [
+                    "name" => $sub->name,
+                    "id" => $sub->id,
+                    "status" => $sub->status,
+                    "quantity" => $sub->quantity,
+                    "agreement_id" => $sub->agreement_id,
+                    "agreements" => $sub->agreements(),
+                ];
+            })
+        ]);
+    }
+
     public function help(Request $request)
     {
         return Inertia::render('Help');

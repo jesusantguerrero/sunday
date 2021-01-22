@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <div class="text-center" v-if="!isCurrentPlan">
+        <div class="text-center" v-if="!isCurrent">
             <a
                 v-if="contactLink"
                 class="border-2 border-purple-500 bg-white text-blue-500 px-5 py-2 inline-block rounded-md"
@@ -54,6 +54,10 @@
                 </span>
                 {{ subscribeLabel }}
             </a>
+
+            <div ref="buttonsContainer">
+
+            </div>
         </div>
     </div>
 </template>
@@ -79,6 +83,35 @@ export default {
         subscribeLabel: {
             type: String,
             default: 'subscribe'
+        }
+    },
+    mounted() {
+        const self = this
+        paypal.Buttons({
+            createSubscription(data, actions) {
+                return actions.subscription.create({
+                    'plan_id': "P-1CW112030G513050HMAFFJ2A"//self.plan.paypal_plan_id
+                });
+
+            },
+
+            onApprove(data, actions) {
+                data.plan_id = "P-1CW112030G513050HMAFFJ2A"
+                self.createSubscription(data)
+            }
+
+            }).render(this.$refs.buttonsContainer);
+    },
+    methods: {
+        createSubscription(data) {
+            console.log(data);
+            axios({
+                method: "POST",
+                url: `/v2/subscriptions/${data.subscriptionID}/save`,
+                data
+            }).then(() => {
+                this.fireworks();
+            })
         }
     }
 };

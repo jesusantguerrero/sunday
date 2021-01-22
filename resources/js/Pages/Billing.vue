@@ -50,6 +50,7 @@
                     </div>
                 </div>
                 <!-- /Plans -->
+                   <div id="paypal-button-container"></div>
 
                 <jet-section-border />
             </div>

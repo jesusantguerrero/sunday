@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\AutomationRecipeController;
 use App\Http\Controllers\AutomationServiceController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldController;
@@ -60,7 +61,8 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     Route::get('/tracker', [TimeEntryController::class, 'list'])->name('tracker');
 
     // Billing
-    Route::get('/user/billing', [DashboardController::class, 'billing'])->name('billing');
+    Route::get('/user/billing', [BillingController::class, 'index'])->name('billing');
+    Route::get('/user/billing/{routeName}', [BillingController::class, 'index'])->name('billing.details');
 });
 
 // resource route
