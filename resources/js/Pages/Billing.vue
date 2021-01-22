@@ -26,7 +26,7 @@
                         v-for="plan in visibleSubscriptions"
                         :key="plan.id"
                         :plan="plan"
-                        @suspend="sendSubscritionAction(plan, 'suspend')"
+                        @suspend="sendSubscriptionAction(plan, 'suspend')"
                         @reactivate="sendSubscriptionAction(plan, 'reactivate')"
                         @cancel="sendSubscriptionAction(plan, 'cancel')"
                     >
@@ -77,7 +77,7 @@ export default {
     computed: {
         visibleSubscriptions() {
             return this.subscriptions.filter(
-                subs => subs.status != "Cancelled"
+                subs => subs.status.toLowerCase() != "cancelled"
             );
         },
 
@@ -161,7 +161,7 @@ export default {
     },
     methods: {
         sendSubscriptionAction(subscription, actionName) {
-            const url = `/subscriptions/${subscription.id}/agreement/${subscription.agreement_id}/${actionName}`;
+            const url = `/v2/subscriptions/${subscription.id}/agreement/${subscription.agreement_id}/${actionName}`;
             axios.post(url).then(() => {
                 this.$inertia.reload();
             });

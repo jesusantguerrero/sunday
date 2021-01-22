@@ -37,7 +37,7 @@ class BillingController extends Controller
                     "status" => $sub->status,
                     "quantity" => $sub->quantity,
                     "agreement_id" => $sub->agreement_id,
-                    "agreements" => $sub->agreements(),
+                    "agreements" => [],
                 ];
             })
         ]);

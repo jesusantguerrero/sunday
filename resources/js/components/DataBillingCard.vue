@@ -45,19 +45,16 @@
                 Contact Sales
             </a>
 
-            <a
-                class="bg-blue-500 text-white px-5 py-2 inline-block rounded-md"
-                :href="subscribeLink"
-            >
-                <span class="font-extrabold">
-                    Paypal
-                </span>
-                {{ subscribeLabel }}
-            </a>
 
-            <div ref="buttonsContainer">
+            <div ref="buttonsContainer" v-if="plan.paypal_plan_id">
 
             </div>
+            <a v-else
+                class="bg-gray-400 text-white px-5 py-2 inline-block rounded-sm w-full"
+                :href="subscribeLink"
+            >
+                {{ subscribeLabel }}
+            </a>
         </div>
     </div>
 </template>
@@ -90,13 +87,13 @@ export default {
         paypal.Buttons({
             createSubscription(data, actions) {
                 return actions.subscription.create({
-                    'plan_id': "P-1CW112030G513050HMAFFJ2A"//self.plan.paypal_plan_id
+                    'plan_id': self.plan.paypal_plan_id
                 });
 
             },
 
             onApprove(data, actions) {
-                data.plan_id = "P-1CW112030G513050HMAFFJ2A"
+                data.plan_id = self.plan.paypal_plan_id
                 self.createSubscription(data)
             }
 

@@ -4,6 +4,7 @@ use App\Libraries\GoogleService;
 use App\Models\Checklist;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Insane\Treasurer\PaypalServiceV2;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,11 @@ Artisan::command('daily:test', function () {
         "order" => 0,
         "done" => 0
     ]);
+})->purpose('call services');
+
+Artisan::command('treasure:sync-plans {userId}', function ($userId) {
+    $paypalService = new PaypalServiceV2();
+    $paypalService->syncPlans($userId);
 })->purpose('call services');
 
 Artisan::command('daily:service {service} {automationId}', function ($service, $automationId) {

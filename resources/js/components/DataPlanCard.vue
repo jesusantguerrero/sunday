@@ -16,21 +16,21 @@
         <div class="text-center">
             <button
                 class="bg-cool-gray-500 text-white px-5 py-2 inline-block rounded-md"
-                v-if="plan.status == 'Active'"
+                v-if="status == 'active'"
                 @click="$emit('suspend')"
             >
                 Suspend
             </button>
             <button
                 class="bg-green-500 text-white px-5 py-2 inline-block rounded-md"
-                v-if="plan.status == 'Suspended'"
+                v-if="status == 'suspended'"
                 @click="$emit('reactivate')"
             >
                 Reactivate
             </button>
             <button
                 class="bg-red-500 text-white px-5 py-2 inline-block rounded-md"
-                v-if="['Active', 'Suspended'].includes(plan.status)"
+                v-if="['active', 'suspended'].includes(status)"
                 @click="$emit('cancel')"
             >
                 cancel
@@ -45,6 +45,11 @@ export default {
         plan: {
             type: Object,
             required: true
+        }
+    },
+    computed: {
+        status() {
+            return this.plan.status && this.plan.status.toLowerCase()
         }
     }
 };
