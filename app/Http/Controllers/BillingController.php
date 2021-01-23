@@ -30,16 +30,10 @@ class BillingController extends Controller
             "plans" => Plan::all(),
             "subscriptions" => Subscription::where([
                 "user_id" => $user->id
-            ])->get()->map( function ($sub) {
-                return [
-                    "name" => $sub->name,
-                    "id" => $sub->id,
-                    "status" => $sub->status,
-                    "quantity" => $sub->quantity,
-                    "agreement_id" => $sub->agreement_id,
-                    "agreements" => [],
-                ];
-            })
+            ])->get(),
+            "transactions" => function () use ($request) {
+                return $request->user()->subscriptionTransactions();
+            }
         ]);
 
     }
