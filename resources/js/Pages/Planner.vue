@@ -17,7 +17,7 @@
                                 Add Event
                             </button>
                         </div>
-                            <div class="controls h-12 bg-purple-700 rounded-lg">
+                        <!-- <div class="controls h-12 bg-purple-700 rounded-lg">
                             <button
                                 v-for="mode in modes"
                                 :key="mode"
@@ -29,13 +29,17 @@
                             >
                                 {{ mode }}
                             </button>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="mt-5 md:ml-6">
                         <schedule-view
                             v-model="localDate"
                             :schedule="scheduled"
+                            :link-fields="{
+                                url_id: 'Join',
+                                url_subject: 'See meet'
+                            }"
                             id-field=""
                             time-field=""
                             date-field=""
@@ -123,7 +127,7 @@ import BoardSide from "../components/board/BoardSide";
 import ScheduleControls from "../components/schedule/controls";
 import ScheduleView from "../components/schedule";
 import ItemModal from "../components/board/ItemModal";
-import { subDays, toDate } from "date-fns";
+import { subDays, toDate, format } from "date-fns";
 
 export default {
     components: {
@@ -173,14 +177,13 @@ export default {
             isItemModalOpen: false
         };
     },
+    created() {
+        this.setCommitDate();
+    },
     watch: {
         localDate: {
             handler(newDate, oldDate) {
-                if (
-                    this.date &&
-                    newDate &&
-                    newDate.toISOString().slice(0, 10) != this.date
-                ) {
+                if (!oldDate || (newDate && format(newDate, 'yyyy-MM-dd') != format(oldDate, 'yyyy-MM-dd'))) {
                     this.getCommitsByDate();
                 }
             },
@@ -198,19 +201,19 @@ export default {
             return this.todo.filter(item => item.done).length;
         },
         params() {
-           return `?date=${this.localDate.toISOString().slice(0, 10)}`;
+           return `?date=${format(this.localDate, 'yyyy-MM-dd')}`;
         }
     },
     methods: {
         setCommitDate() {
             let date = null;
             date = this.date.split("-");
-            date = new Date(date[0], date[1] - 1, date[2]);
+            date = new Date(this.date);
             this.localDate = date;
         },
 
         getCommitsByDate() {
-            this.$inertia.replace(`/planner${this.params}`, {
+            this.$inertia.visit(`/planner${this.params}`, {
                 only: ["scheduled", "date"],
                 preserveState: true
             });

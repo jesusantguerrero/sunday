@@ -15,6 +15,7 @@ module.exports = {
             '@components': path.resolve('resources/js/components'),
             '@docs': path.resolve('resources/js/documentation'),
             '@root': '/',
+            ziggy: path.resolve('vendor/tightenco/ziggy/dist'),
         },
     },
 };

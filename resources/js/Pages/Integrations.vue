@@ -67,6 +67,7 @@
                 </div>
             </div>
 
+
              <automation-modal
                 @cancel="isAutomationModalOpen = false"
                 @saved="onItemSaved"

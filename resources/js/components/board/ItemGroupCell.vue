@@ -1,6 +1,7 @@
 <template>
     <div
         class="item-group-cell"
+        ref="ItemGroupCell"
         :class="{ 'editable-mode': isEditMode, 'new-item': isTitle }"
     >
         <div
@@ -106,6 +107,7 @@ import InputDate from "./cellTypes/Date";
 import InputPerson from "./cellTypes/Person";
 import InputTime from "./cellTypes/Time";
 import BoardSelector from './BoardSelector.vue';
+import { onClickOutside } from '@vueuse/core'
 
 export default {
     name: "ItemGroupCell",
@@ -219,6 +221,16 @@ export default {
                 )
             );
         }
+    },
+
+    mounted() {
+        // onClickOutside(this.$refs.ItemGroupCell, (e) => {
+        //     console.log(e);
+        //     const classes = e.path.map(item => item.className)
+        //     debugger
+        //     const el = classes.includes("el-")
+        //     this.isEditMode = false
+        // })
     },
 
     methods: {

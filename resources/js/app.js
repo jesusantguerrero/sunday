@@ -2,10 +2,11 @@ require("./bootstrap");
 require("vue-multiselect/dist/vue-multiselect.min.css");
 
 import Vue from "vue";
-import { InertiaApp } from "@inertiajs/inertia-vue";
-import { InertiaForm } from "laravel-jetstream";
+import { App as InertiaApp, plugin as InertiaPlugin } from "@inertiajs/inertia-vue";
 import ConfirmModalMixin from "./plugins/ConfirmModalMixin";
 import VueGoogleApi from "vue-google-api";
+import route from 'ziggy';
+import { Ziggy } from './ziggy';
 import "./plugins/element-ui";
 
 const config = {
@@ -20,17 +21,16 @@ import Multiselect from "vue-multiselect";
 import PortalVue from "portal-vue";
 import Vuelidate from "vuelidate";
 import fireworks from "./plugins/fireworks";
-
+window.route = route;
+window.Ziggy = Ziggy;
 Vue.use(Vuelidate);
-Vue.use(InertiaApp);
-Vue.use(InertiaForm);
+Vue.use(InertiaPlugin);
 Vue.use(PortalVue);
 Vue.use(VueGoogleApi, config);
 Vue.mixin(ConfirmModalMixin);
 Vue.mixin(fireworks)
+Vue.mixin({ methods: { route } });
 Vue.component("multiselect", Multiselect);
-
-// InertiaProgress.init();
 
 const app = document.querySelector("[data-page]");
 
@@ -43,3 +43,5 @@ new Vue({
             }
         })
 }).$mount(app);
+
+require('./bootstrap');

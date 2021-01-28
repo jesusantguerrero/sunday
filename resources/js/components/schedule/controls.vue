@@ -89,19 +89,15 @@ export default {
       this.todayMode = !this.todayMode;
     },
     nextWeek() {
-      this.week = this.getWeek(
-        new Date(this.selectedDay.setDate(this.selectedDay.getDate() + 1))
-      );
+      this.week = this.getWeek(new Date(this.selectedDay.setDate(this.selectedDay.getDate() + 1)));
       this.isSelectedDayInWeek();
     },
     prevWeek() {
-      this.week = this.getWeek(
-        new Date(this.selectedDay.setDate(this.selectedDay.getDate() - 1))
-      );
+      this.week = this.getWeek(new Date(this.selectedDay.setDate(this.selectedDay.getDate() - 1)));
       this.isSelectedDayInWeek();
     },
     getISODate(date) {
-      return date.toISOString().slice(0, 10);
+      return format(date, 'yyyy-MM-dd');
     },
     isToday(date) {
       return this.getISODate(new Date()) == this.getISODate(date);

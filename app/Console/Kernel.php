@@ -25,8 +25,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
-        $schedule->command("daily:automation")->everyMinute();
+        $automations = Automation::all();
+        foreach ($automations as $automation) {
+            $schedule->command("daily:service {$automation->name} {$automation->id}")->everyMinute()->runInBackground();
+        }
+        $schedule->command('websockets:clean')->daily();
     }
 
     /**

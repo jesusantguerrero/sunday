@@ -23,7 +23,7 @@ class AutomationController extends BaseController
         $automation = Automation::find($automationId);
         if ($automation) {
             $service = $automation->recipe->name;
-            GoogleService::$service($automation, true);
+            GoogleService::$service($automation->id, true);
             return ["done" => $automation];
         } else {
             $automations = Automation::where([

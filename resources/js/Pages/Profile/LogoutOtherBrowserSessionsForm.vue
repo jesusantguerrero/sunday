@@ -68,7 +68,7 @@
                                     v-model="form.password"
                                     @keyup.enter.native="logoutOtherBrowserSessions" />
 
-                        <jet-input-error :message="form.error('password')" class="mt-2" />
+                        <jet-input-error :message="form.errors.password" class="mt-2" />
                     </div>
                 </template>
 

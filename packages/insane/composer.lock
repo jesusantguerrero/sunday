@@ -1,0 +1,61 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "ce9d9bea9c60ea56b1d791d1980c11a8",
+    "packages": [
+        {
+            "name": "beberlei/composer-monorepo-plugin",
+            "version": "v0.16.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/composer-monorepo-plugin.git",
+                "reference": "889b4617196cf64597accccda504cee38dbdb1de"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/composer-monorepo-plugin/zipball/889b4617196cf64597accccda504cee38dbdb1de",
+                "reference": "889b4617196cf64597accccda504cee38dbdb1de",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.0"
+            },
+            "require-dev": {
+                "composer/composer": "^2.0.7",
+                "phake/phake": "^2.2|^3.0",
+                "php": "^5.5|^7.0|^8.0",
+                "phpunit/phpunit": "^5|^6|^7|^8|^9"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Monorepo\\Composer\\Plugin"
+            },
+            "autoload": {
+                "psr-0": {
+                    "Monorepo\\": "src/main"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "support": {
+                "issues": "https://github.com/beberlei/composer-monorepo-plugin/issues",
+                "source": "https://github.com/beberlei/composer-monorepo-plugin/tree/v0.16.5"
+            },
+            "time": "2020-11-16T14:53:05+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
+}

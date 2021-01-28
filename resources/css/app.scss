@@ -88,3 +88,7 @@ position: relative;
   color: #777;
   font-size: 20px;
 }
+
+.task-item:last-child {
+    border-bottom: none !important;
+}

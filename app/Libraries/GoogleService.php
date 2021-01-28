@@ -64,17 +64,9 @@ class GoogleService
         return $client;
     }
 
-    public static function listenAutomations() {
-        $automations = Automation::all();
-        foreach ($automations as $automation) {
-            echo "$automation->name $automation->id \n";
-            $service = $automation->recipe->name;
-            self::$service($automation);
-        }
-
-    }
-
-    public static function createItemFromCalendar($automation, $afterResponse = null) {
+    public static function createItemFromCalendar($automationId, $afterResponse = null) {
+        $automation = Automation::find($automationId);
+        echo "$automation->name $automation->id \n";
         $method = $afterResponse ? "dispatchAfterResponse" : "dispatch";
         ProcessCalendar::$method($automation);
         return true;
@@ -86,8 +78,10 @@ class GoogleService
         return $service->calendarList->listCalendarList();
     }
 
-    public static function createItemFromGmail($automation, $afterResponse = null) {
-        $method = $afterResponse ? "dispatchAfterResponse" : "dispatch";
+    public static function createItemFromGmail($automationId, $afterResponse = null) {
+       $automation = Automation::find($automationId);
+       echo "$automation->name $automation->id \n";
+       $method = $afterResponse ? "dispatchAfterResponse" : "dispatch";
        ProcessGmail::$method($automation);
        return true;
     }

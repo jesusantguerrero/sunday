@@ -51,7 +51,7 @@
                         v-show="showCommitted"
                         title="Commited"
                         :tasks="committed"
-                        @item-deleted="deleteLocalItem($event, committed)"
+                        @item-deleted="deleteLocalItem($event, 'committed')"
                         @update-item="updateItem"
                     >
                      <template>
@@ -75,6 +75,19 @@
                         @item-deleted="deleteLocalItem($event, 'todo')"
                         @item-clicked="setTaskToTimer"
                     >
+                        <template #empty v-if="committed.length">
+                            <div class="text-center w-full prose prose-xl mx-auto">
+                                <img src="../../img/undraw_a_day_at_the_park.svg" class="w-4/12 mx-auto">
+                                <p class="mt-4"> All tasks done. take a rest</p>
+                            </div>
+                        </template>
+
+                        <template #empty v-else>
+                            <div class="text-center w-full prose prose-xl mx-auto">
+                                <img src="../../img/undraw_empty.svg" class="w-4/12 mx-auto">
+                                <small class="mt-4 text-gray-400"> Nothing to do. Add new tasks from here or mark in your <a href="#" @click="openBoards">boards</a> as todo</small>
+                            </div>
+                        </template>
                     </board-item-container>
                 </div>
                 <!-- End of main board -->
@@ -179,6 +192,25 @@
                 </template>
             </dialog-modal>
 
+            <dialog-modal :show="hideWelcomeScreen" @close="hideWelcome">
+                <template #content>
+                    <div class="prose prose-xl text-center">
+                        <div>
+                            <img src="../../img/undraw_game_day_ucx9.svg" alt="" class="w-6/12 mx-auto">
+                        </div>
+                        <h2 class="text-center"> Welcome to Daily.</h2>
+                        <div class="mb-5">
+                            Create tasks, track the time it takes to get it done, link your promodoros and be more productive!
+                        </div>
+                        <div class="text-center">
+                            <primary-button @click.native="hideWelcome()">
+                                Let's start!
+                            </primary-button>
+                        </div>
+                    </div>
+                </template>
+            </dialog-modal>
+
             <link-form-modal
                 :record-data="linkData"
                 :is-open="isLinkFormOpen"
@@ -270,13 +302,14 @@
         },
         data() {
             return {
-                modes: ['inbox', 'daily'],
+                modes: ['inbox', 'daily', 'zen'],
                 selectedStage: "",
                 modeSelected: 'inbox',
                 promodoroColor: "red",
                 standupSummary: [],
                 localCommitDate: new Date,
                 isLoading: false,
+                hideWelcomeScreen: false,
                 isStandupOpen: false,
                 isLinkFormOpen: false,
                 linkData: {},
@@ -309,9 +342,14 @@
             }
         },
         mounted() {
+            console.log(this.$inertia.form);
             if (!this.standup.length && this.todo.length) {
                 this.standupSummary = {...this.todo};
                 this.isStandupOpen = true;
+            }
+            this.hideWelcomeScreen = !Boolean(Number(this.settings.hide_welcome_screen));
+            if (this.hideWelcomeScreen) {
+                this.fireworks();
             }
         },
         created() {
@@ -444,6 +482,23 @@
                             });
                     })
                 });
+            },
+
+            hideWelcome(){
+                axios({
+                    url: "/api/settings",
+                    method: "POST",
+                    data: {
+                        hide_welcome_screen: true
+                    }
+                }).then(() => {
+                    this.hideWelcomeScreen = false;
+                    this.$emit('saved', settings);
+                })
+            },
+
+            openBoards() {
+
             }
         }
     }

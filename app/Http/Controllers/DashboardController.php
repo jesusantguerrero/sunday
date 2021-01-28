@@ -10,6 +10,9 @@ use App\Models\Link;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\URL;
 use App\Models\Standup;
+use Carbon\Carbon;
+use Insane\Treasurer\Models\Plan;
+use Insane\Treasurer\Models\Subscription;
 
 class DashboardController extends Controller
 {
@@ -45,12 +48,14 @@ class DashboardController extends Controller
     }
     public function planner(Request $request)
     {
-        $user = $request->user();
         $date = $request->query('date') ?? now()->format('Y-m-d');
+        $date = new Carbon($date);
+        $date->timezone = "America/Santo_Domingo";
+        $formattedDate = $date->format('Y-m-d');
 
         return Inertia::render('Planner', [
-            'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $date], $request->user())),
-            'date' => $date
+            'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $formattedDate], $request->user())),
+            'date' => $date->toDateTimeString()
         ]);
     }
 
@@ -105,6 +110,46 @@ class DashboardController extends Controller
     {
         return Inertia::render('About');
     }
+    public function billing(Request $request)
+    {
+        $user = $request->user();
+        return Inertia::render('Billing', [
+            "plans" => Plan::all(),
+            "subscriptions" => Subscription::where([
+                "user_id" => $user->id
+            ])->get()->map( function ($sub) {
+                return [
+                    "name" => $sub->name,
+                    "id" => $sub->id,
+                    "status" => $sub->status,
+                    "quantity" => $sub->quantity,
+                    "agreement_id" => $sub->agreement_id,
+                    "agreements" => $sub->agreements(),
+                ];
+            })
+        ]);
+    }
+
+    public function payments(Request $request)
+    {
+        $user = $request->user();
+        return Inertia::render('Payments', [
+            "plans" => Plan::all(),
+            "subscriptions" => Subscription::where([
+                "user_id" => $user->id
+            ])->get()->map( function ($sub) {
+                return [
+                    "name" => $sub->name,
+                    "id" => $sub->id,
+                    "status" => $sub->status,
+                    "quantity" => $sub->quantity,
+                    "agreement_id" => $sub->agreement_id,
+                    "agreements" => $sub->agreements(),
+                ];
+            })
+        ]);
+    }
+
     public function help(Request $request)
     {
         return Inertia::render('Help');
