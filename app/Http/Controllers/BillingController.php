@@ -13,6 +13,7 @@ use App\Models\Standup;
 use Carbon\Carbon;
 use Insane\Treasurer\Models\Plan;
 use Insane\Treasurer\Models\Subscription;
+use Insane\Treasurer\PaypalServiceV2;
 
 class BillingController extends Controller
 {
@@ -35,6 +36,18 @@ class BillingController extends Controller
                 return $request->user()->subscriptionTransactions();
             }
         ]);
+    }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function plans(PaypalServiceV2 $paypalService)
+    {
+        return Inertia::render('Plans', [
+            "plans" => Plan::all(),
+            "products" => $paypalService->getProducts()
+        ]);
     }
 }

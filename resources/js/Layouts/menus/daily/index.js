@@ -33,6 +33,11 @@ export default {
                 to: "/user/billing",
                 icon: "user"
             },
+            {
+                label: "Plans",
+                to: "/admin/plans",
+                icon: "money"
+            },
           ]
       }
   ],

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -15,8 +16,9 @@ class BoardTest extends TestCase
      */
     public function testCreateBoard()
     {
-        $response = $this->json('POST', '/api/boards', ['name' => 'Sally']);;
-
+        $user = User::find(1);
+        $response = $this->actingAs($user)->json('POST', '/api/boards', ['name' => 'Sally']);
+        $response->dump();
         $response->assertStatus(201);
     }
 }
