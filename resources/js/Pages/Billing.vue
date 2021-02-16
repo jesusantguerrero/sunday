@@ -170,11 +170,7 @@ export default {
         },
 
         isCurrentPlan(plan) {
-            console.log(this.visibleSubscriptions[0].quantity, plan.quantity);
-            return (
-                this.visibleSubscriptions.length &&
-                this.visibleSubscriptions[0].quantity == plan.quantity
-            );
+            return this.visibleSubscriptions.length && this.visibleSubscriptions[0].quantity == plan.quantity;
         },
 
         getLabelSubscribe(plan) {

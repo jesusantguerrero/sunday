@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Checklist;
+use RRule\RRule;
 
 class Item extends Model
 {
-    protected $fillable = ['board_id', 'team_id', 'stage_id','resource_id','resource_type', 'resource_origin', 'title', 'order', 'user_id', 'done','commit_date', 'points'];
+    protected $fillable = ['board_id', 'team_id', 'stage_id','resource_id', 'rrule' ,'resource_type', 'resource_origin', 'title', 'order', 'user_id', 'done','commit_date', 'points'];
     protected $with = ['fields', 'checklist'];
     use HasFactory;
 
@@ -22,6 +23,18 @@ class Item extends Model
             } else if (!$model->done) {
                 $model->commit_date = null;
             }
+        });
+
+        Item::creating(function ($model) {
+            $rrule = new RRule([
+                'FREQ' => 'weekly',
+                'INTERVAL' => 1,
+                'BYDAY' => ['MO','TH', 'SA'],
+                'DTSTART' => now()->format('Y-m-d'),
+                'UNTIL' => '3099-12-31'
+            ]);
+
+            $model->rrule = $rrule->rfcString();
         });
     }
 

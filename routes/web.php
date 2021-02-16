@@ -63,6 +63,7 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     // Billing
     Route::get('/user/billing', [BillingController::class, 'index'])->name('billing');
     Route::get('/user/billing/{routeName}', [BillingController::class, 'index'])->name('billing.details');
+    Route::get('/admin/plans', [BillingController::class, 'plans'])->name('billing.plans');
 });
 
 // resource route

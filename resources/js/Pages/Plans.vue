@@ -8,32 +8,6 @@
 
         <div>
             <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
-                <!-- Plan Statistics -->
-                <div class="plans__info flex mb-10">
-                    <data-card
-                        v-for="info in cards"
-                        :key="info.title"
-                        :info="info"
-                    >
-                    </data-card>
-                </div>
-                <!-- /plan Statistics -->
-
-                <!-- Current Plan -->
-                <div class="subscriptions__container mb-10">
-                    <h4 class="font-bold mx-2 text-3xl mb-2">Current Plan</h4>
-                    <data-plan-card
-                        v-for="plan in visibleSubscriptions"
-                        :key="plan.id"
-                        :plan="plan"
-                        @suspend="sendSubscriptionAction(plan, 'suspend')"
-                        @reactivate="sendSubscriptionAction(plan, 'reactivate')"
-                        @cancel="sendSubscriptionAction(plan, 'cancel')"
-                    >
-                    </data-plan-card>
-                </div>
-                <!-- /Current Plan -->
-
                 <!-- Plans -->
                 <div class="plans__container mt-5">
                     <h4 class="font-bold mx-2 text-3xl mb-2">Plans</h4>
@@ -42,7 +16,6 @@
                             v-for="plan in plans"
                             :key="plan.id"
                             :plan="plan"
-                            :is-current="isCurrentPlan(plan)"
                             :subscribe-link="`/subscriptions/${plan.paypal_plan_id}/subscribe`"
                             :subscribe-label="getLabelSubscribe(plan)"
                         >
@@ -67,7 +40,20 @@ import DataBillingCard from "../components/DataBillingCard.vue";
 import { format } from 'date-fns';
 
 export default {
-    props: ["sessions", "plans", "subscriptions"],
+    props: {
+        plans: {
+            type: Array,
+            default() {
+                return []
+            }
+        },
+        subscriptions: {
+            type: Array,
+            default() {
+                return []
+            }
+        }
+    },
     components: {
         AppLayout,
         JetSectionBorder,

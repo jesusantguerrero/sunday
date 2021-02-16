@@ -166,8 +166,11 @@ export default {
                         apiKey: process.env.MIX_GOOGLE_APP_KEY,
                         clientId: process.env.MIX_GOOGLE_CLIENT_ID,
                         accessType: "offline",
-                        scope: `profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly`,
-                        discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
+                        scope: `profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/spreadsheets.readonly`,
+                        discoveryDocs: [
+                            "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+                            "https://sheets.googleapis.com/discovery/rest?version=v4"
+                        ]
                     })
                     .then(async auth => {
                         const authInstance = gapi.auth2.getAuthInstance();

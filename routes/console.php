@@ -36,11 +36,6 @@ Artisan::command('daily:test', function () {
     ]);
 })->purpose('call services');
 
-Artisan::command('treasure:sync-plans {userId}', function ($userId) {
-    $paypalService = new PaypalServiceV2();
-    $paypalService->syncPlans($userId);
-})->purpose('call services');
-
 Artisan::command('daily:service {service} {automationId}', function ($service, $automationId) {
     GoogleService::$service($automationId);
 })->purpose('call services');
