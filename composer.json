@@ -6,15 +6,6 @@
         "framework",
         "laravel"
     ],
-    "repositories": {
-        "insane-treasurer": {
-            "url": "packages/insane/treasurer",
-            "type": "path",
-            "options": {
-                "symlink": true
-            }
-        }
-    },
     "license": "MIT",
     "require": {
         "php": "^7.3",
@@ -28,7 +19,7 @@
         "google/cloud-pubsub": "^1.29",
         "guzzlehttp/guzzle": "^7.0.1",
         "inertiajs/inertia-laravel": "^0.3.5",
-        "insane/treasurer": "1.x-dev",
+        "insane/treasurer": "dev-master",
         "laravel/cashier": "^12.6",
         "laravel/framework": "^8.0",
         "laravel/jetstream": "^2.0",
