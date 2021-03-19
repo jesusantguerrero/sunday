@@ -302,7 +302,7 @@
         },
         data() {
             return {
-                modes: ['inbox', 'daily', 'zen'],
+                modes: ['inbox', 'daily'],
                 selectedStage: "",
                 modeSelected: 'inbox',
                 promodoroColor: "red",
