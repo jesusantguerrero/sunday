@@ -6,5 +6,8 @@
         "entrypoint",
         "vhost",
         "vhosts"
+    ],
+    "i18n-ally.localesPaths": [
+        "resources/lang"
     ]
 }
