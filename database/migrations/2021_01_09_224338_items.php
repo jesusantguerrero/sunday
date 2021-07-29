@@ -15,6 +15,7 @@ class Items extends Migration
     {
         Schema::table('items', function (Blueprint $table) {
             $table->integer('points')->nullable();
+            $table->text('rrule')->nullable();
         });
     }
 
@@ -27,6 +28,7 @@ class Items extends Migration
     {
         Schema::table('items', function (Blueprint $table) {
             $table->dropColumn('points');
+            $table->dropColumn('rrule');
         });
     }
 }
