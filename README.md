@@ -1,6 +1,42 @@
 # IC-Daily (codename: Sunday) 
 Monolith app using laravel 8, jetstream, intertia and vue.
 
+# IC Daily
+
+A simple productivity web app to help you keep your tasks, track your time, using promodoro and heisenhower matrix.
+
+
+![IC Daily](./resources/js/documentation/assets/images/img1.png)
+
+
+
+
+## The goals
+
+* **EASY and Fast** Provide an easy way to keep your taks assing priorities and track your time using promodoro.
+
+* **One to rule them all** Promodoro timer, Toggl tracker, Heisenhower matrix and Monday Automations
+
+> This will be like Monday but more chulo
+ 
+## Features
+
+* Agenda
+* Time Tracker
+* Pomodoro
+* Task Board
+* Automations 
+* Gmail and Calendar integration
+* Developer focused
+* List / Board layout
+* And more...
+
+![ICNOTE](./resources/js/documentation/assets/images/img3.png)
+> You'll use real checkboxes not images
+
+## Captures
+![ICNOTE](./resources/js/documentation/assets/images/img2.png)
+
 ## Installation
 
 ### Prerequisites
@@ -10,7 +46,12 @@ Monolith app using laravel 8, jetstream, intertia and vue.
 | [Docker*]()                                           |    --   |
 | [Node.js](http://nodejs.org)                          | `~ ^8`  |
 | npm (comes with Node) or yarn (used)                  | `~ ^5`  |
-| [Cloud Platform Project (with Gmail API)*](https://developers.google.com/gmail/api/quickstart/js)                                |    --   |
+| [Cloud Platform Project (with Gmail API)**](https://developers.google.com/gmail/api/quickstart/js)                                |    --   |
+| PHP extension ext-mailparse** | -- |
+
+`* Docker is optional and have all the dependencies you need ext-mailparse included`
+
+`** those requirements are optional if you want to run de project without docker and use gmail and gcalendar integration`
 
 ```shell
 node -v
@@ -55,15 +96,19 @@ npm run serve
 Setup Without Docker
 ```bash
 # composer install
-composer install
+composer install --ignore-platform-reqs
 # generate key
 php artisan key:generate
 # run migrations
 php artisan migrate
+# run seeds
+php artisan db:seed
 ```
 
 Frontend development
 ```bash
+# install npm packages
+npm install
 # development
 npm run watch
 ```
