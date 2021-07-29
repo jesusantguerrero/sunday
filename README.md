@@ -1,15 +1,10 @@
 # IC-Daily (codename: Sunday) 
 Monolith app using laravel 8, jetstream, intertia and vue.
 
-# IC Daily
-
-A simple productivity web app to help you keep your tasks, track your time, using promodoro and heisenhower matrix.
+ICDaily is a productivity web app to help you keep your tasks, track your time, using pomodoro inspired on Monday.
 
 
 ![IC Daily](/resources/js/documentation/assets/images/img1.PNG)
-
-
-
 
 ## The goals
 
@@ -112,6 +107,9 @@ npm install
 # development
 npm run watch
 ```
+
+## Related projects
+- [Zen](https://zenboard.app/)
 
 ## License
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
