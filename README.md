@@ -6,7 +6,7 @@ Monolith app using laravel 8, jetstream, intertia and vue.
 A simple productivity web app to help you keep your tasks, track your time, using promodoro and heisenhower matrix.
 
 
-![IC Daily](./resources/js/documentation/assets/images/img1.png)
+![IC Daily](/resources/js/documentation/assets/images/img1.PNG)
 
 
 
@@ -31,11 +31,11 @@ A simple productivity web app to help you keep your tasks, track your time, usin
 * List / Board layout
 * And more...
 
-![ICNOTE](./resources/js/documentation/assets/images/img3.png)
+![ICNOTE](./resources/js/documentation/assets/images/img3.PNG)
 > You'll use real checkboxes not images
 
 ## Captures
-![ICNOTE](./resources/js/documentation/assets/images/img2.png)
+![ICNOTE](./resources/js/documentation/assets/images/img2.PNG)
 
 ## Installation
 
