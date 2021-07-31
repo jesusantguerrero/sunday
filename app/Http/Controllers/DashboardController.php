@@ -50,7 +50,6 @@ class DashboardController extends Controller
     {
         $date = $request->query('date') ?? now()->format('Y-m-d');
         $date = new Carbon($date);
-        $date->timezone = "America/Santo_Domingo";
         $formattedDate = $date->format('Y-m-d');
 
         return Inertia::render('Planner', [
