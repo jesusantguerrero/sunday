@@ -3,9 +3,9 @@
     class="w-full overflow-hidden"
   >
     <div class="w-full ">
-      <controls v-model="selectedDay"></controls>
+      <controls :value="value" @input="$emit('input', $event)"></controls>
       <grid
-        :selected-date="selectedDay"
+        :selected-date="value"
         :schedule="schedule"
         :allow-add="allowAdd"
         :link-fields="linkFields"
@@ -53,7 +53,7 @@ export default {
         }
     },
     value: {
-        type: Date,
+        type: [Date, null],
         required: true
     }
   },
@@ -75,23 +75,6 @@ export default {
     setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
-  },
-  watch: {
-    selectedDay: {
-      handler() {
-        this.$emit("input", this.selectedDay);
-      },
-      immediate: true
-    },
-    value: {
-      handler(newDate) {
-          const selectedDay = newDate || new Date();
-          if (!this.selectedDay || (format(selectedDay, "yyyy-MM-dd") != format(this.selectedDay, 'yyyy-MM-dd'))) {
-              this.selectedDay = selectedDay;
-          }
-      },
-      immediate: true
-    }
   },
   computed: {
     horaActual() {
@@ -131,18 +114,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-:root {
-  --primary-color: #030371;
-  --primary-color-7: rgba(3, 3, 113, 0.7);
-  --primary-color-6: rgba(3, 3, 113, 0.6);
-  --primary-color-5: rgba(3, 3, 113, 0.5);
-  --primary-radius: 14px;
-}
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-</style>

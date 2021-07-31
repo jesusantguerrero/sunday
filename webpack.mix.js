@@ -8,7 +8,3 @@ mix.js('resources/js/app.js', 'public/js')
     ]
 })
 .webpackConfig(require('./webpack.config'))
-.browserSync({
-    proxy: 'http://localhost:8080',
-    port: 5000
-});

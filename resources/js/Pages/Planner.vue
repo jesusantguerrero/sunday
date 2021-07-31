@@ -2,22 +2,22 @@
     <app-layout :boards="boards">
         <div class="">
             <div
-                class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row"
+                class="flex flex-col mx-auto max-w-8xl sm:pr-6 lg:pr-8 md:flex-row"
             >
                 <!-- Main board -->
-                <div class="w-100 md:w-9/12 md:mx-4 pt-12">
+                <div class="pt-12 w-100 md:w-9/12 md:mx-4">
                     <div
-                        class="flex justify-between flex-col md:flex-row mx-2 md:mr-2 md:ml-6"
+                        class="flex flex-col justify-between mx-2 md:flex-row md:mr-2 md:ml-6"
                     >
                         <div>
                             <span class="text-3xl font-bold">
                                 Planner
                             </span>
-                            <button class="btn bg-purple-400 text-white font-bold" @click="openItem()">
+                            <button class="font-bold text-white bg-purple-400 btn" @click="openItem()">
                                 Add Event
                             </button>
                         </div>
-                        <!-- <div class="controls h-12 bg-purple-700 rounded-lg">
+                        <!-- <div class="h-12 bg-purple-700 rounded-lg controls">
                             <button
                                 v-for="mode in modes"
                                 :key="mode"
@@ -25,7 +25,7 @@
                                 :class="{
                                     'bg-purple-400': mode == modeSelected
                                 }"
-                                class="px-8 h-full rounded-lg text-white capitalize"
+                                class="h-full px-8 text-white capitalize rounded-lg"
                             >
                                 {{ mode }}
                             </button>
@@ -34,7 +34,9 @@
 
                     <div class="mt-5 md:ml-6">
                         <schedule-view
-                            v-model="localDate"
+                            :value="localDate"
+                            @input="getCommitsByDate"
+                            :modes="modes"
                             :schedule="scheduled"
                             :link-fields="{
                                 url_id: 'Join',
@@ -53,56 +55,56 @@
                 <!-- End of main board -->
 
                 <!-- Right Side -->
-                <div class="w-100 md:w-3/12 md:ml-4 pt-12">
-                    <span class="text-3xl ml-2 font-bold"> Fast Access </span>
+                <div class="pt-12 w-100 md:w-3/12 md:ml-4">
+                    <span class="ml-2 text-3xl font-bold"> Fast Access </span>
 
-                    <div class="section-card committed mt-5">
+                    <div class="mt-5 section-card committed">
                         <header
-                            class="bg-blue-400 text-white font-bold flex justify-between"
+                            class="flex justify-between font-bold text-white bg-blue-400"
                         >
                             <span>
                                 Dailies
                             </span>
                             <button
-                                class="bg-transparent text-white"
+                                class="text-white bg-transparent"
                                 @click="openItem({}, 'daily')"
                             >
                                 <i class="fa fa-plus"></i>
                             </button>
                         </header>
-                        <div class="body text-gray-600 bg-blue-400"></div>
+                        <div class="text-gray-600 bg-blue-400 body"></div>
                     </div>
-                    <div class="section-card committed mt-5">
+                    <div class="mt-5 section-card committed">
                         <header
-                            class="bg-blue-400 text-white font-bold flex justify-between"
+                            class="flex justify-between font-bold text-white bg-blue-400"
                         >
                             <span>
                                 Habits
                             </span>
                             <button
-                                class="bg-transparent text-white"
+                                class="text-white bg-transparent"
                                 @click="openItem({}, 'habit')"
                             >
                                 <i class="fa fa-plus"></i>
                             </button>
                         </header>
-                        <div class="body text-gray-600 bg-blue-400"></div>
+                        <div class="text-gray-600 bg-blue-400 body"></div>
                     </div>
-                    <div class="section-card committed mt-5">
+                    <div class="mt-5 section-card committed">
                         <header
-                            class="bg-blue-400 text-white font-bold flex justify-between"
+                            class="flex justify-between font-bold text-white bg-blue-400"
                         >
                             <span>
                                 Notes
                             </span>
                             <button
-                                class="bg-transparent text-white"
+                                class="text-white bg-transparent"
                                 @click="isLinkFormOpen = !isLinkFormOpen"
                             >
                                 <i class="fa fa-plus"></i>
                             </button>
                         </header>
-                        <div class="body text-gray-600 bg-blue-400"></div>
+                        <div class="text-gray-600 bg-blue-400 body"></div>
                     </div>
                 </div>
                 <!-- End of Right Side -->
@@ -127,7 +129,7 @@ import BoardSide from "../components/board/BoardSide";
 import ScheduleControls from "../components/schedule/controls";
 import ScheduleView from "../components/schedule";
 import ItemModal from "../components/board/ItemModal";
-import { subDays, toDate, format } from "date-fns";
+import { format } from "date-fns";
 
 export default {
     components: {
@@ -171,37 +173,14 @@ export default {
             modeSelected: "daily",
             promodoroColor: "red",
             boardType: "",
-            localDate: null,
             isLoading: false,
             openedItem: {},
             isItemModalOpen: false
         };
     },
-    created() {
-        this.setCommitDate();
-    },
-    watch: {
-        localDate: {
-            handler(newDate, oldDate) {
-                if (!oldDate || (newDate && format(newDate, 'yyyy-MM-dd') != format(oldDate, 'yyyy-MM-dd'))) {
-                    this.getCommitsByDate();
-                }
-            },
-            immediate: true
-        },
-        date: {
-            handler(date) {
-                this.setCommitDate();
-            },
-            immediate: true
-        }
-    },
     computed: {
-        hasCommited() {
-            return this.todo.filter(item => item.done).length;
-        },
-        params() {
-           return `?date=${format(this.localDate, 'yyyy-MM-dd')}`;
+        localDate() {
+            return new Date(this.date);
         }
     },
     methods: {
@@ -212,11 +191,18 @@ export default {
             this.localDate = date;
         },
 
-        getCommitsByDate() {
-            this.$inertia.visit(`/planner${this.params}`, {
-                only: ["scheduled", "date"],
-                preserveState: true
-            });
+        getParams(date) {
+            return `?date=${format(date, 'yyyy-MM-dd')}`;
+        },
+
+        getCommitsByDate(date) {
+            if (date) {
+                debugger;
+                const params = this.getParams(date);
+                this.$inertia.visit(`/planner${params}`, {
+                    only: ["scheduled", "date"]
+                });
+            }
         },
 
         openItem(item = {}, type = "event") {
