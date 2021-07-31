@@ -44,7 +44,7 @@
                             }"
                             id-field=""
                             time-field=""
-                            date-field=""
+                            date-field="due_date"
                             time-end-field=""
                             date-end-field=""
                             title-field=""

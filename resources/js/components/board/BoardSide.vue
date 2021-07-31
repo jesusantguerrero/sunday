@@ -1,16 +1,16 @@
 <template>
-    <div class="board-side bg-white py-5">
-        <h1 class="font-bold flex justify-between items-centerv px-5">
+    <div class="py-5 bg-white board-side">
+        <h1 class="flex justify-between px-5 font-bold items-centerv">
             <span class="text-2xl"> {{ sectionName }} </span>
         </h1>
-        <div class="mt-5 text-gray-500 flex rounded overflow-hidden px-5" v-if="!isHeaderMenu">
+        <div class="flex px-5 mt-5 overflow-hidden text-gray-500 rounded" v-if="!isHeaderMenu">
             <input
                 type="search"
-                class="w-full p-2"
+                class="w-full p-2 focus:outline-none"
                 v-model="search"
-                placeholder="search in my boards..."
+                placeholder="Search in my boards..."
             />
-            <button class="bg-purple-400 text-white p-2">
+            <button class="p-2 text-white bg-purple-400">
                 Search
             </button>
         </div>
@@ -38,23 +38,23 @@
 
         </div>
         <div
-            class="mt-2 text-gray-500 flex rounded overflow-hidden mx-5"
+            class="flex mx-5 mt-2 overflow-hidden text-gray-500 rounded"
             v-if="!showAdd && !isHeaderMenu"
         >
             <button
-                class="flex justify-center items-center px-2 h-10 w-full border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white"
+                class="flex items-center justify-center w-full h-10 px-2 text-purple-400 border-2 border-purple-400 hover:bg-purple-400 hover:text-white"
                 @click="openBoardForm()"
             >
                 <i class="fa fa-plus"></i>
             </button>
         </div>
         <div
-            class="mt-2 text-gray-500 flex rounded overflow-hidden mx-5"
+            class="flex mx-5 mt-2 overflow-hidden text-gray-500 rounded"
             v-if="showAdd && !isHeaderMenu"
         >
             <input
                 type="text"
-                class="form-control p-2 w-full"
+                class="w-full p-2 form-control"
                 placeholder="Add board name"
                 v-model="boardName"
                 ref="input"
@@ -62,7 +62,7 @@
                 @blur="showAdd = false"
             />
             <button
-                class="bg-purple-400 text-white p-2"
+                class="p-2 text-white bg-purple-400"
                 @click.native="addBoard()"
             >
                 Add

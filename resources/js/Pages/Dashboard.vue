@@ -1,10 +1,10 @@
 <template>
     <app-layout :boards="boards">
         <div class="">
-            <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row">
+            <div class="flex flex-col mx-auto max-w-8xl sm:pr-6 lg:pr-8 md:flex-row">
                 <!-- Main board -->
-                <div class="w-100 md:w-7/12 lg:w-8/12 md:mx-4 pt-12">
-                    <div class="flex justify-between flex-col md:flex-row mx-2 md:mr-2 md:ml-0">
+                <div class="pt-12 w-100 md:w-7/12 lg:w-8/12 md:mx-4">
+                    <div class="flex flex-col justify-between mx-2 md:flex-row md:mr-2 md:ml-0">
                         <span class="text-3xl font-bold"> Today's Todos </span>
 
                         <div class="flex items-center">
@@ -19,27 +19,27 @@
                                 >
                                 <template slot="singleLabel" slot-scope="props">
                                     <span class="option__title">
-                                            <i  class="fa fa-briefcase mr-2"></i>
+                                            <i  class="mr-2 fa fa-briefcase"></i>
                                             {{ props.option }}
                                         </span>
                                 </template>
                                 <template slot="option" slot-scope="props">
                                     <div class="option__desc">
                                         <span class="option__title">
-                                            <i  class="fa fa-briefcase mr-2"></i>
+                                            <i  class="mr-2 fa fa-briefcase"></i>
                                             {{ props.option }}
                                         </span>
                                     </div>
                                 </template>
                                 </multiselect>
                             </div>
-                            <div class="controls h-10 bg-purple-700 rounded-lg">
+                            <div class="h-10 bg-purple-700 rounded-lg controls">
                                 <button
                                     v-for="mode in modes"
                                     :key="mode"
                                     @click="modeSelected=mode"
                                     :class="{'bg-purple-400': mode == modeSelected }"
-                                    class="px-8 h-full rounded-lg text-white capitalize">
+                                    class="h-full px-8 text-white capitalize rounded-lg">
                                         {{ mode }}
                                 </button>
                             </div>
@@ -76,14 +76,14 @@
                         @item-clicked="setTaskToTimer"
                     >
                         <template #empty v-if="committed.length">
-                            <div class="text-center w-full prose prose-xl mx-auto">
+                            <div class="w-full mx-auto prose prose-xl text-center">
                                 <img src="../../img/undraw_a_day_at_the_park.svg" class="w-4/12 mx-auto">
                                 <p class="mt-4"> All tasks done. take a rest</p>
                             </div>
                         </template>
 
                         <template #empty v-else>
-                            <div class="text-center w-full prose prose-xl mx-auto">
+                            <div class="w-full mx-auto prose prose-xl text-center">
                                 <img src="../../img/undraw_empty.svg" class="w-4/12 mx-auto">
                                 <small class="mt-4 text-gray-400"> Nothing to do. Add new tasks from here or mark in your <a href="#" @click="openBoards">boards</a> as todo</small>
                             </div>
@@ -93,10 +93,10 @@
                 <!-- End of main board -->
 
                 <!-- Right Side -->
-                <div class="w-100 md:w-5/12 lg:w-4/12 md:ml-4 pt-12">
-                    <span class="text-3xl ml-2 font-bold"> Tools </span>
+                <div class="pt-12 w-100 md:w-5/12 lg:w-4/12 md:ml-4">
+                    <span class="ml-2 text-3xl font-bold"> Tools </span>
 
-                      <div class="section-card committed mt-5">
+                      <div class="mt-5 section-card committed">
                          <div :class="`bg-${promodoroColor} text-gray-600 font-bold px-0`">
                             <promodoro
                                 ref="Promodoro"
@@ -111,15 +111,15 @@
                     </div>
 
                     <div class="section-card committed">
-                        <header class="bg-blue-400 text-white font-bold flex justify-between">
+                        <header class="flex justify-between font-bold text-white bg-blue-400">
                             <span>
                                 Links
                             </span>
-                            <button class="bg-transparent text-white" @click="isLinkFormOpen = !isLinkFormOpen">
+                            <button class="text-white bg-transparent" @click="isLinkFormOpen = !isLinkFormOpen">
                                 <i class="fa fa-plus"></i>
                             </button>
                         </header>
-                         <div class="body bg-blue-400 text-gray-600">
+                         <div class="text-gray-600 bg-blue-400 body">
                              <link-viewer
                                 :links="links"
                                 @edit="openLinkForm"
@@ -129,23 +129,23 @@
                     </div>
 
                     <div class="section-card committed">
-                        <header class="bg-blue-400 text-white font-bold flex justify-between">
+                        <header class="flex justify-between font-bold text-white bg-blue-400">
                             <span>
                                 Agenda
                             </span>
                             <div>
-                                <i class="fa fa-robot cursor-pointer ml-4 inline-block" @click="runAgendaAutomations"></i>
-                                <inertia-link class="bg-transparent text-white" href="/planner">
+                                <i class="inline-block ml-4 cursor-pointer fa fa-robot" @click="runAgendaAutomations"></i>
+                                <inertia-link class="text-white bg-transparent" href="/planner">
                                     Go to Planner
                                 </inertia-link>
                             </div>
                         </header>
-                         <div class="body bg-blue-400 text-gray-600">
+                         <div class="text-gray-600 bg-blue-400 body">
                             <div
-                                class="text-white cursor-pointer hover:bg-blue-500 p-2 rounded-md"
+                                class="p-2 text-white rounded-md cursor-pointer hover:bg-blue-500"
                                 v-for="event in agenda"
                                 :key="`event-${event.id}`">
-                                    <span class="font-bold mr-2">
+                                    <span class="mr-2 font-bold">
                                         {{event.time }}
                                     </span>
                                     <span class="capitalize">
@@ -192,7 +192,7 @@
                 </template>
             </dialog-modal>
 
-            <dialog-modal :show="hideWelcomeScreen" @close="hideWelcome">
+            <dialog-modal :show="showWelcomeScreen" @close="hideWelcome">
                 <template #content>
                     <div class="prose prose-xl text-center">
                         <div>
@@ -309,7 +309,7 @@
                 standupSummary: [],
                 localCommitDate: new Date,
                 isLoading: false,
-                hideWelcomeScreen: false,
+                showWelcomeScreen: false,
                 isStandupOpen: false,
                 isLinkFormOpen: false,
                 linkData: {},
@@ -347,8 +347,8 @@
                 this.standupSummary = {...this.todo};
                 this.isStandupOpen = true;
             }
-            this.hideWelcomeScreen = !Boolean(Number(this.settings.hide_welcome_screen));
-            if (this.hideWelcomeScreen) {
+            this.showWelcomeScreen = !Boolean(Number(this.settings.hide_welcome_screen));
+            if (this.showWelcomeScreen) {
                 this.fireworks();
             }
         },
@@ -491,9 +491,9 @@
                     data: {
                         hide_welcome_screen: true
                     }
-                }).then(() => {
-                    this.hideWelcomeScreen = false;
-                    this.$emit('saved', settings);
+                }).then(({ data: settings }) => {
+                    this.showWelcomeScreen = false;
+                    this.$inertia.reload({ preserveScroll: true });
                 })
             },
 

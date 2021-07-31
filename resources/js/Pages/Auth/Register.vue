@@ -1,6 +1,6 @@
 <template>
   <div class="login-box">
-    <form class="form-signin md:w-1/2 w-full" @submit.prevent="login">
+    <form class="w-full form-signin md:w-1/2" @submit.prevent="login">
       <h3 class="login-title">Create an account</h3>
 
       <div
@@ -40,7 +40,7 @@
       </div>
 
       <div class="form-group"
-       :class="{ 'form-group--error': $v.user.password_confirmation.$error }"
+       :class="{ 'form-group--error': $v.user.password.$error }"
       >
         <label for="password" class="password-label"
           ><span>Password</span></label
@@ -56,6 +56,7 @@
             required
             @keydown.enter="login"
           />
+          <small v-if="$v.user.password.$error"> password have to be at least 8 </small>
         </p>
       </div>
 
@@ -75,6 +76,7 @@
             required
             @keydown.enter="login"
           />
+          <small v-if="$v.user.password_confirmation.$error"> password and confirm password have to be the same </small>
         </p>
       </div>
 
@@ -84,7 +86,7 @@
         @click.prevent="login"
       >
         Sign Up
-        <i v-if="isLoading" class="fa fa-spinner fa-pulse ml-2"></i>
+        <i v-if="isLoading" class="ml-2 fa fa-spinner fa-pulse"></i>
       </button>
       <p class="text-center">
         <small>
@@ -92,14 +94,13 @@
           <inertia-link href="login">Login</inertia-link>
         </small>
       </p>
-      <p class="copyrights text-center">&copy; 2020-{{ currentYear }}</p>
+      <p class="text-center copyrights">&copy; 2020-{{ currentYear }}</p>
     </form>
   </div>
 </template>
 
 <script>
 import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
-import AppLogo from "../../Jetstream/ApplicationLogo";
 import axios from "axios";
 
 export default {
@@ -132,7 +133,8 @@ export default {
         minLength: minLength(4)
       },
       password: {
-        required
+        required,
+        minLength: minLength(8)
       },
       password_confirmation: {
         required,
