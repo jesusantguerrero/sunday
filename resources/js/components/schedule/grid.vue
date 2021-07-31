@@ -29,7 +29,6 @@
 
 <script>
 import { isToday, format } from "date-fns";
-import { uniqBy } from "lodash-es";
 import GridItem from "./grid-item";
 const showEmptySlots = false;
 
@@ -131,22 +130,19 @@ export default {
                 }
 
                 const programas = this.schedule.filter(programa => {
-                    let time = programa[this.timeField].slice(0, 2);
+                    let time = programa[this.timeField]?.slice(0, 2);
                     time = time || 0;
                     return time == horaString;
                 });
 
                 const date = new Date();
                 const lastIndex = programas.length - 1;
-                const lastHour =
-                    lastIndex >= 0
-                        ? programas[lastIndex][this.timeField]
-                        : programaAnterior.horaFinal || horaProxima + ":00";
-                const current = lastHour.split(":");
+                const lastHour = lastIndex >= 0 ? programas[lastIndex][this.timeField] : programaAnterior.horaFinal || horaProxima + ":00";
+                const current = lastHour?.split(":");
 
                 const proximoPrograma = this.schedule.find(program => {
-                    date.setHours(current[0]);
-                    date.setMinutes(current[1]);
+                    date.setHours(current ? current[0] : 0);
+                    date.setMinutes(current ? current[1] : 0);
                     date.setSeconds(0);
 
                     return this.isHourBetween(
