@@ -14,7 +14,7 @@ class AutomationChannel
      */
     public function __construct()
     {
-        $
+
     }
 
     /**
