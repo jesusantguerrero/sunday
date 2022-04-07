@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     ports:
       - 80:80
-      # - 443:443
+      - 443:443
     volumes:
       - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d/
@@ -39,7 +39,7 @@ services:
       - ./docker-compose/nginx/vhosts:/etc/nginx/conf.d/
       - ./:/usr/share/nginx/html
     environment:
-      - VIRTUAL_PORT=8080
+      - VIRTUAL_PORT=80
       - VIRTUAL_HOST=${VIRTUAL_APP_HOST}
       - LETSENCRYPT_HOST=${VIRTUAL_APP_HOST}
       - LETSENCRYPT_EMAIL=jesusant.guerrero@gmail.com
@@ -96,7 +96,7 @@ services:
     build:
       context: .
       dockerfile: cron.dockerfile
-    container_name: sunday_cron
+    container_name: cron
     volumes:
       - ./:/var/www
     working_dir: /var/www

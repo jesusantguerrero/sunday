@@ -11,6 +11,7 @@ docker-compose/redis/dump.rdb
 jira_*
 .env
 .env.backup
+.env.local
 .phpunit.result.cache
 packages/insane/**
 Homestead.json

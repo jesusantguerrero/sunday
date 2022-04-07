@@ -15,7 +15,7 @@
         "serve:up-prod": "docker-compose -f docker-compose.prod.yml up -d",
         "serve:down-prod": "docker-compose -f docker-compose.prod.yml down",
         "serve:down": "docker-compose down",
-        "serve:install": "docker-compose exec -T web composer install",
+        "serve:install": "docker-compose exec -T web composer install --ignore-platform-reqs",
         "serve:update": "docker-compose exec web composer update",
         "serve:generate": "docker-compose exec -T web php artisan key:generate",
         "serve:migrate": "docker-compose exec -T web php artisan migrate",
@@ -25,6 +25,7 @@
         "deploy:dev": "git push live development:master",
         "deploy": "git push live-sunday master",
         "serve:dev": "npm run serve:up && npm run serve:install && npm run serve:migrate",
+        "setup": "npm run serve:up-prod && npm run serve:install && npm run serve:migrate --fresh && npm run serve:seed",
         "serve": "npm run serve:up-prod && npm run serve:install && npm run serve:migrate"
     },
     "devDependencies": {

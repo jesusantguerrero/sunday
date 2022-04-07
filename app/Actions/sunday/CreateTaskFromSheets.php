@@ -11,7 +11,7 @@ use App\Models\Stage;
 use DateTime;
 use Google_Service_Sheets;
 
-class CreateTaskFromCalendar
+class CreateTaskFromSheets
 {
     /**
      * Validate and create a new team for the given user.
