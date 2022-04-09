@@ -1,5 +1,5 @@
 # IC-Daily (codename: Sunday) 
-Monolith app using laravel 8, jetstream, intertia and vue.
+Monolith app using laravel 9, jetstream, intertia and Vue2.
 
 ICDaily is a productivity web app to help you keep your tasks, track your time, using pomodoro inspired on Monday.
 
