@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Checklist;
+use DateTime;
 use RRule\RRule;
 
 class Item extends Model
@@ -115,7 +116,9 @@ class Item extends Model
     public static function getByCustomField($entry, $user) {
         return Item::whereHas('fields', function($query) use ($entry){
             $query->where('value', $entry[1]);
-            $query->orWhere('date_value', $entry[1]);
+            if (DateTime::createFromFormat('Y-m-d', $entry[0])) {
+                $query->orWhere('date_value', $entry[1]);
+            }
         })->with('stage')->where([
             'team_id' => $user->current_team_id,
             'user_id' => $user->id,
