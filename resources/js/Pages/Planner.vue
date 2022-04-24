@@ -5,7 +5,7 @@
                 class="flex flex-col mx-auto max-w-8xl sm:pr-6 lg:pr-8 md:flex-row"
             >
                 <!-- Main board -->
-                <div class="pt-12 w-100 md:w-9/12 md:mx-4">
+                <div class="pt-12 w-100 md:w-full md:mx-4">
                     <div
                         class="flex flex-col justify-between mx-2 md:flex-row md:mr-2 md:ml-6"
                     >
@@ -55,7 +55,7 @@
                 <!-- End of main board -->
 
                 <!-- Right Side -->
-                <div class="pt-12 w-100 md:w-3/12 md:ml-4">
+                <div class="pt-12 w-100 hidden">
                     <span class="ml-2 text-3xl font-bold"> Fast Access </span>
 
                     <div class="mt-5 section-card committed">
