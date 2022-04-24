@@ -33,7 +33,7 @@
         </template>
 
         <template v-else>
-            <div class="h-8 px-2" v-if="isCustomField">
+            <div class="h-8 px-2 w-full" v-if="isCustomField">
                 <component
                     v-model="value"
                     ref="input"

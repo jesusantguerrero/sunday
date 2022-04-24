@@ -552,10 +552,6 @@ li.link {
     margin: 0 10px;
 }
 
-.btn {
-    @apply font-bold py-2 px-4 rounded;
-}
-
 .board__toolbar {
     border-bottom: 1px solid #ddd;
     padding-bottom: 15px;

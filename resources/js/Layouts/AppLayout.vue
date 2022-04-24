@@ -543,6 +543,10 @@ export default {
   justify-content: center;
 }
 
+.btn {
+    @apply font-bold py-2 px-4 rounded;
+}
+
 @media screen and (max-width: 992px) {
   .appside-container {
     z-index: 999;

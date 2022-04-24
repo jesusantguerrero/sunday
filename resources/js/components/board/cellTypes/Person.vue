@@ -58,3 +58,19 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+.item-group-cell {
+    .el-select .el-input.is-focus .el-input__inner {
+        border: none;
+    }
+
+    .el-input__inner {
+        height: 33px;
+    }
+
+    .el-select {
+        width: 100%;
+    }
+}
+</style>

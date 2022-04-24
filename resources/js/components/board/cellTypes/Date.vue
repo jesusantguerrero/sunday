@@ -6,8 +6,7 @@
     @blur="$emit('closed')"
     input-class="w-full"
     placeholder="selecciona una fecha"
->
-</el-date-picker>
+/>
 </template>
 
 <script>
@@ -51,3 +50,21 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+.item-group-cell {
+    .el-select .el-input.is-focus .el-input__inner {
+        border: none;
+    }
+
+    .el-input__inner {
+        height: 33px;
+        border: none;
+    }
+
+    .el-date-editor.el-input {
+        width: 100%;
+        border: none;
+    }
+}
+</style>
