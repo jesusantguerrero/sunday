@@ -2,11 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\BoardResource;
 use App\Models\Board;
+use App\Models\BoardTemplate as ModelsBoardTemplate;
+use App\Models\BoardType as ModelsBoardType;
 use App\Models\Setting;
 use App\Models\Team;
 use Closure;
-use Dotenv\Store\File\Reader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
@@ -44,21 +46,13 @@ class HandleInertiaRequest
                     return  $team->allUsers();
                 }
             },
-            'boards' => Board::where([
+            'boards' => BoardResource::collection(Board::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,
                 'board_type_id' => 1
-            ])->get()->map(function ($board) {
-                return [
-                    'id' => $board->id,
-                    'name' => $board->name,
-                    'stages' => $board->stages()->without('items')->get(),
-                    'link' =>  URL::route('boards', $board),
-                    'color' => $board->color,
-                    'template'=> $board->boardTemplate,
-                    'type' => $board->boardType
-                ];
-            }),
+            ])->get()),
+            'boardTypes' => ModelsBoardType::all(),
+            'boardTemplates' => ModelsBoardTemplate::all(),
             'settings' => function () use ($user) {
                 return Setting::getFormatted([
                     "user_id" => $user->id,

@@ -255,6 +255,18 @@
                     return []
                 }
             },
+            boardTypes: {
+                type: Array,
+                default() {
+                    return []
+                }
+            },
+            boardTemplates: {
+                type: Array,
+                default() {
+                    return []
+                }
+            },
             todo: {
                 type: [Array, Object],
                 default() {

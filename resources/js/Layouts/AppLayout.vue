@@ -337,8 +337,7 @@
                     :boards="boards"
                     :header-menu="headerMenu"
                     class="mb-10 h-full"
-                >
-                </board-side>
+                />
                 <!-- End of left side -->
             </div>
 
@@ -358,12 +357,11 @@
         :modal-data="confirmationData"
         @confirm="handleConfirm"
         @close="handleConfirmClose"
-    >
-    </confirmation-modal>
+    />
     <!-- Endof confirmation modal -->
 
     <!-- Modal Portal -->
-    <portal-target name="modal" multiple> </portal-target>
+    <portal-target name="modal" multiple />
 
 </div>
 </template>
@@ -398,6 +396,12 @@ export default {
             default() {
                 return []
             }
+        },
+    },
+    provide() {
+        return {
+            boardTypes: this.$page.props.boardTypes,
+            boardTemplates: this.$page.props.boardTemplates
         }
     },
 

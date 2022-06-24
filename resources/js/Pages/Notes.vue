@@ -8,7 +8,9 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
-               Comming Soon
+               <div v-for="book in notebooks" :key="book.id">
+                {{ book.name }}
+               </div>
             </div>
         </div>
     </app-layout>
@@ -18,7 +20,7 @@
     import AppLayout from './../Layouts/AppLayout'
 
     export default {
-        name: "Integrations",
+        name: "Notes",
         props:{
             notebooks: {
                 type: Array,

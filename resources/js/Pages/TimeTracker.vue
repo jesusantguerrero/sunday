@@ -88,7 +88,19 @@ export default {
             default() {
                 return [];
             }
-        }
+        },
+        boardTypes: {
+            type: Array,
+            default() {
+                return []
+            }
+        },
+        boardTemplates: {
+            type: Array,
+            default() {
+                return []
+            }
+        },
     },
     created() {
         this.$parent.$on("session::stopped", () => {

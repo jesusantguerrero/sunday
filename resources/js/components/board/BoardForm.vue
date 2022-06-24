@@ -13,12 +13,26 @@
 
                 <div class="pt-2">
                     <label for="url"> Type </label>
-                    <input type="text" class="form-control" v-model="formData.BoardType">
+                    <multiselect
+                        v-model="formData.BoardType"
+                        ref="input"
+                        :show-labels="false"
+                        label="title"
+                        :options="boardTypes"
+                        class="w-full"
+                    />
                 </div>
 
-                <div class="pt-2">
+                <div class="pt-2" v-if="isBoardType">
                     <label for="url"> Template </label>
-                    <input type="text" class="form-control" v-model="formData.Template">
+                    <multiselect
+                        v-model="formData.Template"
+                        ref="input"
+                        :show-labels="false"
+                        label="name"
+                        :options="boardTemplates"
+                        class="w-full"
+                    />
                 </div>
 
                 <div class="pt-2">
@@ -56,6 +70,7 @@ export default {
             type: Object
         }
     },
+    inject: ['boardTypes', 'boardTemplates'],
     data() {
         return {
             formData: {
@@ -68,15 +83,20 @@ export default {
             this.formData = this.recordData
         }
     },
+    computed: {
+        isBoardType() {
+            return this.formData.BoardType && this.formData.BoardType.name == 'board'
+        }
+    },
     methods: {
         save() {
             const method = this.formData.id ? "PUT" : "POST";
             const param = this.formData.id ? `/${this.formData.id}` : "";
             const formData = {
                 name: this.formData.name,
-                board_type_id: this.formData.BoardType,
-                board_template_id: this.formData.Template,
-                color: this.formData.color
+                board_type_id: this.formData?.BoardType?.id,
+                board_template_id: this.formData?.Template?.id,
+                color: this.formData?.color
             }
             if (formData.name) {
                 axios({

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BoardResource;
 use Illuminate\Http\Request;
 use App\Http\Resources\Item as ItemResource;
 use App\Models\Board;
@@ -46,6 +47,7 @@ class DashboardController extends Controller
             ])->get()
         ]);
     }
+
     public function planner(Request $request)
     {
         $date = $request->query('date') ?? now()->format('Y-m-d');
@@ -64,21 +66,11 @@ class DashboardController extends Controller
         $date = $request->query('date') ?? now()->format('Y-m-d');
 
         return Inertia::render('Notes', [
-            'notebooks' =>  Board::where([
+            'notebooks' =>  BoardResource::collection(Board::where([
                 'team_id' => $user->current_team_id,
                 'user_id' => $user->id,
                 'board_type_id' => 2
-            ])->get()->map(function ($board) {
-                return [
-                    'id' => $board->id,
-                    'name' => $board->name,
-                    'stages' => $board->stages()->without('items')->get(),
-                    'link' =>  URL::route('boards', $board),
-                    'color' => $board->color,
-                    'template'=> $board->boardTemplate,
-                    'type' => $board->boardType
-                ];
-            }),
+            ])->get()),
         ]);
     }
 
@@ -105,10 +97,12 @@ class DashboardController extends Controller
             }),
         ]);
     }
+
     public function about(Request $request)
     {
         return Inertia::render('About');
     }
+
     public function billing(Request $request)
     {
         $user = $request->user();

@@ -160,7 +160,19 @@ export default {
         },
         date: {
             type: String
-        }
+        },
+        boardTypes: {
+                type: Array,
+                default() {
+                    return []
+                }
+        },
+        boardTemplates: {
+                type: Array,
+                default() {
+                    return []
+                }
+        },
     },
     provide() {
         return {

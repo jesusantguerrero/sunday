@@ -3,17 +3,7 @@
         <h1 class="flex justify-between px-5 font-bold items-centerv">
             <span class="text-2xl"> {{ sectionName }} </span>
         </h1>
-        <div class="flex px-5 mt-5 overflow-hidden text-gray-500 rounded" v-if="!isHeaderMenu">
-            <input
-                type="search"
-                class="w-full p-2 focus:outline-none"
-                v-model="search"
-                placeholder="Search in my boards..."
-            />
-            <button class="p-2 text-white bg-purple-400">
-                Search
-            </button>
-        </div>
+        <SearchBar v-model="search" class="mt-5" />
 
         <div class="mt-2" :class="{'mt-12': isHeaderMenu}">
             <template v-if="!isHeaderMenu">
@@ -23,8 +13,7 @@
                     :board="board"
                     :key="board.link"
                     v-for="board in filteredBoards"
-                >
-                </board-side-item>
+                />
             </template>
             <template v-else>
                 <board-side-item-link
@@ -32,8 +21,7 @@
                     :section="section"
                     :is-active="isPath(section.to)"
                     :key="`${section.to}-${index}`"
-                >
-                </board-side-item-link>
+                />
             </template>
 
         </div>
@@ -73,8 +61,8 @@
             :record-data="boardData"
             :is-open="isBoardFormOpen"
             @saved="addBoard"
-            @cancel="isBoardFormOpen=false">
-        </board-form-modal>
+            @cancel="isBoardFormOpen=false"
+        />
     </div>
 </template>
 
@@ -82,6 +70,7 @@
 import BoardSideItem from "./BoardSideITem";
 import BoardSideItemLink from "./BoardSideITemLink";
 import BoardFormModal from "./BoardForm"
+import SearchBar from "../searchBar.vue";
 
 export default {
     props: {
@@ -101,7 +90,8 @@ export default {
     components: {
         BoardSideItem,
         BoardSideItemLink,
-        BoardFormModal
+        BoardFormModal,
+        SearchBar
     },
     data() {
         return {
