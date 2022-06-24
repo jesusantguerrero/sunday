@@ -2,7 +2,7 @@ require("./bootstrap");
 require("vue-multiselect/dist/vue-multiselect.min.css");
 
 import Vue from "vue";
-import { App as InertiaApp, plugin as InertiaPlugin } from "@inertiajs/inertia-vue";
+import { createInertiaApp } from "@inertiajs/inertia-vue";
 import ConfirmModalMixin from "./plugins/ConfirmModalMixin";
 import VueGoogleApi from "vue-google-api";
 import route from 'ziggy';
@@ -32,16 +32,15 @@ Vue.mixin(fireworks)
 Vue.mixin({ methods: { route } });
 Vue.component("multiselect", Multiselect);
 
-const app = document.querySelector("[data-page]");
+createInertiaApp({
+    resolve: name => require(`./Pages/${name}`),
+    setup({ el, app, props, plugin }) {
+        Vue.use(plugin)
+        new Vue({
+            render: h => h(app, props)
 
-new Vue({
-    render: h =>
-        h(InertiaApp, {
-            props: {
-                initialPage: JSON.parse(app.dataset.page),
-                resolveComponent: name => require(`./Pages/${name}`).default
-            }
-        })
-}).$mount(app);
+        }).$mount(el);
+    }
+})
 
 require('./bootstrap');

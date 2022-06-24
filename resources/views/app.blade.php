@@ -21,6 +21,8 @@
         <!-- Scripts -->
         <script async defer src="https://apis.google.com/js/api.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+         <!-- Scripts -->
+        @routes
         <script src="{{ asset('js/app.js') }}" defer></script>
     </head>
     <body class="font-sans antialiased ic-scroller">
