@@ -2,7 +2,7 @@ require("./bootstrap");
 require("vue-multiselect/dist/vue-multiselect.min.css");
 
 import Vue from "vue";
-import { createInertiaApp } from "@inertiajs/inertia-vue";
+import { createInertiaApp, InertiaLink } from "@inertiajs/inertia-vue";
 import ConfirmModalMixin from "./plugins/ConfirmModalMixin";
 import VueGoogleApi from "vue-google-api";
 import route from 'ziggy';
@@ -21,21 +21,24 @@ import Multiselect from "vue-multiselect";
 import PortalVue from "portal-vue";
 import Vuelidate from "vuelidate";
 import fireworks from "./plugins/fireworks";
+import { InertiaProgress } from "@inertiajs/progress";
 window.route = route;
 window.Ziggy = Ziggy;
-Vue.use(Vuelidate);
-Vue.use(InertiaPlugin);
-Vue.use(PortalVue);
-Vue.use(VueGoogleApi, config);
-Vue.mixin(ConfirmModalMixin);
-Vue.mixin(fireworks)
-Vue.mixin({ methods: { route } });
-Vue.component("multiselect", Multiselect);
+
 
 createInertiaApp({
     resolve: name => require(`./Pages/${name}`),
     setup({ el, app, props, plugin }) {
         Vue.use(plugin)
+        Vue.use(Vuelidate);
+        Vue.use(PortalVue);
+        Vue.use(VueGoogleApi, config);
+        Vue.mixin(ConfirmModalMixin);
+        Vue.mixin(fireworks)
+        Vue.mixin({ methods: { route } });
+        Vue.component("multiselect", Multiselect);
+        Vue.component('inertia-progress', InertiaProgress)
+        Vue.component('inertia-link', InertiaLink)
         new Vue({
             render: h => h(app, props)
 
