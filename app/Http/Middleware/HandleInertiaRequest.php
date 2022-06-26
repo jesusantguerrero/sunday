@@ -10,8 +10,8 @@ use App\Models\Setting;
 use App\Models\Team;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
+use Laravel\Jetstream\Jetstream;
 
 class HandleInertiaRequest
 {
@@ -51,6 +51,23 @@ class HandleInertiaRequest
                 'user_id' => $user->id,
                 'board_type_id' => 1
             ])->get()),
+            'user' => function () use ($request) {
+                if (! $request->user()) {
+                    return;
+                }
+
+                if (Jetstream::hasTeamFeatures() && $request->user()) {
+                    $request->user()->currentTeam;
+                }
+
+                return array_merge($request->user()->toArray(), array_filter([
+                    'all_teams' => Jetstream::hasTeamFeatures() ? $request->user()->allTeams()->values() : null,
+                ]), [
+                    'two_factor_enabled' => ! is_null($request->user()->two_factor_secret),
+                ], [
+                    'all_workspaces' => $request->user()->allWorkspaces()
+                ]);
+            },
             'boardTypes' => ModelsBoardType::all(),
             'boardTemplates' => ModelsBoardTemplate::all(),
             'settings' => function () use ($user) {

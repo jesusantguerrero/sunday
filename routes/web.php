@@ -17,6 +17,7 @@ use App\Http\Controllers\StandupController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TimeEntryController;
+use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -95,4 +96,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/api/time-entries', TimeEntryController::class);
     Route::post('/api/time-entries/bulk/delete', [TimeEntryController::class, 'bulkDelete']);
     Route::apiResource('/api/settings', SettingController::class);
+
+    // Workspaces
+    Route::apiResource('/api/workspaces', WorkspaceController::class);
 });
