@@ -1159,6 +1159,12 @@ video {
 .h-11{
   height: 2.75rem;
 }
+.h-32{
+  height: 8rem;
+}
+.h-14{
+  height: 3.5rem;
+}
 .min-h-screen{
   min-height: 100vh;
 }
@@ -1212,6 +1218,12 @@ video {
 }
 .w-3\/4{
   width: 75%;
+}
+.w-32{
+  width: 8rem;
+}
+.w-14{
+  width: 3.5rem;
 }
 .max-w-xl{
   max-width: 36rem;
@@ -1329,6 +1341,9 @@ video {
 }
 .overflow-hidden{
   overflow: hidden;
+}
+.text-ellipsis{
+  text-overflow: ellipsis;
 }
 .rounded-lg{
   border-radius: 0.5rem;
@@ -2023,6 +2038,10 @@ body {
 .hover\:bg-red-700:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(185 28 28 / var(--tw-bg-opacity));
+}
+.hover\:bg-gray-300:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 .hover\:text-gray-900:hover{
   --tw-text-opacity: 1;

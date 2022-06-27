@@ -46,26 +46,27 @@ class HandleInertiaRequest
                     return  $team->allUsers();
                 }
             },
-            'boards' => BoardResource::collection(Board::where([
-                'team_id' => $user->current_team_id,
-                'user_id' => $user->id,
-                'board_type_id' => 1
-            ])->get()),
-            'user' => function () use ($request) {
-                if (! $request->user()) {
+            'boards' => function() use ($user) {
+                if (!$user) {
+                    return;
+                }
+                return BoardResource::collection($user->currentWorkspace->boards);
+            },
+            'user' => function () use ($user) {
+                if (! $user) {
                     return;
                 }
 
-                if (Jetstream::hasTeamFeatures() && $request->user()) {
-                    $request->user()->currentTeam;
+                if (Jetstream::hasTeamFeatures() && $user) {
+                    $user->currentTeam;
                 }
 
-                return array_merge($request->user()->toArray(), array_filter([
-                    'all_teams' => Jetstream::hasTeamFeatures() ? $request->user()->allTeams()->values() : null,
+                return array_merge($user->toArray(), array_filter([
+                    'all_teams' => Jetstream::hasTeamFeatures() ? $user->allTeams()->values() : null,
                 ]), [
-                    'two_factor_enabled' => ! is_null($request->user()->two_factor_secret),
+                    'two_factor_enabled' => ! is_null($user->two_factor_secret),
                 ], [
-                    'all_workspaces' => $request->user()->allWorkspaces()
+                    'all_workspaces' => $user->allWorkspaces()
                 ]);
             },
             'boardTypes' => ModelsBoardType::all(),

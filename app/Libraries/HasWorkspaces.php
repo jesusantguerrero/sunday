@@ -61,7 +61,7 @@ trait HasWorkspaces
      */
     public function allWorkspaces()
     {
-        return $this->ownedWorkspaces->merge($this->workspaces)->sortBy('name');
+        return $this->ownedWorkspaces->merge($this->workspaces);
     }
 
     /**

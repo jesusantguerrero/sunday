@@ -41,6 +41,7 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/planner', [DashboardController::class, 'planner'])->name('planner');
+    Route::put('/current-workspace', [WorkspaceController::class, 'switchWorkspace']);
 
     // Apps
     Route::get('/notes', [DashboardController::class, 'notes'])->name('notes');

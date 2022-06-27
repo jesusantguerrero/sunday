@@ -34,6 +34,7 @@ class BoardController extends Controller
         $data = $request->post();
         $data['user_id'] = $request->user()->id;
         $data['team_id'] = $request->user()->current_team_id;
+        $data['workspace_id'] = $request->user()->current_workspace_id;
         $board = Board::create($data);
         $board->createMainStage();
         return $response->send($board);

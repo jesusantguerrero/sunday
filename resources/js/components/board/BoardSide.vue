@@ -1,13 +1,10 @@
 <template>
     <div class="py-5 bg-white board-side">
-        <h1 class="flex justify-between px-5 font-bold items-centerv">
-            <span class="text-2xl"> {{ sectionName }} </span>
-        </h1>
         <WorkspaceSelector
             :current-workspace="$page.props.user.current_workspace"
             :workspaces="$page.props.user.all_workspaces"
         />
-        <SearchBar v-model="search" class="mt-5" />
+        <SearchBar v-model="search" class="mt-5" v-if="!isHeaderMenu" />
 
         <div class="mt-2" :class="{'mt-12': isHeaderMenu}">
             <template v-if="!isHeaderMenu">
@@ -74,7 +71,7 @@
 import BoardSideItem from "./BoardSideITem";
 import BoardSideItemLink from "./BoardSideITemLink";
 import BoardFormModal from "./BoardForm"
-import SearchBar from "../searchBar.vue";
+import SearchBar from "../SearchBar.vue";
 import WorkspaceSelector from "../workspace/WorkspaceSelector.vue";
 
 export default {

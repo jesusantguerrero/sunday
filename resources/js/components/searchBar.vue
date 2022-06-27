@@ -1,5 +1,5 @@
 <template>
-<div class="flex pl-5  overflow-hidden text-gray-500 rounded" v-if="!isHeaderMenu">
+<div class="flex pl-5 overflow-hidden text-gray-500 rounded">
     <input
         type="search"
         class="w-full p-2 focus:outline-none"

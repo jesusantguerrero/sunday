@@ -20,12 +20,12 @@
 
         <app-side-item-group
           v-else
+          v-model="activeGroup"
+          :key="`${route.label}-group`"
           :track-id="route.label"
           :icon="route.icon"
           :label="route.label"
-          v-model="activeGroup"
           :childs="route.childs"
-          :key="route.label"
         />
       </template>
     </div>
@@ -112,7 +112,6 @@ export default {
   }
 
   .nav {
-    margin-top: 30px;
     width: 100%;
     max-height: 100%;
     flex-flow: row;
@@ -147,7 +146,7 @@ export default {
     color: white;
     margin: 10px 0;
     padding-left: 15px;
-    font-size: 40px;
+    font-size: 30px;
     cursor: pointer;
     .side-logo {
         font-weight: bolder;

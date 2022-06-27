@@ -9,4 +9,9 @@ class Workspace extends Model
 {
     use HasFactory;
     protected $fillable = ['user_id', 'team_id', 'name', 'bg_color'];
+
+
+    public function boards() {
+        return $this->hasMany(Board::class);
+    }
 }

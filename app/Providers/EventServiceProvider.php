@@ -5,10 +5,9 @@ namespace App\Providers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 use Laravel\Jetstream\Events\TeamCreated;
-use App\Listeners\CreateTeamBoard;
 use App\Listeners\CreateTeamSettings;
+use App\Listeners\CreateTeamWorkspace;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -22,7 +21,7 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         TeamCreated::class => [
-            CreateTeamBoard::class,
+            CreateTeamWorkspace::class,
             CreateTeamSettings::class
         ]
     ];

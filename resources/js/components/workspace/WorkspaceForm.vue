@@ -7,11 +7,7 @@
         <template #content>
             <form action="" @submit.prevent="save">
                 <div>
-                    <div class="w-20 h-20 mx-auto bg-red-500 rounded-md">
-                        <span class="iconify" data-icon="">
-                            {{ workspaceIcon }}
-                        </span>
-                    </div>
+                   <workspace-icon size="md" :name="formData.name" :icon="formData.icon" />
                 </div>
                 <div>
                     <label for="title"> Workspace Name </label>
@@ -34,12 +30,14 @@
 <script>
 import DialogModal from "../../Jetstream/DialogModal"
 import JetButton from "../../Jetstream/Button"
+import WorkspaceIcon from "./WorkspaceIcon.vue"
 
 export default {
     components: {
-        DialogModal,
-        JetButton
-    },
+    DialogModal,
+    JetButton,
+    WorkspaceIcon
+},
     props: {
         isOpen: {
             type: Boolean
@@ -65,9 +63,6 @@ export default {
         isBoardType() {
             return this.formData.BoardType && this.formData.BoardType.name == 'board'
         },
-        workspaceIcon() {
-            this.formData.icon || this.formData.name && this.formData.name[0]
-        }
     },
     methods: {
         save() {

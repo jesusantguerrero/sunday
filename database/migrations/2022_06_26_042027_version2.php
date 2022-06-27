@@ -14,7 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('current_workspace_id')->after('current_team_id');
+            $table->foreignId('current_workspace_id')->after('current_team_id')->nullable();
+        });
+
+        Schema::table('boards', function (Blueprint $table) {
+            $table->foreignId('workspace_id')->after('team_id');
         });
 
         Schema::create('workspace_user', function (Blueprint $table) {
@@ -37,6 +41,9 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('current_workspace_id');
+        });
+        Schema::table('boards', function (Blueprint $table) {
+            $table->dropColumn('workspace_id');
         });
         Schema::dropIfExists('workspace_user');
     }
