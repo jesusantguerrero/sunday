@@ -42,7 +42,6 @@
 </template>
 
 <script>
-import { required, email } from "vuelidate/lib/validators";
 import AppLogo from "../../Jetstream/ApplicationMark";
 import axios from "axios";
 
@@ -64,14 +63,6 @@ export default {
         currentYear() {
             const date = new Date();
             return date.getFullYear();
-        }
-    },
-    validations: {
-        user: {
-            email: {
-                required,
-                email
-            }
         }
     },
     methods: {

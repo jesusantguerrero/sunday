@@ -18,14 +18,14 @@
                         </h3>
                     </div>
                     <div class="block-container">
-                        <p class="app-version"><span>{{appVersion}}</span></p>
+                        <p class="app-version"><span>{{state.appVersion}}</span></p>
                     </div>
                     <p class="about-nav">
                         <button
-                            v-for="(section, sectionName) in sections"
+                            v-for="(section, sectionName) in state.sections"
                             :key="sectionName"
                             :class="{selected: sectionName == selectedSection}"
-                            @click="selectedSection=sectionName"
+                            @click="state.selectedSection=sectionName"
                         >
                             {{ section }}
                         </button>
@@ -49,48 +49,33 @@
     </app-layout>
 </template>
 
-<script>
-import AppLayout from "./../Layouts/AppLayout";
-const info = require("@docs/info.md")
-const thanks = require("@docs/thanksto.md")
-const tutorial = require("@docs/tutorial.md")
+<script setup>
+import AppLayout from "./../Layouts/AppLayout.vue";
+import info from "@docs/info.md"
+import thanks from "@docs/thanksto.md"
+import tutorial from "@docs/tutorial.md"
+import { reactive, computed } from "vue";
 
-export default {
-    name: "Integrations",
-    props: {
-        notebooks: {
-            type: Array,
-            default() {
-                return [];
-            }
+
+const state = reactive({
+        appVersion: "1.0.0",
+        selectedSection: 'info',
+        sections: {
+            info: "Information",
+            tutorial: "Tutorial",
+            thanks: "Thanks to",
+            licence: "License",
+        },
+        text: {
+            info,
+            thanks,
+            tutorial
         }
-    },
-    components: {
-        AppLayout
-    },
-    computed: {
-        currentSection() {
-            return this.text[this.selectedSection]
-        }
-    },
-    data() {
-        return {
-            appVersion: "1.0.0",
-            selectedSection: 'info',
-            sections: {
-                info: "Information",
-                tutorial: "Tutorial",
-                thanks: "Thanks to",
-                licence: "License",
-            },
-            text: {
-                info,
-                thanks,
-                tutorial
-            }
-        }
-    }
-};
+});
+
+const currentSection = computed(() => {
+    return state.text[state.selectedSection]
+})
 </script>
 
 

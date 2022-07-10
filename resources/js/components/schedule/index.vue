@@ -24,7 +24,6 @@ import { format } from "date-fns";
 import Controls from "./controls";
 import Grid from "./grid";
 import axios from "axios";
-import { MessageBox } from "element-ui";
 
 export default {
   props: {

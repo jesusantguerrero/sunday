@@ -91,10 +91,8 @@ const time = { minutes: 0, seconds: 10 };
 
 import Tracker from "../timeTracker/tracker";
 import Duration from "luxon/src/duration";
-import Interval from "luxon/src/interval";
 import PromodoroConfigurationModal from "./Configuration";
 import promodoroMixin from "./promodoro";
-import { MessageBox } from "element-ui";
 
 export default {
     mixins: [promodoroMixin],

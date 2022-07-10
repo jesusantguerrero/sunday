@@ -20,14 +20,14 @@
         "inertiajs/inertia-laravel": "^0.5.4",
         "insane/treasurer": "dev-master",
         "laravel/cashier": "^12.6",
-        "laravel/framework": "^9.0",
-        "laravel/jetstream": "^2.0",
-        "laravel/sanctum": "^2.6",
-        "laravel/tinker": "^2.0",
+        "laravel/framework": "^9.19",
+        "laravel/jetstream": "^2.3",
+        "laravel/sanctum": "^2.8",
+        "laravel/tinker": "^2.7",
         "php-mime-mail-parser/php-mime-mail-parser": "^7.0",
         "pusher/pusher-php-server": "^7.0",
         "rlanvin/php-rrule": "^2.2",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.4.3"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",

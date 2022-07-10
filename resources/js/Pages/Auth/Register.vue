@@ -100,7 +100,6 @@
 </template>
 
 <script>
-import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
 import axios from "axios";
 
 export default {
@@ -120,26 +119,6 @@ export default {
     currentYear() {
       const date = new Date();
       return date.getFullYear();
-    }
-  },
-  validations: {
-    user: {
-      email: {
-        required,
-        email
-      },
-      name: {
-        required,
-        minLength: minLength(4)
-      },
-      password: {
-        required,
-        minLength: minLength(8)
-      },
-      password_confirmation: {
-        required,
-        sameAs: sameAs("password")
-      }
     }
   },
   methods: {
