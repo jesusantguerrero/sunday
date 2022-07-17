@@ -21,7 +21,7 @@
                             <div>
                                 <img
                                     :src="props.option.logo"
-                                    class="automation-logo mr-2"
+                                    class="mr-2 automation-logo"
                                 />
                                 {{ props.option.name }}
                             </div>
@@ -30,7 +30,7 @@
                             <div class="d-flex">
                                 <img
                                     :src="props.option.logo"
-                                    class="automation-logo mr-2"
+                                    class="mr-2 automation-logo"
                                 />
                                 {{ props.option.name }}
                             </div>
@@ -78,14 +78,14 @@
                     >
                         <template slot="singleLabel" slot-scope="props">
                             <span class="option__title">
-                                <i class="fa fa-briefcase mr-2"></i>
+                                <i class="mr-2 fa fa-briefcase"></i>
                                 {{ props.option.name }}
                             </span>
                         </template>
                         <template slot="option" slot-scope="props">
                             <div class="option__desc">
                                 <span class="option__title">
-                                    <i class="fa fa-briefcase mr-2"></i>
+                                    <i class="mr-2 fa fa-briefcase"></i>
                                     {{ props.option.name }}
                                 </span>
                             </div>
@@ -109,14 +109,14 @@
                     >
                         <template slot="singleLabel" slot-scope="props">
                             <span class="option__title">
-                                <i class="fa fa-briefcase mr-2"></i>
+                                <i class="mr-2 fa fa-briefcase"></i>
                                 {{ props.option.name }}
                             </span>
                         </template>
                         <template slot="option" slot-scope="props">
                             <div class="option__desc">
                                 <span class="option__title">
-                                    <i class="fa fa-briefcase mr-2"></i>
+                                    <i class="mr-2 fa fa-briefcase"></i>
                                     {{ props.option.name }}
                                 </span>
                             </div>
@@ -160,8 +160,8 @@
 </template>
 
 <script>
-import DialogModal from "../Jetstream/DialogModal";
-import PrimaryButton from "../Jetstream/Button";
+import DialogModal from "../Jetstream/DialogModal.vue";
+import PrimaryButton from "../Jetstream/Button.vue";
 
 export default {
     components: {

@@ -9,7 +9,7 @@
             class="new-item-button"
             @click="toggleEditMode()"
         >
-            <i class="fa fa-plus mr-3"></i>
+            <i class="mr-3 fa fa-plus"></i>
             <span>
                 {{ placeholder }}
             </span>
@@ -26,14 +26,14 @@
                 v-else
                 @click="toggleEditMode()"
                 :title="displayValue"
-                class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2 overflow-hidden"
+                class="inline-block w-full px-2 overflow-hidden text-sm border-2 border-transparent border-dashed cursor-pointer h-7 hover:border-gray-300"
             >
                 {{ displayValue }}
             </span>
         </template>
 
         <template v-else>
-            <div class="h-8 px-2 w-full" v-if="isCustomField">
+            <div class="w-full h-8 px-2" v-if="isCustomField">
                 <component
                     v-model="value"
                     ref="input"
@@ -45,7 +45,7 @@
                 />
             </div>
 
-            <div v-else class="flex h-full w-full items-center">
+            <div v-else class="flex items-center w-full h-full">
                 <div class="controls" v-if="showControls && item.board">
                     <board-selector
                         :options="item.board.stages"
@@ -57,7 +57,7 @@
                 <input
                     ref="input"
                     type="text"
-                    class="form-input h-8 px-2 mx-0 border-none rounded-none w-full"
+                    class="w-full h-8 px-2 mx-0 border-none rounded-none form-input"
                     :class="{ 'new-item': isTitle }"
                     :name="`${index}-${fieldName}`"
                     id=""
@@ -66,7 +66,7 @@
                     @blur="saveChanges()"
                     @keydown.enter="saveItem"
                 />
-                <div class="controls flex h-full" v-if="showControls">
+                <div class="flex h-full controls" v-if="showControls">
                     <board-selector
                         :options="boards"
                         tooltip="Board"
@@ -80,18 +80,18 @@
                         content="reminder date"
                         placement="top"
                     >
-                        <i class="fas fa-clock mx-2"></i>
+                        <i class="mx-2 fas fa-clock"></i>
                     </el-tooltip>
                     <el-tooltip
                         effect="dark"
                         content="Delegate"
                         placement="top"
                     >
-                        <i class="fas fa-user mx-2"></i>
+                        <i class="mx-2 fas fa-user"></i>
                     </el-tooltip>
 
                     <el-tooltip effect="dark" content="Status" placement="top">
-                        <i class="fas fa-tag mx-2"></i>
+                        <i class="mx-2 fas fa-tag"></i>
                     </el-tooltip>
                 </div>
             </div>
@@ -100,14 +100,13 @@
 </template>
 
 <script>
-import { format, toDate } from "date-fns";
-import LinkPreview from "./cellTypes/LinkPreview";
-import InputLabel from "./cellTypes/Label";
-import InputDate from "./cellTypes/Date";
-import InputPerson from "./cellTypes/Person";
-import InputTime from "./cellTypes/Time";
+import { format } from "date-fns";
+import LinkPreview from "./cellTypes/LinkPreview.vue";
+import InputLabel from "./cellTypes/Label.vue";
+import InputDate from "./cellTypes/Date.vue";
+import InputPerson from "./cellTypes/Person.vue";
+import InputTime from "./cellTypes/Time.vue";
 import BoardSelector from './BoardSelector.vue';
-import { onClickOutside } from '@vueuse/core'
 
 export default {
     name: "ItemGroupCell",

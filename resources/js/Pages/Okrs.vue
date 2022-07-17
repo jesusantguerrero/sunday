@@ -1,7 +1,7 @@
 <template>
     <app-layout :boards="okrs">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
             </h2>
         </template>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-    import AppLayout from './../Layouts/AppLayout'
+    import AppLayout from './../Layouts/AppLayout.vue'
 
     export default {
         name: "Integrations",

@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
-import ElementPlus from 'unplugin-element-plus/vite'
 
 export default defineConfig({
     plugins: [
@@ -15,9 +14,6 @@ export default defineConfig({
                     includeAbsolute: false,
                 },
             },
-        }),
-        ElementPlus({
-            // options
         }),
     ],
     resolve: {

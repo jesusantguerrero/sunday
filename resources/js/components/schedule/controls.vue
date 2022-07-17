@@ -1,10 +1,10 @@
 <template>
   <div class="controls">
-    <div class="month-name pl-8 font-bold capitalize">
+    <div class="pl-8 font-bold capitalize month-name">
         {{ getMonthName(selectedDay)}}
     </div>
     <div class="controls-container">
-      <div class="w-full flex justify-start">
+      <div class="flex justify-start w-full">
         <div class="day-controls" @click.prevent="prevWeek()">
           <i class="fa fa-chevron-left"></i>
         </div>
@@ -13,19 +13,19 @@
       <div
         v-for="day in week"
         :key="`item-${day}`"
-        class="w-full flex justify-center">
+        class="flex justify-center w-full">
         <div
           class="day-item"
           :class="{ 'selected-day': isSelectedDate(day) }"
 
           @click="selectedDay = day"
         >
-          <span class="text-xl font-bold block">{{ getDateLabel(day) }}</span>
+          <span class="block text-xl font-bold">{{ getDateLabel(day) }}</span>
           <span class="capitalize">{{ getDayName(day) }}</span> <br />
         </div>
       </div>
 
-      <div class="w-full flex justify-end">
+      <div class="flex justify-end w-full">
         <div class="day-controls" @click.prevent="nextWeek()">
           <i class="fa fa-chevron-right"></i>
         </div>

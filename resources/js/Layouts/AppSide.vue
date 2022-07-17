@@ -63,8 +63,8 @@
 </template>
 
 <script>
-import AppSideItem from "./AppSideItem";
-import AppSideItemGroup from "./AppSideItemGroup";
+import AppSideItem from "./AppSideItem.vue";
+import AppSideItemGroup from "./AppSideItemGroup.vue";
 
 export default {
   props: {

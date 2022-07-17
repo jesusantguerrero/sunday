@@ -1,16 +1,16 @@
 <template>
     <app-layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Profile
             </h2>
         </template>
 
         <div>
-            <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="py-10 mx-auto max-w-8xl sm:px-6 lg:px-8">
                 <!-- Current Plan -->
-                <div class="subscriptions__container mb-10">
-                    <h4 class="font-bold mx-2 text-3xl mb-2">Current Plan</h4>
+                <div class="mb-10 subscriptions__container">
+                    <h4 class="mx-2 mb-2 text-3xl font-bold">Current Plan</h4>
                     <data-plan-card
                         v-for="plan in visibleSubscriptions"
                         :key="plan.id"
@@ -25,10 +25,10 @@
 
                 <!-- Transactions -->
                 <div class="transactions">
-                    <h4 class="font-bold mx-2 text-3xl mb-2">Transactions</h4>
+                    <h4 class="mx-2 mb-2 text-3xl font-bold">Transactions</h4>
                     <div
                         v-for="transaction in transactions" :key="transaction.id"
-                        class="rounded-md shadow-md bg-white px-5 py-10 mb-5 mx-2 flex justify-around"
+                        class="flex justify-around px-5 py-10 mx-2 mb-5 bg-white rounded-md shadow-md"
                         >
                         <div class="w-100">
                             {{ transaction.status }}
@@ -51,7 +51,7 @@
                             <div class="text-purple-500">
                                 USD {{ transaction.amount_with_breakdown.fee_amount.value }}
                             </div>
-                            <div class="text-green-500 font-bold">
+                            <div class="font-bold text-green-500">
                                 USD {{ transaction.amount_with_breakdown.gross_amount.value }}
                             </div>
                         </div>
@@ -70,8 +70,8 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import DataCard from "../components/DataCard.vue";
 import DataPlanCard from "../components/DataPlanCard.vue";
 import DataBillingCard from "../components/DataBillingCard.vue";

@@ -70,8 +70,8 @@
                         Switch Teams
                       </div>
 
-                      <template v-for="team in $page.props.user.all_teams">
-                        <form @submit.prevent="switchToTeam(team)" :key="team.id">
+                      <template v-for="team in $page.props.user.all_teams" :key="team.id">
+                        <form @submit.prevent="switchToTeam(team)">
                           <jet-dropdown-link as="button">
                             <div class="flex items-center">
                               <svg
@@ -307,7 +307,7 @@
 
 <script setup>
 import Menus from "./menus";
-import { computed, createApp, onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import JetDropdown from "./../Jetstream/Dropdown.vue";
 import JetDropdownLink from "./../Jetstream/DropdownLink.vue";

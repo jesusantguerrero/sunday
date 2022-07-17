@@ -225,7 +225,7 @@
 <script setup>
 import { reactive } from "vue";
 import { subDays, toDate, format } from "date-fns";
-import { uniq, orderBy } from "lodash-es";
+import { uniq, orderBy } from "lodash";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import BoardItemContainer from "@/components/board/ItemContainer.vue";
 import ScheduleControls from "@/components/schedule/controls.vue";

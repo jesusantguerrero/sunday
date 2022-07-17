@@ -35,7 +35,7 @@
                             ({{ items.length }} items)
                         </span>
                         <i
-                            class="fa fa-edit mx-2"
+                            class="mx-2 fa fa-edit"
                             @click="toggleEditMode(true)"
                         ></i>
                         <el-dropdown
@@ -44,7 +44,7 @@
                             @click.native.prevent
                         >
                             <div
-                                class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center"
+                                class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
                             >
                                 <div class="flex items-center justify-center">
                                     <i class="fa fa-ellipsis-v"></i>
@@ -81,7 +81,7 @@
                     >
                         <item-group-title
                             v-for="(item, index) in stage.items"
-                            class="item-false bg-gray-200 border-2 border-white flex"
+                            class="flex bg-gray-200 border-2 border-white item-false"
                             :key="`item-false__title-${item.id}`"
                             :item="item"
                             :index="index"
@@ -101,7 +101,7 @@
                 class="item-group ic-scroller ic-scroller-slim"
                 v-if="isExpanded"
             >
-                <div class="item-group-row grid py-1  text-left sticky_header">
+                <div class="grid py-1 text-left item-group-row sticky_header">
                     <div
                         v-for="field in visibleFields"
                         :key="field.name"
@@ -124,14 +124,14 @@
                 <!-- items  -->
                 <template v-if="isExpanded">
                     <div
-                        class="grid item-group-row text-left h-11"
+                        class="grid text-left item-group-row h-11"
                         v-for="(item, index) in items"
                         :key="`item-${index}`"
                     >
                         <div
                             v-for="field in visibleFields"
                             :key="field.name"
-                            class="custom-field border-white border-2 text-center "
+                            class="text-center border-2 border-white custom-field "
                             :class="[getBg(field, item, field.name)]"
                         >
                             <item-group-cell
@@ -164,7 +164,7 @@
 
                 <div class="false-header"></div>
 
-                <div class="bg-red-500 grid">
+                <div class="grid bg-red-500">
                     <div
                         class="item-false"
                         v-for="item in stage.items"
@@ -178,9 +178,9 @@
         <!-- new item  -->
         <div class="ic-list__footer">
             <div class="grid grid-cols-10 text-left item-line">
-                <div class="col-span-12 item-line-cell px-0 flex items-center">
+                <div class="flex items-center col-span-12 px-0 item-line-cell">
                     <item-group-cell
-                        class="w-full flex items-center"
+                        class="flex items-center w-full"
                         field-name="title"
                         :is-title="true"
                         :index="-1"
@@ -198,8 +198,8 @@
 </template>
 
 <script>
-import ItemGroupCell from "../../ItemGroupCell";
 import Draggable from "vuedraggable";
+import ItemGroupCell from "../../ItemGroupCell.vue";
 import FieldPopover from "../../FieldPopover.vue";
 import ItemGroupTitle from './ItemGroupTitle.vue';
 

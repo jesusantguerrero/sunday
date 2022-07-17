@@ -5,7 +5,7 @@
             <span class="font-bold">
             <inertia-link :href="`/boards/${task.board_id}`">
                 <span class="font-bold">
-                    <i class="fas fa-layer-group mx-2"></i>
+                    <i class="mx-2 fas fa-layer-group"></i>
                     {{ task.stage }}
                 </span>
             </inertia-link>
@@ -15,7 +15,7 @@
         </span>
         </label>
     </div>
-    <div class="actions-container flex items-center">
+    <div class="flex items-center actions-container">
         <input
             type="checkbox"
             @change="updateTask(task)"
@@ -25,7 +25,7 @@
             v-model="task.done"
         />
         <el-tooltip class="item" effect="dark" :content="task.priority || 'none'" placement="left">
-            <div class="priority-level inline-block ml-2 mr-4">
+            <div class="inline-block ml-2 mr-4 priority-level">
                 <div class="priority-level__inner">
 
                 </div>
@@ -46,7 +46,6 @@
 </template>
 
 <script>
-import tracker from './../timeTracker/tracker';
 import Tracker from "./../timeTracker/tracker";
 
 export default {

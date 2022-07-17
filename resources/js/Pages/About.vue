@@ -1,19 +1,19 @@
 <template>
     <app-layout :boards="notebooks">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
             </h2>
         </template>
 
         <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
+            <div class="flex mx-auto max-w-8xl sm:px-6 lg:px-8">
                 <div class="about-screen">
                     <p class="close-bar">
                         <span class="close-about icon icon-left-open"> </span>
                     </p>
                     <div class="block-container">
-                        <h3 class="logo cursor-pointer">
+                        <h3 class="cursor-pointer logo">
                             <span class="mr-4">IC</span><span>Dail<span class="movable">y.</span></span>
                         </h3>
                     </div>
@@ -32,7 +32,7 @@
                     </p>
 
                     <div class="information-container">
-                        <div class="prose lg:prose-md w-full max-w-full" v-html="currentSection" />
+                        <div class="w-full max-w-full prose lg:prose-md" v-html="currentSection" />
                     </div>
 
                     <div class="logos"></div>
@@ -51,9 +51,9 @@
 
 <script setup>
 import AppLayout from "./../Layouts/AppLayout.vue";
-import info from "@docs/info.md"
-import thanks from "@docs/thanksto.md"
-import tutorial from "@docs/tutorial.md"
+// import info from "@docs/info.md"
+// import thanks from "@docs/thanksto.md"
+// import tutorial from "@docs/tutorial.md"
 import { reactive, computed } from "vue";
 
 

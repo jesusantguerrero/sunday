@@ -2,20 +2,20 @@
     <app-layout :boards="boards">
         <div class="">
             <div
-                class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row"
+                class="flex flex-col mx-auto max-w-8xl sm:pr-6 lg:pr-8 md:flex-row"
             >
-                <div class="w-100 md:w-full lg:w-8/12 md:mx-4 pt-12">
+                <div class="pt-12 w-100 md:w-full lg:w-8/12 md:mx-4">
                     <div class="flex mr-2">
                         <span class="text-3xl font-bold"> Integrations </span>
                         <!-- <button
-                            class="btn bg-purple-400 text-white font-bold ml-2 rounded-lg px-5"
+                            class="px-5 ml-2 font-bold text-white bg-purple-400 rounded-lg btn"
                             @click="toggleAppConnection"
                         >
                             Add Connection
                         </button> -->
 
                         <button
-                            class="btn bg-purple-400 text-white font-bold ml-2 rounded-lg px-5"
+                            class="px-5 ml-2 font-bold text-white bg-purple-400 rounded-lg btn"
                             @click="openAutomationModal"
                         >
                             Add Automation
@@ -25,10 +25,10 @@
             </div>
 
             <div class="py-12">
-                <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                    <div class="apps-form w-full flex" >
+                <div class="mx-auto max-w-8xl sm:px-6 lg:px-8">
+                    <div class="flex w-full apps-form" >
                         <div
-                            class="app-service__integration m-2"
+                            class="m-2 app-service__integration"
                             v-for="service in services"
                             @click="handleCommand(service)"
                             :key="service.id"
@@ -40,9 +40,9 @@
                         </div>
                     </div>
 
-                    <div class="integrations-form w-full">
+                    <div class="w-full integrations-form">
                         <div
-                            class="app-service__item bg-white text-gray-500 my-2 cursor-pointer px-5 py-3 font-bold grid grid-cols-3"
+                            class="grid grid-cols-3 px-5 py-3 my-2 font-bold text-gray-500 bg-white cursor-pointer app-service__item"
                             v-for="service in integrations"
                             :key="service.id"
                         >
@@ -55,11 +55,11 @@
                                 </div>
                             </div>
 
-                            <div class="automations text-right">
+                            <div class="text-right automations">
                                 {{ service.automations.length }}
                             </div>
 
-                            <div class="options text-right">
+                            <div class="text-right options">
                                 options
                             </div>
                         </div>
@@ -82,8 +82,8 @@
 </template>
 
 <script>
-import AppLayout from "./../Layouts/AppLayout";
-import AutomationModal from "../components/AutomationModal";
+import AppLayout from "./../Layouts/AppLayout.vue";
+import AutomationModal from "../components/AutomationModal.vue";
 
 export default {
     name: "Integrations",

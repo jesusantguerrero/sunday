@@ -29,9 +29,9 @@
 </template>
 
 <script>
-import JetConfirmationModal from "../../Jetstream/ConfirmationModal";
-import JetDangerButton from "../../Jetstream/DangerButton";
-import JetSecondaryButton from "../../Jetstream/SecondaryButton";
+import JetConfirmationModal from "../../Jetstream/ConfirmationModal.vue";
+import JetDangerButton from "../../Jetstream/DangerButton.vue";
+import JetSecondaryButton from "../../Jetstream/SecondaryButton.vue";
 
 export default {
     components: {

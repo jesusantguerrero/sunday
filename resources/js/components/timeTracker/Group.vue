@@ -2,10 +2,10 @@
     <div>
         <div
             v-if="timeEntry.tracks.length > 1"
-            class="w-full time-tracker-item flex items-center bg-white px-8"
+            class="flex items-center w-full px-8 bg-white time-tracker-item"
         >
             <div class="flex w-full">
-                <div class="w-2/5 flex items-center">
+                <div class="flex items-center w-2/5">
                     <div class="mr-9">
                         <input type="checkbox" v-model="selected" @change="toggleSelection" />
                     </div>
@@ -20,7 +20,7 @@
 
                         <span
                             type="text"
-                            class="time-tracker__description mr-2"
+                            class="mr-2 time-tracker__description"
                         >
                             {{ timeEntry.description }}
                         </span>
@@ -29,8 +29,8 @@
                     </div>
                 </div>
 
-                <div class="w-3/5 flex ml-auto">
-                    <div class="time-tracker__controls flex">
+                <div class="flex w-3/5 ml-auto">
+                    <div class="flex time-tracker__controls">
                         <span disabled class="flex items-center start-dates">
                             {{ timeEntry.tracks[0].start | formatDateToTime }} -
                             {{
@@ -74,8 +74,7 @@
 
 <script>
 import { format as formatDate } from "date-fns";
-import TimeEntryItem from "./Item";
-import Duration from "duration";
+import TimeEntryItem from "./Item.vue";
 
 export default {
     props: {

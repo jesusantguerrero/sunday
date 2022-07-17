@@ -1,7 +1,7 @@
 <template>
     <app-layout :boards="boards">
         <div class="">
-                <div class="w-12/12 mx-2 pt-12">
+                <div class="pt-12 mx-2 w-12/12">
                     <div class="overflow-hidden">
                         <board-section :board="board" :users="users" :automations="automations"></board-section>
                     </div>
@@ -11,9 +11,9 @@
 </template>
 
 <script>
-    import AppLayout from './../Layouts/AppLayout'
-    import BoardSection from "./../components/board/BoardSection";
-    import BoardSide from "../components/board/BoardSide"
+    import AppLayout from './../Layouts/AppLayout.vue'
+    import BoardSection from "./../components/board/BoardSection.vue";
+    import BoardSide from "../components/board/BoardSide.vue"
 
     export default {
         components: {

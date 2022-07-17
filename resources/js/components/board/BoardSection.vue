@@ -1,6 +1,6 @@
 <template>
     <div class="px-8 pb-24">
-        <div class="board__toolbar flex justify-between">
+        <div class="flex justify-between board__toolbar">
             <div class="flex text-left">
                 <div class="flex justify-between mr-2">
                     <span class="text-3xl font-bold" v-if="!isEditMode">
@@ -14,7 +14,7 @@
                             @keypress.enter="updateBoardName(board)"
                         />
                     </div>
-                     <i class="fa fa-edit mx-2" @click="toggleEditMode(true)"></i>
+                     <i class="mx-2 fa fa-edit" @click="toggleEditMode(true)"></i>
                     <div>
                         <span
                             class="automation"
@@ -61,7 +61,7 @@
                 </div>
                 <input
                     type="search"
-                    class="form-input ml-2 w-48"
+                    class="w-48 ml-2 form-input"
                     name=""
                     id=""
                     v-model="searchOptions.search"
@@ -129,9 +129,9 @@
                 class="flex pt-5">
             </component>
 
-            <div class="w-full flex justify-center py-5" v-if="modeSelected == 'list'">
+            <div class="flex justify-center w-full py-5" v-if="modeSelected == 'list'">
                 <button
-                    class="rounded-full flex justify-center items-center px-2 h-8 w-8 border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-white"
+                    class="flex items-center justify-center w-8 h-8 px-2 text-purple-400 border-2 border-purple-400 rounded-full hover:bg-purple-400 hover:text-white"
                     @click="addStage()"
                 >
                     <i class="fa fa-plus"></i>
@@ -157,16 +157,16 @@
 </template>
 
 <script>
-import ListView from "./views/List/ItemGroup";
+import ListView from "./views/List/ItemGroup.vue";
 import KanbanView from "./views/kanban/KanbanContainer.vue";
 import HabiticaView from "./views/notes/NotesContainer.vue";
 import MatrixView from "./views/notes/NotesContainer.vue";
 import NoteView from "./views/notes/NotesContainer.vue";
-import ItemModal from "./ItemModal";
-import AutomationModal from "../AutomationModal";
+import ItemModal from "./ItemModal.vue";
+import AutomationModal from "../AutomationModal.vue";
 import BulkSelectionBar from '../BulkSelectionBar.vue';
 import Draggable from "vuedraggable";
-import { throttle } from "lodash-es";
+import { throttle } from "lodash";
 
 export default {
     name: "Board",

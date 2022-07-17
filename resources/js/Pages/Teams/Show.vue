@@ -1,13 +1,13 @@
 <template>
     <app-layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Team Settings
             </h2>
         </template>
 
         <div>
-            <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="py-10 mx-auto max-w-8xl sm:px-6 lg:px-8">
                 <update-team-name-form :team="team" :permissions="permissions" />
 
                 <team-member-manager class="mt-10 sm:mt-0"
@@ -27,11 +27,11 @@
 </template>
 
 <script>
-    import TeamMemberManager from './TeamMemberManager'
-    import AppLayout from './../../Layouts/AppLayout'
-    import DeleteTeamForm from './DeleteTeamForm'
-    import JetSectionBorder from './../../Jetstream/SectionBorder'
-    import UpdateTeamNameForm from './UpdateTeamNameForm'
+    import TeamMemberManager from './TeamMemberManager.vue'
+    import AppLayout from './../../Layouts/AppLayout.vue'
+    import DeleteTeamForm from './DeleteTeamForm.vue'
+    import JetSectionBorder from './../../Jetstream/SectionBorder.vue'
+    import UpdateTeamNameForm from './UpdateTeamNameForm.vue'
 
     export default {
         props: [

@@ -105,8 +105,8 @@
 </template>
 
 <script>
-import DialogModal from "../../Jetstream/DialogModal";
-import PrimaryButton from "../../Jetstream/Button";
+import DialogModal from "../../Jetstream/DialogModal.vue";
+import PrimaryButton from "../../Jetstream/Button.vue";
 import promodoroMixin from "./promodoro";
 
 export default {

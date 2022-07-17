@@ -63,7 +63,7 @@
             @click.native.prevent
         >
             <div
-                class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center"
+                class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
             >
                 <div class="flex items-center mr-2">
                     <i class="fa fa-ellipsis-v"></i>
@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import ItemGroupCell from "../../ItemGroupCell";
+import ItemGroupCell from "../../ItemGroupCell.vue";
 
 export default {
     components: {

@@ -6,7 +6,7 @@
             class="w-full mx-2"
         >
             <div
-                class="header capitalize font-bold flex w-full justify-between items-center h-12"
+                class="flex items-center justify-between w-full h-12 font-bold capitalize header"
 
             >
                 <div>
@@ -16,7 +16,7 @@
                     <span class="ml-4 text-gray-300"> {{ quadrant.childs.length}} </span>
                 </div>
                 <el-dropdown trigger="click"  @click.native.prevent>
-                    <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center">
+                    <div class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200">
                         <div class="flex items-center mr-2">
                             <i class="fa fa-ellipsis-v"></i>
                         </div>
@@ -27,7 +27,7 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
-            <div class="pr-4 pt-5">
+            <div class="pt-5 pr-4">
                 <draggable :list="quadrant.childs" group="tasks" @change="($event) => changeStatus($event, quadrant)">
                     <div v-for="task in quadrant.childs" :key="`task-${task.id}`" class="task-item">
                         <label class="checkbox-label">
@@ -51,7 +51,7 @@
                     </div>
                 </draggable>
                 <item-group-cell
-                    class="w-full flex items-center"
+                    class="flex items-center w-full"
                     field-name="title"
                     :is-title="true"
                     :index="-1"
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import ItemGroupCell from "../../ItemGroupCell";
+import ItemGroupCell from "../../ItemGroupCell.vue";
 import Draggable from "vuedraggable";
 
 export default {

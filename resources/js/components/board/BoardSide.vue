@@ -68,9 +68,9 @@
 </template>
 
 <script>
-import BoardSideItem from "./BoardSideITem";
-import BoardSideItemLink from "./BoardSideITemLink";
-import BoardFormModal from "./BoardForm"
+import BoardSideItem from "./BoardSideITem.vue";
+import BoardSideItemLink from "./BoardSideITemLink.vue";
+import BoardFormModal from "./BoardForm.vue"
 import SearchBar from "../SearchBar.vue";
 import WorkspaceSelector from "../workspace/WorkspaceSelector.vue";
 

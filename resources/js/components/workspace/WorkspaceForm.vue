@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import DialogModal from "../../Jetstream/DialogModal"
-import JetButton from "../../Jetstream/Button"
+import DialogModal from "../../Jetstream/DialogModal.vue"
+import JetButton from "../../Jetstream/Button.vue"
 import WorkspaceIcon from "./WorkspaceIcon.vue"
 
 export default {

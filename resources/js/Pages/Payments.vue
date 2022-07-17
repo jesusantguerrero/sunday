@@ -1,15 +1,15 @@
 <template>
     <app-layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Profile
             </h2>
         </template>
 
         <div>
-            <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="py-10 mx-auto max-w-8xl sm:px-6 lg:px-8">
                 <!-- Plan Statistics -->
-                <div class="plans__info flex mb-10">
+                <div class="flex mb-10 plans__info">
                     <data-card
                         v-for="info in cards"
                         :key="info.title"
@@ -20,8 +20,8 @@
                 <!-- /plan Statistics -->
 
                 <!-- Current Plan -->
-                <div class="subscriptions__container mb-10">
-                    <h4 class="font-bold mx-2 text-3xl mb-2">Current Plan</h4>
+                <div class="mb-10 subscriptions__container">
+                    <h4 class="mx-2 mb-2 text-3xl font-bold">Current Plan</h4>
                     <data-plan-card
                         v-for="plan in visibleSubscriptions"
                         :key="plan.id"
@@ -35,8 +35,8 @@
                 <!-- /Current Plan -->
 
                 <!-- Plans -->
-                <div class="plans__container mt-5">
-                    <h4 class="font-bold mx-2 text-3xl mb-2">Plans</h4>
+                <div class="mt-5 plans__container">
+                    <h4 class="mx-2 mb-2 text-3xl font-bold">Plans</h4>
                     <div class="flex justify-between">
                         <data-billing-card
                             v-for="plan in plans"
@@ -59,8 +59,8 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import DataCard from "../components/DataCard.vue";
 import DataPlanCard from "../components/DataPlanCard.vue";
 import DataBillingCard from "../components/DataBillingCard.vue";

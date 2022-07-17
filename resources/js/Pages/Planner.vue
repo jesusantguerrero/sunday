@@ -55,7 +55,7 @@
                 <!-- End of main board -->
 
                 <!-- Right Side -->
-                <div class="pt-12 w-100 hidden">
+                <div class="hidden pt-12 w-100">
                     <span class="ml-2 text-3xl font-bold"> Fast Access </span>
 
                     <div class="mt-5 section-card committed">
@@ -124,11 +124,11 @@
 </template>
 
 <script>
-import AppLayout from "./../Layouts/AppLayout";
-import BoardSide from "../components/board/BoardSide";
-import ScheduleControls from "../components/schedule/controls";
-import ScheduleView from "../components/schedule";
-import ItemModal from "../components/board/ItemModal";
+import AppLayout from "./../Layouts/AppLayout.vue";
+import BoardSide from "../components/board/BoardSide.vue";
+import ScheduleControls from "../components/schedule/controls.vue";
+import ScheduleView from "../components/schedule/index.vue";
+import ItemModal from "../components/board/ItemModal.vue";
 import { format } from "date-fns";
 
 export default {

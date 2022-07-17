@@ -1,7 +1,7 @@
 <template>
     <div class="promodoro-app" :class="{mini: isMiniLocal}">
         <header
-            class=" text-white font-bold flex justify-between w-full items-center py-2"
+            class="flex items-center justify-between w-full py-2 font-bold text-white "
             :class="`bg-${promodoroColor}-400`"
         >
              <button
@@ -13,13 +13,13 @@
             <span> {{ title }} </span>
             <div class="flex">
                 <!-- <div
-                    class="actions rounded-lg flex h-8"
+                    class="flex h-8 rounded-lg actions"
                     :class="`bg-${promodoroColor}-700`"
                 >
                     <button
                         v-for="(mode, key) in modes"
                         :key="key"
-                        class="px-2 h-full rounded-lg"
+                        class="h-full px-2 rounded-lg"
                         :class="{
                             [`bg-${promodoroColor}-100 text-${promodoroColor}-700`]:
                                 modeSelected == key
@@ -50,7 +50,7 @@
                 </button>
             </div>
         </header>
-        <p v-if="isMiniLocal" class="text-white mb-4 uppercase">
+        <p v-if="isMiniLocal" class="mb-4 text-white uppercase">
             <span>{{ modes[modeSelected].name }}</span>
         </p>
         <div v-else class="clock" :class="{ rest: round, ticking: run == 1 }">
@@ -91,7 +91,7 @@ const time = { minutes: 0, seconds: 10 };
 
 import Tracker from "../timeTracker/tracker";
 import Duration from "luxon/src/duration";
-import PromodoroConfigurationModal from "./Configuration";
+import PromodoroConfigurationModal from "./Configuration.vue";
 import promodoroMixin from "./promodoro";
 
 export default {

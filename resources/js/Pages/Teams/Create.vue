@@ -1,13 +1,13 @@
 <template>
     <app-layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Create Team
             </h2>
         </template>
 
         <div>
-            <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="py-10 mx-auto max-w-8xl sm:px-6 lg:px-8">
                 <create-team-form />
             </div>
         </div>
@@ -15,9 +15,9 @@
 </template>
 
 <script>
-    import AppLayout from './../../Layouts/AppLayout'
-    import CreateTeamForm from './CreateTeamForm'
-    import JetSectionBorder from './../../Jetstream/SectionBorder'
+    import AppLayout from './../../Layouts/AppLayout.vue'
+    import CreateTeamForm from './CreateTeamForm.vue'
+    import JetSectionBorder from './../../Jetstream/SectionBorder.vue'
 
     export default {
         props: ['team'],
