@@ -385,7 +385,7 @@ export default {
 
         toggleSelection() {
             this.stage.items.forEach(item => {
-                this.$set(item, 'selected', this.stage.selected)
+                item['selected'] = this.stage.selected
             })
         }
     }

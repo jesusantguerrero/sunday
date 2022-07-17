@@ -106,7 +106,7 @@ export default {
                     "filter[board_id]": this.newTask.board.id
                 }
             }).then(({ data }) => {
-                this.$set(this.newTask, "fieldsData", data.data);
+                this.newTask["fieldsData"] = data.data;
             });
         },
 

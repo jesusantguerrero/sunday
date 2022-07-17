@@ -143,7 +143,7 @@ export default {
             this.selected
             this.timeEntry.tracks.forEach(
                 track =>
-                this.$set(track, 'selected',this.selected)
+                track['selected'] = this.selected
             );
         }
     }

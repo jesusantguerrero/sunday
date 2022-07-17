@@ -2,7 +2,7 @@
     <div class="promodoro-app" :class="{mini: isMiniLocal}">
         <header
             class="flex items-center justify-between w-full py-2 font-bold text-white "
-            :class="`bg-${promodoroColor}-400`"
+            :class="promodoroColor"
         >
              <button
                     @click="play()"
@@ -159,13 +159,17 @@ export default {
         isMiniLocal() {
             this.$emit('update:is-mini', this.isMiniLocal)
         },
-        promodoroColor() {
-            this.$emit("update:timerColor", this.promodoroColor);
+        promodoroColor: {
+            handler() {
+                this.$emit("update:timerColor", this.promodoroColor);
+
+            },
+            immediate: true
         },
         formattedTime: {
             deep: true,
             handler(formattedTime) {
-                this.tracker && this.$set(this.tracker, "duration", this.tracker.getDuration());
+                if (this.tracker) this.tracker["duration"] = this.tracker.getDuration();
                 const title = this.run ? `(${formattedTime}) Daily` : "Daily";
                 document.getElementsByTagName("title")[0].text = title;
                 let [min, sec] = formattedTime.split(":")
@@ -261,7 +265,7 @@ export default {
         stopTracker(stoppedTimestamp) {
             if (this.trackerLocal) {
                 this.trackerLocal.stopTimer(stoppedTimestamp);
-                this.$set(this.tracker, "duration", this.tracker.getDuration());
+                this.tracker["duration"] = this.tracker.getDuration();
                 this.$emit('stopped')
             }
         },

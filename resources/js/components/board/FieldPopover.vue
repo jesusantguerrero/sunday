@@ -48,7 +48,7 @@
 </el-popover>
 <div v-else>
     <slot>
-        <i class="fa fa-plus cursor-not-allowed"></i>
+        <i class="cursor-not-allowed fa fa-plus"></i>
     </slot>
 </div>
 </template>
@@ -70,7 +70,7 @@ export default {
             handler() {
                 this.field = {...this.fieldData}
                 if (!this.field.type) {
-                    this.$set(this.field, 'type', "text");
+                    this.field['type'] = "text";
                 }
             },
             immediate: true

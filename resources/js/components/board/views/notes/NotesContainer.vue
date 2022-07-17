@@ -117,7 +117,7 @@ export default {
                          value: quadrant.attributes.name
                      })
                 } else {
-                    this.$set(field, 'value', quadrant.attributes.name)
+                    field['value'] = quadrant.attributes.name
                 }
 
                 this.$emit('saved', event.added.element)

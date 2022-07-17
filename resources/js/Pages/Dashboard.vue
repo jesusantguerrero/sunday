@@ -10,12 +10,12 @@
             <div class="flex items-center">
               <div class="w-40 mr-2">
                 <multiselect
-                  v-model="selectedStage"
+                  v-model="state.selectedStage"
                   ref="input"
-                  :show-labels="false"
                   placeholder="Filter by stage"
-                  :options="stages"
                   class="w-full"
+                  :show-labels="false"
+                  :options="stages"
                 >
                   <template slot="singleLabel" slot-scope="props">
                     <span class="option__title">
@@ -99,16 +99,15 @@
           <span class="ml-2 text-3xl font-bold"> Tools </span>
 
           <div class="mt-5 section-card committed">
-            <div :class="`bg-${promodoroColor} text-gray-600 font-bold px-0`">
+            <div :class="[promodoroColor, 'text-gray-600 font-bold px-0']">
               <promodoro
                 ref="Promodoro"
                 :settings="settings"
                 :tracker.sync="tracker"
-                :timer-color.sync="promodoroColor"
-                :tasks="todo"
+                :v-model:timerColor="promodoroColor"
+                :tasks="state.todo"
                 @stopped="getTodos"
-              >
-              </promodoro>
+              />
             </div>
           </div>
 

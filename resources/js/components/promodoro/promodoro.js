@@ -31,19 +31,19 @@ export default {
             modes: {
                 session: {
                     name: "session",
-                    color: "red",
+                    color: "bg-red-500",
                     minutes: SESSION_MINUTES,
                     seconds: TIME_SECONDS
                 },
                 break: {
                     name: "break",
-                    color: "blue",
+                    color: "bg-blue-500",
                     minutes: BREAK_MINUTES,
                     seconds: TIME_SECONDS
                 },
                 longBreak: {
                     name: "long",
-                    color: "green",
+                    color: "bg-green-500",
                     minutes: LONG_BREAK_MINUTES,
                     seconds: TIME_SECONDS
                 }

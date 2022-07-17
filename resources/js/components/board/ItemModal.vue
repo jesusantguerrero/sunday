@@ -314,17 +314,8 @@ export default {
             ]).then(([stagesResponse, fieldsResponse]) => {
                 let fields = fieldsResponse.data.data
                 const stages = stagesResponse.data.data
-                this.$set(
-                    this.formData.board,
-                    "stages",
-                    stages
-                );
-
-                this.$set(
-                    this.formData,
-                    "stage",
-                    stages[0]
-                );
+                this.formData.board["stages"] = stages
+                this.formData["stage"] = stages[0]
 
                 const fieldNames = fields.map(field => field.name);
                 this.typeFields.forEach((field) => {
@@ -333,12 +324,7 @@ export default {
                     }
                 });
 
-
-                this.$set(
-                    this.formData.board,
-                    "fields",
-                    fields
-                );
+                this.formData.board["fields"] = fields
                 this.isLoading = false
             });
         },
