@@ -20,7 +20,7 @@
     </div>
     <div class="mt-2">
         <multiselect
-            :value="currentWorkspace"
+            :model-value="currentWorkspace"
             :show-labels="false"
             label="name"
             :options="workspaceList"
@@ -54,7 +54,7 @@
 import WorkspaceForm from './WorkspaceForm.vue';
 import IconEllipsis from '../icons/IconEllipsis.vue';
 import DropdownLink from '../../Jetstream/DropdownLink.vue';
-import Dropdown from '../../Jetstream/Dropdown.vue';
+import Dropdown from '@/Jetstream/Dropdown.vue';
 import DropdownList from '../DropdownList.vue';
 import WorkspaceIcon from './WorkspaceIcon.vue';
 import WorkspaceListItem from './WorkspaceListItem.vue';

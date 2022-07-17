@@ -292,7 +292,7 @@
       </div>
     </div>
     <!-- Confirmation Modal -->
-    <confirmation-modal
+    <ConfirmationModal
       :show-modal="showConfirmationModal"
       :modal-data="confirmationData"
       @confirm="handleConfirm"
@@ -301,13 +301,13 @@
     <!-- Endof confirmation modal -->
 
     <!-- Modal Portal -->
-    <portal-target name="modal" multiple />
+    <PortalTarget name="modal" multiple />
   </div>
 </template>
 
 <script setup>
 import Menus from "./menus";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import JetDropdown from "./../Jetstream/Dropdown.vue";
 import JetDropdownLink from "./../Jetstream/DropdownLink.vue";
@@ -315,6 +315,8 @@ import JetResponsiveNavLink from "./../Jetstream/ResponsiveNavLink.vue";
 import ConfirmationModal from "../components/shared/ConfirmationModal.vue";
 import BoardSide from "../components/board/BoardSide.vue";
 import AppSide from "./AppSide.vue";
+
+
 
 defineProps({
   boards: {
@@ -333,10 +335,8 @@ const state = reactive({
   isMenuExpanded: false,
 });
 const eventBus = {
-    $on: () => {
-
-    }
-}
+  $on: () => {},
+};
 onMounted(() => {
   eventBus.$on("show-modal", (data) => {
     state.showConfirmationModal = true;

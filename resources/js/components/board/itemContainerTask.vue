@@ -86,7 +86,7 @@ export default {
         durationFromMs() {
             const currentDuration = this.isTracker ? this.tracker.duration || 0: 0;
 
-            this.$set(this.task, 'duration', this.originalDuration + currentDuration);
+            this.task['duration'] = this.originalDuration + currentDuration;
             return Tracker.durationFromMs(this.task.duration);
         },
         priorityText() {

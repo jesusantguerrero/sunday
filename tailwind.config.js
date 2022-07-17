@@ -8,6 +8,9 @@ module.exports = {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
             },
         },
+        color: {
+            primary: "#087a9c"
+        }
     },
     plugins: [require('@tailwindcss/typography')],
 };

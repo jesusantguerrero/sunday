@@ -1,15 +1,19 @@
 <template>
-    <AtAuthBox>
+    <AtAuthBox background-image="/images/clouds.jpg">
         <AtAuthForm
-            app-name="Loger"
-            btn-class="overflow-hidden text-white bg-pink-500 rounded-lg hover:bg-pink-600"
-            link-class="text-pink-500 hover:text-pink-600"
+            app-name="Sunday"
+            btn-class="overflow-hidden text-white bg-primary hover:bg-primary/50"
+            link-class="text-primary hover:text-primary/50"
             v-model:isLoading="form.processing"
             :errors="form.errors"
             @submit="submit"
             @home-pressed="onHomePressed"
             @link-pressed="onLinkPressed"
-        />
+        >
+            <template #brand>
+                <AppLogo class="w-full h-20 text-white" />
+            </template>
+        </AtAuthForm>
     </AtAuthBox>
 </template>
 
@@ -17,6 +21,7 @@
     import { AtAuthBox, AtAuthForm } from "atmosphere-ui";
     import { Inertia } from "@inertiajs/inertia";
     import { useForm } from "@inertiajs/inertia-vue3";
+    import AppLogo from "@/Jetstream/ApplicationMark.vue";
 
     defineProps({
         canResetPassword: Boolean,

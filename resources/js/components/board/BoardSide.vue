@@ -1,8 +1,8 @@
 <template>
     <div class="py-5 bg-white board-side">
         <WorkspaceSelector
-            :current-workspace="$page.props.user.current_workspace"
-            :workspaces="$page.props.user.all_workspaces"
+            :current-workspace="pageProps.user.current_workspace"
+            :workspaces="pageProps.user.all_workspaces"
         />
         <SearchBar v-model="search" class="mt-5" v-if="!isHeaderMenu" />
 
@@ -67,15 +67,20 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import BoardSideItem from "./BoardSideITem.vue";
 import BoardSideItemLink from "./BoardSideITemLink.vue";
 import BoardFormModal from "./BoardForm.vue"
 import SearchBar from "../SearchBar.vue";
 import WorkspaceSelector from "../workspace/WorkspaceSelector.vue";
+import { computed, reactive } from "vue";
+import { Inertia } from "@inertiajs/inertia";
+import { usePage } from "@inertiajs/inertia-vue3";
 
-export default {
-    props: {
+
+const pageProps = usePage().props;
+
+const props = defineProps({
         boards: {
             type: Array,
             default() {
@@ -88,37 +93,29 @@ export default {
                 return [];
             }
         }
-    },
-    components: {
-    BoardSideItem,
-    BoardSideItemLink,
-    BoardFormModal,
-    SearchBar,
-    WorkspaceSelector
-},
-    data() {
-        return {
-            boardName: "",
-            showAdd: "",
-            search: "",
-            isBoardFormOpen: false,
-            boardData: null
-        };
-    },
-    computed: {
-        isHeaderMenu() {
-            const headerMenu = this.headerMenu.find( menuItem => this.isPath(menuItem.to, true));
-            return headerMenu;
-        },
-        filteredBoards() {
-            return this.boards.filter(board => board.name.toLowerCase().includes(this.search.toLowerCase()));
-        },
-        sectionName() {
-           return this.isHeaderMenu ? this.isHeaderMenu.label : "My Boards";
-        }
-    },
-    methods: {
-        isPath(url = "", includes) {
+
+});
+const state = reactive({
+    boardName: "",
+    showAdd: "",
+    search: "",
+    isBoardFormOpen: false,
+    boardData: null
+});
+
+    const isHeaderMenu = computed(() => {
+        return props.headerMenu.find( menuItem => isPath(menuItem.to, true));
+    })
+
+    const filteredBoards = computed(() => {
+        return props.boards.filter(board => board.name.toLowerCase().includes(state.search.toLowerCase()));
+    })
+
+    const sectionName = computed(() => {
+        return isHeaderMenu.value ? isHeaderMenu.value.label : "My Boards";
+    })
+
+    function isPath(url = "", includes) {
             const link = url.replace(window.location.origin, "");
             if (includes) {
                 const root = link.split("/");
@@ -126,24 +123,25 @@ export default {
                 return isPath
             }
             return link == window.location.pathname;
-        },
-        openBoardForm(board = {}) {
-            this.isBoardFormOpen = true;
-            this.boardData = board;
-        },
-        addBoard(board) {
+    }
+    function openBoardForm(board = {}) {
+            state.isBoardFormOpen = true;
+            state.boardData = board;
+    }
+
+    function addBoard(board) {
             this.isBoardFormOpen = false;
             this.$inertia.reload();
-        },
+    }
 
-        showAddForm() {
+    function showAddForm() {
             this.showAdd = true;
             this.$nextTick(() => {
                 this.$refs.input.focus();
             });
-        },
+    }
 
-        handleCommand(board, command) {
+    function handleCommand(board, command) {
             switch (command) {
                 case 'delete':
                     this.confirmDelete(board)
@@ -151,9 +149,9 @@ export default {
                 default:
                 break;
             }
-        },
+    }
 
-        confirmDelete(board) {
+    function confirmDelete(board) {
             this.showConfirm({
                 title: `Delete "${board.name}" board`,
                 content: "Are you sure you want to delete this board?",
@@ -162,30 +160,28 @@ export default {
                     this.deleteBoard(board.id)
                 }
             })
-        },
+    }
 
-        deleteBoard(id) {
+    function deleteBoard(id) {
             axios({
                 url: `/api/boards/${id}`,
                 method: "delete"
             }).then(() => {
-                const index = this.boards.findIndex(board => board.id == id);
-                const currentBoard = index >= 0 ? this.boards[index] : null;
+                const index = props.boards.findIndex(board => board.id == id);
+                const currentBoard = index >= 0 ? props.boards[index] : null;
 
-                if (currentBoard && this.isPath(currentBoard.link)) {
+                if (currentBoard && isPath(currentBoard.link)) {
                     if (index != 0) {
-                        const previousBoard = this.boards[index - 1];
-                        return this.$inertia.visit(previousBoard.link)
+                        const previousBoard = props.boards[index - 1];
+                        return Inertia.visit(previousBoard.link)
                     }
-                    return this.$inertia.visit('dashboard')
+                    return Inertia.visit('dashboard')
                 }
-                 this.$inertia.reload();
+                 Inertia.reload();
             }).catch((err) => {
                 console.log(err)
             });
-        }
     }
-};
 </script>
 
 <style lang="scss">

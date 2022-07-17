@@ -52,6 +52,7 @@
         "unplugin-vue-components": "^0.21.1",
         "vite": "^2.9.14",
         "vue": "^3.2.37",
+        "vue-multiselect": "^3.0.0-alpha.2",
         "vuedraggable": "^4.1.0"
     }
 }

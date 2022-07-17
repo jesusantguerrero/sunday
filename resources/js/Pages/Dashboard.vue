@@ -223,7 +223,7 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, watch, onMounted, computed } from "vue";
 import { subDays, toDate, format } from "date-fns";
 import { uniq, orderBy } from "lodash";
 import AppLayout from "@/Layouts/AppLayout.vue";
@@ -323,7 +323,8 @@ watch(state.localCommitDate, (newDate, oldDate) => {
     getCommitsByDate();
   }
 });
-const hasCommited = computed(() => {
+
+const hasCommitted = computed(() => {
   return props.todo.filter((item) => item.done).length;
 });
 const showTodo = computed(() => {
@@ -333,7 +334,7 @@ const showCommitted = computed(() => {
   return ["daily", "committed"].includes(state.modeSelected);
 });
 const stages = computed(() => {
-  return uniq(this.todo.map((item) => item.stage));
+  return uniq(props.todo.map((item) => item.stage));
 });
 const inbox = computed(() => {
   const inbox = state.selectedStage
@@ -356,25 +357,25 @@ onMounted(() => {
 setCommitDate();
 function setCommitDate() {
   let date = new Date();
-  if (this.commitDate) {
-    date = this.commitDate.split("-");
+  if (props.commitDate) {
+    date = props.commitDate.split("-");
     date = toDate(new Date(date[0], date[1] - 1, date[2]));
   }
-  this.localCommitDate = date;
+  state.localCommitDate = date;
 }
 
 function completeDay() {
-  this.isLoading = true;
+  state.isLoading = true;
   const yesterday = format(subDays(new Date(), 1), "yyyy-MM-dd");
   const now = format(new Date(), "yyyy-MM-dd");
-  let completed = this.todo.filter((item) => item.done);
+  let completed = props.todo.filter((item) => item.done);
   completed = completed.map((item) => {
     item.commit_date = yesterday;
     return item;
   });
 
   completed.forEach(async (item) => {
-    await this.updateItem(item);
+    await updateItem(item);
   });
 
   this.updateDaily(now);
