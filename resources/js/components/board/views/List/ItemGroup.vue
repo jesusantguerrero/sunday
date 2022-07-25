@@ -79,7 +79,7 @@
                         handle=".handle"
                         class="w-full"
                     >
-                        <item-group-title
+                        <ItemGroupTitle
                             v-for="(item, index) in stage.items"
                             class="flex bg-gray-200 border-2 border-white item-false"
                             :key="`item-false__title-${item.id}`"
@@ -91,7 +91,7 @@
                             @saved="saveChanges"
                             @command="handleCommand"
                         >
-                        </item-group-title>
+                        </ItemGroupTitle>
                     </draggable>
                 </div>
             </div>
@@ -134,7 +134,7 @@
                             class="text-center border-2 border-white custom-field "
                             :class="[getBg(field, item, field.name)]"
                         >
-                            <item-group-cell
+                            <ItemGroupCell
                                 :field-name="field.name"
                                 :field="field"
                                 :index="index"

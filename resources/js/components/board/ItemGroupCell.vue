@@ -16,12 +16,11 @@
         </div>
 
         <template v-else-if="!isEditMode">
-            <link-preview
+            <LinkPreview
                     v-if="field.type == 'url' && displayValue"
                     :value="displayValue"
                     @edit="toggleEditMode()"
-                >
-            </link-preview>
+            />
             <span
                 v-else
                 @click="toggleEditMode()"
@@ -47,12 +46,11 @@
 
             <div v-else class="flex items-center w-full h-full">
                 <div class="controls" v-if="showControls && item.board">
-                    <board-selector
+                    <BoardSelector
                         :options="item.board.stages"
                         icon-class="fas fa-layer-group"
                         v-model="item.stage"
-                    >
-                    </board-selector>
+                    />
                 </div>
                 <input
                     ref="input"
@@ -67,32 +65,31 @@
                     @keydown.enter="saveItem"
                 />
                 <div class="flex h-full controls" v-if="showControls">
-                    <board-selector
+                    <BoardSelector
                         :options="boards"
                         tooltip="Board"
                         icon-class="fas fa-list"
                         :show-label="false"
                         v-model="item.board"
-                    >
-                    </board-selector>
-                    <n-tooltip
+                    />
+                    <NTooltip
                         effect="dark"
                         content="reminder date"
                         placement="top"
                     >
                         <i class="mx-2 fas fa-clock"></i>
-                    </n-tooltip>
-                    <n-tooltip
+                    </NTooltip>
+                    <NTooltip
                         effect="dark"
                         content="Delegate"
                         placement="top"
                     >
                         <i class="mx-2 fas fa-user"></i>
-                    </n-tooltip>
+                    </NTooltip>
 
-                    <n-tooltip effect="dark" content="Status" placement="top">
+                    <NTooltip effect="dark" content="Status" placement="top">
                         <i class="mx-2 fas fa-tag"></i>
-                    </n-tooltip>
+                    </NTooltip>
                 </div>
             </div>
         </template>

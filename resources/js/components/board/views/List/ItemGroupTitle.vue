@@ -23,14 +23,14 @@
         <!-- /Done checkbox -->
 
         <!-- handle -->
-        <div class="flex items-center">
-            <i
-                class="fa fa-align-justify handle"
-            ></i>
+        <div class="flex items-center cursor-grab">
+            <div class="handle text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--ic" width="32" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="currentColor" d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2s.9-2 2-2s2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2s-2 .9-2 2s.9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2z"></path></svg>
+            </div>
         </div>
         <!-- /handle -->
 
-        <item-group-cell
+        <ItemGroupCell
             class="flex items-center"
             field-name="title"
             :select-mode="isSelectMode"
@@ -38,8 +38,7 @@
             :item="item"
             @selected="$emit('selected', $event)"
             @saved="$emit('saved', item, 'title', $event)"
-        >
-        </item-group-cell>
+        />
 
         <!-- Estimation Points -->
         <div class="points__container">
@@ -57,65 +56,64 @@
         <!-- /Estimation Points -->
 
         <!-- Title Options -->
-        <el-dropdown
+        <JetDropdown
             trigger="click"
             @command="$emit('command', item, $event)"
-            @click.native.prevent
         >
-            <div
-                class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
-            >
-                <div class="flex items-center mr-2">
-                    <i class="fa fa-ellipsis-v"></i>
+            <template #trigger>
+                <div
+                    class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
+                >
+                    <div class="flex items-center mr-2">
+                        <i class="fa fa-ellipsis-v"></i>
+                    </div>
                 </div>
-            </div>
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="edit" icon="fa fa-edit"
-                    >Edit</el-dropdown-item
-                >
-                <el-dropdown-item command="delete" icon="fa fa-trash"
-                    >Delete</el-dropdown-item
-                >
+            </template>
+            <div>
+                <jet-dropdown-link command="edit" icon="fa fa-edit" as="button"
+                    >Edit
+                </jet-dropdown-link>
+                <jet-dropdown-link command="delete" icon="fa fa-trash" as="button">
+                    Delete
+                </jet-dropdown-link>
                 <a
                     :href="getFieldValue(item, 'url_id')"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <el-dropdown-item
+                    <jet-dropdown-link
                         command="go"
                         icon="fa fa-external-link-alt"
                         v-if="getFieldValue(item, 'url_id')"
                     >
                         Link by id
-                    </el-dropdown-item>
+                    </jet-dropdown-link>
                 </a>
                 <a
                     :href="getFieldValue(item, 'url_subject')"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <el-dropdown-item
+                    <jet-dropdown-link
                         command="go"
                         icon="fa fa-external-link-alt"
                         v-if="getFieldValue(item, 'url_subject')"
                     >
                         Link by Subject
-                    </el-dropdown-item>
+                    </jet-dropdown-link>
                 </a>
-            </el-dropdown-menu>
-        </el-dropdown>
+            </div>
+        </JetDropdown>
         <!-- /Title options -->
     </div>
 </template>
 
-<script>
+<script setup>
 import ItemGroupCell from "../../ItemGroupCell.vue";
+import { NPopover as JetDropdown } from "naive-ui"
+import JetDropdownLink from "@/Jetstream/DropdownLink.vue"
 
-export default {
-    components: {
-        ItemGroupCell
-    },
-    props: {
+defineProps({
         item: {
             type: Object,
             required: true
@@ -134,16 +132,13 @@ export default {
                 return []
             }
         }
-    },
-    methods: {
-        getFieldValue(item, name) {
-            const fieldValue = item.fields.find(
-                field => field.field_name == name
-            );
-            return fieldValue && fieldValue.value;
-        }
-    }
-};
+});
+function getFieldValue(item, name) {
+    const fieldValue = item.fields.find(
+        field => field.field_name == name
+    );
+    return fieldValue && fieldValue.value;
+}
 </script>
 
 <style lang="scss" scoped>
