@@ -38,10 +38,20 @@
                             class="mx-2 fa fa-edit"
                             @click="toggleEditMode(true)"
                         ></i>
-                        <el-dropdown
+                        <NDropdown
                             trigger="click"
-                            @command="handleBoardCommands"
+                            @select="handleBoardCommands"
                             @click.native.prevent
+                            :options="[{
+                                key: 'edit',
+                                label: 'Edit'
+                            }, {
+                                key: 'delete',
+                                label: 'Delete'
+                            }, {
+                                key: 'selection',
+                                label: 'Select Mode'
+                            }]"
                         >
                             <div
                                 class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
@@ -50,24 +60,7 @@
                                     <i class="fa fa-ellipsis-v"></i>
                                 </div>
                             </div>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item
-                                    command="edit"
-                                    icon="fa fa-edit"
-                                    >Edit</el-dropdown-item
-                                >
-                                <el-dropdown-item
-                                    command="delete"
-                                    icon="fa fa-trash"
-                                    >Delete</el-dropdown-item
-                                >
-                                <el-dropdown-item
-                                    command="selection"
-                                    icon="fa fa-check"
-                                    >Select Mode</el-dropdown-item
-                                >
-                            </el-dropdown-menu>
-                        </el-dropdown>
+                        </NDropdown>
                     </div>
                 </div>
                 <div class="false-header"></div>
@@ -201,13 +194,15 @@ import { VueDraggableNext as Draggable } from "vue-draggable-next"
 import ItemGroupCell from "../../ItemGroupCell.vue";
 import FieldPopover from "../../FieldPopover.vue";
 import ItemGroupTitle from './ItemGroupTitle.vue';
+import { NDropdown } from "naive-ui"
 
 export default {
     components: {
         ItemGroupCell,
         Draggable,
         FieldPopover,
-        ItemGroupTitle
+        ItemGroupTitle,
+        NDropdown
     },
     props: {
         createMode: {

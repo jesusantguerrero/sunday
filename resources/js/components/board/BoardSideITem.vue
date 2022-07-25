@@ -13,26 +13,22 @@
             {{ board.name }}
         </span>
 
-        <el-dropdown
+        <NDropdown
             trigger="click"
-            @command="$emit('option', board, $event)"
-            @click.native.prevent
+            :options="options"
+            @select="$emit('option', board, $event)"
         >
-            <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center">
+            <button class="hover:bg-gray-200 w-5 rounded-full py-2 text-center" @click.prevent.stop>
                 <i class="fa fa-ellipsis-v"></i>
-            </div>
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="delete" icon="fa fa-trash"
-                    >Delete</el-dropdown-item
-                >
-            </el-dropdown-menu>
-        </el-dropdown>
+            </button>
+        </NDropdown>
     </inertia-link>
 </template>
 
-<script>
-export default {
-    props: {
+<script setup>
+import { NDropdown } from "naive-ui"
+
+defineProps({
         board: {
             type: Object,
             required: true
@@ -40,8 +36,14 @@ export default {
         isActive: {
             type: Boolean
         }
+});
+
+const options = [
+    {
+        label: 'Delete',
+        key:"delete"
     }
-};
+]
 </script>
 
 <style></style>
