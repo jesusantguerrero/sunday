@@ -1,32 +1,86 @@
 import {format} from "date-fns";
 
-export default {
-    props: {
-        fieldName: {
-            type: String
-        },
-        field: {
-            type: Object,
-            default() {
-                return {};
+export const cellProps = {
+    fieldName: {
+        type: String
+    },
+    field: {
+        type: Object,
+        default() {
+            return {};
+        }
+    },
+    fieldType: {
+        type: String,
+        default: "text"
+    },
+    item: {
+        type: Object
+    },
+    index: {
+        type: Number
+    },
+    isNew: {
+        type: Boolean
+    },
+    isTitle: {
+        type: Boolean
+    }
+}
+export const  setDate = (dateValue) => {
+    const date = dateValue ? dateValue.split("-") : null;
+    return date ? new Date(date[0], date[1] - 1, date[2]) : null;
+}
+
+export const setTime = (timeValue) => {
+    let date = timeValue ? timeValue.split(":") : null;
+    const dateTime = new Date();
+    dateTime.setHours(date[0]);
+    dateTime.setMinutes(date[1]);
+    dateTime.setSeconds(0);
+    return dateTime;
+};
+export const formatValue = (value, type = "default", operation = "read") => {
+    const formatters = {
+        date: {
+            write: (value = "") => {
+                return typeof value == "string"
+                    ? value
+                    : format(value, "yyyy-MM-dd");
+            },
+            read: (value = "") => {
+                return value && typeof value == "string"
+                    ? this.setDate(value)
+                    : value;
             }
         },
-        fieldType: {
-            type: String,
-            default: "text"
+        time: {
+            write: (value = "") => {
+                return typeof value == "string"
+                    ? value
+                    : format(value, "HH:mm");
+            },
+            read: (value = "") => {
+                const theValue = value && typeof value == "string"
+                    ? this.setTime(value)
+                    : value;
+                return theValue;
+            }
         },
-        item: {
-            type: Object
-        },
-        index: {
-            type: Number
-        },
-        isNew: {
-            type: Boolean
-        },
-        isTitle: {
-            type: Boolean
+        default: {
+            read: value => value,
+            write: value => value
         }
+    };
+    return formatters[type]
+        ? formatters[type][operation](value)
+        : value;
+};
+
+
+export default {
+    props: {
+        ...cellProps
     },
     computed: {
         displayValue() {
@@ -39,12 +93,10 @@ export default {
                     : this.item[this.fieldName];
             } else if (["date"].includes(this.field.type)) {
                 if (this.item[this.fieldName]) {
+                    debugger
                     return typeof this.item[this.fieldName] == "string"
                         ? this.item[this.fieldName]
-                        : format(
-                              new Date(this.item[this.fieldName]),
-                              "yyyy-MM-dd"
-                          );
+                        : format(new Date(this.item[this.fieldName]),"yyyy-MM-dd");
                 }
                 return "";
             } else {
@@ -53,42 +105,9 @@ export default {
         }
     },
     methods: {
-        formatValue(value, type = "default", operation = "read") {
-            const formatters = {
-                date: {
-                    write: (value = "") => {
-                        return typeof value == "string"
-                            ? value
-                            : format(value, "yyyy-MM-dd");
-                    },
-                    read: (value = "") => {
-                        return value && typeof value == "string"
-                            ? this.setDate(value)
-                            : value;
-                    }
-                },
-                time: {
-                    write: (value = "") => {
-                        return typeof value == "string"
-                            ? value
-                            : format(value, "HH:mm");
-                    },
-                    read: (value = "") => {
-                        const theValue = value && typeof value == "string"
-                            ? this.setTime(value)
-                            : value;
-                        return theValue;
-                    }
-                },
-                default: {
-                    read: value => value,
-                    write: value => value
-                }
-            };
-            return formatters[type]
-                ? formatters[type][operation](value)
-                : value;
-        },
+        formatValue,
+        setDate,
+        setTime,
 
         focusCell() {
             if (this.$refs.input) {
@@ -108,20 +127,6 @@ export default {
                         : this.$refs.input;
                 input.focus();
             }
-        },
-
-        setDate(dateValue) {
-            const date = dateValue ? dateValue.split("-") : null;
-            return date ? new Date(date[0], date[1] - 1, date[2]) : null;
-        },
-
-        setTime(timeValue) {
-            let date = timeValue ? timeValue.split(":") : null;
-            const dateTime = new Date();
-            dateTime.setHours(date[0]);
-            dateTime.setMinutes(date[1]);
-            dateTime.setSeconds(0);
-            return dateTime;
         },
 
         toggleEditMode() {

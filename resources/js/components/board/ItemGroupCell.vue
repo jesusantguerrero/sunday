@@ -75,24 +75,24 @@
                         v-model="item.board"
                     >
                     </board-selector>
-                    <el-tooltip
+                    <n-tooltip
                         effect="dark"
                         content="reminder date"
                         placement="top"
                     >
                         <i class="mx-2 fas fa-clock"></i>
-                    </el-tooltip>
-                    <el-tooltip
+                    </n-tooltip>
+                    <n-tooltip
                         effect="dark"
                         content="Delegate"
                         placement="top"
                     >
                         <i class="mx-2 fas fa-user"></i>
-                    </el-tooltip>
+                    </n-tooltip>
 
-                    <el-tooltip effect="dark" content="Status" placement="top">
+                    <n-tooltip effect="dark" content="Status" placement="top">
                         <i class="mx-2 fas fa-tag"></i>
-                    </el-tooltip>
+                    </n-tooltip>
                 </div>
             </div>
         </template>
@@ -107,6 +107,7 @@ import InputDate from "./cellTypes/Date.vue";
 import InputPerson from "./cellTypes/Person.vue";
 import InputTime from "./cellTypes/Time.vue";
 import BoardSelector from './BoardSelector.vue';
+import { NTooltip } from "naive-ui";
 
 export default {
     name: "ItemGroupCell",

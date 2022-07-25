@@ -1,29 +1,26 @@
 <template>
-  <el-select
-    v-model="localValue"
+  <NSelect
+    v-model:value="localValue"
     ref="input"
     placeholder="Select"
     :filterable="true"
     :automatic-dropdown="true"
-    @visible-change="!$event && $emit('closed')"
->
-    <el-option
-        v-for="item in options"
-        :key="item.id"
-        :label="item.name"
-        :value="item.name"
-    >
-    </el-option>
-</el-select>
+    :options="options"
+    track-by="id"
+    label="label"
+    value-field="name"
+    @blur="$emit('closed')"
+/>
 </template>
 
 <script>
 import mixins from "./mixin";
+import { NSelect } from "naive-ui"
 
 export default {
     mixins: [mixins],
     props: {
-        value: {
+        modelValue: {
             type: String
         },
         options: {
@@ -39,20 +36,26 @@ export default {
         }
     },
     watch: {
-        value: {
-            handler() {
-                this.localValue = this.value;
+        modelValue: {
+            handler(value) {
+                this.localValue = value;
             },
             immediate: true
         },
         localValue() {
-            if (this.localValue != this.value) {
-                this.$emit('input', this.localValue)
+            if (this.localValue != this.modelValue) {
+                this.$emit('update:modelValue', this.localValue)
                 this.$emit('saved')
             } else {
                 this.$emit('closed')
             }
         }
+    },
+    mounted() {
+        console.log(this.options)
+    },
+    components: {
+        NSelect
     }
 };
 </script>
