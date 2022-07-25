@@ -152,7 +152,7 @@
 import DialogModal from "../../Jetstream/DialogModal.vue";
 import ItemGroupCell from "./ItemGroupCell.vue";
 import PrimaryButton from "../../Jetstream/Button.vue";
-import Draggable from "vuedraggable";
+import { VueDraggableNext as Draggable } from "vue-draggable-next"
 
 export default {
     components: {

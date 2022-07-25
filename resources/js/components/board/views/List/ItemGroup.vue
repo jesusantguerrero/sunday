@@ -108,13 +108,13 @@
                         class="item-group-row__header"
                     >
                         <span v-if="isExpanded" class="font-bold">
-                            <field-popover
+                            <FieldPopover
                                 :field-data="field"
                                 :board="board"
                                 @saved="onFieldAdded"
                             >
                                 {{ field.title }}
-                            </field-popover>
+                            </FieldPopover>
                         </span>
                     </div>
                 </div>
@@ -140,8 +140,7 @@
                                 :index="index"
                                 :item="item"
                                 @saved="saveChanges(item, field.name, $event)"
-                            >
-                            </item-group-cell>
+                            />
                         </div>
                     </div>
                 </template>
@@ -198,7 +197,7 @@
 </template>
 
 <script>
-import Draggable from "vuedraggable";
+import { VueDraggableNext as Draggable } from "vue-draggable-next"
 import ItemGroupCell from "../../ItemGroupCell.vue";
 import FieldPopover from "../../FieldPopover.vue";
 import ItemGroupTitle from './ItemGroupTitle.vue';

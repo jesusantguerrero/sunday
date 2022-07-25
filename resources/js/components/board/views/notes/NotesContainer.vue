@@ -66,7 +66,7 @@
 
 <script>
 import ItemGroupCell from "../../ItemGroupCell.vue";
-import Draggable from "vuedraggable";
+import { VueDraggableNext as Draggable } from "vue-draggable-next"
 
 export default {
     props: {

@@ -1,6 +1,6 @@
 <template>
     <div class="px-8 pb-24">
-        <div class="flex justify-between board__toolbar">
+        <header class="flex justify-between board__toolbar">
             <div class="flex text-left">
                 <div class="flex justify-between mr-2">
                     <span class="text-3xl font-bold" v-if="!isEditMode">
@@ -85,14 +85,13 @@
                     <i class="fa fa-sort"></i>
                 </span> -->
             </div>
-        </div>
+        </header>
 
         <bulk-selection-bar
             v-if="selectedItems.length"
             :selected-items="selectedItems"
             @delete-pressed="confirmDeleteItems(selectedItems, true)"
-        >
-        </bulk-selection-bar>
+        />
 
         <div class="">
             <draggable
@@ -114,8 +113,7 @@
                         @item-deleted="confirmDeleteItem"
                         @stage-updated="addStage"
                         class="mt-10"
-                    >
-                    </list-view>
+                    />
                 </transition-group>
             </draggable>
 
@@ -126,8 +124,8 @@
                 :fields="board.fields"
                 :kanban-data="kanbanData"
                 @saved="addItem"
-                class="flex pt-5">
-            </component>
+                class="flex pt-5"
+            />
 
             <div class="flex justify-center w-full py-5" v-if="modeSelected == 'list'">
                 <button
@@ -143,16 +141,16 @@
             @cancel="isItemModalOpen=false"
             @saved="isItemModalOpen=false"
             :record-data="openedItem"
-            :is-open="isItemModalOpen">
-        </item-modal>
+            :is-open="isItemModalOpen"
+        />
 
         <automation-modal
             @cancel="isAutomationModalOpen=false"
             @saved="isAutomationModalOpen=false"
             :record-data="{}"
             :board="board"
-            :is-open="isAutomationModalOpen">
-        </automation-modal>
+            :is-open="isAutomationModalOpen"
+        />
     </div>
 </template>
 
@@ -165,7 +163,7 @@ import NoteView from "./views/notes/NotesContainer.vue";
 import ItemModal from "./ItemModal.vue";
 import AutomationModal from "../AutomationModal.vue";
 import BulkSelectionBar from '../BulkSelectionBar.vue';
-import Draggable from "vuedraggable";
+import { VueDraggableNext as Draggable } from "vue-draggable-next"
 import { throttle } from "lodash";
 
 export default {

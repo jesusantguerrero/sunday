@@ -29,7 +29,7 @@
         "@inertiajs/inertia-vue3": "^0.6.0",
         "@inertiajs/progress": "^0.2.7",
         "@tailwindcss/typography": "^0.5.3",
-        "@vitejs/plugin-vue": "^2.3.3",
+        "@vitejs/plugin-vue": "^3.0.1",
         "@vueuse/core": "^8.5.0",
         "atmosphere-ui": "^0.7.7",
         "autoprefixer": "^10.4.7",
@@ -38,7 +38,7 @@
         "date-fns": "^2.28.0",
         "duration": "^0.2.2",
         "laravel-echo": "^1.12.0",
-        "laravel-vite-plugin": "^0.2.1",
+        "laravel-vite-plugin": "^0.5.2",
         "lodash": "^4.17.21",
         "luxon": "^1.25.0",
         "naive-ui": "^2.25.2",
@@ -50,9 +50,9 @@
         "unplugin-auto-import": "^0.9.2",
         "unplugin-element-plus": "^0.4.1",
         "unplugin-vue-components": "^0.21.1",
-        "vite": "^2.9.14",
+        "vite": "^3.0.2",
         "vue": "^3.2.37",
         "vue-multiselect": "^3.0.0-alpha.2",
-        "vuedraggable": "^4.1.0"
+        "vue-draggable-next": "^2.1.1"
     }
 }
