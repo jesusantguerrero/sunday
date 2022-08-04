@@ -275,11 +275,17 @@
           </div>
         </div>
       </nav>
-      <div class="app-content">
-        <div class="appside-container">
+      <div class="app-content" :class="{'expanded' : state.isMenuExpanded }" v-auto-animate>
+        <div class="app-side__container" :class="{'expanded' : state.isMenuExpanded }">
           <app-side :menu="menu" :header-menu="headerMenu" />
           <!-- Left Side -->
-          <board-side :boards="boards" :header-menu="headerMenu" class="h-full mb-10" />
+          <board-side
+            :boards="boards"
+            :header-menu="headerMenu"
+            :is-expanded="state.isMenuExpanded"
+            class="h-full mb-10"
+            @toggle-expanded="toggleExpanded"
+        />
           <!-- End of left side -->
         </div>
 
@@ -332,7 +338,7 @@ const state = reactive({
   showConfirmationModal: false,
   confirmationData: {},
   moduleName: "daily",
-  isMenuExpanded: false,
+  isMenuExpanded: true,
 });
 const eventBus = {
   $on: () => {},
@@ -392,6 +398,10 @@ const headerMenu = computed(() => {
 const path = computed(() => {
   return window.location.pathname;
 });
+
+const toggleExpanded = () => {
+    state.isMenuExpanded = !state.isMenuExpanded
+}
 </script>
 
 <style lang="scss">
@@ -408,19 +418,23 @@ const path = computed(() => {
   z-index: 1000;
 }
 
-.appside-container {
+.app-side__container {
   @apply bg-purple-900;
   padding-right: 0 !important;
   position: fixed;
   display: grid;
   grid-template-columns: 66px 1fr;
-  width: 300px;
+  width: 80px;
   z-index: 1001;
+
+  &.expanded {
+    width: 300px;
+  }
 }
 
 .app-content {
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-columns: var(--sider-width) minmax(0, 1fr);
   background: #f8f8f8 !important;
   position: relative;
 
@@ -455,6 +469,12 @@ const path = computed(() => {
       }
     }
   }
+
+    --sider-width: 80px;
+  &.expanded {
+    --sider-width: 300px;
+  }
+
 }
 
 .splash-screen {
@@ -472,7 +492,7 @@ const path = computed(() => {
 }
 
 @media screen and (max-width: 992px) {
-  .appside-container {
+  .app-side__container {
     z-index: 999;
     width: 256px;
     left: -260px;
@@ -485,14 +505,14 @@ const path = computed(() => {
   }
 
   .home-container.menu-expanded {
-    .appside-container {
+    .app-side__container {
       left: 0;
     }
   }
 }
 
 @media print {
-  .appside-container,
+  .app-side__container,
   .no-print,
   button {
     display: none;
