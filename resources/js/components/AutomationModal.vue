@@ -434,7 +434,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .form-control {
     @apply w-full bg-gray-100 border-gray-400 border-2 px-4;
     height: 37px;
