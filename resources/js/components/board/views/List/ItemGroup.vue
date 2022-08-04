@@ -7,58 +7,78 @@
             <!-- Column title -->
             <div class="ic-list__title">
                 <div class="item-false__header sticky_header">
-                    <div class="header-cell item-group-row__header">
-                        <span class="toolbar-buttons" @click="toggleExpand">
-                            <i :class="[ isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
-                        </span>
+                    <div class="flex items-center space-x-2 header-cell item-group-row__header">
+                        <div class="flex items-center">
+                            <span class="toolbar-buttons" @click="toggleExpand">
+                                <i :class="[ isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
+                            </span>
 
-                        <div class="item-group__selector">
-                            <input type="checkbox" v-model="stage.selected"  @change="toggleSelection()"/>
+                            <div class="hidden item-group__selector">
+                                <input type="checkbox" v-model="stage.selected"  @change="toggleSelection()"/>
+                            </div>
+
+                            <span class="font-bold handle" v-if="!isEditMode">
+                                {{ stage.title || stage.name }}
+                                {{ isSelectMode ? "(Selection Mode)" : "" }}
+                            </span>
+
+                            <div v-else>
+                                <input
+                                    :value="stage.name"
+                                    type="text"
+                                    ref="input"
+                                    @keypress.enter="saveStage(stage)"
+                                    @blur="saveStage(stage)"
+                                />
+                            </div>
+
+                            <div class="hidden">
+                                <i
+                                    class="mx-2 fa fa-edit"
+                                    @click="toggleEditMode(true)"
+                                ></i>
+                                <NDropdown
+                                    trigger="click"
+                                    @select="handleBoardCommands"
+                                    @click.native.prevent
+                                    :options="[{
+                                        key: 'edit',
+                                        label: 'Edit'
+                                    }, {
+                                        key: 'delete',
+                                        label: 'Delete'
+                                    }, {
+                                        key: 'selection',
+                                        label: 'Select Mode'
+                                    }]"
+                                >
+                                    <div
+                                        class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
+                                    >
+                                        <div class="flex items-center justify-center">
+                                            <i class="fa fa-ellipsis-v"></i>
+                                        </div>
+                                    </div>
+                                </NDropdown>
+                            </div>
                         </div>
-
-                        <span class="font-bold handle" v-if="!isEditMode">
-                            {{ stage.title || stage.name }}
-                            {{ isSelectMode ? "(Selection Mode)" : "" }}
-                        </span>
-
-                        <div v-else>
-                            <input
-                                :value="stage.name"
-                                type="text"
-                                ref="input"
-                                @keypress.enter="saveStage(stage)"
-                                @blur="saveStage(stage)"
-                            />
-                        </div>
-
-                        <span v-if="!isExpanded">
-                            ({{ items.length }} items)
-                        </span>
-                        <i
-                            class="mx-2 fa fa-edit"
-                            @click="toggleEditMode(true)"
-                        ></i>
                         <NDropdown
-                            trigger="click"
-                            @select="handleBoardCommands"
-                            @click.native.prevent
-                            :options="[{
-                                key: 'edit',
-                                label: 'Edit'
-                            }, {
-                                key: 'delete',
-                                label: 'Delete'
-                            }, {
-                                key: 'selection',
-                                label: 'Select Mode'
-                            }]"
-                        >
-                            <div
-                                class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
+                                trigger="click"
+                                @select="handleFilterCommands('title', $event)"
+                                @click.native.prevent
+                                :options="[{
+                                    key: 'sort',
+                                    label: 'Sort by Task Name'
+                                }, {
+                                    key: 'clearSort',
+                                    label: 'Clear sort'
+                                }, {
+                                    key: 'saveOrder',
+                                    label: 'Save this order'
+                                }]"
                             >
-                                <div class="flex items-center justify-center">
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </div>
+                            <div class="px-2 py-1 transition cursor-pointer hover:bg-slate-200">
+                                <span> {{ items.length }} Tasks </span>
                             </div>
                         </NDropdown>
                     </div>
@@ -180,8 +200,7 @@
                         :is-new="true"
                         @saved="newItem['title'] = $event"
                         @keydown.enter="addItem(stage)"
-                    >
-                    </item-group-cell>
+                    />
                 </div>
             </div>
         </div>
@@ -373,6 +392,20 @@ export default {
                     this.$emit("open-item", item);
                     break;
                 default:
+                    break;
+            }
+        },
+
+        handleFilterCommands(fieldName, command) {
+            switch (command) {
+                case "clearSort":
+                    this.$emit("clearSort", fieldName);
+                    break;
+                case "sort":
+                    this.$emit("sort", fieldName);
+                    break;
+                default:
+                    this.$emit("saveOrder", fieldName);
                     break;
             }
         },

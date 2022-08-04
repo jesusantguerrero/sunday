@@ -101,13 +101,15 @@
                 @end="saveReorder"
             >
                 <transition-group>
-                    <list-view
+                    <ListView
                         v-for="stage in board.stages"
                         :key="stage.name"
                         :stage="stage"
                         :board="board"
                         :items="stage.items"
                         :create-mode="createMode"
+                        @sort="sort"
+                        @clear-sort="clearSort"
                         @saved="addItem"
                         @open-item="openItem"
                         @item-deleted="confirmDeleteItem"
@@ -137,14 +139,14 @@
             </div>
         </div>
 
-        <item-modal
+        <ItemModal
             @cancel="isItemModalOpen=false"
             @saved="isItemModalOpen=false"
             :record-data="openedItem"
             :is-open="isItemModalOpen"
         />
 
-        <automation-modal
+        <AutomationModal
             @cancel="isAutomationModalOpen=false"
             @saved="isAutomationModalOpen=false"
             :record-data="{}"
@@ -275,7 +277,8 @@ export default {
             ],
             searchOptions: {
                 search: this.filters.search,
-                done: this.filters.done
+                done: this.filters.done,
+                sort: ''
             },
             openedItem: {},
             isEditMode: false,
@@ -481,6 +484,18 @@ export default {
                 })
 
             return result;
+        },
+
+        sort(field) {
+            if (this.searchOptions.sort == field) {
+                this.searchOptions.sort = `-${field}`;
+            } else {
+                this.searchOptions.sort = field;
+            }
+        },
+
+        clearSort() {
+            this.searchOptions.sort = ""
         },
 
         openItem(item) {

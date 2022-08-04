@@ -62,7 +62,6 @@ class ItemController extends Controller
         $item->saveFields($request->post('fields'));
         $item->saveCheckList($request->post('checklist'));
         return $item;
-
     }
 
     /**

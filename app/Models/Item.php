@@ -74,8 +74,6 @@ class Item extends Model
         }
     }
 
-
-
     public function saveChecklist($list) {
         if ($list) {
             Checklist::where(['item_id' => $this->id])->delete();
@@ -127,16 +125,21 @@ class Item extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        $filters['done'] = $filters['done'] ?? -1;
+        $done = $filters['done'] = $filters['done'] ?? -1;
+        $sort = $filters['sort'] ?? 'order';
 
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where('title', 'like', '%'.$search.'%');
-        })->when($filters['done'] ?? -1 , function ($query, $done) {
+        })->when($done , function ($query, $done) {
             if ($done == 'only') {
                 $query->where('done', 1);
             } elseif ($done == -1) {
                 $query->whereNull('commit_date');
             }
+        })->when($sort, function ($query, $sort) {
+            $direction =  strpos($sort, "-") === 0 ? "DESC" : "ASC";
+            $sort = $direction == "ASC" ? $sort : substr($sort, 1);
+            $query->orderBy($sort, $direction);
         });
     }
 }
