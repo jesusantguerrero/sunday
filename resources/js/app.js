@@ -1,5 +1,6 @@
 import './bootstrap';
 import '../css/app.scss';
+import "atmosphere-ui/style.css"
 import "vue-multiselect/dist/vue-multiselect.css"
 
 import { createApp, h } from "vue";
@@ -8,6 +9,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import VueMultiselect from 'vue-multiselect'
 import { InertiaProgress } from "@inertiajs/progress";
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
+import FloatingVue from 'floating-vue'
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -17,6 +19,7 @@ createInertiaApp({
         .mixin({ methods: { route } })
         .use(plugin)
         .use(autoAnimatePlugin)
+        .use(FloatingVue)
         .component('InertiaProgress', InertiaProgress)
         .component('InertiaLink', Link)
         .component('Multiselect', VueMultiselect)

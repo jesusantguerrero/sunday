@@ -56,6 +56,11 @@
         "vue-multiselect": "^3.0.0-alpha.2"
     },
     "dependencies": {
-        "@formkit/auto-animate": "^1.0.0-beta.1"
+        "@formkit/auto-animate": "^1.0.0-beta.1",
+        "@vueuse/components": "^9.1.0",
+        "floating-vue": "^2.0.0-beta.19",
+        "fuse.js": "^6.6.2",
+        "randomcolor": "^0.6.2",
+        "vue-temporal-components": "^0.2.3"
     }
 }

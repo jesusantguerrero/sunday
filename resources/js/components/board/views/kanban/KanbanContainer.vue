@@ -13,7 +13,7 @@
                     <span :class="`text-${quadrant.attributes.color}-400`">
                         {{ name }}
                     </span>
-                    <span class="ml-4 text-gray-300"> {{ quadrant.childs.length}} </span>
+                    <span class="ml-4 text-gray-300"> {{ quadrant.items.length}} </span>
                 </div>
                 <el-dropdown trigger="click"  @click.native.prevent>
                     <div class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200">
@@ -28,8 +28,8 @@
                 </el-dropdown>
             </div>
             <div class="pt-5 pr-4">
-                <draggable :list="quadrant.childs" group="tasks" @change="($event) => changeStatus($event, quadrant)">
-                    <div v-for="task in quadrant.childs" :key="`task-${task.id}`" class="task-item">
+                <draggable :list="quadrant.items" group="tasks" @change="($event) => changeStatus($event, quadrant)">
+                    <div v-for="task in quadrant.items" :key="`task-${task.id}`" class="task-item">
                         <label class="checkbox-label">
                             <input
                                 v-model="task.done"
@@ -91,8 +91,8 @@ export default {
     },
     methods: {
         addItem(quadrant) {
-            const lastChild = quadrant.childs[quadrant.childs.length - 1]
-            const lastItemOrder = Math.max(...quadrant.childs.map(item => item.order))
+            const lastChild = quadrant.items[quadrant.items.length - 1]
+            const lastItemOrder = Math.max(...quadrant.items.map(item => item.order))
             const newItem = {...quadrant.newTask}
             newItem.board_id = lastChild ? lastChild.board_id : this.stages[0].board_id
             newItem.stage_id = lastChild ? lastChild.stage_id : this.stages[0].id

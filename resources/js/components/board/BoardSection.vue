@@ -160,7 +160,7 @@
 import ListView from "./views/List/ItemGroup.vue";
 import KanbanView from "./views/kanban/KanbanContainer.vue";
 import HabiticaView from "./views/notes/NotesContainer.vue";
-import MatrixView from "./views/notes/NotesContainer.vue";
+import MatrixView from "./views/matrix/MatrixBoard.vue";
 import NoteView from "./views/notes/NotesContainer.vue";
 import ItemModal from "./ItemModal.vue";
 import AutomationModal from "../AutomationModal.vue";
@@ -219,24 +219,6 @@ export default {
                     title: "List",
                     component: "ListView",
                     icon: "fa fa-th-list"
-                },
-                kanban:{
-                    name: "kanban",
-                    title: "Kanban",
-                    component: "KanbanView",
-                    icon: "fa fa-border-all"
-                },
-                notes:{
-                    name: "notes",
-                    title: "Notes",
-                    component: "NoteView",
-                    icon: "fa fa-border-all"
-                },
-                habitica:{
-                    name: "habitica",
-                    title: "Habitica",
-                    component: "HabiticaView",
-                    icon: "fa fa-border-all"
                 },
                 matrix:{
                     name: "matrix",
@@ -314,7 +296,7 @@ export default {
                             id: label.id,
                             fieldId: label.field_id,
                             attributes: label,
-                            childs: [],
+                            items: [],
                             newTask: {}
                         };
                     }
@@ -326,9 +308,9 @@ export default {
                             field => field.field_name == "status"
                         );
                         if (statusField && quadrants[statusField.value]) {
-                            quadrants[statusField.value].childs.push(item);
+                            quadrants[statusField.value].items.push(item);
                         } else {
-                            quadrants['backlog'].childs.push(item);
+                            quadrants['backlog'].items.push(item);
                         }
                     });
                 });
