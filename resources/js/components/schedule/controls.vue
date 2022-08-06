@@ -16,7 +16,7 @@
         class="flex justify-center w-full">
         <div
           class="day-item"
-          :class="{ 'selected-day': isSelectedDate(day) }"
+          :class="{ 'selected-date': isSelectedDate(day) }"
 
           @click="selectedDay = day"
         >
@@ -150,7 +150,7 @@ $primary-color: var(--primary-color);
   }
 }
 
-.selected-day {
+.selected-date {
   @apply visible text-purple-400 shadow-lg border-purple-400 border-2;
   display: block;
 }

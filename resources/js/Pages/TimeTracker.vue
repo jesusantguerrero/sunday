@@ -103,11 +103,11 @@ export default {
         },
     },
     created() {
-        this.$parent.$on("session::stopped", () => {
-            this.$nextTick(() => {
-                this.reloadTracks();
-            });
-        });
+        // this?.$parent?.$on("session::stopped", () => {
+        //     this.$nextTick(() => {
+        //         this.reloadTracks();
+        //     });
+        // });
     },
     data() {
         return {
