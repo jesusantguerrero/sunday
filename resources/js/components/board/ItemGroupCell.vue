@@ -36,7 +36,7 @@
                 <component
                     v-model="value"
                     ref="input"
-                    :is="component"
+                    :is="componentName"
                     :users="users"
                     :options="field.options"
                     @saved="saveChanges"
@@ -153,6 +153,8 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['saved'])
+
 const state = reactive({
     value: "",
     selectValue: "",
@@ -183,8 +185,15 @@ const displayValue = computed(() => {
     return formatValue(state.value, props.field.type, "display");
 });
 
-const component = computed(() => {
-    return `input-${props.field.type}`;
+const componentName = computed(() => {
+    const components = {
+        label: InputLabel,
+        date: InputDate,
+        person: InputPerson,
+        time: InputTime
+
+    }
+    return components[props.field.type];
 });
 
 const isCustomField = computed(() => {
