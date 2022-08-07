@@ -208,7 +208,6 @@ const state = reactive({
 
 watch(state.searchOptions, throttle(() => {
     let query = pickBy(state.searchOptions);
-    debugger
     query = Object.keys(query).length ?  '?' + new URLSearchParams(pickBy(state.searchOptions)) : '';
     Inertia.replace(`/boards/${props.board.id}${query}`)
 }, 200),{

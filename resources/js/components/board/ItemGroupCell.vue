@@ -102,6 +102,7 @@ import InputLabel from "./cellTypes/Label.vue";
 import InputDate from "./cellTypes/Date.vue";
 import InputPerson from "./cellTypes/Person.vue";
 import InputTime from "./cellTypes/Time.vue";
+import CellSummaryProgress from "./cellTypes/CellSummaryProgress.vue";
 import BoardSelector from './BoardSelector.vue';
 import { NTooltip } from "naive-ui";
 import { computed, inject, nextTick, reactive, toRefs, watch, onMounted, ref } from "vue";
@@ -182,15 +183,16 @@ const displayValue = computed(() => {
     return formatValue(state.value, props.field.type, "display",);
 });
 
-const componentName = computed(() => {
-    const components = {
-        label: InputLabel,
-        date: InputDate,
-        person: InputPerson,
-        time: InputTime
+const components = {
+    label: InputLabel,
+    date: InputDate,
+    person: InputPerson,
+    time: InputTime,
+    progress: CellSummaryProgress
+}
 
-    }
-    return components[props.field.type];
+const componentName = computed(() => {
+    return components[props.item.type || props.field.type];
 });
 
 const isCustomField = computed(() => {
@@ -200,17 +202,6 @@ const isCustomField = computed(() => {
             props.field.type
         )
     );
-});
-
-const itemGroupCellRef = ref()
-onMounted(() => {
-    // onClickOutside(itemGroupCellRef.value, (e) => {
-    //     console.log(e);
-    //     const classes = e.path.map(item => item.className)
-    //     debugger
-    //     const el = classes.includes("el-")
-    //     state.isEditMode = false
-    // })
 });
 
 const input = ref();

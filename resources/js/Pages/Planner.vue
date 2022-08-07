@@ -209,7 +209,6 @@ export default {
 
         getCommitsByDate(date) {
             if (date) {
-                debugger;
                 const params = this.getParams(date);
                 this.$inertia.visit(`/planner${params}`, {
                     only: ["scheduled", "date"]

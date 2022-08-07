@@ -4,7 +4,8 @@
     :class="{'item-group ic-scroller ic-scroller-slim': slim }"
     @scroll="$emit('scroll', $event)"
 >
-    <ItemGroupCell
+    <component
+        :is="getRenderComponent(item[field.name])"
         v-for="field in visibleFields"
         :key="field.name"
         class="text-center border border-white custom-field"
@@ -20,9 +21,10 @@
 
 <script setup>
 import { matrixColors } from '@/utils/constants';
+import CellSummaryProgress from '../../cellTypes/CellSummaryProgress.vue';
 import ItemGroupCell from "../../ItemGroupCell.vue";
 
-defineProps({
+const props = defineProps({
     item: {
         type: Object,
         required: true
@@ -36,11 +38,14 @@ defineProps({
     },
     slim: {
         type: Boolean
+    },
+    isSummary: {
+        type: Boolean,
     }
 })
 
 function getBg(field, item, fieldName) {
-    if(!item || !field) return
+    if(!item || !field || props.isSummary) return
     const fieldValue = item.fields && item.fields.find(field => field.field_name == fieldName);
     const value = fieldValue ? fieldValue.value : item[fieldName];
 
@@ -56,5 +61,13 @@ function getBg(field, item, fieldName) {
         }
     }
     return "bg-gray-200";
+}
+
+const components = {
+    progress: CellSummaryProgress
+}
+
+const getRenderComponent = (item) => {
+    return item?.type ? components[item.type] : ItemGroupCell
 }
 </script>

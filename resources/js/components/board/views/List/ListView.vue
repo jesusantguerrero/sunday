@@ -181,18 +181,12 @@
     <!-- End of new item -->
 
     <!-- summary row  -->
-    <div class="ic-list__body">
-        <div class="ic-list__title" />
-        <ListRow
-            :item="items[0]"
-            :row-index="1000"
-            :visible-fields="visibleFields"
-            slim
-            @scroll="syncScroll"
-           :id="`${stage.id}-slim-summary`"
-        />
-        <div class="ic-list__add" v-if="isExpanded" />    
-    </div>
+    <ListSummaryRow
+        :items="items"
+        :stage="stage"
+        :visible-fields="visibleFields"
+        @scroll="syncScroll"
+    />
     <!-- end of summary row -->
   </div>
 </template>
@@ -208,6 +202,7 @@ import FieldPopover from "../../FieldPopover.vue";
 import ListCellTitle from './ListCellTitle.vue';
 import ListCellHeader from "./ListCellHeader.vue";
 import ListRow from "./ListRow.vue";
+import ListSummaryRow from "./ListSummaryRow.vue";
 
 import { matrixColors } from "@/utils/constants"
 import { useSyncScroll } from "@/utils/useSyncScroll"

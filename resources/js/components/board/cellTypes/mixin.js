@@ -66,7 +66,6 @@ export const formatValue = (value, type = "default", operation = "read") => {
                     try {
                         return format(value, "yyyy-MM-dd");
                     } catch (e) {
-                        debugger
                         return value;
                     }
                 } else {
@@ -113,7 +112,6 @@ export default {
                     : this.item[this.fieldName];
             } else if (["date"].includes(this.field.type)) {
                 if (this.item[this.fieldName]) {
-                    debugger
                     return typeof this.item[this.fieldName] == "string"
                         ? this.item[this.fieldName]
                         : format(new Date(this.item[this.fieldName]),"yyyy-MM-dd");
