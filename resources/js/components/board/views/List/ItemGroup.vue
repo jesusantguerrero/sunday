@@ -1,5 +1,5 @@
 <template>
-  <div class="ic-list" :data-table-size="tableSize">
+  <div class="ic-list" :class="{ 'rounded-md bg-gray-200 border border-slate-500': !isExpanded }" :data-table-size="tableSize">
     <div class="ic-list__body" :class="{ 'not-expanded': !isExpanded, loaded: isLoaded }">
       <!-- Column title -->
       <div class="ic-list__title">
@@ -10,7 +10,7 @@
                 <i :class="[isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
               </span>
 
-              <div class="hidden item-group__selector">
+              <div class="hidden item-group__selector" v-if="isExpanded">
                 <input
                   type="checkbox"
                   v-model="stage.selected"
@@ -100,7 +100,7 @@
           >
             <ItemGroupTitle
               v-for="(item, index) in stage.items"
-              class="flex bg-gray-200 border-2 border-white item-false"
+              class="flex bg-gray-200 border border-white item-false"
               :key="`item-false__title-${item.id}`"
               :item="item"
               :index="index"
@@ -109,21 +109,22 @@
               @selected="handleSelect"
               @saved="saveChanges"
               @command="handleCommand"
-            >
-            </ItemGroupTitle>
+            />
           </draggable>
         </div>
       </div>
       <!-- Column title -->
 
-      <div class="item-group ic-scroller ic-scroller-slim" v-if="isExpanded">
+      <div class="item-group ic-scroller ic-scroller-slim" @scroll="syncScroll"
+        :id="`${stage.id}-slim-body`"
+      >
         <div class="grid py-1 text-left item-group-row sticky_header">
           <div
             v-for="field in visibleFields"
             :key="field.name"
             class="item-group-row__header"
           >
-            <span v-if="isExpanded" class="font-bold">
+            <span class="font-bold">
               <FieldPopover :field-data="field" :board="board" @saved="onFieldAdded">
                 {{ field.title }}
               </FieldPopover>
@@ -135,26 +136,13 @@
 
         <!-- items  -->
         <template v-if="isExpanded">
-          <div
-            class="grid text-left item-group-row h-11"
-            v-for="(item, index) in items"
-            :key="`item-${index}`"
-          >
-            <div
-              v-for="field in visibleFields"
-              :key="field.name"
-              class="text-center border-2 border-white custom-field"
-              :class="[getBg(field, item, field.name)]"
-            >
-              <ItemGroupCell
-                :field-name="field.name"
-                :field="field"
-                :index="index"
+            <ListRow v-for="(item, index) in items"
+                :key="`item-${index}`"
                 :item="item"
-                @saved="saveChanges(item, field.name, $event)"
-              />
-            </div>
-          </div>
+                :row-index="index"
+                :visible-fields="visibleFields"
+                @saved="saveChanges"
+            />
         </template>
         <!-- End of items -->
       </div>
@@ -171,7 +159,7 @@
 
         <div class="false-header"></div>
 
-        <div class="grid bg-red-500">
+        <div class="grid">
           <div
             class="item-false"
             v-for="item in stage.items"
@@ -183,7 +171,7 @@
     </div>
 
     <!-- new item  -->
-    <div class="ic-list__footer">
+    <div class="ic-list__footer" v-if="isExpanded">
       <div class="grid grid-cols-10 text-left item-line">
         <div class="flex items-center col-span-12 px-0 item-line-cell">
           <item-group-cell
@@ -200,18 +188,40 @@
       </div>
     </div>
     <!-- End of new item -->
+
+    <!-- summary row  -->
+    <div class="ic-list__body">
+      <div class="ic-list__title"></div>
+        <ListRow
+            :item="items[0]"
+            :row-index="1000"
+            :visible-fields="visibleFields"
+            slim
+            @scroll="syncScroll"
+           :id="`${stage.id}-slim-summary`"
+        />
+
+      <div class="ic-list__add" v-if="isExpanded">
+    
+      </div>
+    </div>
+    <!-- end of summary row -->
   </div>
 </template>
 
 <script setup>
 import { VueDraggableNext as Draggable } from "vue-draggable-next"
+import { NDropdown } from "naive-ui"
+import { computed, nextTick, reactive, ref, watch, toRefs } from "vue";
+import { Inertia } from "@inertiajs/inertia";
+
 import ItemGroupCell from "../../ItemGroupCell.vue";
 import FieldPopover from "../../FieldPopover.vue";
 import ItemGroupTitle from './ItemGroupTitle.vue';
-import { NDropdown } from "naive-ui"
+import ListRow from "./ListRow.vue";
+
 import { matrixColors } from "@/utils/constants"
-import { computed, nextTick, reactive, ref, watch, toRefs } from "vue";
-import { Inertia } from "@inertiajs/inertia";
+import { useSyncScroll } from "@/utils/useSyncScroll"
 
 
 const props = defineProps({
@@ -308,6 +318,7 @@ function toggleEditMode() {
         }
     });
 }
+
 function addItem(stage, reload) {
     const lastItemOrder = Math.max(
         ...props.stage.items.map(item => item.order)
@@ -416,6 +427,11 @@ const {
     isExpanded,
     isLoaded
 } = toRefs(state);
+
+const summaryRow = ref()
+const bodyRow = ref()
+
+const { syncScroll } = useSyncScroll('left', 'ic-scroller-slim')
 
 </script>
 
@@ -531,7 +547,7 @@ const {
 }
 
 .ic-list__footer {
-  width: calc(100% - 40px);
+  width: calc(100% - 8px);
   margin-left: auto;
 }
 </style>

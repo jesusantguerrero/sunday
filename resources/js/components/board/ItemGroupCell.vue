@@ -96,7 +96,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { format } from "date-fns";
 import LinkPreview from "./cellTypes/LinkPreview.vue";
 import InputLabel from "./cellTypes/Label.vue";
@@ -105,244 +105,222 @@ import InputPerson from "./cellTypes/Person.vue";
 import InputTime from "./cellTypes/Time.vue";
 import BoardSelector from './BoardSelector.vue';
 import { NTooltip } from "naive-ui";
+import { computed, inject, nextTick, reactive, toRefs, watch, onMounted, ref } from "vue";
 
-export default {
-    name: "ItemGroupCell",
-    inject: ["users"],
-    components: {
-        InputDate,
-        InputLabel,
-        InputPerson,
-        InputTime,
-        LinkPreview,
-        BoardSelector
+const users = inject('users', [])
+const props = defineProps({
+    fieldName: {
+        type: String
     },
-    props: {
-        fieldName: {
-            type: String
-        },
-        field: {
-            type: Object,
-            default() {
-                return {};
-            }
-        },
-        fieldType: {
-            type: String,
-            default: "text"
-        },
-        item: {
-            type: Object
-        },
-        index: {
-            type: Number
-        },
-        isNew: {
-            type: Boolean
-        },
-        isTitle: {
-            type: Boolean
-        },
-        showControls: {
-            type: Boolean
-        },
-        boards: {
-            type: Array,
-            default() {
-                return []
-            }
-        },
-        closeOnBlur: {
-            type: Boolean,
-            default: true
-        },
-        placeholder: {
-            type: String,
-            default: "Add item"
+    field: {
+        type: Object,
+        default() {
+            return {};
         }
     },
-    watch: {
-        item: {
-            handler(item) {
-                if (item[this.fieldName] != this.value) {
-                    const field =
-                        item.fields &&
-                        item.fields.find(
-                            field => field.field_name == this.fieldName
-                        );
-                    item[this.fieldName] =
-                        item[this.fieldName] || (field && field.value);
-                    this.value = this.formatValue(
-                        item[this.fieldName],
-                        this.field ? this.field.type : "default",
-                        "read"
-                    );
-                }
-            },
-            deep: true,
-            immediate: true
-        },
-        selectValue() {
-            if (this.field.type == "person") {
-                this.value = this.selectValue;
-                this.saveChanges();
-            }
+    fieldType: {
+        type: String,
+        default: "text"
+    },
+    item: {
+        type: Object
+    },
+    index: {
+        type: Number
+    },
+    isNew: {
+        type: Boolean
+    },
+    isTitle: {
+        type: Boolean
+    },
+    showControls: {
+        type: Boolean
+    },
+    boards: {
+        type: Array,
+        default() {
+            return []
         }
     },
-
-    data() {
-        return {
-            value: "",
-            selectValue: "",
-            isEditMode: false
-        };
+    closeOnBlur: {
+        type: Boolean,
+        default: true
     },
-
-    computed: {
-        displayValue() {
-            return this.formatValue(this.value, this.field.type, "display");
-        },
-        component() {
-            return `input-${this.field.type}`;
-        },
-        itemStage() {
-            return this.item && this.item.stage && this.item.board
-                ? `${this.item.stage.name}`
-                : "";
-        },
-        isCustomField() {
-            return (
-                this.field.type &&
-                ["label", "select", "time", "date", "person"].includes(
-                    this.field.type
-                )
-            );
-        }
-    },
-
-    mounted() {
-        // onClickOutside(this.$refs.ItemGroupCell, (e) => {
-        //     console.log(e);
-        //     const classes = e.path.map(item => item.className)
-        //     debugger
-        //     const el = classes.includes("el-")
-        //     this.isEditMode = false
-        // })
-    },
-
-    methods: {
-        formatValue(value, type = "default", operation = "read") {
-            const formatters = {
-                date: {
-                    write: (value = "") => {
-                        return typeof value == "string"
-                            ? value
-                            : format(value, "yyyy-MM-dd");
-                    },
-                    read: (value = "") => {
-                        return value && typeof value == "string"
-                            ? this.setDate(value)
-                            : value;
-                    },
-                    display: (value = "") => {
-                        const isString = typeof value == "string";
-                        if (isString) {
-                            return value;
-                        } else {
-                            try {
-                                return format(value, "yyyy-MM-dd");
-                            } catch (e) {
-                                return value;
-                            }
-                        }
-                    }
-                },
-                time: {
-                    write: (value = "") => {
-                        return typeof value == "string"
-                            ? value
-                            : format(value, "hh:mm");
-                    },
-                    read: (value = "") => {
-                        const theValue =
-                            value && typeof value == "string"
-                                ? this.setTime(value)
-                                : value;
-                        return theValue;
-                    },
-                    display: (value = "") => {
-                        const isString = typeof value == "string";
-                        if (isString) {
-                            return value;
-                        } else {
-                            try {
-                                return format(value, "hh:mm");
-                            } catch (e) {
-                                return value;
-                            }
-                        }
-                    }
-                },
-                label: {
-                    display: value => {
-                        const option = this.field.options.find(option => {
-                            return option.name == this.value;
-                        });
-                        return option ? option.label || option.name : value;
-                    }
-                },
-                default: {
-                    read: value => value,
-                    write: value => value,
-                    display: value => value
-                }
-            };
-            return formatters[type] && formatters[type][operation]
-                ? formatters[type][operation](value)
-                : value;
-        },
-
-        setDate(dateValue) {
-            const date = dateValue ? dateValue.split("-") : null;
-            return date ? new Date(date[0], date[1] - 1, date[2]) : null;
-        },
-
-        setTime(timeValue) {
-            let date = timeValue ? timeValue.split(":") : null;
-            const dateTime = new Date();
-            dateTime.setHours(date[0]);
-            dateTime.setMinutes(date[1]);
-            dateTime.setSeconds(0);
-            return dateTime;
-        },
-
-        toggleEditMode() {
-            this.isEditMode = !this.isEditMode;
-            this.$nextTick(() => {
-                if (this.$refs.input) {
-                    const input =
-                        this.$refs.input.$el && !this.$refs.input.focus
-                            ? this.$refs.input.$el
-                            : this.$refs.input;
-                    input.focus();
-                }
-            });
-        },
-
-        saveChanges(type = "default") {
-            this.$emit("saved", this.formatValue(this.value, type, "write"));
-            if (this.closeOnBlur) {
-                this.toggleEditMode();
-            }
-        },
-
-        saveItem($event) {
-            this.saveChanges();
-            this.$emit("keydown", $event);
-            this.toggleEditMode();
-        },
+    placeholder: {
+        type: String,
+        default: "Add item"
     }
-};
+});
+
+const state = reactive({
+    value: "",
+    selectValue: "",
+    isEditMode: false
+});
+
+watch(props.item, (item) => {
+if (item && item[props.fieldName] != state.value) {
+    const field = item.fields && item.fields.find(field => field.field_name == props.fieldName);
+    item[props.fieldName] = item[props.fieldName] || (field && field.value);
+    state.value = formatValue(item[props.fieldName],
+        props.field ? props.field.type : "default",
+        "read"
+    );
+}}, {
+    deep: true,
+    immediate: true
+});
+
+watch(state.selectValue, () => {
+    if (props.field.type == "person") {
+        state.value = state.selectValue;
+        saveChanges();
+    }
+});
+
+const displayValue = computed(() => {
+    return formatValue(state.value, props.field.type, "display");
+});
+
+const component = computed(() => {
+    return `input-${props.field.type}`;
+});
+
+const isCustomField = computed(() => {
+    return (
+        props.field.type &&
+        ["label", "select", "time", "date", "person"].includes(
+            props.field.type
+        )
+    );
+});
+
+const itemGroupCellRef = ref()
+onMounted(() => {
+    // onClickOutside(itemGroupCellRef.value, (e) => {
+    //     console.log(e);
+    //     const classes = e.path.map(item => item.className)
+    //     debugger
+    //     const el = classes.includes("el-")
+    //     state.isEditMode = false
+    // })
+});
+
+function formatValue(value, type = "default", operation = "read") {
+    const formatters = {
+        date: {
+            write: (value = "") => {
+                return typeof value == "string"
+                    ? value
+                    : format(value, "yyyy-MM-dd");
+            },
+            read: (value = "") => {
+                return value && typeof value == "string"
+                    ? setDate(value)
+                    : value;
+            },
+            display: (value = "") => {
+                const isString = typeof value == "string";
+                if (isString) {
+                    return value;
+                } else {
+                    try {
+                        return format(value, "yyyy-MM-dd");
+                    } catch (e) {
+                        return value;
+                    }
+                }
+            }
+        },
+        time: {
+            write: (value = "") => {
+                return typeof value == "string"
+                    ? value
+                    : format(value, "hh:mm");
+            },
+            read: (value = "") => {
+                const theValue =
+                    value && typeof value == "string"
+                        ? setTime(value)
+                        : value;
+                return theValue;
+            },
+            display: (value = "") => {
+                const isString = typeof value == "string";
+                if (isString) {
+                    return value;
+                } else {
+                    try {
+                        return format(value, "hh:mm");
+                    } catch (e) {
+                        return value;
+                    }
+                }
+            }
+        },
+        label: {
+            display: value => {
+                const option = props.field.options.find(option => {
+                    return option.name == state.value;
+                });
+                return option ? option.label || option.name : value;
+            }
+        },
+        default: {
+            read: value => value,
+            write: value => value,
+            display: value => value
+        }
+    };
+    return formatters[type] && formatters[type][operation]
+        ? formatters[type][operation](value)
+        : value;
+}
+
+function setDate(dateValue) {
+    const date = dateValue ? dateValue.split("-") : null;
+    return date ? new Date(date[0], date[1] - 1, date[2]) : null;
+}
+
+function setTime(timeValue) {
+    let date = timeValue ? timeValue.split(":") : null;
+    const dateTime = new Date();
+    dateTime.setHours(date[0]);
+    dateTime.setMinutes(date[1]);
+    dateTime.setSeconds(0);
+    return dateTime;
+}
+
+const input = ref();
+function toggleEditMode() {
+    state.isEditMode = !state.isEditMode;
+    nextTick(() => {
+        if (input.value) {
+            const inputEl = input.value.$el && !input.value.focus ? input.value.$el : input.value;
+            inputEl.focus();
+        }
+    });
+}
+
+function saveChanges(type = "default") {
+    emit("saved", formatValue(state.value, type, "write"));
+    if (props.closeOnBlur) {
+        toggleEditMode();
+    }
+}
+
+function saveItem($event) {
+    saveChanges();
+    emit("keydown", $event);
+    toggleEditMode();
+}
+
+const {
+    value,
+    selectValue,
+    isEditMode
+} = toRefs(state)
 </script>
 
 <style lang="scss">

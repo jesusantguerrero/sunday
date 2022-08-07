@@ -551,13 +551,21 @@ const toggleExpanded = () => {
 
   &-slim {
     transition: all ease 0.3s;
+    &::-webkit-scrollbar-thumb {
+        cursor: pointer;
+        border-radius: 0 0 0 0;
+         background-color: transparentize($color: #000000, $amount: 0.97);
+    }
     &::-webkit-scrollbar {
-      height: 0;
+        height: 8px;
+        opacity: .1;
     }
 
     &:hover {
       &::-webkit-scrollbar {
-        height: 3px;
+        height: 8px;
+        cursor: pointer;
+        border-radius: 0 0 0 0;
       }
     }
   }

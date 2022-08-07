@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="`item-false bg-gray-200 border-2 border-white flex`"
+        :class="`item-false bg-gray-200 border border-white flex`"
         :key="`item-false__title-${item.id}`"
     >
         <!-- Selection Checkbox  -->
@@ -172,7 +172,7 @@ function getFieldValue(item, name) {
 }
 
 .item-false {
-    margin-left: 40px;
-    width: calc(100% - 40px)
+    margin-left: 8px;
+    width: calc(100% - 8px)
 }
 </style>
