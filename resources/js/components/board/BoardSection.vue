@@ -82,6 +82,7 @@
                         :board="board"
                         :items="stage.items"
                         :create-mode="createMode"
+                        :filters="filters"
                         @sort="sort"
                         @clear-sort="clearSort"
                         @saved="addItem"
@@ -131,7 +132,7 @@
 </template>
 
 <script setup>
-import ListView from "./views/List/ItemGroup.vue";
+import ListView from "./views/List/ListView.vue";
 import MatrixView from "./views/matrix/MatrixBoard.vue";
 import ItemModal from "./ItemModal.vue";
 import AutomationModal from "../AutomationModal.vue";
@@ -160,7 +161,8 @@ const props = defineProps({
         default() {
             return {
                 search: '',
-                done: ''
+                done: '',
+                sort: ''
             }
         }
     }
@@ -205,7 +207,8 @@ const state = reactive({
 });
 
 watch(state.searchOptions, throttle(() => {
-    let query = pickBy(props.searchOptions);
+    let query = pickBy(state.searchOptions);
+    debugger
     query = Object.keys(query).length ?  '?' + new URLSearchParams(pickBy(state.searchOptions)) : '';
     Inertia.replace(`/boards/${props.board.id}${query}`)
 }, 200),{

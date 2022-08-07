@@ -3,93 +3,97 @@
     <div class="ic-list__body" :class="{ 'not-expanded': !isExpanded, loaded: isLoaded }">
       <!-- Column title -->
       <div class="ic-list__title">
-        <div class="item-false__header sticky_header">
-          <div class="flex items-center space-x-2 header-cell item-group-row__header">
-            <div class="flex items-center">
-              <span class="toolbar-buttons" @click="toggleExpand">
-                <i :class="[isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
-              </span>
+        <ListCellHeader 
+            class="item-false__header"
+            :visibleFields="[ {name: 'title'}]"
+            :filters="filters"
+            v-slot:default="{ filterIcons }"
+        >
+            <div class="flex items-center space-x-2 header-cell">
+                <div class="flex items-center">
+                <span class="toolbar-buttons" @click="toggleExpand">
+                    <i :class="[isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
+                </span>
 
-              <div class="hidden item-group__selector" v-if="isExpanded">
-                <input
-                  type="checkbox"
-                  v-model="stage.selected"
-                  @change="toggleSelection()"
-                />
-              </div>
+                <div class="hidden item-group__selector" v-if="isExpanded">
+                    <input
+                    type="checkbox"
+                    v-model="stage.selected"
+                    @change="toggleSelection()"
+                    />
+                </div>
 
-              <span class="font-bold handle" v-if="!isEditMode">
-                {{ stage.title || stage.name }}
-                {{ isSelectMode ? "(Selection Mode)" : "" }}
-              </span>
+                <span class="font-bold handle" v-if="!isEditMode">
+                    {{ stage.title || stage.name }}
+                    {{ isSelectMode ? "(Selection Mode)" : "" }}
+                </span>
 
-              <div v-else>
-                <input
-                  :value="stage.name"
-                  type="text"
-                  ref="input"
-                  @keypress.enter="saveStage(stage)"
-                  @blur="saveStage(stage)"
-                />
-              </div>
+                <div v-else>
+                    <input
+                    :value="stage.name"
+                    type="text"
+                    ref="input"
+                    @keypress.enter="saveStage(stage)"
+                    @blur="saveStage(stage)"
+                    />
+                </div>
 
-              <div class="hidden">
-                <i class="mx-2 fa fa-edit" @click="toggleEditMode(true)"></i>
-                <NDropdown
-                  trigger="click"
-                  @select="handleBoardCommands"
-                  @click.native.prevent
-                  :options="[
-                    {
-                      key: 'edit',
-                      label: 'Edit',
-                    },
-                    {
-                      key: 'delete',
-                      label: 'Delete',
-                    },
-                    {
-                      key: 'selection',
-                      label: 'Select Mode',
-                    },
-                  ]"
-                >
-                  <div
-                    class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
-                  >
-                    <div class="flex items-center justify-center">
-                      <i class="fa fa-ellipsis-v"></i>
+                <div class="hidden">
+                    <i class="mx-2 fa fa-edit" @click="toggleEditMode(true)"></i>
+                    <NDropdown
+                    trigger="click"
+                    @select="handleBoardCommands"
+                    @click.native.prevent
+                    :options="[
+                        {
+                        key: 'edit',
+                        label: 'Edit',
+                        },
+                        {
+                        key: 'delete',
+                        label: 'Delete',
+                        },
+                        {
+                        key: 'selection',
+                        label: 'Select Mode',
+                        },
+                    ]"
+                    >
+                    <div
+                        class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
+                    >
+                        <div class="flex items-center justify-center">
+                        <i class="fa fa-ellipsis-v"></i>
+                        </div>
                     </div>
-                  </div>
+                    </NDropdown>
+                </div>
+                </div>
+                <NDropdown
+                trigger="click"
+                @select="handleFilterCommands('title', $event)"
+                @click.native.prevent
+                :options="[
+                    {
+                    key: 'sort',
+                    label: 'Sort by Task Name',
+                    },
+                    {
+                    key: 'clearSort',
+                    label: 'Clear sort',
+                    },
+                    {
+                    key: 'saveOrder',
+                    label: 'Save this order',
+                    },
+                ]"
+                >
+                <div class="px-2 py-1 transition cursor-pointer hover:bg-slate-200">
+                    <span> {{ items.length }} Tasks <i :class="filterIcons.sort" /></span>
+                </div>
                 </NDropdown>
-              </div>
             </div>
-            <NDropdown
-              trigger="click"
-              @select="handleFilterCommands('title', $event)"
-              @click.native.prevent
-              :options="[
-                {
-                  key: 'sort',
-                  label: 'Sort by Task Name',
-                },
-                {
-                  key: 'clearSort',
-                  label: 'Clear sort',
-                },
-                {
-                  key: 'saveOrder',
-                  label: 'Save this order',
-                },
-              ]"
-            >
-              <div class="px-2 py-1 transition cursor-pointer hover:bg-slate-200">
-                <span> {{ items.length }} Tasks </span>
-              </div>
-            </NDropdown>
-          </div>
-        </div>
-        <div class="false-header"></div>
+        </ListCellHeader>
 
         <div class="grid" v-if="isExpanded">
           <draggable
@@ -98,7 +102,7 @@
             handle=".handle"
             class="w-full"
           >
-            <ItemGroupTitle
+            <ListCellTitle
               v-for="(item, index) in stage.items"
               class="flex bg-gray-200 border border-white item-false"
               :key="`item-false__title-${item.id}`"
@@ -118,21 +122,12 @@
       <div class="item-group ic-scroller ic-scroller-slim" @scroll="syncScroll"
         :id="`${stage.id}-slim-body`"
       >
-        <div class="grid py-1 text-left item-group-row sticky_header">
-          <div
-            v-for="field in visibleFields"
-            :key="field.name"
-            class="item-group-row__header"
-          >
-            <span class="font-bold">
-              <FieldPopover :field-data="field" :board="board" @saved="onFieldAdded">
-                {{ field.title }}
-              </FieldPopover>
-            </span>
-          </div>
-        </div>
-
-        <div class="false-header"></div>
+        <ListCellHeader 
+            class="grid py-1 text-left item-group-row" 
+            :visible-fields="visibleFields"
+            :filters="filters" 
+            @field-added="onFieldAdded" 
+        />
 
         <!-- items  -->
         <template v-if="isExpanded">
@@ -149,15 +144,11 @@
 
       <!-- column add -->
       <div class="ic-list__add" v-if="isExpanded">
-        <div class="item-false__header sticky_header">
-          <div class="item-group-row__header">
+        <ListCellHeader class="item-false__header sticky_header">
             <field-popover :field-data="newField" :board="board" @saved="onFieldAdded">
               <i class="fa fa-plus" slot="reference"></i>
             </field-popover>
-          </div>
-        </div>
-
-        <div class="false-header"></div>
+        </ListCellHeader>
 
         <div class="grid">
           <div
@@ -191,7 +182,7 @@
 
     <!-- summary row  -->
     <div class="ic-list__body">
-      <div class="ic-list__title"></div>
+        <div class="ic-list__title" />
         <ListRow
             :item="items[0]"
             :row-index="1000"
@@ -200,10 +191,7 @@
             @scroll="syncScroll"
            :id="`${stage.id}-slim-summary`"
         />
-
-      <div class="ic-list__add" v-if="isExpanded">
-    
-      </div>
+        <div class="ic-list__add" v-if="isExpanded" />    
     </div>
     <!-- end of summary row -->
   </div>
@@ -217,7 +205,8 @@ import { Inertia } from "@inertiajs/inertia";
 
 import ItemGroupCell from "../../ItemGroupCell.vue";
 import FieldPopover from "../../FieldPopover.vue";
-import ItemGroupTitle from './ItemGroupTitle.vue';
+import ListCellTitle from './ListCellTitle.vue';
+import ListCellHeader from "./ListCellHeader.vue";
 import ListRow from "./ListRow.vue";
 
 import { matrixColors } from "@/utils/constants"
@@ -245,6 +234,9 @@ const props = defineProps({
             default() {
                 return [];
             }
+        },
+        filters: {
+            type: Object
         }
 });
 
