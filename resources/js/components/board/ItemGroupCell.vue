@@ -17,9 +17,9 @@
 
         <template v-else-if="!isEditMode">
             <LinkPreview
-                    v-if="field.type == 'url' && displayValue"
-                    :value="displayValue"
-                    @edit="toggleEditMode()"
+                v-if="field.type == 'url' && displayValue"
+                :value="displayValue"
+                @edit="toggleEditMode()"
             />
             <span
                 v-else
@@ -39,7 +39,7 @@
                     :is="componentName"
                     :users="users"
                     :options="field.options"
-                    @saved="saveChanges"
+                    @saved="saveChanges()"
                     @closed="isEditMode = false"
                 />
             </div>
@@ -97,7 +97,6 @@
 </template>
 
 <script setup>
-import { format } from "date-fns";
 import LinkPreview from "./cellTypes/LinkPreview.vue";
 import InputLabel from "./cellTypes/Label.vue";
 import InputDate from "./cellTypes/Date.vue";
@@ -106,6 +105,7 @@ import InputTime from "./cellTypes/Time.vue";
 import BoardSelector from './BoardSelector.vue';
 import { NTooltip } from "naive-ui";
 import { computed, inject, nextTick, reactive, toRefs, watch, onMounted, ref } from "vue";
+import { formatValue } from "./cellTypes/mixin";
 
 const users = inject('users', [])
 const props = defineProps({
@@ -165,10 +165,7 @@ watch(props.item, (item) => {
 if (item && item[props.fieldName] != state.value) {
     const field = item.fields && item.fields.find(field => field.field_name == props.fieldName);
     item[props.fieldName] = item[props.fieldName] || (field && field.value);
-    state.value = formatValue(item[props.fieldName],
-        props.field ? props.field.type : "default",
-        "read"
-    );
+    state.value = formatValue(item[props.fieldName], props.field ? props.field.type : "default", "read");
 }}, {
     deep: true,
     immediate: true
@@ -182,7 +179,7 @@ watch(state.selectValue, () => {
 });
 
 const displayValue = computed(() => {
-    return formatValue(state.value, props.field.type, "display");
+    return formatValue(state.value, props.field.type, "display",);
 });
 
 const componentName = computed(() => {
@@ -216,91 +213,6 @@ onMounted(() => {
     // })
 });
 
-function formatValue(value, type = "default", operation = "read") {
-    const formatters = {
-        date: {
-            write: (value = "") => {
-                return typeof value == "string"
-                    ? value
-                    : format(value, "yyyy-MM-dd");
-            },
-            read: (value = "") => {
-                return value && typeof value == "string"
-                    ? setDate(value)
-                    : value;
-            },
-            display: (value = "") => {
-                const isString = typeof value == "string";
-                if (isString) {
-                    return value;
-                } else {
-                    try {
-                        return format(value, "yyyy-MM-dd");
-                    } catch (e) {
-                        return value;
-                    }
-                }
-            }
-        },
-        time: {
-            write: (value = "") => {
-                return typeof value == "string"
-                    ? value
-                    : format(value, "hh:mm");
-            },
-            read: (value = "") => {
-                const theValue =
-                    value && typeof value == "string"
-                        ? setTime(value)
-                        : value;
-                return theValue;
-            },
-            display: (value = "") => {
-                const isString = typeof value == "string";
-                if (isString) {
-                    return value;
-                } else {
-                    try {
-                        return format(value, "hh:mm");
-                    } catch (e) {
-                        return value;
-                    }
-                }
-            }
-        },
-        label: {
-            display: value => {
-                const option = props.field.options.find(option => {
-                    return option.name == state.value;
-                });
-                return option ? option.label || option.name : value;
-            }
-        },
-        default: {
-            read: value => value,
-            write: value => value,
-            display: value => value
-        }
-    };
-    return formatters[type] && formatters[type][operation]
-        ? formatters[type][operation](value)
-        : value;
-}
-
-function setDate(dateValue) {
-    const date = dateValue ? dateValue.split("-") : null;
-    return date ? new Date(date[0], date[1] - 1, date[2]) : null;
-}
-
-function setTime(timeValue) {
-    let date = timeValue ? timeValue.split(":") : null;
-    const dateTime = new Date();
-    dateTime.setHours(date[0]);
-    dateTime.setMinutes(date[1]);
-    dateTime.setSeconds(0);
-    return dateTime;
-}
-
 const input = ref();
 function toggleEditMode() {
     state.isEditMode = !state.isEditMode;
@@ -327,7 +239,6 @@ function saveItem($event) {
 
 const {
     value,
-    selectValue,
     isEditMode
 } = toRefs(state)
 </script>

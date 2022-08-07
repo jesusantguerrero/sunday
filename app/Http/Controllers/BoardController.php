@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Automation;
 use App\Http\Resources\Automation as AutomationResource;
+use App\Http\Resources\Item;
 use Illuminate\Http\Request;
 use App\Models\Board;
 use Illuminate\Http\Response;
@@ -96,7 +97,7 @@ class BoardController extends Controller
                     'id' => $stage->id,
                     'board_id' => $stage->board_id,
                     'name' => $stage->name,
-                    'items' => $stage->items()->filter($request->only('search', 'done', 'sort'))->get()
+                    'items' => Item::collection($stage->items()->filter($request->only('search', 'done', 'sort'))->get())
                 ];
         })];
 

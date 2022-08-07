@@ -1,4 +1,4 @@
-import {format} from "date-fns";
+import {format, parseISO} from "date-fns";
 
 export const cellProps = {
     fieldName: {
@@ -49,9 +49,29 @@ export const formatValue = (value, type = "default", operation = "read") => {
                     : format(value, "yyyy-MM-dd");
             },
             read: (value = "") => {
-                return value && typeof value == "string"
-                    ? this.setDate(value)
-                    : value;
+                if (value instanceof Date) {
+                    return value
+                }
+                else if (parseISO(value)) {
+                    return parseISO(value)
+                } else if (typeof value == "string") {
+                    return setDate(value)
+                }
+            },
+            display: (value = "") => {
+                const valueType = typeof value;
+                if (valueType == 'string') {
+                    return value;
+                } else if (value instanceof Date) {
+                    try {
+                        return format(value, "yyyy-MM-dd");
+                    } catch (e) {
+                        debugger
+                        return value;
+                    }
+                } else {
+                    return value
+                }
             }
         },
         time: {
@@ -72,7 +92,7 @@ export const formatValue = (value, type = "default", operation = "read") => {
             write: value => value
         }
     };
-    return formatters[type]
+    return formatters[type] && formatters[type][operation]
         ? formatters[type][operation](value)
         : value;
 };
