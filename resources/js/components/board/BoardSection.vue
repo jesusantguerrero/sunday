@@ -1,39 +1,13 @@
 <template>
     <div class="px-8 pb-24">
         <header class="flex justify-between board__toolbar">
-            <div class="flex text-left">
-                <div class="flex justify-between mr-2">
-                    <span class="text-3xl font-bold" v-if="!isEditMode">
-                        {{ board.name }}
-                    </span>
-                    <div v-else>
-                        <input
-                            v-model="board.name"
-                            type="text"
-                            ref="input"
-                            @keypress.enter="updateBoardName(board)"
-                        />
-                    </div>
-                     <i class="mx-2 fa fa-edit" @click="toggleEditMode(true)"></i>
-                    <div>
-                        <span
-                            class="automation"
-                            v-for="automation in automations"
-                            :key="`automation-${automation.id}`"
-                            @click="runAutomation(automation.id)"
-                        >
-                            <img :src="automation.service_logo" v-if="automation.service_logo" class="automation-logo">
-                            <div v-else>
-                                {{ automation.name[0] }}
-
-                            </div>
-                        </span>
-                        <!-- <span class="automation" @click="isAutomationModalOpen=true">
-                            <i class="fa fa-plus"></i>
-                        </span> -->
-                    </div>
-                </div>
-            </div>
+            <BoardTitle 
+                class="w-full"
+                :board="board" 
+                @saved="updateBoardName" 
+                :automations="automations"
+                @run-automation="runAutomation"
+            />
 
             <div class="flex items-center">
                 <div class="w-40">
@@ -147,390 +121,329 @@
         />
 
         <AutomationModal
-            @cancel="isAutomationModalOpen=false"
-            @saved="isAutomationModalOpen=false"
+            @cancel="state.isAutomationModalOpen=false"
+            @saved="state.isAutomationModalOpen=false"
             :record-data="{}"
             :board="board"
-            :is-open="isAutomationModalOpen"
+            :is-open="state.isAutomationModalOpen"
         />
     </div>
 </template>
 
-<script>
+<script setup>
 import ListView from "./views/List/ItemGroup.vue";
-import KanbanView from "./views/kanban/KanbanContainer.vue";
-import HabiticaView from "./views/notes/NotesContainer.vue";
 import MatrixView from "./views/matrix/MatrixBoard.vue";
-import NoteView from "./views/notes/NotesContainer.vue";
 import ItemModal from "./ItemModal.vue";
 import AutomationModal from "../AutomationModal.vue";
 import BulkSelectionBar from '../BulkSelectionBar.vue';
 import { VueDraggableNext as Draggable } from "vue-draggable-next"
 import { throttle } from "lodash";
+import { Inertia } from "@inertiajs/inertia";
+import { onMounted, provide, computed, watch, reactive, ref, toRefs } from "vue";
+import BoardTitle from "./BoardTitle.vue";
 
-export default {
-    name: "Board",
-    components: {
-        ListView,
-        KanbanView,
-        NoteView,
-        HabiticaView,
-        MatrixView,
-        ItemModal,
-        AutomationModal,
-        Draggable,
-        BulkSelectionBar
+const props = defineProps({
+    board: {
+        type: Object,
+        required: true
     },
-    provide() {
-       return {
-            users: this.users
-        };
+    automations: {
+        type: Array,
+        required: true
     },
-    props: {
-        board: {
-            type: Object,
-            required: true
-        },
-        automations: {
-            type: Array,
-            required: true
-        },
-        users: {
-            type: Array,
-            required: true
-        },
-        filters: {
-            type: Object,
-            default() {
-                return {
-                    search: '',
-                    done: ''
-                }
+    users: {
+        type: Array,
+        required: true
+    },
+    filters: {
+        type: Object,
+        default() {
+            return {
+                search: '',
+                done: ''
             }
         }
+    }
+});
+
+provide('users', props.users);
+const views = {
+    list:{
+        name: "list",
+        title: "List",
+        component: ListView,
+        icon: "fa fa-th-list"
     },
-    data() {
-        return {
-            createMode: false,
-            modeSelected: "list",
-            views: {
-                list:{
-                    name: "list",
-                    title: "List",
-                    component: "ListView",
-                    icon: "fa fa-th-list"
-                },
-                matrix:{
-                    name: "matrix",
-                    title: "Matrix",
-                    component: "MatrixView",
-                    icon: "fa fa-border-all"
-                }
-            },
-            itemToDelete: false,
-            items: [
-                {
-                    title: "Test",
-                    owner: "Jesus Guerrero",
-                    status: "todo",
-                    due_date: new Date().toISOString().slice(0, 10),
-                    priority: "High"
-                },
-                {
-                    title: "Test",
-                    owner: "Jesus Guerrero",
-                    status: "todo",
-                    due_date: new Date().toISOString().slice(0, 10),
-                    priority: "low"
-                },
-                {
-                    title: "Test",
-                    owner: "Jesus Guerrero",
-                    status: "todo",
-                    due_date: new Date().toISOString().slice(0, 10),
-                    priority: "medium"
-                }
-            ],
-            comments: [],
-            contacts: [
-                {
-                    name: "Jesus Guerrero"
-                }
-            ],
-            searchOptions: {
-                search: this.filters.search,
-                done: this.filters.done,
-                sort: ''
-            },
-            openedItem: {},
-            isEditMode: false,
-            isItemModalOpen: false,
-            isAutomationModalOpen: false
-        };
-    },
-    watch: {
-        searchOptions: {
-            handler: throttle(function() {
-                let query = this.pickBy(this.searchOptions);
-                query = Object.keys(query).length ?  '?' + new URLSearchParams(this.pickBy(this.searchOptions)) : '';
-                this.$inertia.replace(`/boards/${this.board.id}${query}`)
-            }, 200),
-            deep: true,
-            immediate: true
-        }
-    },
-    computed: {
-        containerComponent() {
-            return this.views[this.modeSelected].component
-        },
-
-        kanbanData() {
-            if (this.board.stages.length) {
-                const statusField = this.board.fields.find(
-                    field => field.name == "status"
-                );
-                const quadrants = {};
-                this.board.labels.forEach(label => {
-                    if (label.field_id == statusField.id) {
-                        quadrants[label.name] = {
-                            id: label.id,
-                            fieldId: label.field_id,
-                            attributes: label,
-                            items: [],
-                            newTask: {}
-                        };
-                    }
-                });
-
-                this.board.stages.forEach(stage => {
-                    stage.items.forEach(item => {
-                        const statusField = item.fields.find(
-                            field => field.field_name == "status"
-                        );
-                        if (statusField && quadrants[statusField.value]) {
-                            quadrants[statusField.value].items.push(item);
-                        } else {
-                            quadrants['backlog'].items.push(item);
-                        }
-                    });
-                });
-                return quadrants;
-            }
-            return {};
-        },
-
-        viewsKeys() {
-            return Object.values(this.views).map( view => view.name)
-        },
-
-        selectedItems() {
-            return this.board.stages.reduce((selectedItems, stage) => {
-                selectedItems.push(...stage.items.filter(item => item.selected))
-                return selectedItems
-            }, [])
-        }
-    },
-    mounted() {
-        window.document.onscroll = function() {
-            requestAnimationFrame(() => {
-                setStickyHeaders()
-            })
-        };
-
-        function setStickyHeaders() {
-            const tables = document.querySelectorAll(".ic-list")
-            tables.forEach((table, index) => {
-                const falseHeader = table.querySelectorAll('.false-header');
-
-                if (window.pageYOffset >= (table.offsetTop - 60) && window.pageYOffset <= (table.offsetTop + table.offsetHeight - 157)) {
-                    table.querySelectorAll('.sticky_header').forEach((header)=> {
-                        header.classList.add("sticky-active")
-                        falseHeader.forEach((fh) => fh.classList.add('active'))
-                        header.style.transform = `translate3d(0px, ${window.pageYOffset - table.offsetTop + 60}px, 1px)`
-                    })
-                } else {
-                    table.querySelectorAll('.sticky_header').forEach((header)=> {
-                        header.classList.remove("sticky-active")
-                        falseHeader.forEach((fh) => fh.classList.remove('active'))
-                        header.style.transform = ``
-                    })
-                }
-            })
-        }
-    },
-    methods: {
-        addItem(item, reload = true) {
-            const method = item.id ? "PUT" : "POST";
-            const param = item.id ? `/${item.id}` : "";
-            axios({
-                url: `/items${param}`,
-                method,
-                data: item
-            }).then(() => {
-                if (reload) {
-                    this.$inertia.reload({ preserveScroll: true });
-                }
-            });
-        },
-
-        addStage(stage = {}, reload = true) {
-            const method = stage.id ? "PUT" : "POST";
-            const param = stage.id ? `/${stage.id}` : "";
-            stage.board_id = this.board.id;
-            stage.name = stage.name || `Stage ${this.board.stages.length + 1}`;
-
-            return axios({
-                url: `/api/stages${param}`,
-                method,
-                data: stage
-            }).then(({ data }) => {
-                if (reload) {
-                    this.$inertia.reload({ preserveScroll: true });
-                }
-            });
-        },
-
-        updateBoardName(board = {}, reload = true) {
-            const method = board.id ? "PUT" : "POST";
-            const param = board.id ? `/${board.id}` : "";
-
-            return axios({
-                url: `/api/boards${param}`,
-                method,
-                data: {
-                    name: board.name
-                }
-            }).then(({ data }) => {
-                if (reload) {
-                    this.$inertia.reload({ preserveScroll: true });
-                    this.isEditMode = false;
-                }
-            });
-        },
-
-        addStage(stage = {}, reload = true) {
-            const method = stage.id ? "PUT" : "POST";
-            const param = stage.id ? `/${stage.id}` : "";
-            stage.board_id = this.board.id;
-            stage.name = stage.name || `Stage ${this.board.stages.length + 1}`;
-
-            return axios({
-                url: `/api/stages${param}`,
-                method,
-                data: stage
-            }).then(({ data }) => {
-                if (reload) {
-                    this.$inertia.reload({ preserveScroll: true });
-                }
-            });
-        },
-
-        runAutomation(automationId) {
-            return axios({
-                url: `/api/automations/${automationId}/run`,
-                method: "POST"
-            }).then(({ data }) => {
-                    this.$notify({
-                        type: "success",
-                        title: "Automation sync",
-                        message: "Updated"
-                    })
-                    this.$inertia.reload({ preserveScroll: true });
-            });
-        },
-
-        saveReorder() {
-            this.board.stages.forEach(async (stage, index) => {
-                stage.order = index;
-                await this.addStage(stage, false);
-            });
-            this.$inertia.reload({ preserveScroll: true });
-        },
-
-        toggleDone() {
-            const nextValues = {
-                'with' : 'only',
-                'only' : '',
-                '' : 'with'
-            }
-
-            this.searchOptions.done = nextValues[this.searchOptions.done];
-        },
-
-        pickBy(object, predicate) {
-            const result = {}
-                Object.entries(this.searchOptions).map(([key, value]) => {
-                    if (value) {
-                        result[key] = value;
-                    }
-                })
-
-            return result;
-        },
-
-        sort(field) {
-            if (this.searchOptions.sort == field) {
-                this.searchOptions.sort = `-${field}`;
-            } else {
-                this.searchOptions.sort = field;
-            }
-        },
-
-        clearSort() {
-            this.searchOptions.sort = ""
-        },
-
-        openItem(item) {
-            this.isItemModalOpen = true;
-            this.openedItem = item;
-        },
-
-        confirmDeleteItem(item, reload = true) {
-            this.showConfirm({
-                title: `Deleting ${item.title} task`,
-                content: "Are you sure you want to delete this tasks?",
-                confirmationButtonText: "Yes, delete",
-                confirm: () => {
-                    axios({
-                        url: `/items/${item.id}`,
-                        method: "delete"
-                    }).then(() => {
-                        if (reload) {
-                            this.itemToDelete = false;
-                            this.$inertia.reload({ preserveScroll: true });
-                        }
-                    });
-                }
-            });
-        },
-
-        confirmDeleteItems(items, reload = true) {
-            this.showConfirm({
-                title: `Deleting ${items.length} tasks`,
-                content: "Are you sure you want to delete these tasks?",
-                confirmationButtonText: "Yes, delete",
-                confirm: () => {
-                    axios({
-                        url: `/api/items/bulk/delete`,
-                        method: "post",
-                        data: items.map(item => item.id)
-                    }).then(() => {
-                        this.$inertia.reload({ preserveScroll: true });
-                    });
-                }
-            });
-        },
-
-        toggleEditMode() {
-            this.isEditMode = !this.isEditMode;
-            this.$nextTick(() => {
-                if (this.$refs.input) {
-                    this.$refs.input.focus();
-                }
-            });
-        },
+    matrix:{
+        name: "matrix",
+        title: "Matrix",
+        component: MatrixView,
+        icon: "fa fa-border-all"
     }
 };
+
+const state = reactive({
+    createMode: false,
+    modeSelected: "list",
+    itemToDelete: false,
+    items: [],
+    comments: [],
+    contacts: [
+        {
+            name: "Jesus Guerrero"
+        }
+    ],
+    searchOptions: {
+        search: props.filters.search,
+        done: props.filters.done,
+        sort: props.filters.sort
+    },
+    openedItem: {},
+    isEditMode: false,
+    isItemModalOpen: false,
+    isAutomationModalOpen: false
+});
+
+watch(state.searchOptions, throttle(() => {
+    let query = pickBy(props.searchOptions);
+    query = Object.keys(query).length ?  '?' + new URLSearchParams(pickBy(state.searchOptions)) : '';
+    Inertia.replace(`/boards/${props.board.id}${query}`)
+}, 200),{
+    deep: true,
+    immediate: true
+});
+
+const containerComponent = computed(() => {
+    return views[state.modeSelected].component
+});
+
+const kanbanData = computed(() => {
+    if (props.board.stages.length) {
+        const statusField = props.board.fields.find(
+            field => field.name == "status"
+        );
+        const quadrants = {};
+        props.board.labels.forEach(label => {
+            if (label.field_id == statusField.id) {
+                quadrants[label.name] = {
+                    id: label.id,
+                    fieldId: label.field_id,
+                    attributes: label,
+                    items: [],
+                    newTask: {}
+                };
+            }
+        });
+
+        props.board.stages.forEach(stage => {
+            stage.items.forEach(item => {
+                const statusField = item.fields.find(
+                    field => field.field_name == "status"
+                );
+                if (statusField && quadrants[statusField.value]) {
+                    quadrants[statusField.value].items.push(item);
+                } else {
+                    quadrants['backlog'].items.push(item);
+                }
+            });
+        });
+        return quadrants;
+    }
+    return {};
+});
+
+const viewsKeys = computed(() => {
+    return Object.values(views).map( view => view.name)
+});
+
+const selectedItems = computed(() => {
+    return props.board.stages.reduce((selectedItems, stage) => {
+        selectedItems.push(...stage.items.filter(item => item.selected))
+        return selectedItems
+    }, [])
+});
+
+onMounted(() => {
+    window.document.onscroll = function() {
+        requestAnimationFrame(() => {
+            setStickyHeaders()
+        })
+    };
+
+    function setStickyHeaders() {
+        const tables = document.querySelectorAll(".ic-list")
+        tables.forEach((table, index) => {
+            const falseHeader = table.querySelectorAll('.false-header');
+
+            if (window.pageYOffset >= (table.offsetTop - 60) && window.pageYOffset <= (table.offsetTop + table.offsetHeight - 157)) {
+                table.querySelectorAll('.sticky_header').forEach((header)=> {
+                    header.classList.add("sticky-active")
+                    falseHeader.forEach((fh) => fh.classList.add('active'))
+                    header.style.transform = `translate3d(0px, ${window.pageYOffset - table.offsetTop + 60}px, 1px)`
+                })
+            } else {
+                table.querySelectorAll('.sticky_header').forEach((header)=> {
+                    header.classList.remove("sticky-active")
+                    falseHeader.forEach((fh) => fh.classList.remove('active'))
+                    header.style.transform = ``
+                })
+            }
+        })
+    }
+});
+
+function addItem(item, reload = true) {
+    const method = item.id ? "PUT" : "POST";
+    const param = item.id ? `/${item.id}` : "";
+    axios({
+        url: `/items${param}`,
+        method,
+        data: item
+    }).then(() => {
+        if (reload) {
+            Inertia.reload({ preserveScroll: true });
+        }
+    });
+}
+
+function addStage(stage = {}, reload = true) {
+    const method = stage.id ? "PUT" : "POST";
+    const param = stage.id ? `/${stage.id}` : "";
+    stage.board_id = props.board.id;
+    stage.name = stage.name || `Stage ${props.board.stages.length + 1}`;
+
+    return axios({
+        url: `/api/stages${param}`,
+        method,
+        data: stage
+    }).then(({ data }) => {
+        if (reload) {
+            Inertia.reload({ preserveScroll: true });
+        }
+    });
+}
+
+function updateBoardName(board = {}, reload = true) {
+    const method = board.id ? "PUT" : "POST";
+    const param = board.id ? `/${board.id}` : "";
+
+    return axios({
+        url: `/api/boards${param}`,
+        method,
+        data: {
+            name: board.name
+        }
+    }).then(() => {
+        if (reload) {
+            Inertia.reload({ preserveScroll: true });
+            props.isEditMode = false;
+        }
+    });
+}
+
+
+function runAutomation(automationId) {
+    return axios({
+        url: `/api/automations/${automationId}/run`,
+        method: "POST"
+    }).then(({ data }) => {
+        this.$notify({
+            type: "success",
+            title: "Automation sync",
+            message: "Updated"
+        })
+        Inertia.reload({ preserveScroll: true });
+    });
+}
+
+function saveReorder() {
+    props.board.stages.forEach(async (stage, index) => {
+        stage.order = index;
+        await addStage(stage, false);
+    });
+    Inertia.reload({ preserveScroll: true });
+}
+
+function toggleDone() {
+    const nextValues = {
+        'with' : 'only',
+        'only' : '',
+        '' : 'with'
+    }
+
+    state.searchOptions.done = nextValues[state.searchOptions.done];
+}
+
+function pickBy(object) {
+    return object ? Object.entries(object).reduce((result, [key, value]) => {
+        if (value) {
+            result[key] = value;
+        }
+        return result;
+    }, {}) : {}
+}
+
+function sort(field) {
+    if (state.searchOptions.sort == field) {
+        state.searchOptions.sort = `-${field}`;
+    } else {
+        state.searchOptions.sort = field;
+    }
+}
+
+function clearSort() {
+    state.searchOptions.sort = ""
+}
+
+function openItem(item) {
+    state.isItemModalOpen = true;
+    state.openedItem = item;
+}
+
+function confirmDeleteItem(item, reload = true) {
+    showConfirm({
+        title: `Deleting ${item.title} task`,
+        content: "Are you sure you want to delete this tasks?",
+        confirmationButtonText: "Yes, delete",
+        confirm: () => {
+            axios({
+                url: `/items/${item.id}`,
+                method: "delete"
+            }).then(() => {
+                if (reload) {
+                    this.itemToDelete = false;
+                    this.$inertia.reload({ preserveScroll: true });
+                }
+            });
+        }
+    });
+}
+
+function confirmDeleteItems(items, reload = true) {
+    showConfirm({
+        title: `Deleting ${items.length} tasks`,
+        content: "Are you sure you want to delete these tasks?",
+        confirmationButtonText: "Yes, delete",
+        confirm: () => {
+            axios({
+                url: `/api/items/bulk/delete`,
+                method: "post",
+                data: items.map(item => item.id)
+            }).then(() => {
+                Inertia.reload({ preserveScroll: true });
+            });
+        }
+    });
+}
+
+const {
+    createMode,
+    modeSelected,
+    searchOptions,
+    openedItem,
+    isEditMode,
+    isItemModalOpen
+} = toRefs(state)
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

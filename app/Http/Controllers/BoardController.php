@@ -101,28 +101,28 @@ class BoardController extends Controller
         })];
 
         return Inertia::render('Board', [
-                'filters' => $request->all('search', 'done'),
-                'automations' => AutomationResource::collection(Automation::where([
-                    'team_id' => $user->current_team_id,
-                    'user_id' => $user->id,
-                    'board_id' => $id
-                ])->get()),
-                'board' => $boardData,
-                'boards' => Board::where([
-                    'team_id' => $user->current_team_id,
-                    'user_id' => $user->id,
-                    'board_type_id' => $board->board_type_id,
-                ])->get()->map(function ($board) {
-                    return [
-                        'id' => $board->id,
-                        'name' => $board->name,
-                        'stages' => $board->stages()->without('items')->get(),
-                        'link' =>  URL::route('boards', $board),
-                        'color' => $board->color,
-                        'template'=> $board->boardTemplate,
-                        'type' => $board->boardType
-                    ];
-                }),
-            ]);
+            'filters' => $request->all('search', 'done', 'sort'),
+            'automations' => AutomationResource::collection(Automation::where([
+                'team_id' => $user->current_team_id,
+                'user_id' => $user->id,
+                'board_id' => $id
+            ])->get()),
+            'board' => $boardData,
+            'boards' => Board::where([
+                'team_id' => $user->current_team_id,
+                'user_id' => $user->id,
+                'board_type_id' => $board->board_type_id,
+            ])->get()->map(function ($board) {
+                return [
+                    'id' => $board->id,
+                    'name' => $board->name,
+                    'stages' => $board->stages()->without('items')->get(),
+                    'link' =>  URL::route('boards', $board),
+                    'color' => $board->color,
+                    'template'=> $board->boardTemplate,
+                    'type' => $board->boardType
+                ];
+            }),
+        ]);
     }
 }
