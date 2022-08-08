@@ -1,16 +1,9 @@
-import { format, isToday, isTomorrow, formatRelative, isThisWeek, isThisYear, isDate } from "date-fns";
+import { format, isToday, isTomorrow, formatRelative, isThisWeek, isThisYear, isDate, differenceInCalendarDays } from "date-fns";
 import { DateTime, Duration } from "luxon";
 import { computed, ref} from "vue";
 
-export function useDateTime(dateRef) {
-    const date = dateRef || ref(null)
-    
-    const formattedDate = computed(() => {
-        return date.value && typeof date.value == 'object' ? toISO(date.value) : date.value;
-    })
-
-    const humanDate = computed(() => {
-        const isoDate = date.value && typeof date.value == 'object' ? date.value : date.value;
+export  const formatHumanDate = (isoDate) => {
+    try {
         if (!isDate(isoDate)) {
             return isoDate;
         }
@@ -27,6 +20,21 @@ export function useDateTime(dateRef) {
         } else {
             return format(isoDate, 'MMM dd yyyy')
         }
+    } catch (err) {
+        return isoDate;
+    }
+}
+
+export function useDateTime(dateRef) {
+    const date = dateRef || ref(null)
+    
+    const formattedDate = computed(() => {
+        return date.value && typeof date.value == 'object' ? toISO(date.value) : date.value;
+    })
+
+    const humanDate = computed(() => {
+        const isoDate = date.value && typeof date.value == 'object' ? date.value : date.value;
+       return formatHumanDate(isoDate)
     })
 
     const formatDate = (date, format) => {

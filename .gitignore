@@ -2,7 +2,7 @@
 /public/hot
 /public/storage
 /storage/*.key
-/storage/cache/**
+/storage/cache/data/**
 /docker-compose/nginx/*
 !/docker-compose/redis/*
 !/docker-compose/nginx/vhosts/

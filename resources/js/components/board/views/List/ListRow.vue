@@ -21,6 +21,7 @@
 
 <script setup>
 import { matrixColors } from '@/utils/constants';
+import CellSummaryDate from '../../cellTypes/CellSummaryDate.vue';
 import CellSummaryProgress from '../../cellTypes/CellSummaryProgress.vue';
 import ItemGroupCell from "../../ItemGroupCell.vue";
 
@@ -64,7 +65,8 @@ function getBg(field, item, fieldName) {
 }
 
 const components = {
-    progress: CellSummaryProgress
+    progress: CellSummaryProgress,
+    summaryDate: CellSummaryDate
 }
 
 const getRenderComponent = (item) => {

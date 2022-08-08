@@ -220,10 +220,11 @@ const containerComponent = computed(() => {
 });
 
 const kanbanData = computed(() => {
+    const statusField = props.board.fields.find(
+        field => field.name == "status"
+    );
+    
     if (props.board.stages.length) {
-        const statusField = props.board.fields.find(
-            field => field.name == "status"
-        );
         const quadrants = {};
         props.board.labels.forEach(label => {
             if (label.field_id == statusField.id) {
@@ -239,11 +240,8 @@ const kanbanData = computed(() => {
 
         props.board.stages.forEach(stage => {
             stage.items.forEach(item => {
-                const statusField = item.fields.find(
-                    field => field.field_name == "status"
-                );
-                if (statusField && quadrants[statusField.value]) {
-                    quadrants[statusField.value].items.push(item);
+                if (quadrants[item[statusField.name]]) {
+                    quadrants[item[statusField.name]].items.push(item);
                 } else {
                     quadrants['backlog'].items.push(item);
                 }

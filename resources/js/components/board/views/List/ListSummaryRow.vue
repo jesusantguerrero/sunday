@@ -16,7 +16,9 @@
 
 <script setup>
 import { matrixColors } from '@/utils/constants';
+import { parseISO } from 'date-fns';
 import { computed } from 'vue';
+import { formatValue } from '../../cellTypes/mixin';
 import ListRow from './ListRow.vue';
 
 const props = defineProps({
@@ -55,6 +57,22 @@ const defaultFunctions = {
         }
     },
     date: (items, fieldName) => {
+        const dates = items.reduce((dateByTimes, dateStr) => {
+            if (dateStr) {
+                const date = formatValue(dateStr, 'date', 'read')
+                const timestamp =  date.getTime()
+                dateByTimes[timestamp] = date
+            }
+            return dateByTimes;
+        }, {})
+        
+        return {
+            type: 'summaryDate',
+            value: {
+                min: dates[Math.min(...Object.keys(dates))],
+                max: dates[Math.max(...Object.keys(dates))]
+            }
+        }
 
     }, 
     default(items, fieldName) {

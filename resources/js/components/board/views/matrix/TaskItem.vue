@@ -101,7 +101,7 @@
       <button
         title="Checklist"
         class="flex items-center w-20 px-2 py-1 rounded-md hover:bg-gray-200 focus:outline-none"
-        @click.stop="toggleExpand" v-if="task.checklist.length">
+        @click.stop="toggleExpand" v-if="task.checklist?.length">
         <i class="mr-2 fa fa-list-ul"></i>
         <div>
           <span class="font-bold">{{ task.checklist.filter(item => item.done).length  }}</span> / {{ task.checklist.length  }}
