@@ -63,13 +63,6 @@ $ git clone https://github.com/jesusantguerrero/sunday.git
 
 ```
 ### Setup
-```bash
-# Install NPM dependencies
-npm install 
-# or If you like yarn
-yarn
-
-```
 
 copy .env.example to .env:
 
