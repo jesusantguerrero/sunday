@@ -322,8 +322,6 @@ import ConfirmationModal from "../components/shared/ConfirmationModal.vue";
 import BoardSide from "../components/board/BoardSide.vue";
 import AppSide from "./AppSide.vue";
 
-
-
 defineProps({
   boards: {
     type: Array,

@@ -161,50 +161,54 @@ export default {
 
         async google(scopeName, service) {
             gapi.load("auth2", () => {
-                gapi.auth2
-                    .init({
-                        apiKey: process.env.MIX_GOOGLE_APP_KEY,
-                        clientId: process.env.MIX_GOOGLE_CLIENT_ID,
-                        accessType: "offline",
-                        scope: `profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/spreadsheets.readonly`,
-                        discoveryDocs: [
-                            "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
-                            "https://sheets.googleapis.com/discovery/rest?version=v4"
-                        ]
-                    })
-                    .then(async auth => {
-                        const authInstance = gapi.auth2.getAuthInstance();
-                        const user = authInstance.currentUser.get();
+               try {
+                   gapi.auth2
+                       .init({
+                           apiKey: import.meta.env.VITE_GOOGLE_APP_KEY,
+                           clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+                           accessType: "offline",
+                           scope: `profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/spreadsheets.readonly`,
+                           discoveryDocs: [
+                               "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+                               "https://sheets.googleapis.com/discovery/rest?version=v4"
+                           ]
+                       })
+                       .then(async auth => {
+                           const authInstance = gapi.auth2.getAuthInstance();
+                           const user = authInstance.currentUser.get();
 
-                        if (!user.getAuthResponse().session_state) {
-                            await authInstance.signIn();
-                        }
+                           if (!user.getAuthResponse().session_state) {
+                               await authInstance.signIn();
+                           }
 
-                        const profile = user.getBasicProfile();
+                           const profile = user.getBasicProfile();
 
-                        await authInstance
-                            .grantOfflineAccess({
-                                authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
-                            })
-                            .then(({ code }) => {
-                                const credentials = {
-                                    code,
-                                    service_id: service.id,
-                                    service_name: service.name,
-                                    user: profile.getEmail()
-                                };
+                           await authInstance
+                               .grantOfflineAccess({
+                                   authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
+                               })
+                               .then(({ code }) => {
+                                   const credentials = {
+                                       code,
+                                       service_id: service.id,
+                                       service_name: service.name,
+                                       user: profile.getEmail()
+                                   };
 
-                                axios({
-                                    url: "/services/google",
-                                    method: "post",
-                                    data: {
-                                        credentials
-                                    }
-                                }).then(() => {
-                                    this.$inertia.reload(`/integrations`);
-                                })
-                            })
-                    })
+                                   axios({
+                                       url: "/services/google",
+                                       method: "post",
+                                       data: {
+                                           credentials
+                                       }
+                                   }).then(() => {
+                                       this.$inertia.reload(`/integrations`);
+                                   })
+                               })
+                       })
+               } catch (err) {
+                    console.log(err)
+               }
             });
         }
     }

@@ -5,12 +5,12 @@
 
       <div
         class="form-group"
-        :class="{ 'form-group--error': $v.user.email.$error }"
+        :class="{ 'form-group--error': user.email }"
       >
         <label for="email">Email</label>
         <p :class="{ control: true }">
           <input
-            v-model.trim="$v.user.email.$model"
+            v-model.trim="user.email"
             class="form-control input"
             :class="{ 'is-danger': false }"
             name="email"
@@ -23,12 +23,12 @@
 
       <div
         class="form-group"
-        :class="{ 'form-group--error': $v.user.email.$error }"
+        :class="{ 'form-group--error': user.email.$error }"
       >
         <label for="email">name</label>
         <p :class="{ control: true }">
           <input
-            v-model.trim="$v.user.name.$model"
+            v-model.trim="user.name"
             class="form-control input"
             :class="{ 'is-danger': false }"
             name="name"
@@ -40,7 +40,7 @@
       </div>
 
       <div class="form-group"
-       :class="{ 'form-group--error': $v.user.password.$error }"
+       :class="{ 'form-group--error': user.password.$error }"
       >
         <label for="password" class="password-label"
           ><span>Password</span></label
@@ -49,19 +49,19 @@
           <input
             type="password"
             id="password"
-            v-model="$v.user.password.$model"
+            v-model="user.password"
             class="form-control input"
             :class="{ 'is-danger': false }"
             name="password"
             required
             @keydown.enter="login"
           />
-          <small v-if="$v.user.password.$error"> password have to be at least 8 </small>
+          <small v-if="user.password.$error"> password have to be at least 8 </small>
         </p>
       </div>
 
       <div class="form-group"
-       :class="{ 'form-group--error': $v.user.password_confirmation.$error }">
+       :class="{ 'form-group--error': user.password_confirmation.$error }">
         <label for="password" class="password-label"
           ><span>Confirm Password</span></label
         >
@@ -69,14 +69,14 @@
           <input
             type="password"
             id="password-confirm"
-            v-model="$v.user.password_confirmation.$model"
+            v-model="user.password_confirmation"
             class="form-control input"
             :class="{ 'is-danger': false }"
             name="password-confirm"
             required
             @keydown.enter="login"
           />
-          <small v-if="$v.user.password_confirmation.$error"> password and confirm password have to be the same </small>
+          <small v-if="user.password_confirmation.$error"> password and confirm password have to be the same </small>
         </p>
       </div>
 
@@ -124,11 +124,6 @@ export default {
   methods: {
     login() {
       if (!this.isLoading) {
-        this.$v.$touch();
-        if (this.$v.$invalid) {
-          return;
-        }
-
         this.isLoading = true;
         axios
           .post("/register", this.user)
