@@ -38,16 +38,13 @@ ICDaily is a productivity web app to help you keep your tasks, track your time, 
 
 | Prerequisite                                          | Version     |
 | ------------------------------------------------------| ----------  |
-| [Docker*]()                                           |    --       |
 | [Node.js](http://nodejs.org)                          | `~ ^14.18.0`|
 | npm (comes with Node) or yarn (used)                  | `~ ^5`      |
 | [PHP]                                                 | `~ ^8.1.2`  |
 | [Cloud Platform Project (with Gmail API)**](https://developers.google.com/gmail/api/quickstart/js)                                |    --                                                 |             |
 | PHP extension ext-mailparse**                         |      --     |
 
-`* Docker is optional and have all the dependencies you need ext-mailparse included`
-
-`** those requirements are optional if you want to run de project without docker and use gmail and calendar integration`
+`** those requirements are optional if you want to use gmail and calendar integration`
 
 ```shell
 node -v
@@ -72,21 +69,7 @@ cp .env.example .env
 
 ```
 
-Setup With Docker
-```bash
-#build dockerfile for webapp
-docker-compose build web
-
-#start docker enviroment
-npm run setup
-
-# the setup is just needed the first time run 
-npm run serve
-```
-
-
-
-Setup Without Docker
+Setup 
 ```bash
 # composer install
 composer install --ignore-platform-reqs
