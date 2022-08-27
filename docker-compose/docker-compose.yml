@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/var/www
-      - ./docker-compose/web/timezone:/etc/timezone
+      - ./web/timezone:/etc/timezone
       - sunday_db:/var/lib/mysql
     networks:
       - sunday
@@ -35,9 +35,9 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
-      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+      - ./mysql:/docker-entrypoint-initdb.d
       - sunday_db:/var/lib/mysql
-      - ./docker-compose/mysql:/home/root/cache/
+      - ./mysql:/home/root/cache/
     networks:
       - sunday
   nginx:
@@ -48,7 +48,7 @@ services:
       - "8080:80"
     volumes:
       - ./:/var/www
-      - ./docker-compose/nginx/vhosts:/etc/nginx/conf.d/
+      - ./nginx/vhosts:/etc/nginx/conf.d/
     networks:
       - sunday
   redis:
@@ -56,7 +56,7 @@ services:
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
     volumes:
-      - ./docker-compose/redis:/data
+      - ./redis:/data
     networks:
       - sunday
   # memcached:

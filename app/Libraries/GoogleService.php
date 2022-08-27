@@ -6,12 +6,10 @@ use App\Jobs\ProcessGmail;
 use App\Models\User;
 use App\Models\Automation;
 use App\Models\Integration;
-use Facade\FlareClient\Http\Response;
 use Google_Client;
 use Google_Service_Calendar;
 use Google_Service_Sheets;
 use Google_Service_Sheets_Sheet;
-use GuzzleHttp\Psr7\Request;
 
 class GoogleService
 {
