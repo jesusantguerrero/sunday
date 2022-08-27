@@ -13,17 +13,13 @@
         "beyondcode/laravel-websockets": "^1.9",
         "doctrine/dbal": "^2.12",
         "freesgen/querify": "dev-master",
-        "fruitcake/laravel-cors": "^2.0",
         "google/apiclient": "2.12.1",
-        "google/cloud-pubsub": "^1.29",
-        "guzzlehttp/guzzle": "^7.0.1",
         "inertiajs/inertia-laravel": "^0.5.4",
         "insane/treasurer": "dev-master",
-        "laravel/cashier": "^12.6",
-        "laravel/framework": "^9.0",
-        "laravel/jetstream": "^2.0",
-        "laravel/sanctum": "^2.6",
-        "laravel/tinker": "^2.0",
+        "laravel/framework": "^9.19",
+        "laravel/jetstream": "^2.11",
+        "laravel/sanctum": "^3.0",
+        "laravel/tinker": "^2.7",
         "php-mime-mail-parser/php-mime-mail-parser": "^7.0",
         "pusher/pusher-php-server": "^7.0",
         "rlanvin/php-rrule": "^2.2",
@@ -48,8 +44,7 @@
         },
         "google/apiclient-services": [
             "Gmail",
-            "Calendar",
-            "Sheets"
+            "Calendar"
         ]
     },
     "autoload": {

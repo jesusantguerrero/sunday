@@ -12,7 +12,6 @@ use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\LinkController;
-use App\Http\Controllers\PlansController;
 use App\Http\Controllers\StandupController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;

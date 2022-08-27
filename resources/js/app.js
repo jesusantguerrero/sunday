@@ -1,12 +1,12 @@
 require("./bootstrap");
 require("vue-multiselect/dist/vue-multiselect.min.css");
 
+import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue';
 import Vue from "vue";
 import { App as InertiaApp, plugin as InertiaPlugin } from "@inertiajs/inertia-vue";
 import ConfirmModalMixin from "./plugins/ConfirmModalMixin";
 import VueGoogleApi from "vue-google-api";
 import route from 'ziggy';
-import { Ziggy } from './ziggy';
 import "./plugins/element-ui";
 
 const config = {
@@ -22,7 +22,6 @@ import PortalVue from "portal-vue";
 import Vuelidate from "vuelidate";
 import fireworks from "./plugins/fireworks";
 window.route = route;
-window.Ziggy = Ziggy;
 Vue.use(Vuelidate);
 Vue.use(InertiaPlugin);
 Vue.use(PortalVue);

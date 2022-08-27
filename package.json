@@ -26,6 +26,7 @@
         "deploy": "git push live-sunday master",
         "serve:dev": "npm run serve:up && npm run serve:install && npm run serve:migrate",
         "setup": "npm run serve:up-prod && npm run serve:install && npm run serve:migrate --fresh && npm run serve:seed",
+        "local:setup": "php artisan migrate --force && php artisan db:seed",
         "serve": "npm run serve:up-prod && npm run serve:install && npm run serve:migrate"
     },
     "devDependencies": {
