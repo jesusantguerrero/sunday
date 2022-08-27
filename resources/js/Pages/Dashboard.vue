@@ -215,8 +215,7 @@
         :is-open="isLinkFormOpen"
         @saved="onLinkSaved"
         @cancel="isLinkFormOpen = false"
-      >
-      </link-form-modal>
+      />
     </div>
   </AppLayout>
 </template>

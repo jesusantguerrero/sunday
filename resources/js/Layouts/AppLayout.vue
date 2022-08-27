@@ -307,7 +307,7 @@
     <!-- Endof confirmation modal -->
 
     <!-- Modal Portal -->
-    <PortalTarget name="modal" multiple />
+    <Portal name="modal" multiple />
   </div>
 </template>
 
