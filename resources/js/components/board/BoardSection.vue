@@ -230,20 +230,8 @@ export default {
                     name: "notes",
                     title: "Notes",
                     component: "NoteView",
-                    icon: "fa fa-border-all"
+                    icon: "far fa-sticky-note"
                 },
-                habitica:{
-                    name: "habitica",
-                    title: "Habitica",
-                    component: "HabiticaView",
-                    icon: "fa fa-border-all"
-                },
-                matrix:{
-                    name: "matrix",
-                    title: "Matrix",
-                    component: "MatrixView",
-                    icon: "fa fa-border-all"
-                }
             },
             itemToDelete: false,
             items: [
