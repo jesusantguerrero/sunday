@@ -232,6 +232,7 @@ import DialogModal from "@/Jetstream/DialogModal.vue";
 import LinkFormModal from "@/components/links/Form.vue";
 import LinkViewer from "@/components/links/Viewer.vue";
 import PrimaryButton from "@/Jetstream/Button.vue";
+import { useFireworks }from "@/composables/useFireworks";
 
 const props = defineProps({
   boards: {
@@ -341,6 +342,7 @@ const inbox = computed(() => {
   return orderBy(inbox, ["priority", "stage", "title"]);
 });
 
+const { fireworks } = useFireworks()
 onMounted(() => {
   if (!props.standup.length && props.todo.length) {
     state.standupSummary = { ...props.todo };

@@ -19,7 +19,6 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "inertiajs/inertia-laravel": "^0.5.4",
         "insane/treasurer": "dev-master",
-        "laravel/cashier": "^12.6",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.3",
         "laravel/sanctum": "^2.8",
