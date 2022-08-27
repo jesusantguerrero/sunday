@@ -50,17 +50,12 @@
                                 <div class="head">
                                     {{ service.name }} {{ service.hash }}
                                 </div>
-                                <div class="tagline">
-                                    {{ service.hash }} {{ service.created_at }}
+                                <div class="tagline text-gray-400">
+                                    Rules:
+                                    <span v-for="automation in service.automations">
+                                        {{ automation.name }}
+                                    </span>
                                 </div>
-                            </div>
-
-                            <div class="automations text-right">
-                                {{ service.automations.length }}
-                            </div>
-
-                            <div class="options text-right">
-                                options
                             </div>
                         </div>
                     </div>
@@ -206,7 +201,7 @@ export default {
                             })
                     })
             });
-        }
+        },
     }
 };
 </script>
