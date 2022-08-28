@@ -53,7 +53,6 @@ const filterIcons = computed(() => {
     return props.visibleFields.reduce((options, field ) => {
         let sortIcon = ''
         const hasSort = props.filters.sort?.includes(field.name)
-        console.log(props.filters.sort, field.name)
         if (hasSort) {
             sortIcon = props.filters.sort?.includes('-') ? 'fas fa-sort-up' : 'fas fa-sort-down'
         }

@@ -38,6 +38,12 @@
                                 {{ service.name }}
                             </p>
                         </div>
+
+                            <div id="g_id_onload"
+         data-client_id="587675303568-jhrj3u7gl2s8e5d47j46v1a3bi9bmits.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse">
+    </div>
+    <div class="g_id_signin" data-type="standard"></div>
                     </div>
 
                     <div class="w-full integrations-form">

@@ -272,7 +272,6 @@ const roadmapTasks = computed(() => {
       task.start = task.created_at.toDate();
       task.end = new Date();
       const matrix = task.matrix || 'backlog';
-      console.log(matrix)
       task.colorClass = state.quadrants[matrix]?.background
       task.diff = differenceInCalendarDays(task.start, task.end)
       return task;

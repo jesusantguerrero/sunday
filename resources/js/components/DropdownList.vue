@@ -40,7 +40,6 @@ export default {
     },
     methods: {
         isDivider(action) {
-            console.log(action)
             return typeof action == 'object';
         }
     },

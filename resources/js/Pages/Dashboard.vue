@@ -33,12 +33,12 @@
                   </template>
                 </multiselect>
               </div>
-              <div class="h-10 bg-purple-700 rounded-lg controls">
+              <div class="h-10 bg-purple-700  rounded-lg">
                 <button
-                  v-for="mode in modes"
+                  v-for="mode in state.modes"
                   :key="mode"
-                  @click="modeSelected = mode"
-                  :class="{ 'bg-purple-400': mode == modeSelected }"
+                  @click="state.modeSelected = mode"
+                  :class="{ 'bg-purple-400': mode == state.modeSelected }"
                   class="h-full px-8 text-white capitalize rounded-lg"
                 >
                   {{ mode }}
@@ -99,12 +99,12 @@
           <span class="ml-2 text-3xl font-bold"> Tools </span>
 
           <div class="mt-5 section-card committed">
-            <div :class="[promodoroColor, 'text-gray-600 font-bold px-0']">
+            <div :class="[state.promodoroColor, 'text-gray-600 font-bold px-0']">
               <promodoro
                 ref="Promodoro"
                 :settings="settings"
                 :tracker.sync="tracker"
-                :v-model:timerColor="promodoroColor"
+                :v-model:timerColor="state.promodoroColor"
                 :tasks="state.todo"
                 @stopped="getTodos"
               />
@@ -158,12 +158,12 @@
         <!-- End of Right Side -->
       </div>
 
-      <dialog-modal :show="isStandupOpen" @close="isStandupOpen = false">
+      <dialog-modal :show="state.isStandupOpen" @close="isStandupOpen = false">
         <template #title> Today's Standup </template>
 
         <template #content>
           <div>
-            <p v-for="task in standupSummary" :key="`task-${task.id}`">
+            <p v-for="task in state.standupSummary" :key="`task-${task.id}`">
               <label class="checkbox-label">
                 <input
                   type="checkbox"
