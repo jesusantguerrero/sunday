@@ -21,6 +21,7 @@
         @vite('resources/js/app.js')
     </head>
     <body class="font-sans antialiased ic-scroller">
+        @routes
         @inertia
     </body>
 </html>

@@ -64,18 +64,30 @@
                     current_password: '',
                     password: '',
                     password_confirmation: '',
-                }, {
-                    bag: 'updatePassword',
                 }),
             }
         },
 
         methods: {
             updatePassword() {
-                this.form.put('/user/password', {
-                    preserveScroll: true
-                }).then(() => {
-                    this.$refs.current_password.focus()
+                const passwordInput = this.$refs.current_password;
+                const passwordConfirmationInput = this.$refs.password_confirmation;
+                const form = this.form;
+                form.put(route('user-password.update'), {
+                    errorBag: "updatePassword",
+                    preserveScroll: true,
+                    onSuccess: () => form.reset(),
+                    onError: () => {
+                        if (form.errors.password) {
+                            passwordConfirmationInput.focus();
+                            form.reset('password', 'password_confirmation');
+                        }
+
+                        if (form.errors.current_password) {
+                            form.reset('current_password');
+                            passwordInput.focus();
+                        }
+                    },
                 })
             },
         },

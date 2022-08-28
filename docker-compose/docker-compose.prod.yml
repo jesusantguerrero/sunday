@@ -6,13 +6,13 @@ services:
     restart: unless-stopped
     ports:
       - 80:80
-      - 443:443
+      # - 443:443
     volumes:
       - ./:/var/www
-      - ./docker-compose/nginx:/etc/nginx/conf.d/
-      - ./docker-compose/nginx:/etc/nginx/certs:ro
+      - ./nginx:/etc/nginx/conf.d/
+      - ./nginx:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./docker-compose/nginx/vhosts:/etc/nginx/vhost.d
+      - ./nginx/vhosts:/etc/nginx/vhost.d
       - ./:/usr/share/nginx/html
     networks:
       - sunday
@@ -22,7 +22,7 @@ services:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: ssl-companion
     volumes:
-      - ./docker-compose/nginx:/etc/nginx/certs:rw
+      - ./nginx:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
     volumes_from:
       - sunday-proxy
@@ -36,10 +36,10 @@ services:
       - 8080:80
     volumes:
       - ./:/var/www
-      - ./docker-compose/nginx/vhosts:/etc/nginx/conf.d/
+      - ./nginx/vhosts:/etc/nginx/conf.d/
       - ./:/usr/share/nginx/html
     environment:
-      - VIRTUAL_PORT=80
+      - VIRTUAL_PORT=8080
       - VIRTUAL_HOST=${VIRTUAL_APP_HOST}
       - LETSENCRYPT_HOST=${VIRTUAL_APP_HOST}
       - LETSENCRYPT_EMAIL=jesusant.guerrero@gmail.com
@@ -60,7 +60,7 @@ services:
       - db
     volumes:
       - ./:/var/www
-      - ./docker-compose/web/timezone:/etc/timezone
+      - ./web/timezone:/etc/timezone
       - sunday_db:/var/lib/mysql
     networks:
       - sunday
@@ -79,9 +79,9 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
-      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+      - ./mysql:/docker-entrypoint-initdb.d
       - sunday_db:/var/lib/mysql
-      - ./docker-compose/mysql:/home/root/cache/
+      - ./mysql:/home/root/cache/
     networks:
       - sunday
   redis:
@@ -89,14 +89,14 @@ services:
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
     volumes:
-      - ./docker-compose/redis:/data
+      - ./redis:/data
     networks:
       - sunday
   cron:
     build:
       context: .
       dockerfile: cron.dockerfile
-    container_name: cron
+    container_name: sunday_cron
     volumes:
       - ./:/var/www
     working_dir: /var/www
@@ -115,13 +115,6 @@ services:
       - web
     volumes:
       - ./:/var/www
-    networks:
-      - sunday
-  mailhog:
-    image: 'mailhog/mailhog:latest'
-    ports:
-      - 1025:1025
-      - 8025:8025
     networks:
       - sunday
 networks:
