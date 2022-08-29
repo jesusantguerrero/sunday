@@ -92,7 +92,7 @@ const time = { minutes: 0, seconds: 10 };
 import Tracker from "../timeTracker/tracker";
 import Duration from "luxon/src/duration";
 import PromodoroConfigurationModal from "./Configuration.vue";
-import promodoroMixin from "./promodoro";
+import promodoroMixin, { MODES } from "./promodoro";
 
 export default {
     mixins: [promodoroMixin],
@@ -194,9 +194,9 @@ export default {
         },
 
         promodoroColor() {
-            return this.modeSelected && this.modes[this.modeSelected].color
-                ? this.modes[this.modeSelected].color
-                : "red";
+            return this.modeSelected && MODES[this.modeSelected].color
+                ? MODES[this.modeSelected].color
+                : "bg-red-500";
         },
 
         rawTime() {

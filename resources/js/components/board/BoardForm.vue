@@ -1,5 +1,5 @@
 <template>
-    <dialog-modal :show="isOpen" @close="$emit('closed')">
+    <DialogModal :show="isOpen" @close="$emit('closed')">
         <template #title>
             Add Board
         </template>
@@ -43,71 +43,74 @@
         </template>
 
         <template #footer>
-            <primary-button @click.native="$emit('cancel')">
+            <PrimaryButton @click="$emit('cancel')">
                 Cancel
-            </primary-button>
-            <primary-button @click.native="save()">
+            </PrimaryButton>
+            <PrimaryButton @click="save()">
                 Save Board
-            </primary-button>
+            </PrimaryButton>
         </template>
-    </dialog-modal>
+    </DialogModal>
 </template>
 
-<script>
-import DialogModal from "../../Jetstream/DialogModal.vue"
-import PrimaryButton from "../../Jetstream/Button.vue"
+<script setup>
+import { inject, computed, watch } from "vue";
+import { useForm } from "@inertiajs/inertia-vue3";
+import DialogModal from "@/Jetstream/DialogModal.vue"
+import PrimaryButton from "@/Jetstream/Button.vue"
 
-export default {
-    components: {
-        DialogModal,
-        PrimaryButton
+const props = defineProps({
+    isOpen: {
+        type: Boolean
     },
-    props: {
-        isOpen: {
-            type: Boolean
-        },
-        recordData: {
-            type: Object
-        }
-    },
-    inject: ['boardTypes', 'boardTemplates'],
-    data() {
-        return {
-            formData: {
+    recordData: {
+        type: Object
+    }
+});
 
-            }
+const emit = defineEmits(['save']);
+
+const boardTypes = inject('boardTypes', []);
+const boardTemplates = inject('boardTemplates', []);
+
+const formData = useForm()
+
+watch(() => props.recordData,
+    (recordData) => {
+        if (recordData) {
+            Object.keys(props.recordData).forEach((field) => {
+                formData[field] = props.recordData[field]
+            })
+        } else {
+            formData.reset()
         }
-    },
-    watch: {
-        recordData() {
-            this.formData = this.recordData
-        }
-    },
-    computed: {
-        isBoardType() {
-            return this.formData.BoardType && this.formData.BoardType.name == 'board'
-        }
-    },
-    methods: {
-        save() {
-            const method = this.formData.id ? "PUT" : "POST";
-            const param = this.formData.id ? `/${this.formData.id}` : "";
-            const formData = {
-                name: this.formData.name,
-                board_type_id: this.formData?.BoardType?.id,
-                board_template_id: this.formData?.Template?.id,
-                color: this.formData?.color
-            }
-            if (formData.name) {
-                axios({
-                    url: "/api/boards",
-                    method: "post",
-                    data: formData
-                }).then(() => {
-                    this.$emit('saved');
-                });
-            }
-        },
+    }, {
+        deep: true,
+        immediate: true
+    }
+);
+
+const isBoardType = computed(() => {
+    return formData.BoardType && formData.BoardType.name == 'board'
+})
+
+function save() {
+    const method = formData.id ? "PUT" : "POST";
+    const param = formData.id ? `/${formData.id}` : "";
+    const form = {
+        name: formData.name,
+        board_type_id: formData?.BoardType?.id,
+        board_template_id: formData?.Template?.id,
+        color: formData?.color
+    }
+    if (form.name) {
+        axios({
+            url: "/api/boards",
+            method: "post",
+            data: form
+        }).then(() => {
+            emit('saved');
+        });
     }
 }
 </script>

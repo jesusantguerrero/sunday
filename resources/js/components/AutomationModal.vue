@@ -58,10 +58,9 @@
                         ref="input"
                         :show-labels="false"
                         label="name"
-                        :options="automationRecipies"
+                        :options="automationRecipes"
                         class="w-full"
-                    >
-                    </multiselect>
+                    />
                 </div>
 
                 <div class="form-group" v-if="boards">
@@ -191,7 +190,7 @@ export default {
             },
             newCheck: {},
             services: [],
-            recipies: [],
+            recipes: [],
             integrations: [],
             calendarList: [],
             emailConditions: [
@@ -221,8 +220,7 @@ export default {
     created() {
         this.getServices();
         this.getIntegrations();
-        this.getRecipies();
-        this.getCalendarList();
+        this.getRecipes();
     },
     watch: {
         recordData() {
@@ -270,9 +268,9 @@ export default {
             };
             return fields[this.type] || [];
         },
-        automationRecipies() {
+        automationRecipes() {
             return this.formData.service
-                ? this.recipies.filter(
+                ? this.recipes.filter(
                       recipe =>
                           recipe.automation_service_id ==
                           this.formData.service.id
@@ -401,11 +399,11 @@ export default {
             });
         },
 
-        getRecipies() {
+        getRecipes() {
             axios({
-                url: "/api/automation-recipies"
+                url: "/api/automation-recipes"
             }).then(({ data }) => {
-                this.recipies = data;
+                this.recipes = data;
             });
         },
 

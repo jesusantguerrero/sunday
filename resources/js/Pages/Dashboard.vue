@@ -99,13 +99,13 @@
           <span class="ml-2 text-3xl font-bold"> Tools </span>
 
           <div class="mt-5 section-card committed">
-            <div :class="[state.promodoroColor, 'text-gray-600 font-bold px-0']">
-              <promodoro
+            <div :class="[state.timerColor, 'text-gray-600 font-bold px-0']">
+              <PomodoroTimer
                 ref="Promodoro"
                 :settings="settings"
-                :tracker.sync="tracker"
-                :v-model:timerColor="state.promodoroColor"
                 :tasks="state.todo"
+                v-model:tracker="tracker"
+                v-model:timerColor="state.timerColor"
                 @stopped="getTodos"
               />
             </div>
@@ -116,7 +116,7 @@
               <span> Links </span>
               <button
                 class="text-white bg-transparent"
-                @click="isLinkFormOpen = !isLinkFormOpen"
+                @click="state.isLinkFormOpen = !state.isLinkFormOpen"
               >
                 <i class="fa fa-plus"></i>
               </button>
@@ -186,7 +186,7 @@
         </template>
       </dialog-modal>
 
-      <dialog-modal :show="showWelcomeScreen" @close="hideWelcome">
+      <dialog-modal :show="state.showWelcomeScreen" @close="hideWelcome">
         <template #content>
           <div class="prose prose-xl text-center">
             <div>
@@ -211,23 +211,25 @@
       </dialog-modal>
 
       <link-form-modal
-        :record-data="linkData"
-        :is-open="isLinkFormOpen"
+        :record-data="state.linkData"
+        :is-open="state.isLinkFormOpen"
         @saved="onLinkSaved"
-        @cancel="isLinkFormOpen = false"
+        @cancel="state.isLinkFormOpen = false"
       />
     </div>
   </AppLayout>
 </template>
 
 <script setup>
-import { reactive, watch, onMounted, computed } from "vue";
+import { reactive, watch, onMounted, computed, ref } from "vue";
 import { subDays, toDate, format } from "date-fns";
 import { uniq, orderBy } from "lodash";
+import { Inertia } from "@inertiajs/inertia";
+
 import AppLayout from "@/Layouts/AppLayout.vue";
 import BoardItemContainer from "@/components/board/ItemContainer.vue";
 import ScheduleControls from "@/components/schedule/controls.vue";
-import Promodoro from "@/components/promodoro/index.vue";
+import PomodoroTimer from "@/components/promodoro/index.vue";
 import DialogModal from "@/Jetstream/DialogModal.vue";
 import LinkFormModal from "@/components/links/Form.vue";
 import LinkViewer from "@/components/links/Viewer.vue";
@@ -303,7 +305,7 @@ const state = reactive({
   modes: ["inbox", "daily"],
   selectedStage: "",
   modeSelected: "inbox",
-  promodoroColor: "red",
+  timerColor: "bg-red-500",
   standupSummary: [],
   localCommitDate: new Date(),
   isLoading: false,
@@ -435,31 +437,32 @@ function closeLinkForm() {
 }
 
 function openLinkForm(formData) {
-  this.linkData = formData;
-  this.isLinkFormOpen = true;
+  state.linkData = formData;
+  state.isLinkFormOpen = true;
 }
 
 function onLinkSaved() {
-  this.closeLinkForm();
-  this.$inertia.reload({
+  closeLinkForm();
+  Inertia.reload({
     preserveScroll: true,
   });
 }
 
+const pomodoroTimer = ref()
 function setTaskToTimer(task) {
-  this.$refs.Promodoro.setTask(task);
+  promodoroTimer.value?.setTask(task);
 }
 
 function getTodos() {
-  this.tracker = null;
+  state.tracker = null;
   axios("/api/items/todos").then(({ data }) => {
-    this.todo = data;
+    state.todo = data;
   });
 }
 
 function deleteLocalItem(item, listName) {
-  const taskIndex = this[listName].findIndex((task) => task.id == item.id);
-  this[listName].splice(taskIndex, 1);
+  const taskIndex = state[listName].findIndex((task) => task.id == item.id);
+  state[listName].splice(taskIndex, 1);
 }
 
 function runAgendaAutomations() {
@@ -475,7 +478,7 @@ function runAgendaAutomations() {
           title: "Automation Completed",
           message: "Updated",
         });
-        this.$inertia.reload({ preserveScroll: true });
+        Inertia.reload({ preserveScroll: true });
       });
     });
   });
@@ -489,8 +492,8 @@ function hideWelcome() {
       hide_welcome_screen: true,
     },
   }).then(({ data: settings }) => {
-    this.showWelcomeScreen = false;
-    this.$inertia.reload({ preserveScroll: true });
+    state.showWelcomeScreen = false;
+    Inertia.reload({ preserveScroll: true });
   });
 }
 

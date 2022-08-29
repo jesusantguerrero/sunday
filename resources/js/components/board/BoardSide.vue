@@ -63,11 +63,11 @@
                 </button>
             </div>
         </div>
-        <board-form-modal
-            :record-data="boardData"
-            :is-open="isBoardFormOpen"
+        <BoardFormModal
+            :record-data="state.boardData"
+            :is-open="state.isBoardFormOpen"
+            @cancel="state.isBoardFormOpen=false"
             @saved="addBoard"
-            @cancel="isBoardFormOpen=false"
         />
     </div>
 </template>
@@ -78,7 +78,7 @@ import BoardSideItemLink from "./BoardSideITemLink.vue";
 import BoardFormModal from "./BoardForm.vue"
 import SearchBar from "../SearchBar.vue";
 import WorkspaceSelector from "../workspace/WorkspaceSelector.vue";
-import { computed, reactive } from "vue";
+import { computed, reactive, ref, nextTick } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/inertia-vue3";
 
@@ -120,44 +120,46 @@ const filteredBoards = computed(() => {
     return props.boards.filter(board => board.name.toLowerCase().includes(state.search.toLowerCase()));
 })
 
-
 const arrowIcon = computed(() => {
     return props.isExpanded ?  'fa-chevron-left' : 'fa-chevron-right';
 })
+
 const sectionName = computed(() => {
     return isHeaderMenu.value ? isHeaderMenu.value.label : "My Boards";
 })
 
 function isPath(url = "", includes) {
-        const link = url.replace(window.location.origin, "");
-        if (includes) {
-            const root = link.split("/");
-            const isPath = window.location.pathname.includes(root[1]);
-            return isPath
-        }
-        return link == window.location.pathname;
+    const link = url.replace(window.location.origin, "");
+    if (includes) {
+        const root = link.split("/");
+        const isPath = window.location.pathname.includes(root[1]);
+        return isPath
+    }
+    return link == window.location.pathname;
 }
+
 function openBoardForm(board = {}) {
-        state.isBoardFormOpen = true;
-        state.boardData = board;
+    state.isBoardFormOpen = true;
+    state.boardData = board;
 }
 
 function addBoard(board) {
-        this.isBoardFormOpen = false;
-        this.$inertia.reload();
+    state.isBoardFormOpen = false;
+    Inertia.reload();
 }
 
+const inputRef = ref()
 function showAddForm() {
-        this.showAdd = true;
-        this.$nextTick(() => {
-            this.$refs.input.focus();
-        });
+    state.showAdd = true;
+    nextTick(() => {
+        input.value.focus();
+    });
 }
 
 function handleCommand(board, command) {
         switch (command) {
             case 'delete':
-                this.confirmDelete(board)
+                confirmDelete(board)
                 break
             default:
             break;
@@ -165,35 +167,35 @@ function handleCommand(board, command) {
 }
 
 function confirmDelete(board) {
-        this.showConfirm({
-            title: `Delete "${board.name}" board`,
-            content: "Are you sure you want to delete this board?",
-            confirmationButtonText: "Yes, delete",
-            confirm: () => {
-                this.deleteBoard(board.id)
-            }
-        })
+    showConfirm({
+        title: `Delete "${board.name}" board`,
+        content: "Are you sure you want to delete this board?",
+        confirmationButtonText: "Yes, delete",
+        confirm: () => {
+            deleteBoard(board.id)
+        }
+    })
 }
 
 function deleteBoard(id) {
-        axios({
-            url: `/api/boards/${id}`,
-            method: "delete"
-        }).then(() => {
-            const index = props.boards.findIndex(board => board.id == id);
-            const currentBoard = index >= 0 ? props.boards[index] : null;
+    axios({
+        url: `/api/boards/${id}`,
+        method: "delete"
+    }).then(() => {
+        const index = props.boards.findIndex(board => board.id == id);
+        const currentBoard = index >= 0 ? props.boards[index] : null;
 
-            if (currentBoard && isPath(currentBoard.link)) {
-                if (index != 0) {
-                    const previousBoard = props.boards[index - 1];
-                    return Inertia.visit(previousBoard.link)
-                }
-                return Inertia.visit('dashboard')
+        if (currentBoard && isPath(currentBoard.link)) {
+            if (index != 0) {
+                const previousBoard = props.boards[index - 1];
+                return Inertia.visit(previousBoard.link)
             }
-                Inertia.reload();
-        }).catch((err) => {
-            console.log(err)
-        });
+            return Inertia.visit('dashboard')
+        }
+            Inertia.reload();
+    }).catch((err) => {
+        console.log(err)
+    });
 }
 </script>
 

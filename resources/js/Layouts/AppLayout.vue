@@ -280,7 +280,7 @@
           <app-side :menu="menu" :header-menu="headerMenu" />
           <!-- Left Side -->
           <board-side
-            :boards="boards"
+            :boards="pageProps.boards"
             :header-menu="headerMenu"
             :is-expanded="state.isMenuExpanded"
             class="h-full mb-10"
@@ -313,7 +313,7 @@
 
 <script setup>
 import Menus from "./menus";
-import { computed, onMounted, reactive } from "vue";
+import { computed, onMounted, provide, reactive, toRefs } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import JetDropdown from "./../Jetstream/Dropdown.vue";
 import JetDropdownLink from "./../Jetstream/DropdownLink.vue";
@@ -321,15 +321,7 @@ import JetResponsiveNavLink from "./../Jetstream/ResponsiveNavLink.vue";
 import ConfirmationModal from "../components/shared/ConfirmationModal.vue";
 import BoardSide from "../components/board/BoardSide.vue";
 import AppSide from "./AppSide.vue";
-
-defineProps({
-  boards: {
-    type: Array,
-    default() {
-      return [];
-    },
-  },
-});
+import { usePage } from "@inertiajs/inertia-vue3";
 
 const state = reactive({
   showingNavigationDropdown: false,
@@ -400,6 +392,13 @@ const path = computed(() => {
 const toggleExpanded = () => {
     state.isMenuExpanded = !state.isMenuExpanded
 }
+
+
+const pageProps = usePage().props;
+const { boardTypes, boardTemplates, boards } = toRefs(pageProps.value)
+
+provide('boardTypes', boardTypes)
+provide('boardTemplates', boardTemplates)
 </script>
 
 <style lang="scss">
