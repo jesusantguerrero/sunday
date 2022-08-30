@@ -3,7 +3,11 @@
         <div class="">
                 <div class="w-12/12 mx-2 pt-12">
                     <div class="overflow-hidden">
-                        <board-section :board="board" :users="users" :automations="automations"></board-section>
+                        <board-section 
+                            :board="board" 
+                            :users="users" 
+                            :automations="automations"
+                        />
                     </div>
                 </div>
             </div>

@@ -16,7 +16,7 @@ class Stage extends Model
     }
 
     public function items() {
-        return $this->hasMany('App\Models\Item', 'stage_id', 'id')->orderBy('order');
+        return $this->hasMany('App\Models\Item', 'stage_id', 'id');
     }
 
     public function deleteRelated() {
