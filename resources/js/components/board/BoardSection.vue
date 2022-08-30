@@ -117,8 +117,7 @@
                         @item-deleted="confirmDeleteItem"
                         @stage-updated="addStage"
                         class="mt-10"
-                    >
-                    </list-view>
+                    />
                 </transition-group>
             </draggable>
 
