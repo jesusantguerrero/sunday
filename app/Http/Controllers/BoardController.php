@@ -85,27 +85,28 @@ class BoardController extends Controller
             return redirect('dashboard');
         }
 
+        $boardData = [
+            'id' => $board->id,
+            'name' => $board->name,
+            'fields' => $board->fields,
+            'labels' => $board->labels,
+            'stages' => $board->stages->map(function ($stage) use($request) {
+                return [
+                    'id' => $stage->id,
+                    'board_id' => $stage->board_id,
+                    'name' => $stage->name,
+                    'items' => $stage->items()->filter($request->only('search', 'done', 'sort'))->get()
+                ];
+        })];
+
         return Inertia::render('Board', [
-                'filters' => $request->all('search', 'done'),
+                'filters' => $request->all('search', 'done', 'sort'),
                 'automations' => AutomationResource::collection(Automation::where([
                     'team_id' => $user->current_team_id,
                     'user_id' => $user->id,
                     'board_id' => $id
                 ])->get()),
-                'board' => [
-                    'id' => $board->id,
-                    'name' => $board->name,
-                    'fields' => $board->fields,
-                    'labels' => $board->labels,
-                    'stages' => $board->stages->map(function ($stage) use($request) {
-                        return [
-                            'id' => $stage->id,
-                            'board_id' => $stage->board_id,
-                            'name' => $stage->name,
-                            'items' => $stage->items()->filter($request->only('search', 'done'))->get()
-                        ];
-                    })
-                ],
+                'board' => $boardData,
                 'boards' => Board::where([
                     'team_id' => $user->current_team_id,
                     'user_id' => $user->id,

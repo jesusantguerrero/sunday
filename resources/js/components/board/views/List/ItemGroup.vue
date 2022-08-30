@@ -12,62 +12,56 @@
                             <i :class="[ isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
                         </span>
 
-                        <div class="item-group__selector">
-                            <input type="checkbox" v-model="stage.selected"  @change="toggleSelection()"/>
-                        </div>
-
-                        <span class="font-bold handle" v-if="!isEditMode">
-                            {{ stage.title || stage.name }}
-                            {{ isSelectMode ? "(Selection Mode)" : "" }}
-                        </span>
-
-                        <div v-else>
-                            <input
-                                :value="stage.name"
-                                type="text"
-                                ref="input"
-                                @keypress.enter="saveStage(stage)"
-                                @blur="saveStage(stage)"
-                            />
-                        </div>
-
-                        <span v-if="!isExpanded">
-                            ({{ items.length }} items)
-                        </span>
-                        <i
-                            class="fa fa-edit mx-2"
-                            @click="toggleEditMode(true)"
-                        ></i>
-                        <el-dropdown
-                            trigger="click"
-                            @command="handleBoardCommands"
-                            @click.native.prevent
-                        >
-                            <div
-                                class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center"
-                            >
-                                <div class="flex items-center justify-center">
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </div>
+                        <div class="rounded-t-lg flex items-center py-2 bg-gray-200 px-4 border-2 group cursor-pointer transition ease-out">
+                            <span class="font-bold handle" v-if="!isEditMode">
+                                {{ stage.title || stage.name }}
+                                {{ isSelectMode ? "(Selection Mode)" : "" }}
+                            </span>
+                            <div v-else>
+                                <input
+                                    :value="stage.name"
+                                    type="text"
+                                    ref="input"
+                                    @keypress.enter="saveStage(stage)"
+                                    @blur="saveStage(stage)"
+                                />
                             </div>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item
-                                    command="edit"
-                                    icon="fa fa-edit"
-                                    >Edit</el-dropdown-item
+                            <div class="hidden group-hover:flex items-center justify-center">
+                                <i
+                                    class="fa fa-edit mx-2"
+                                    title="Rename"
+                                    @click="toggleEditMode(true)"
+                                />
+                                <el-dropdown
+                                    trigger="click"
+                                    @command="handleBoardCommands($event, 'title')"
+                                    @click.native.prevent
                                 >
-                                <el-dropdown-item
-                                    command="delete"
-                                    icon="fa fa-trash"
-                                    >Delete</el-dropdown-item
-                                >
-                                <el-dropdown-item
-                                    command="selection"
-                                    icon="fa fa-check"
-                                    >Select Mode</el-dropdown-item
-                                >
-                            </el-dropdown-menu>
-                        </el-dropdown>
+                                    <div
+                                        class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center"
+                                    >
+                                        <div class="flex items-center justify-center">
+                                            <i class="fa fa-ellipsis-v"></i>
+                                        </div>
+                                    </div>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item v-for="(option, command) in boardOptions"
+                                            :command="command"
+                                            :key="command"
+                                            :icon="option.icon"
+                                        >
+                                            {{ option.label }}
+                                        </el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            
+                            </div>
+                        </div>
+
+                        <div class="mx-auto px-4 py-2 hover:bg-gray-200 cursor-pointer" @click="handleBoardCommands('sort', 'title')">
+                            {{ items.length }} Tasks
+                            <field-icon field="title" :filters="filters" />
+                        </div>
                     </div>
                 </div>
                 <div class="false-header"></div>
@@ -202,13 +196,38 @@ import ItemGroupCell from "../../ItemGroupCell";
 import Draggable from "vuedraggable";
 import FieldPopover from "../../FieldPopover.vue";
 import ItemGroupTitle from './ItemGroupTitle.vue';
+import FieldIcon from "./FieldIcon.vue";
 
+const boardOptions = {
+    edit: {
+        icon: 'fa fa-edit',
+        label: 'Edit'
+    }, 
+    delete: {
+        icon: "fa fa-trash",
+        label: "Delete"
+    },
+    selection: {
+        icon: "fa fa-check",
+        label: "Select Mode"
+    },
+    sort: {
+        label: "Sort by task name"
+    },
+    clearSort: {
+        label: "Clear sort"
+    },
+    // saveOrder: {
+    //     label: "Save this order"
+    // }
+}
 export default {
     components: {
         ItemGroupCell,
         Draggable,
         FieldPopover,
-        ItemGroupTitle
+        ItemGroupTitle,
+        FieldIcon
     },
     props: {
         createMode: {
@@ -231,6 +250,12 @@ export default {
             default() {
                 return [];
             }
+        },
+        filters: {
+            type: Object,
+            default() {
+                return {}
+            }
         }
     },
     data() {
@@ -241,7 +266,8 @@ export default {
             isEditMode: false,
             isExpanded: true,
             isItemModalOpen: false,
-            isLoaded: false
+            isLoaded: false,
+            boardOptions
         };
     },
     watch: {
@@ -354,7 +380,7 @@ export default {
             this.$inertia.reload({ preserveScroll: true });
         },
 
-        handleBoardCommands(command) {
+        handleBoardCommands(command, field) {
             switch (command) {
                 case "delete":
                     this.$emit("board-deleted", item);
@@ -366,6 +392,7 @@ export default {
                     this.isSelectMode = !this.isSelectMode;
                     break;
                 default:
+                    this.$emit(command, field)
                     break;
             }
         },
@@ -387,7 +414,7 @@ export default {
             this.stage.items.forEach(item => {
                 this.$set(item, 'selected', this.stage.selected)
             })
-        }
+        },
     }
 };
 </script>
