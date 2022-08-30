@@ -12,7 +12,7 @@
                             <i :class="[ isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
                         </span>
 
-                        <div class="rounded-t-lg bg-gray-200 px-4 border-2 group cursor-pointer transition">
+                        <div class="rounded-t-lg flex items-center py-2 bg-gray-200 px-4 border-2 group cursor-pointer transition ease-out">
                             <span class="font-bold handle" v-if="!isEditMode">
                                 {{ stage.title || stage.name }}
                                 {{ isSelectMode ? "(Selection Mode)" : "" }}
@@ -26,7 +26,7 @@
                                     @blur="saveStage(stage)"
                                 />
                             </div>
-                            <div class="hidden group-hover:block items-center justify-center">
+                            <div class="hidden group-hover:flex items-center justify-center">
                                 <i
                                     class="fa fa-edit mx-2"
                                     title="Rename"
@@ -58,8 +58,9 @@
                             </div>
                         </div>
 
-                        <div class="mx-auto px-4 hover:bg-gray-200 cursor-pointer">
+                        <div class="mx-auto px-4 py-2 hover:bg-gray-200 cursor-pointer" @click="handleBoardCommands('sort', 'title')">
                             {{ items.length }} Tasks
+                            <field-icon field="title" :filters="filters" />
                         </div>
                     </div>
                 </div>
@@ -195,6 +196,7 @@ import ItemGroupCell from "../../ItemGroupCell";
 import Draggable from "vuedraggable";
 import FieldPopover from "../../FieldPopover.vue";
 import ItemGroupTitle from './ItemGroupTitle.vue';
+import FieldIcon from "./FieldIcon.vue";
 
 const boardOptions = {
     edit: {
@@ -224,7 +226,8 @@ export default {
         ItemGroupCell,
         Draggable,
         FieldPopover,
-        ItemGroupTitle
+        ItemGroupTitle,
+        FieldIcon
     },
     props: {
         createMode: {
@@ -412,15 +415,6 @@ export default {
                 this.$set(item, 'selected', this.stage.selected)
             })
         },
-
-        getSortIcons(fieldName) {
-            let sortIcon = ''
-            const hasSort = this.filters.sort?.includes(fieldName)
-            if (hasSort) {
-                sortIcon = props.filters.sort?.includes('-') ? 'fas fa-sort-up' : 'fas fa-sort-down'
-            }
-            return sortIcon
-        }
     }
 };
 </script>

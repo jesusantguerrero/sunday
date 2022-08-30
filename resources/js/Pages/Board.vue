@@ -7,6 +7,7 @@
                             :board="board" 
                             :users="users" 
                             :automations="automations"
+                            :filters="filters"
                         />
                     </div>
                 </div>
@@ -46,8 +47,14 @@
             },
             users: {
                 type: Array,
-                refault() {
+                default() {
                     return []
+                }
+            },
+            filters: {
+                type: Object,
+                default() {
+                    return {}
                 }
             }
         }

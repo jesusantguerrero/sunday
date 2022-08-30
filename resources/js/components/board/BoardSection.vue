@@ -109,8 +109,9 @@
                         :board="board"
                         :items="stage.items"
                         :create-mode="createMode"
+                        :filters="filters"
                         @sort="sort"
-                        @clear-sort="clearSort"
+                        @clearSort="clearSort"
                         @saved="addItem"
                         @open-item="openItem"
                         @item-deleted="confirmDeleteItem"
@@ -171,7 +172,7 @@ import Draggable from "vuedraggable";
 import { throttle } from "lodash-es";
 
 export default {
-    name: "Board",
+    name: "BoardSection",
     components: {
         ListView,
         KanbanView,
@@ -204,11 +205,7 @@ export default {
         filters: {
             type: Object,
             default() {
-                return {
-                    search: '',
-                    done: '',
-                    sort: ''
-                }
+                return {}
             }
         }
     },

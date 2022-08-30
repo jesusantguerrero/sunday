@@ -100,7 +100,7 @@ class BoardController extends Controller
         })];
 
         return Inertia::render('Board', [
-                'filters' => $request->all('search', 'done'),
+                'filters' => $request->all('search', 'done', 'sort'),
                 'automations' => AutomationResource::collection(Automation::where([
                     'team_id' => $user->current_team_id,
                     'user_id' => $user->id,
