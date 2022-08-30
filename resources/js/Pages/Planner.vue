@@ -246,10 +246,6 @@ export default {
         @apply p-4;
         min-height: 5rem;
     }
-
-    .body.p-0 {
-        @apply p-0;
-    }
 }
 
 button {

@@ -2,9 +2,8 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
     purge: {
-        mode: 'layers',
         options: {
-            whitelist: [
+            safelist: [
                 'bg-red-400',
                 'bg-green-400',
                 'bg-yellow-400',
@@ -22,8 +21,8 @@ module.exports = {
                 'bg-purple-300',
             ]
         },
-        content: ['./storage/framework/views/*.php', './resources/views/**/*.blade.php', './resources/js/**/*.vue']
     },
+    content: ['./storage/framework/views/*.php', './resources/views/**/*.blade.php', './resources/js/**/*.vue'],
     theme: {
         extend: {
             fontFamily: {
@@ -36,5 +35,5 @@ module.exports = {
         opacity: ['responsive', 'hover', 'focus', 'disabled'],
     },
 
-    plugins: [require('@tailwindcss/ui'), require('@tailwindcss/typography')],
+    plugins: [require('@tailwindcss/typography')],
 };

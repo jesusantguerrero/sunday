@@ -216,7 +216,7 @@ export default {
     &--error {
         @apply text-red-400;
         input {
-            @apply shadow-xs border-2 border-red-300;
+            @apply shadow-md border-2 border-red-300;
         }
     }
 }
