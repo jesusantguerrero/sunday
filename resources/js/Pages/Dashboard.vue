@@ -380,10 +380,10 @@ function completeDay() {
     await updateItem(item);
   });
 
-  this.updateDaily(now);
-  this.isStandupOpen = false;
-  this.isLoading = false;
-  this.$inertia.reload({ preserveScroll: true, preserveState: true });
+    updateDaily(now);
+    state.isStandupOpen = false;
+    state.isLoading = false;
+    Inertia.reload({ preserveScroll: true, preserveState: true });
 }
 
 function getCommitsByDate() {

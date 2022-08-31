@@ -18,11 +18,11 @@
     <div class="flex items-center actions-container">
         <input
             type="checkbox"
-            @change="updateTask(task)"
+            v-model="task.done"
             name=""
             class="checkbox-done"
             :id="task.id"
-            v-model="task.done"
+            @change="updateTask(task)"
         />
         <el-tooltip class="item" effect="dark" :content="task.priority || 'none'" placement="left">
             <div class="inline-block ml-2 mr-4 priority-level">

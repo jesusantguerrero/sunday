@@ -13,7 +13,7 @@
         "beyondcode/laravel-websockets": "^1.9",
         "doctrine/dbal": "^2.12",
         "freesgen/querify": "dev-master",
-        "google/apiclient": "2.12.1",
+        "google/apiclient": "2.12.6",
         "inertiajs/inertia-laravel": "^0.5.4",
         "insane/treasurer": "dev-master",
         "laravel/framework": "^9.19",

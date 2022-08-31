@@ -13,6 +13,7 @@
                     <multiselect
                         v-model="formData.service"
                         ref="input"
+                        label="name"
                         :show-labels="false"
                         :options="services"
                         class="w-full"
@@ -71,6 +72,7 @@
                         :show-labels="false"
                         :allow-empty="false"
                         placeholder="Select board"
+                        label="name"
                         :options="boards"
                         class="w-full"
                         @input="getBoardData"
@@ -103,6 +105,7 @@
                         :show-labels="false"
                         :allow-empty="false"
                         placeholder="Select board"
+                        label="name"
                         :options="formData.board.stages"
                         class="w-full"
                     >

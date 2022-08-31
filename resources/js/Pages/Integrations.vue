@@ -31,19 +31,14 @@
                             class="m-2 app-service__integration"
                             v-for="service in services"
                             @click="handleCommand(service)"
+                            :ref="service.name"
                             :key="service.id"
                         >
-                            <img :src="service.logo" alt="" srcset="" width="50px" height="50px">
+                            <img :src="service.logo" alt="" :style="{width: '50px', height: '50px'}">
                             <p class="mt-2 font-bold">
                                 {{ service.name }}
                             </p>
                         </div>
-
-                            <div id="g_id_onload"
-         data-client_id="587675303568-jhrj3u7gl2s8e5d47j46v1a3bi9bmits.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse">
-    </div>
-    <div class="g_id_signin" data-type="standard"></div>
                     </div>
 
                     <div class="w-full integrations-form">
@@ -51,6 +46,7 @@
                             class="grid grid-cols-3 px-5 py-3 my-2 font-bold text-gray-500 bg-white cursor-pointer app-service__item"
                             v-for="service in integrations"
                             :key="service.id"
+                            ref="service.name"
                         >
                             <div class="left">
                                 <div class="head">
@@ -81,8 +77,7 @@
                 type="event"
                 :record-data="openedAutomation"
                 :is-open="isAutomationModalOpen"
-            >
-            </automation-modal>
+            />
         </div>
     </app-layout>
 </template>
@@ -90,6 +85,8 @@
 <script>
 import AppLayout from "./../Layouts/AppLayout.vue";
 import AutomationModal from "../components/AutomationModal.vue";
+import jwtDecode from "jwt-decode";
+import { createElementBlock } from '@vue/runtime-core';
 
 export default {
     name: "Integrations",
@@ -165,58 +162,23 @@ export default {
             }
         },
 
-        async google(scopeName, service) {
-            gapi.load("auth2", () => {
-               try {
-                   gapi.auth2
-                       .init({
-                           apiKey: import.meta.env.VITE_GOOGLE_APP_KEY,
-                           clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-                           accessType: "offline",
-                           scope: `profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/spreadsheets.readonly`,
-                           discoveryDocs: [
-                               "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
-                               "https://sheets.googleapis.com/discovery/rest?version=v4"
-                           ]
-                       })
-                       .then(async auth => {
-                           const authInstance = gapi.auth2.getAuthInstance();
-                           const user = authInstance.currentUser.get();
+        async google() {
+            const service = this.services.find(service => service.name = "Google");
+            const credentials = {
+                service_id: service.id,
+                service_name: service.name,
+            };
 
-                           if (!user.getAuthResponse().session_state) {
-                               await authInstance.signIn();
-                           }
-
-                           const profile = user.getBasicProfile();
-
-                           await authInstance
-                               .grantOfflineAccess({
-                                   authuser: user.getAuthResponse().session_state.extraQueryParams.authuser
-                               })
-                               .then(({ code }) => {
-                                   const credentials = {
-                                       code,
-                                       service_id: service.id,
-                                       service_name: service.name,
-                                       user: profile.getEmail()
-                                   };
-
-                                   axios({
-                                       url: "/services/google",
-                                       method: "post",
-                                       data: {
-                                           credentials
-                                       }
-                                   }).then(() => {
-                                       this.$inertia.reload(`/integrations`);
-                                   })
-                               })
-                       })
-               } catch (err) {
-                    console.log(err)
-               }
-            });
-        }
+            axios({
+                url: "/services/google",
+                method: "post",
+                data: {
+                    credentials
+                }
+            }).then(({ data }) => {
+                location.href = data
+            })
+        },
     }
 };
 </script>

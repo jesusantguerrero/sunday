@@ -81,7 +81,7 @@ export const formatValue = (value, type = "default", operation = "read") => {
             },
             read: (value = "") => {
                 const theValue = value && typeof value == "string"
-                    ? this.setTime(value)
+                    ? setTime(value)
                     : value;
                 return theValue;
             }

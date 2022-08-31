@@ -17,7 +17,7 @@
             class="automation"
             v-for="automation in automations"
             :key="`automation-${automation.id}`"
-            @click="runAutomation(automation.id)"
+            @click="emit('run-automation', automation.id)"
         >
             <img :src="automation.service_logo" v-if="automation.service_logo" class="automation-logo">
             <div v-else>
@@ -37,7 +37,7 @@ import { ref, nextTick } from 'vue';
 
 const props = defineProps({
     board: {
-        type: Object, 
+        type: Object,
         required: true
     },
     automations: {
@@ -60,7 +60,7 @@ const boardName = ref(props.board.name)
 const checkChanges = (shouldToggle) => {
     if (boardName.value !== props.board.name) {
         const changes = {...props.board, name: boardName.value}
-        emit('saved', changes) 
+        emit('saved', changes)
     }
     if (shouldToggle) {
         toggleEditMode()

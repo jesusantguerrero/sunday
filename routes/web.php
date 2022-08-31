@@ -35,6 +35,9 @@ Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 
+// Automation Services
+Route::get('/services/accept-oauth', [ServiceController::class, 'acceptOauth']);
+
 Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     // Dashboards
     Route::get('/', [DashboardController::class, 'index'])->name('home');
@@ -57,6 +60,7 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
 
     // Integration
     Route::get('/integrations', [ServiceController::class, 'index'])->name('integrations');
+    Route::post('/services/google', [ServiceController::class, 'google']);
 
     // Tracker
     Route::get('/tracker', [TimeEntryController::class, 'list'])->name('tracker');
@@ -82,10 +86,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/api/automations', AutomationController::class);
     Route::post('/api/automations/{id}/run', [AutomationController::class, 'run']);
     Route::apiResource('/api/automation-services', AutomationServiceController::class);
-    Route::apiResource('/api/automation-recipies', AutomationRecipeController::class);
+    Route::apiResource('/api/automation-recipes', AutomationRecipeController::class);
 
-    // Automation Services
-    Route::post('/services/google', [ServiceController::class, 'google']);
     Route::get('/services/messages', [ServiceController::class, 'getMessages']);
     Route::get('/api/calendars', [ServiceController::class, 'listCalendars']);
 
