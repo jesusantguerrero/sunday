@@ -42,6 +42,14 @@
       </AtField>
       <ul class="options-list">
         <li class="option-list__item">
+            <button class="option-list__button" @click="$emit('sort', field.name)">
+                Sort by {{field.name }}
+            </button>
+        </li>
+        <li class="option-list__item" @click="$emit('clear-sort')">
+            <button class="option-list__button">Clear sort</button>
+        </li>
+        <li class="option-list__item">
           <button class="option-list__button">Duplicate</button>
         </li>
         <li class="option-list__item" v-if="field.manual">

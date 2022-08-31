@@ -97,7 +97,10 @@ class BoardController extends Controller
                     'id' => $stage->id,
                     'board_id' => $stage->board_id,
                     'name' => $stage->name,
-                    'items' => Item::collection($stage->items()->filter($request->only('search', 'done', 'sort'))->get())
+                    'items' => Item::collection($stage->items()
+                        ->filter($request->only('search', 'done'))
+                        ->orderByField($request->only('sort'))
+                        ->get())
                 ];
         })];
 

@@ -6,8 +6,8 @@
 >
     <component
         :is="getRenderComponent(item[field.name])"
-        v-for="field in visibleFields"
-        :key="field.name"
+        v-for="(field, index) in visibleFields"
+        :key="`${field.name}-${index}`"
         class="text-center border border-white custom-field"
         :class="[getBg(field, item, field.name)]"
         :field-name="field.name"

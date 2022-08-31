@@ -136,10 +136,24 @@ class Item extends Model
             } elseif ($done == -1) {
                 $query->whereNull('commit_date');
             }
-        })->when($sort, function ($query, $sort) {
-            $direction =  strpos($sort, "-") === 0 ? "DESC" : "ASC";
-            $sort = $direction == "ASC" ? $sort : substr($sort, 1);
-            $query->orderBy($sort, $direction);
         });
+    }
+
+    public function scopeOrderByField($query, $sortFilter)
+    {
+        $sort = $sortFilter['sort'] ?? 'order';
+        $direction =  strpos($sort, "-") === 0 ? "DESC" : "ASC";
+        $sort = $direction == "ASC" ? $sort : substr($sort, 1);
+
+        if ($sort == 'title' || $sort == 'order') {
+            return $query->orderBy($sort, $direction);
+        } else {
+            return $query->orderBy(FieldValue::select('value')
+                ->whereColumn('field_values.entity_id', 'items.id')
+                ->where('field_values.field_name', $sort)
+                ->take(1),
+                $direction
+            );
+        }
     }
 }

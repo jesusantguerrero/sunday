@@ -12,6 +12,8 @@
                 :field-data="field"
                 :board="board"
                 @saved="$emit('field-added', $event)"
+                @sort="$emit('sort', $event)"
+                @clear-sort="$emit('clear-sort')"
             >
                 {{ field.title }}
                 <i :class="filterIcons[field.name].sort" />

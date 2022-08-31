@@ -3,7 +3,7 @@
     <div class="ic-list__body" :class="{ 'not-expanded': !isExpanded, loaded: isLoaded }">
       <!-- Column title -->
       <div class="ic-list__title">
-        <ListCellHeader 
+        <ListCellHeader
             class="item-false__header"
             :visibleFields="[ {name: 'title'}]"
             :filters="filters"
@@ -17,9 +17,9 @@
 
                 <div class="hidden item-group__selector" v-if="isExpanded">
                     <input
-                    type="checkbox"
-                    v-model="stage.selected"
-                    @change="toggleSelection()"
+                        type="checkbox"
+                        v-model="stage.selected"
+                        @change="toggleSelection()"
                     />
                 </div>
 
@@ -30,11 +30,11 @@
 
                 <div v-else>
                     <input
-                    :value="stage.name"
-                    type="text"
-                    ref="input"
-                    @keypress.enter="saveStage(stage)"
-                    @blur="saveStage(stage)"
+                        :value="stage.name"
+                        type="text"
+                        ref="input"
+                        @keypress.enter="saveStage(stage)"
+                        @blur="saveStage(stage)"
                     />
                 </div>
 
@@ -46,16 +46,16 @@
                     @click.native.prevent
                     :options="[
                         {
-                        key: 'edit',
-                        label: 'Edit',
+                            key: 'edit',
+                            label: 'Edit',
                         },
                         {
-                        key: 'delete',
-                        label: 'Delete',
+                            key: 'delete',
+                            label: 'Delete',
                         },
                         {
-                        key: 'selection',
-                        label: 'Select Mode',
+                            key: 'selection',
+                            label: 'Select Mode',
                         },
                     ]"
                     >
@@ -70,23 +70,23 @@
                 </div>
                 </div>
                 <NDropdown
-                trigger="click"
-                @select="handleFilterCommands('title', $event)"
-                @click.native.prevent
-                :options="[
-                    {
-                    key: 'sort',
-                    label: 'Sort by Task Name',
-                    },
-                    {
-                    key: 'clearSort',
-                    label: 'Clear sort',
-                    },
-                    {
-                    key: 'saveOrder',
-                    label: 'Save this order',
-                    },
-                ]"
+                    trigger="click"
+                    @select="handleFilterCommands('title', $event)"
+                    @click.native.prevent
+                    :options="[
+                        {
+                            key: 'sort',
+                            label: 'Sort by Task Name',
+                        },
+                        {
+                            key: 'clearSort',
+                            label: 'Clear sort',
+                        },
+                        {
+                            key: 'saveOrder',
+                            label: 'Save this order',
+                        },
+                    ]"
                 >
                 <div class="px-2 py-1 transition cursor-pointer hover:bg-slate-200">
                     <span> {{ items.length }} Tasks <i :class="filterIcons.sort" /></span>
@@ -122,17 +122,20 @@
       <div class="item-group ic-scroller ic-scroller-slim" @scroll="syncScroll"
         :id="`${stage.id}-slim-body`"
       >
-        <ListCellHeader 
-            class="grid py-1 text-left item-group-row" 
+        <ListCellHeader
+            class="grid py-1 text-left item-group-row"
             :visible-fields="visibleFields"
-            :filters="filters" 
-            @field-added="onFieldAdded" 
+            :filters="filters"
+            @sort="sort"
+            @clear-sort="clearSort"
+            @field-added="onFieldAdded"
         />
 
         <!-- items  -->
         <template v-if="isExpanded">
             <ListRow v-for="(item, index) in items"
-                :key="`item-${index}`"
+                :key="`item-${index}-${item.id}`"
+                :id="`item-${index}-${item.id}`"
                 :item="item"
                 :row-index="index"
                 :visible-fields="visibleFields"
@@ -386,13 +389,21 @@ function handleCommand(item, command) {
     }
 }
 
+const sort = (fieldName) => {
+    emit('sort', fieldName)
+}
+
+const clearSort = (fieldName) => {
+    emit('clearSort', fieldName)
+}
+
 function handleFilterCommands(fieldName, command) {
     switch (command) {
         case "clearSort":
-            emit("clearSort", fieldName);
+            clearSort(fieldName);
             break;
         case "sort":
-            emit("sort", fieldName);
+            sort(fieldName);
             break;
         default:
             emit("saveOrder", fieldName);
