@@ -12,7 +12,7 @@
                             <i :class="[ isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
                         </span>
 
-                        <div class="rounded-t-lg flex items-center py-2 bg-gray-200 px-4 border-2 group cursor-pointer transition ease-out">
+                        <div class="rounded-t-lg min-w-max flex items-center py-2 bg-gray-200 px-4 border-2 group cursor-pointer transition ease-out mr-2">
                             <span class="font-bold handle" v-if="!isEditMode">
                                 {{ stage.title || stage.name }}
                                 {{ isSelectMode ? "(Selection Mode)" : "" }}
@@ -54,11 +54,11 @@
                                         </el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>
-                            
+
                             </div>
                         </div>
 
-                        <div class="mx-auto px-4 py-2 hover:bg-gray-200 cursor-pointer" @click="handleBoardCommands('sort', 'title')">
+                        <div class="text-center px-4 py-2 w-full hover:bg-gray-200 cursor-pointer" @click="handleBoardCommands('sort', 'title')">
                             {{ items.length }} Tasks
                             <field-icon field="title" :filters="filters" />
                         </div>
@@ -84,8 +84,7 @@
                             @selected="handleSelect"
                             @saved="saveChanges"
                             @command="handleCommand"
-                        >
-                        </item-group-title>
+                        />
                     </draggable>
                 </div>
             </div>
@@ -107,7 +106,10 @@
                                 :board="board"
                                 @saved="onFieldAdded"
                             >
+                            <button class="hover:bg-gray-200 cursor-pointer w-full px-4 py-2" @click="$emit('sort', field.name)">
                                 {{ field.title }}
+                                <field-icon :field="field.name" :filters="filters" />
+                            </button>
                             </field-popover>
                         </span>
                     </div>
@@ -134,8 +136,7 @@
                                 :index="index"
                                 :item="item"
                                 @saved="saveChanges(item, field.name, $event)"
-                            >
-                            </item-group-cell>
+                            />
                         </div>
                     </div>
                 </template>
@@ -202,7 +203,7 @@ const boardOptions = {
     edit: {
         icon: 'fa fa-edit',
         label: 'Edit'
-    }, 
+    },
     delete: {
         icon: "fa fa-trash",
         label: "Delete"

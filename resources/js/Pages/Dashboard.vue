@@ -399,7 +399,7 @@
 
             getCommitsByDate() {
                 const params = `?commit-date=${this.localCommitDate.toISOString().slice(0, 10)}`
-                this.$inertia.replace(`/${params}`,
+                this.$inertia.get(`/${params}`,
                  {
                     only: ['committed'],
                     preserveScroll: true,

@@ -1345,6 +1345,16 @@ video {
 .w-3\/4{
   width: 75%;
 }
+.min-w-min{
+  min-width: -webkit-min-content;
+  min-width: -moz-min-content;
+  min-width: min-content;
+}
+.min-w-max{
+  min-width: -webkit-max-content;
+  min-width: -moz-max-content;
+  min-width: max-content;
+}
 .max-w-xl{
   max-width: 36rem;
 }
