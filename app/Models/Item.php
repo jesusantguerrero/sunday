@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Checklist;
+use App\Models\Traits\ItemScopeTrait;
 use DateTime;
 use RRule\RRule;
 
@@ -13,7 +14,7 @@ class Item extends Model
     protected $fillable = ['board_id', 'team_id', 'stage_id','resource_id', 'rrule' ,'resource_type', 'resource_origin', 'title', 'order', 'user_id', 'done','commit_date', 'points'];
     protected $with = ['fields', 'checklist'];
     use HasFactory;
-
+    use ItemScopeTrait;
 
     protected static function boot()
     {
@@ -74,8 +75,6 @@ class Item extends Model
         }
     }
 
-
-
     public function saveChecklist($list) {
         if ($list) {
             Checklist::where(['item_id' => $this->id])->delete();
@@ -114,34 +113,10 @@ class Item extends Model
     }
 
     public static function getByCustomField($entry, $user) {
-        return Item::whereHas('fields', function($query) use ($entry){
-            $query->where('value', $entry[1]);
-            if (DateTime::createFromFormat('Y-m-d', $entry[0])) {
-                $query->orWhere('date_value', $entry[1]);
-            }
-        })->with('stage')->where([
+        return Item::byCustomField($entry)
+        ->with('stage')->where([
             'team_id' => $user->current_team_id,
             'user_id' => $user->id,
         ])->whereNull('commit_date')->get();
-    }
-
-    public function scopeFilter($query, array $filters)
-    {
-        $done = $filters['done'] = $filters['done'] ?? -1;
-        $sort = $filters['sort'] ?? 'order';
-
-        $query->when($filters['search'] ?? null, function ($query, $search) {
-            $query->where('title', 'like', '%'.$search.'%');
-        })->when($done, function ($query, $done) {
-            if ($done == 'only') {
-                $query->where('done', 1);
-            } elseif ($done == -1) {
-                $query->whereNull('commit_date');
-            }
-        })->when($sort, function ($query, $sort) {
-            $direction =  strpos($sort, "-") === 0 ? "DESC" : "ASC";
-            $sort = $direction == "ASC" ? $sort : substr($sort, 1);
-            $query->orderBy($sort, $direction);
-        });
     }
 }

@@ -2307,9 +2307,6 @@ body {
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity));
 }
-.group:hover .group-hover\:block{
-  display: block;
-}
 .group:hover .group-hover\:flex{
   display: flex;
 }
