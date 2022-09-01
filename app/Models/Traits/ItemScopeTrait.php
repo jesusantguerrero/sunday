@@ -2,14 +2,10 @@
 
 namespace App\Models\Traits;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Checklist;
+use App\Models\FieldValue;
 use DateTime;
-use RRule\RRule;
 
-trait ItemScopeTrait
-{
+trait ItemScopeTrait {
     public function scopeByCustomField($query, $entry) {
         return $query->whereHas('fields', function($query) use ($entry){
             $query->where('value', $entry[1]);
@@ -22,33 +18,33 @@ trait ItemScopeTrait
     public function scopeFilter($query, array $filters)
     {
         $done = $filters['done'] = $filters['done'] ?? -1;
-        $sort = $filters['sort'] ?? 'order';
 
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where('title', 'like', '%'.$search.'%');
-        })->when($done, function ($query, $done) {
+        })->when($done , function ($query, $done) {
             if ($done == 'only') {
                 $query->where('done', 1);
             } elseif ($done == -1) {
                 $query->whereNull('commit_date');
             }
-        })->when($sort, function ($query, $sort) {
-            $direction =  strpos($sort, "-") === 0 ? "DESC" : "ASC";
-            $sortField = $direction == "ASC" ? $sort : substr($sort, 1);
-            if ($sortField == 'title') {
-                $query->orderBy($sortField, $direction);
-            } else {
-                $query->scopeSortCustomField($query, $sort, $direction);
-            }
         });
     }
 
-    public function scopeSortCustomField($query, $sort) {
+    public function scopeOrderByField($query, $sortFilter)
+    {
+        $sort = $sortFilter['sort'] ?? 'order';
         $direction =  strpos($sort, "-") === 0 ? "DESC" : "ASC";
-        $sortField = $direction == "ASC" ? $sort : substr($sort, 1);
-        
-        $query->whereHas('fields', function ($query) use ($sortField) {
-            $query->where('name', $sortField);
-        });
+        $sort = $direction == "ASC" ? $sort : substr($sort, 1);
+
+        if ($sort == 'title' || $sort == 'order') {
+            return $query->orderBy($sort, $direction);
+        } else {
+            return $query->orderBy(FieldValue::select('value')
+                ->whereColumn('field_values.entity_id', 'items.id')
+                ->where('field_values.field_name', $sort)
+                ->take(1),
+                $direction
+            );
+        }
     }
 }

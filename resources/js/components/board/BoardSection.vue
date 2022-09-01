@@ -77,13 +77,14 @@
                 ></span>
                 <!-- <span class="ml-2 toolbar-buttons">
                     <i class="fa fa-thumbtack"></i
-                ></span> -->
-                <!-- <span class="ml-2 toolbar-buttons">
+                ></span>
+                <span class="ml-2 toolbar-buttons">
                     <i class="fa fa-filter"></i>
                 </span>
-                <span class="ml-2 toolbar-buttons">
+                -->
+                <span class="ml-2 toolbar-buttons" :class="{active: searchOptions.sort}" @click="clearSort()">
                     <i class="fa fa-sort"></i>
-                </span> -->
+                </span>
             </div>
         </div>
 
@@ -159,7 +160,7 @@
 </template>
 
 <script>
-import ListView from "./views/List/ItemGroup";
+import ListView from "./views/List/ListView.vue";
 import KanbanView from "./views/kanban/KanbanContainer.vue";
 import HabiticaView from "./views/notes/NotesContainer.vue";
 import MatrixView from "./views/notes/NotesContainer.vue";
@@ -256,7 +257,9 @@ export default {
             handler: throttle(function() {
                 let query = this.pickBy(this.searchOptions);
                 query = Object.keys(query).length ?  '?' + new URLSearchParams(this.pickBy(this.searchOptions)) : '';
-                this.$inertia.replace(`/boards/${this.board.id}${query}`)
+                this.$inertia.replace(`/boards/${this.board.id}${query}`, {
+                    preserveScroll: true,
+                })
             }, 200),
             deep: true,
         }
@@ -436,7 +439,7 @@ export default {
                 '' : 'with'
             }
 
-            this.searchOptions.done = nextValues[this.searchOptions.done];
+            this.$set(this.searchOptions, 'done', nextValues[this.searchOptions.done || '']);
         },
 
         pickBy(object, predicate) {

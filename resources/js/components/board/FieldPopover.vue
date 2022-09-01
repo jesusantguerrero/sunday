@@ -40,7 +40,7 @@
             </li>
         </ul>
     </div>
-    <button slot="reference">
+    <button slot="reference" class="hover:bg-gray-200 cursor-pointer" @click="emit('sort', field.name)">
         <slot>
             <i class="fa fa-plus"></i>
         </slot>

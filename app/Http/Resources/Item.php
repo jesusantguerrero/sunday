@@ -24,6 +24,17 @@ class Item extends JsonResource
             'stage' => $this->stage ? $this->stage->name : "",
             'duration' => $this->timeEntries->sum('duration'),
             'board_id' =>  $this->stage ? $this->stage->board_id : '',
+            'fields' => $this->whenLoaded('fields', function () {
+                return $this->fields->map(function ($field) {
+                    return [
+                        'id' => $field->id,
+                        'name' => $field->name,
+                        'value' => $field->value,
+                        'type' => $field->type,
+                        'options' => $field->options,
+                    ];
+                });
+            }),
         ];
 
         foreach ($this->fields as $field) {
