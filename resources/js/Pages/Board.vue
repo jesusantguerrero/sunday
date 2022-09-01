@@ -3,7 +3,12 @@
         <div class="">
                 <div class="w-12/12 mx-2 pt-12">
                     <div class="overflow-hidden">
-                        <board-section :board="board" :users="users" :automations="automations"></board-section>
+                        <board-section 
+                            :board="board" 
+                            :users="users" 
+                            :automations="automations"
+                            :filters="filters"
+                        />
                     </div>
                 </div>
             </div>
@@ -42,8 +47,14 @@
             },
             users: {
                 type: Array,
-                refault() {
+                default() {
                     return []
+                }
+            },
+            filters: {
+                type: Object,
+                default() {
+                    return {}
                 }
             }
         }

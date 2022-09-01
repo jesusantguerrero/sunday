@@ -11,7 +11,7 @@
                     <span>
                         Notes
                     </span>
-                    <span class="ml-4 text-gray-300"> {{ kanbanData.backlog.childs.length}} </span>
+                    <span class="ml-4 text-gray-300"> {{ mails.length}} </span>
                 </div>
                 <el-dropdown trigger="click"  @click.native.prevent>
                     <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center">
@@ -27,12 +27,12 @@
             </div>
             <div class="pr-4 pt-5">
                 <draggable
-                    class="grid grid-cols-6 gap-4"
+                    class="grid  sm:grid-cols-2 md:grid-cols-4 gap-4"
                     :list="kanbanData.backlog.childs"
                     group="tasks"
                     @change="($event) => changeStatus($event, quadrant)"
                 >
-                    <div v-for="task in kanbanData.backlog.childs" :key="`task-${task.id}`" :class="`task-item p-5 bg-${task.color}-300`">
+                    <div v-for="task in mails" :key="`task-${task.id}`" :class="`task-item p-5 bg-white overflow-auto ic-scroller`">
                         <label class="checkbox-label">
                             <span class="font-bold">
                                 <!-- [{{ task.stage.name }}] -->
@@ -43,22 +43,9 @@
                             </span>
                         </label>
 
-                        <div v-html="task.snippet" class="note-body">
-
-                        </div>
+                        <div v-html="task.snippet" class="note-body bg-white" />
                     </div>
                 </draggable>
-                <!-- <item-group-cell
-                    class="w-full flex items-center"
-                    field-name="title"
-                    :is-title="true"
-                    :index="-1"
-                    :item="kanbanData.backlog.newTask"
-                    :is-new="true"
-                    @saved="kanbanData.backlog.newTask['title'] = $event"
-                    @keydown.enter="addItem(kanbanData.backlog)"
-                >
-                </item-group-cell> -->
             </div>
         </div>
     </div>
@@ -86,6 +73,11 @@ export default {
     components: {
         ItemGroupCell,
         Draggable
+    },
+    computed: {
+        mails() {
+            return this.kanbanData.backlog.childs.filter((item) => item.sender)
+        }
     },
     methods: {
         addItem(quadrant) {

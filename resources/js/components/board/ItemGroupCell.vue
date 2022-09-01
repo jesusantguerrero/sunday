@@ -227,7 +227,6 @@ export default {
         // onClickOutside(this.$refs.ItemGroupCell, (e) => {
         //     console.log(e);
         //     const classes = e.path.map(item => item.className)
-        //     debugger
         //     const el = classes.includes("el-")
         //     this.isEditMode = false
         // })

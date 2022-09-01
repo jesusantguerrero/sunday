@@ -28,15 +28,14 @@ class ServiceController extends Controller
        return GoogleService::setTokens((object) $request->post('credentials'), $request->user()->id);
     }
 
-    // public function listCalendars(Request $request, Response $response)
-    // {
-    //    $calendars = GoogleService::listCalendars($request->user()->id);
-    //    return $response->setContent($calendars->getItems());
-    // }
+    public function listCalendars(Request $request, Response $response)
+    {
+       $calendars = GoogleService::listCalendars($request->user()->id);
+       return $response->setContent($calendars->getItems());
+    }
 
-    public function listCalendars() {
+    public function listSheets() {
         $sheetsService = GoogleService::getSheetsService(12);
-        $sheetService = GoogleService::getSheetService(12);
         $id = "1mIGie61tDQjMToWxuygRVgzGa73rdWhPyGRMyMZZ0Wk";
         $gid = "152562081";
         $sheets = $sheetsService->spreadsheets->get($id)->getSheets();

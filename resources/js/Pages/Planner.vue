@@ -187,13 +187,9 @@ export default {
             boardType: "",
             isLoading: false,
             openedItem: {},
-            isItemModalOpen: false
+            isItemModalOpen: false,
+            localDate: new Date(this.date)
         };
-    },
-    computed: {
-        localDate() {
-            return new Date(this.date);
-        }
     },
     methods: {
         setCommitDate() {
@@ -209,7 +205,6 @@ export default {
 
         getCommitsByDate(date) {
             if (date) {
-                debugger;
                 const params = this.getParams(date);
                 this.$inertia.visit(`/planner${params}`, {
                     only: ["scheduled", "date"]
@@ -250,10 +245,6 @@ export default {
     .body {
         @apply p-4;
         min-height: 5rem;
-    }
-
-    .body.p-0 {
-        @apply p-0;
     }
 }
 

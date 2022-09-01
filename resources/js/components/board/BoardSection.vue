@@ -109,6 +109,9 @@
                         :board="board"
                         :items="stage.items"
                         :create-mode="createMode"
+                        :filters="filters"
+                        @sort="sort"
+                        @clearSort="clearSort"
                         @saved="addItem"
                         @open-item="openItem"
                         @item-deleted="confirmDeleteItem"
@@ -169,7 +172,7 @@ import Draggable from "vuedraggable";
 import { throttle } from "lodash-es";
 
 export default {
-    name: "Board",
+    name: "BoardSection",
     components: {
         ListView,
         KanbanView,
@@ -202,10 +205,7 @@ export default {
         filters: {
             type: Object,
             default() {
-                return {
-                    search: '',
-                    done: ''
-                }
+                return {}
             }
         }
     },
@@ -230,45 +230,11 @@ export default {
                     name: "notes",
                     title: "Notes",
                     component: "NoteView",
-                    icon: "fa fa-border-all"
+                    icon: "far fa-sticky-note"
                 },
-                habitica:{
-                    name: "habitica",
-                    title: "Habitica",
-                    component: "HabiticaView",
-                    icon: "fa fa-border-all"
-                },
-                matrix:{
-                    name: "matrix",
-                    title: "Matrix",
-                    component: "MatrixView",
-                    icon: "fa fa-border-all"
-                }
             },
             itemToDelete: false,
-            items: [
-                {
-                    title: "Test",
-                    owner: "Jesus Guerrero",
-                    status: "todo",
-                    due_date: new Date().toISOString().slice(0, 10),
-                    priority: "High"
-                },
-                {
-                    title: "Test",
-                    owner: "Jesus Guerrero",
-                    status: "todo",
-                    due_date: new Date().toISOString().slice(0, 10),
-                    priority: "low"
-                },
-                {
-                    title: "Test",
-                    owner: "Jesus Guerrero",
-                    status: "todo",
-                    due_date: new Date().toISOString().slice(0, 10),
-                    priority: "medium"
-                }
-            ],
+            items: [],
             comments: [],
             contacts: [
                 {
@@ -277,7 +243,8 @@ export default {
             ],
             searchOptions: {
                 search: this.filters.search,
-                done: this.filters.done
+                done: this.filters.done,
+                sort: this.filters.sort
             },
             openedItem: {},
             isEditMode: false,
@@ -293,7 +260,6 @@ export default {
                 this.$inertia.replace(`/boards/${this.board.id}${query}`)
             }, 200),
             deep: true,
-            immediate: true
         }
     },
     computed: {
@@ -483,6 +449,18 @@ export default {
                 })
 
             return result;
+        },
+
+        sort(field) {
+            if (this.searchOptions.sort == field) {
+                this.searchOptions.sort = `-${field}`;
+            } else {
+                this.searchOptions.sort = field;
+            }
+        },
+
+        clearSort() {
+            this.searchOptions.sort = ""
         },
 
         openItem(item) {
