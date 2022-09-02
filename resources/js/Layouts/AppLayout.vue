@@ -345,6 +345,7 @@
 
                 <!-- Page Content -->
                 <main>
+                    <app-banner />
                     <slot></slot>
                 </main>
             </div>
@@ -377,19 +378,21 @@ import ConfirmationModal from "../components/shared/ConfirmationModal";
 import AppSide from "./AppSide";
 import Menus from "./menus";
 import BoardSide from "../components/board/BoardSide"
+import AppBanner from "../components/AppBanner.vue";
 
 export default {
     components: {
-        JetApplicationLogo,
-        JetApplicationMark,
-        JetDropdown,
-        JetDropdownLink,
-        JetNavLink,
-        JetResponsiveNavLink,
-        ConfirmationModal,
-        AppSide,
-        BoardSide
-    },
+    JetApplicationLogo,
+    JetApplicationMark,
+    JetDropdown,
+    JetDropdownLink,
+    JetNavLink,
+    JetResponsiveNavLink,
+    ConfirmationModal,
+    AppSide,
+    BoardSide,
+    AppBanner
+},
     props: {
         boards: {
             type: Array,

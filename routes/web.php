@@ -34,6 +34,9 @@ Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 
+// Automation Services
+Route::get('/services/accept-oauth', [ServiceController::class, 'acceptOauth']);
+
 Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     // Dashboards
     Route::get('/', [DashboardController::class, 'index'])->name('home');

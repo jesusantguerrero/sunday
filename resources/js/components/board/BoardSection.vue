@@ -15,23 +15,23 @@
                         />
                     </div>
                      <i class="fa fa-edit mx-2" @click="toggleEditMode(true)"></i>
-                    <div>
-                        <span
+                    <section class="space-x-1 flex items-center justify-center">
+                        <article
                             class="automation"
                             v-for="automation in automations"
                             :key="`automation-${automation.id}`"
+                            :title="automation.sentence"
                             @click="runAutomation(automation.id)"
                         >
-                            <img :src="automation.service_logo" v-if="automation.service_logo" class="automation-logo">
+                            <img :src="automation.service_logo" v-if="automation.service_logo" class="automation-logo" :alt="automation.sentence">
                             <div v-else>
                                 {{ automation.name[0] }}
-
                             </div>
-                        </span>
+                        </article>
                         <!-- <span class="automation" @click="isAutomationModalOpen=true">
                             <i class="fa fa-plus"></i>
                         </span> -->
-                    </div>
+                    </section>
                 </div>
             </div>
 

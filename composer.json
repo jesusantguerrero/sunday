@@ -13,7 +13,7 @@
         "beyondcode/laravel-websockets": "^1.9",
         "doctrine/dbal": "^2.12",
         "freesgen/querify": "dev-master",
-        "google/apiclient": "2.12.1",
+        "google/apiclient": "2.12.6",
         "inertiajs/inertia-laravel": "^0.5.4",
         "insane/treasurer": "dev-master",
         "laravel/framework": "^9.19",
@@ -23,7 +23,7 @@
         "php-mime-mail-parser/php-mime-mail-parser": "^7.0",
         "pusher/pusher-php-server": "^7.0",
         "rlanvin/php-rrule": "^2.2",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.4.3"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Libraries\GoogleService;
 use App\Models\AutomationService;
 use App\Models\Integration;
+use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -25,7 +26,24 @@ class ServiceController extends Controller
 
     public function google(Request $request)
     {
-       return GoogleService::setTokens((object) $request->post('credentials'), $request->user()->id);
+        return GoogleService::requestAccessToken((object) $request->post('credentials'), $request->user());
+    }
+
+    public function acceptOauth(Request $request)
+    {
+        if (auth()->hasUser()) {
+            try {
+                GoogleService::setTokens((object) $request->post('credentials'), $request->user());
+                return redirect('/integrations');
+            } catch (Exception $e) {
+                return redirect('/integrations')->with('flash', [
+                    'banner' => $e->getMessage(),
+                ]);
+            }
+
+        } else {
+
+        }
     }
 
     public function listCalendars(Request $request, Response $response)
