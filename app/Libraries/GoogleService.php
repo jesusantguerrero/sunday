@@ -6,10 +6,10 @@ use App\Jobs\ProcessGmail;
 use App\Models\User;
 use App\Models\Automation;
 use App\Models\Integration;
-use Google_Client;
-use Google_Service_Calendar;
-use Google_Service_Sheets;
-use Google_Service_Sheets_Sheet;
+use Exception;
+use Google\Client as GoogleClient;
+use Google\Service\Calendar;
+use Google\Service\Gmail;
 
 class GoogleService
 {
@@ -18,33 +18,43 @@ class GoogleService
         return User::find($userId);
     }
 
-    public static function setTokens($data, $userId, $integrationId = null) {
-        $client = new Google_Client();
+    public static function getConfigPath() {
+        return base_path(config("integrations.google.credentials_path"));
+    }
 
-        $client->setAuthConfig(base_path(config("integrations.google.credentials_path")));
-        $client->setRedirectUri(config('app.url'));
-        if ($data->code) {
-            $tokenResponse = $client->fetchAccessTokenWithAuthCode($data->code);
-            session(['g_token', json_encode($tokenResponse)]);
-        } else {
-            $tokenResponse = $data;
-        }
-        $user = user::find($userId);
-        $integration = new Integration();
-        $integration->team_id = $user->current_team_id;
-        $integration->user_id = $user->id;
-        $integration->name = $data->service_name;
-        $integration->automation_service_id = $data->service_id;
-        $integration->token = encrypt($tokenResponse['refresh_token']);
-        $integration->hash = $data->user;
-        $integration->save();
-        return $tokenResponse;
+    public static function setTokens($data, $user, $integrationId = null) {
+        if (!$integrationId && $_GET['code']) {
+
+            $client = new GoogleClient([ 'client_id' => config('integrations.google.client_id')]);
+            $client->setAuthConfig(self::getConfigPath());
+            $client->setAccessType('offline');
+            $userIdToken = $_GET['code'];
+            $tokenResponse = $client->fetchAccessTokenWithAuthCode($userIdToken);
+            $integration = Integration::where([
+                'user_id' => $user->id,
+                'team_id' => $user->current_team_id,
+                'name' => 'Google'
+            ])->first();
+            $googleUser = $client->verifyIdToken($tokenResponse["id_token"]);
+            if ($googleUser['email'] == $user->email) {
+                $integration->token = encrypt($tokenResponse['access_token']);
+                $integration->save();
+                session(['g_token', json_encode($tokenResponse)]);
+                return;
+            }
+            throw new Exception("Error obtaining the token" . $googleUser['email']);
+        } else if ($integrationId) {
+            $integration = Integration::find($integrationId);
+            $integration->token = encrypt($data->refresh_token);
+            session(['g_token', json_encode($data)]);
+            return;
+        };
     }
 
     public static function getClient($integrationId) {
         $integration = Integration::find($integrationId);
-        $client = new Google_Client();
-        $client->setAuthConfig(base_path(config("integrations.google.credentials_path")));
+        $client = new GoogleClient();
+        $client->setAuthConfig(self::getConfigPath());
         if (!$accessToken = session('g_token')) {
             $accessToken = $client->fetchAccessTokenWithRefreshToken(decrypt($integration->token));
         }
@@ -57,7 +67,9 @@ class GoogleService
                 self::setTokens((object) [
                     'access_token' => $accessToken,
                     'refresh_token' => $refreshToken
-                ], $integration->user_id, $integrationId);
+                ],
+                $integration->user,
+                $integrationId);
                 $client->setAccessToken($accessToken);
             }
         }
@@ -65,6 +77,39 @@ class GoogleService
         return $client;
     }
 
+    public static function storeIntegration($data, $user) {
+        Integration::updateOrCreate([
+            "team_id" => $user->current_team_id,
+            "user_id" => $user->id,
+            "name" => $data->service_name,
+            "automation_service_id" => $data->service_id
+        ], [
+            "hash" => $user->email
+        ]);
+    }
+
+    public static function requestAccessToken($data, $user) {
+        $client = new GoogleClient([
+            "client_id" => config('integrations.google.client_id')
+        ]);
+        $client->addScope([
+            Gmail::GMAIL_READONLY,
+            Calendar::CALENDAR_READONLY
+        ]);
+        $client->setRedirectUri(config('app.url') . "/services/accept-oauth");
+        $client->setAccessType('offline');
+        $client->setLoginHint($user->email);
+        $client->setApprovalPrompt('force');
+        $client->setIncludeGrantedScopes(true);
+
+        $authUrl = $client->createAuthUrl();
+        if ($authUrl) {
+            self::storeIntegration($data, $user);
+        }
+        return $authUrl;
+    }
+
+    // services
     public static function createItemFromCalendar($automationId, $afterResponse = null) {
         $automation = Automation::find($automationId);
         echo "$automation->name $automation->id \n";
@@ -75,7 +120,7 @@ class GoogleService
 
     public static function listCalendars(int $integrationId) {
         $client = self::getClient($integrationId);
-        $service = new Google_Service_Calendar($client);
+        $service = new Calendar($client);
         return $service->calendarList->listCalendarList();
     }
 
@@ -85,17 +130,5 @@ class GoogleService
        $method = $afterResponse ? "dispatchAfterResponse" : "dispatch";
        ProcessGmail::$method($automation);
        return true;
-    }
-
-    public static function getSheetsService($integrationId) {
-        $client = GoogleService::getClient($integrationId);
-        $service = new Google_Service_Sheets($client);
-        return $service;
-    }
-
-    public static function getSheetService($integrationId) {
-        $client = GoogleService::getClient($integrationId);
-        $service = new Google_Service_Sheets_Sheet($client);
-        return $service;
     }
 }

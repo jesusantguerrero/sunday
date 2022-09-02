@@ -9,6 +9,7 @@ use App\Models\Board;
 use App\Models\Item;
 use App\Models\Stage;
 use DateTime;
+use Google\Service\Calendar\Calendar;
 use Google_Service_Calendar;
 
 class CreateTaskFromCalendar
@@ -25,7 +26,7 @@ class CreateTaskFromCalendar
 
 
         $client = GoogleService::getClient($automation->integration_id);
-        $service = new Google_Service_Calendar($client);
+        $service = new Calendar($client);
         $calendarId = 'primary';
         $results = $service->events->listEvents($calendarId, [
             'maxResults' => 10,
@@ -54,6 +55,7 @@ class CreateTaskFromCalendar
                 'fields' => [
                     ['name' => 'date', 'type'=> 'date', 'value' => $date->format('Y-m-d')],
                     ['name' => 'time', 'type' => 'time', 'value' => $date->format('H:i')],
+                    ['name' => 'status', 'type' => 'labels', 'value' => 'schedules'],
                     ['name' => 'due_date', 'type'=> 'date', 'value' => $endDate->format('Y-m-d')],
                     ['name' => 'end_time', 'type' => 'time', 'value' => $endDate->format('H:i'), 'hide' => true],
                     ['name' => 'automation_id', 'value' => $automation->id, 'hide' => true],
