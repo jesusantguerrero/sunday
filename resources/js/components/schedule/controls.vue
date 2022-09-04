@@ -1,7 +1,7 @@
 <template>
   <div class="controls">
     <div class="month-name pl-8 font-bold capitalize">
-        {{ getMonthName(selectedDay)}}
+      {{ getMonthName(selectedDate) }}
     </div>
     <div class="controls-container">
       <div class="w-full flex justify-start">
@@ -10,15 +10,11 @@
         </div>
       </div>
 
-      <div
-        v-for="day in week"
-        :key="`item-${day}`"
-        class="w-full flex justify-center">
+      <div v-for="day in week" :key="`item-${day}`" class="w-full flex justify-center">
         <div
           class="day-item"
           :class="{ 'selected-day': isSelectedDate(day) }"
-
-          @click="selectedDay = day"
+          @click="selectedDate = day"
         >
           <span class="text-xl font-bold block">{{ getDateLabel(day) }}</span>
           <span class="capitalize">{{ getDayName(day) }}</span> <br />
@@ -36,43 +32,42 @@
 
 <script>
 import { format } from "date-fns";
+import { isSameDate } from "../../utils";
 
 export default {
   name: "Controls",
   props: {
     value: {
-      type: Date
-    }
+      type: Date,
+    },
   },
   data() {
     return {
       week: [],
       today: new Date(),
-      selectedDay: null,
-      firstDayOfWeek: 0
+      selectedDate: this.value || new Date(),
+      firstDayOfWeek: 0,
     };
   },
   watch: {
-    selectedDay: {
+    selectedDate: {
       handler(selectedDate) {
-          if (this.value && selectedDate && format(this.value, 'yyyy-MM-dd') != format(this.selectedDay, 'yyyy-MM-dd')) {
-              this.$emit("input", this.selectedDay);
-          }
+        if (this.value && selectedDate && !isSameDate(this.value, selectedDate)) {
+          this.$emit("input", selectedDate);
+        }
       },
-      immediate: true
+      immediate: true,
     },
-    value: {
-      handler(newDate) {
-        this.selectedDay = newDate || this.selectedDay;
-      },
-      immediate: true
-    }
   },
-  created() {
-    this.week = this.getWeek(new Date());
+  mounted() {
+    this.setWeek();
   },
   methods: {
-    getWeek(date) {
+    setWeek() {
+      this.week = this.getWeek(this.selectedDate);
+    },
+    getWeek(originalDate) {
+      const date = new Date(originalDate);
       const firstDate = new Date(date.setDate(date.getDate() - 4));
       const week = [];
       for (let i = 0; i < 7; i++) {
@@ -81,29 +76,31 @@ export default {
       }
       return week;
     },
-    isSelectedDayInWeek() {
-      this.selectedDay = this.week[3];
+    setSelectedDateInWeek() {
+      this.selectedDate = this.week[3];
     },
     gotoToday() {
-      this.selectedDay = new Date();
+      this.selectedDate = new Date();
       this.todayMode = !this.todayMode;
     },
     nextWeek() {
-      this.week = this.getWeek(new Date(this.selectedDay.setDate(this.selectedDay.getDate() + 1)));
-      this.isSelectedDayInWeek();
+      const date = new Date(this.selectedDate);
+      this.week = this.getWeek(new Date(date.setDate(date.getDate() + 1)));
+      this.setSelectedDateInWeek();
     },
     prevWeek() {
-      this.week = this.getWeek(new Date(this.selectedDay.setDate(this.selectedDay.getDate() - 1)));
-      this.isSelectedDayInWeek();
+      const date = new Date(this.selectedDate);
+      this.week = this.getWeek(new Date(date.setDate(date.getDate() - 1)));
+      this.setSelectedDateInWeek();
     },
     getISODate(date) {
-      return format(date, 'yyyy-MM-dd');
+      return format(date, "yyyy-MM-dd");
     },
     isToday(date) {
       return this.getISODate(new Date()) == this.getISODate(date);
     },
     isSelectedDate(date) {
-      return this.getISODate(this.selectedDay) == this.getISODate(date);
+      return this.getISODate(this.selectedDate) == this.getISODate(date);
     },
     getDayName(date) {
       return format(date, "iii");
@@ -113,8 +110,8 @@ export default {
     },
     getDateLabel(date) {
       return format(date, "dd");
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -135,7 +132,7 @@ $primary-color: var(--primary-color);
 .day-controls {
   @apply text-center capitalize text-gray-600 py-2 border-2 cursor-pointer w-20 border-white;
   transition: all ease 0.3s;
-  border-radius: 0.80rem;
+  border-radius: 0.8rem;
   display: none;
 
   &:hover {
@@ -145,7 +142,7 @@ $primary-color: var(--primary-color);
 
 .day-controls {
   @apply flex justify-center items-center text-gray-700;
-   &:hover {
+  &:hover {
     @apply bg-gray-400 text-gray-700;
   }
 }

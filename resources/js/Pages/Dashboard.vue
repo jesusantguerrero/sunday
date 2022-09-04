@@ -58,6 +58,7 @@
                         <schedule-controls
                             v-if="localCommitDate"
                             v-model="localCommitDate"
+                            @input="getCommitsByDate()"
                         >
 
                         </schedule-controls>
@@ -232,7 +233,7 @@
     import LinkFormModal from "../components/links/Form"
     import LinkViewer from "../components/links/Viewer"
     import PrimaryButton from "../Jetstream/Button"
-    import { subDays, toDate, format } from "date-fns";
+    import { subDays, toDate, format, parseISO } from "date-fns";
     import { uniq, orderBy } from "lodash-es";
 
     export default {
@@ -310,7 +311,7 @@
             user: {
                 type: Object,
                 required: true
-            }
+            },
         },
         data() {
             return {
@@ -319,7 +320,7 @@
                 modeSelected: 'inbox',
                 promodoroColor: "red",
                 standupSummary: [],
-                localCommitDate: new Date,
+                localCommitDate: parseISO(this.commitDate),
                 isLoading: false,
                 showWelcomeScreen: false,
                 isStandupOpen: false,
@@ -327,13 +328,6 @@
                 linkData: {},
                 tracker: null
             }
-        },
-        watch: {
-            localCommitDate(newDate, oldDate) {
-                if (oldDate &&  (newDate.toISOString().slice(0, 10) != oldDate.toISOString().slice(0, 10))) {
-                    this.getCommitsByDate();
-                }
-            },
         },
         computed: {
             hasCommited() {
@@ -354,7 +348,6 @@
             }
         },
         mounted() {
-            console.log(this.$inertia.form);
             if (!this.standup.length && this.todo.length) {
                 this.standupSummary = {...this.todo};
                 this.isStandupOpen = true;
@@ -364,18 +357,7 @@
                 this.fireworks();
             }
         },
-        created() {
-            this.setCommitDate()
-        },
         methods: {
-            setCommitDate() {
-                let date = new Date();
-                if (this.commitDate) {
-                    date = this.commitDate.split("-");
-                    date = toDate(new Date(date[0], date[1] - 1, date[2]));
-                }
-                this.localCommitDate = date;
-            },
 
             completeDay() {
                 this.isLoading = true;
@@ -387,8 +369,8 @@
                     return item;
                 });
 
-                completed.forEach(async item => {
-                    await this.updateItem(item);
+                completed.forEach(item => {
+                    this.updateItem(item);
                 });
 
                 this.updateDaily(now)
@@ -398,8 +380,9 @@
             },
 
             getCommitsByDate() {
+                console.log("HEre we are")
                 const params = `?commit-date=${this.localCommitDate.toISOString().slice(0, 10)}`
-                this.$inertia.get(`/${params}`,
+                this.$inertia.visit(`/${params}`,
                  {
                     only: ['committed'],
                     preserveScroll: true,
