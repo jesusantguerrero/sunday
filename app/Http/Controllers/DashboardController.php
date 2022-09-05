@@ -56,7 +56,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Planner', [
             'scheduled' => ItemResource::collection(Item::getByCustomField(['date', $formattedDate], $request->user())),
-            'date' => $date->toDateTimeString()
+            'date' => $date->format('Y-m-d')
         ]);
     }
 
