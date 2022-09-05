@@ -3,8 +3,8 @@
     class="w-full overflow-hidden"
   >
     <div class="w-full ">
-      <controls :value="value" @input="$emit('input', $event)"></controls>
-      <grid
+      <Controls :value="value" @input="$emit('input', $event)"/>
+      <Grid
         :selected-date="value"
         :schedule="schedule"
         :allow-add="allowAdd"
@@ -13,8 +13,7 @@
         :allow-update="allowUpdate"
         @delete-called="deleteItem"
         @update-called="editItem"
-      >
-      </grid>
+      />
     </div>
   </div>
 </template>
@@ -23,8 +22,6 @@
 import { format } from "date-fns";
 import Controls from "./controls";
 import Grid from "./grid";
-import axios from "axios";
-import { MessageBox } from "element-ui";
 
 export default {
   props: {
@@ -65,10 +62,6 @@ export default {
     return {
       formData: {},
       currentTime: new Date(),
-      selectedDay: null,
-      horaActiva: 0,
-      modoManual: false,
-      mostrarTodos: false,
     };
   },
   created() {
@@ -77,10 +70,10 @@ export default {
     }, 1000);
   },
   computed: {
-    horaActual() {
+    currentHour() {
       return new Date().getHours();
     },
-    currentProgram() {
+    currentItem() {
       return this.schedule.find(program => {
         return this.isHourBetween(
           program.hora,
@@ -89,7 +82,7 @@ export default {
         );
       });
     },
-    nextProgram() {
+    nextItem() {
       return {};
     }
   },
@@ -97,10 +90,10 @@ export default {
     isHourBetween(horaInicial = "", horaFinal = "", fechaActual) {
       const primerahoraString = horaInicial.replace(":", "");
       const segundahoraString = horaFinal.replace(":", "");
-      const horaActualString = format(fechaActual, "HHmm");
+      const currentHourString = format(fechaActual, "HHmm");
       return (
-        horaActualString >= primerahoraString &&
-        horaActualString <= segundahoraString
+        currentHourString >= primerahoraString &&
+        currentHourString <= segundahoraString
       );
     },
 

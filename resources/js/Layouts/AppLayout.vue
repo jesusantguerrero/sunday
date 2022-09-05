@@ -404,7 +404,8 @@ export default {
     provide() {
         return {
             boardTypes: this.$page.props.boardTypes,
-            boardTemplates: this.$page.props.boardTemplates
+            boardTemplates: this.$page.props.boardTemplates,
+            users: this.$page.props.users
         }
     },
 

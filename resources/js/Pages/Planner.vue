@@ -34,7 +34,7 @@
 
                     <div class="mt-5 md:ml-6">
                         <schedule-view
-                            :value="localDate"
+                            :value="stringToDate(date)"
                             @input="getCommitsByDate"
                             :modes="modes"
                             :schedule="scheduled"
@@ -117,8 +117,7 @@
                 :type="boardType"
                 :record-data="openedItem"
                 :is-open="isItemModalOpen"
-            >
-            </item-modal>
+            />
         </div>
     </app-layout>
 </template>
@@ -129,7 +128,12 @@ import BoardSide from "../components/board/BoardSide";
 import ScheduleControls from "../components/schedule/controls";
 import ScheduleView from "../components/schedule";
 import ItemModal from "../components/board/ItemModal";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
+
+const stringToDate = (dateString) => {
+    const date =  parseISO(dateString+"T00:00")
+    return date;
+}
 
 export default {
     components: {
@@ -174,11 +178,6 @@ export default {
                 }
         },
     },
-    provide() {
-        return {
-            users: this.users
-        };
-    },
     data() {
         return {
             modes: ["daily", "weekly", "monthly", "quarter"],
@@ -188,17 +187,10 @@ export default {
             isLoading: false,
             openedItem: {},
             isItemModalOpen: false,
-            localDate: new Date(this.date)
         };
     },
     methods: {
-        setCommitDate() {
-            let date = null;
-            date = this.date.split("-");
-            date = new Date(this.date);
-            this.localDate = date;
-        },
-
+        stringToDate,
         getParams(date) {
             return `?date=${format(date, 'yyyy-MM-dd')}`;
         },

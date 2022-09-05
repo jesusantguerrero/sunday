@@ -83,7 +83,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/api/automations', AutomationController::class);
     Route::post('/api/automations/{id}/run', [AutomationController::class, 'run']);
     Route::apiResource('/api/automation-services', AutomationServiceController::class);
-    Route::apiResource('/api/automation-recipies', AutomationRecipeController::class);
+    Route::apiResource('/api/automation-recipes', AutomationRecipeController::class);
 
     // Automation Services
     Route::post('/services/google', [ServiceController::class, 'google']);

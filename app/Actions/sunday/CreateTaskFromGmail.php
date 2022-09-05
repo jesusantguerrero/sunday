@@ -8,7 +8,7 @@ use App\Models\Automation;
 use App\Models\Board;
 use App\Models\Item;
 use App\Models\Stage;
-use Google_Service_Gmail;
+use Google\Service\Gmail;
 use PhpMimeMailParser\Parser as EmailParser;
 
 class CreateTaskFromGmail
@@ -27,7 +27,7 @@ class CreateTaskFromGmail
         $track['historyId'] = $track['historyId'] ?? 0;
         $config = json_decode($automation->config);
         $client = GoogleService::getClient($automation->integration_id);
-        $service = new Google_Service_Gmail($client);
+        $service = new Gmail($client);
         $condition = isset($config->condition) && $config->value ? "$config->condition($config->value)" : "";
         if (!$condition) {
             $condition = $config->value ?? "";

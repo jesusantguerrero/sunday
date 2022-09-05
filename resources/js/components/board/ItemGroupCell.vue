@@ -107,7 +107,6 @@ import InputDate from "./cellTypes/Date";
 import InputPerson from "./cellTypes/Person";
 import InputTime from "./cellTypes/Time";
 import BoardSelector from './BoardSelector.vue';
-import { onClickOutside } from '@vueuse/core'
 
 export default {
     name: "ItemGroupCell",
