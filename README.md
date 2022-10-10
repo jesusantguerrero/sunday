@@ -33,7 +33,7 @@ ICDaily is a productivity web app to help you keep your tasks, track your time, 
 ![Boards](./resources/js/documentation/assets/images/img2.PNG)
 
 ## Motivation 
-
+Back in the day I was working in a project that had strong communication via Gmail, I set up an automation in Monday to load emails and map them into tasks. My free trial ended and [Jetstream](https://jetstream.laravel.com/2.x/introduction.html) was released. It was the perfect time to clone and see what new things Jetstream bring to laravel and extend Moday functionality all at the same time (or just an excuse for other side project?). 
 
 ## Sunday vs Zen
 If you noticed I have another similar productivity app called [Zen](https://zenboard.app/) in fact, Zen is is extracted from Sunday to be a more personal, minimal and lightweight version of it but as features were rolling out the differences were bigger they are antitesis from one another.
