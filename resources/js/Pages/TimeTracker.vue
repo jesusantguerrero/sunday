@@ -8,8 +8,7 @@
 
         <div class="">
             <div class="max-w-8xl mx-auto flex">
-                <time-entry-form :current="current" @stopped="reloadTracks">
-                </time-entry-form>
+                <time-entry-form :current="current" @stopped="reloadTracks" />
             </div>
 
             <div class="mt-10 items-container">
