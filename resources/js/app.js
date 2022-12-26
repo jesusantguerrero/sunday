@@ -10,6 +10,8 @@ import VueMultiselect from 'vue-multiselect'
 import { InertiaProgress } from "@inertiajs/progress";
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import FloatingVue from 'floating-vue'
+import ElementPlus from "element-plus";
+import 'element-plus/dist/index.css'
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -20,6 +22,7 @@ createInertiaApp({
         .use(plugin)
         .use(autoAnimatePlugin)
         .use(FloatingVue)
+        .use(ElementPlus)
         .component('InertiaProgress', InertiaProgress)
         .component('InertiaLink', Link)
         .component('Multiselect', VueMultiselect)

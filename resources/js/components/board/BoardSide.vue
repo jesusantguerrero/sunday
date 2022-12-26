@@ -6,6 +6,7 @@
 
         <div v-if="isExpanded">
             <WorkspaceSelector
+                v-if="false"
                 :current-workspace="pageProps.user.current_workspace"
                 :workspaces="pageProps.user.all_workspaces"
             />

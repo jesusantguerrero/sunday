@@ -32,66 +32,67 @@
         </template>
 
         <template v-else>
-            <div class="w-full h-8 px-2" v-if="isCustomField">
-                <component
-                    v-model="value"
-                    ref="input"
-                    :is="componentName"
-                    :users="users"
-                    :options="field.options"
-                    @saved="saveChanges()"
-                    @closed="isEditMode = false"
-                />
-            </div>
-
-            <div v-else class="flex items-center w-full h-full">
-                <div class="controls" v-if="showControls && item.board">
-                    <BoardSelector
-                        :options="item.board.stages"
-                        icon-class="fas fa-layer-group"
-                        v-model="item.stage"
+                <div class="w-full h-8 px-2" v-if="isCustomField">
+                    <component
+                        v-model="value"
+                        ref="input"
+                        :is="componentName"
+                        :users="users"
+                        :options="field.options"
+                        @saved="saveChanges()"
+                        @closed="isEditMode = false"
                     />
                 </div>
-                <input
-                    ref="input"
-                    type="text"
-                    class="w-full h-8 px-2 mx-0 border-none rounded-none form-input"
-                    :class="{ 'new-item': isTitle }"
-                    :name="`${index}-${fieldName}`"
-                    id=""
-                    :placeholder="placeholder"
-                    v-model="value"
-                    @blur="saveChanges()"
-                    @keydown.enter="saveItem"
-                />
-                <div class="flex h-full controls" v-if="showControls">
-                    <BoardSelector
-                        :options="boards"
-                        tooltip="Board"
-                        icon-class="fas fa-list"
-                        :show-label="false"
-                        v-model="item.board"
-                    />
-                    <NTooltip
-                        effect="dark"
-                        content="reminder date"
-                        placement="top"
-                    >
-                        <i class="mx-2 fas fa-clock"></i>
-                    </NTooltip>
-                    <NTooltip
-                        effect="dark"
-                        content="Delegate"
-                        placement="top"
-                    >
-                        <i class="mx-2 fas fa-user"></i>
-                    </NTooltip>
 
-                    <NTooltip effect="dark" content="Status" placement="top">
-                        <i class="mx-2 fas fa-tag"></i>
-                    </NTooltip>
+                <div v-else class="flex items-center w-full h-full">
+                    <div class="controls" v-if="showControls && item.board">
+                        <BoardSelector
+                            :options="item.board.stages"
+                            icon-class="fas fa-layer-group"
+                            v-model="item.stage"
+                        />
+                    </div>
+                    <input
+                        ref="input"
+                        type="text"
+                        class="w-full h-8 px-2 mx-0 border-none rounded-none form-input"
+                        :class="{ 'new-item': isTitle }"
+                        :name="`${index}-${fieldName}`"
+                        id=""
+                        :placeholder="placeholder"
+                        v-model="value"
+                        @blur="saveChanges()"
+                        @keydown.enter="saveItem"
+                    />
+                    <div class="flex h-full controls" v-if="showControls">
+                        <BoardSelector
+                            v-if="boards"
+                            :options="boards"
+                            tooltip="Board"
+                            icon-class="fas fa-list"
+                            :show-label="false"
+                            v-model="item.board"
+                        />
+                        <el-Tooltip
+                            effect="dark"
+                            content="reminder date"
+                            placement="top"
+                        >
+                            <i class="mx-2 fas fa-clock"></i>
+                        </el-Tooltip>
+                        <ElTooltip
+                            effect="dark"
+                            content="Delegate"
+                            placement="top"
+                        >
+                            <i class="mx-2 fas fa-user"></i>
+                        </ElTooltip>
+
+                        <ElTooltip effect="dark" content="Status" placement="top">
+                            <i class="mx-2 fas fa-tag"></i>
+                        </ElTooltip>
+                    </div>
                 </div>
-            </div>
         </template>
     </div>
 </template>
@@ -207,12 +208,12 @@ const isCustomField = computed(() => {
 const input = ref();
 function toggleEditMode() {
     state.isEditMode = !state.isEditMode;
-    nextTick(() => {
-        if (input.value) {
-            const inputEl = input.value.$el && !input.value.focus ? input.value.$el : input.value;
-            inputEl.focus();
-        }
-    });
+    // nextTick(() => {
+    //     // if (input.value) {
+    //         // const inputEl = input.value.$el && !input.value.focus ? input.value.$el : input.value;
+    //         // inputEl.focus();
+    //     // }s
+    // });
 }
 
 function saveChanges(type = "default") {

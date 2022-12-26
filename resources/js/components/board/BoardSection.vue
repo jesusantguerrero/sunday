@@ -1,10 +1,10 @@
 <template>
     <div class="px-8 pb-24">
         <header class="flex justify-between board__toolbar">
-            <BoardTitle 
+            <BoardTitle
                 class="w-full"
-                :board="board" 
-                @saved="updateBoardName" 
+                :board="board"
+                @saved="updateBoardName"
                 :automations="automations"
                 @run-automation="runAutomation"
             />
@@ -14,6 +14,7 @@
                     <multiselect
                         v-model="modeSelected"
                         ref="input"
+                        v-if="false"
                         :show-labels="false"
                         :options="viewsKeys"
                         class="w-full"
@@ -223,7 +224,7 @@ const kanbanData = computed(() => {
     const statusField = props.board.fields.find(
         field => field.name == "status"
     );
-    
+
     if (props.board.stages.length) {
         const quadrants = {};
         props.board.labels.forEach(label => {
