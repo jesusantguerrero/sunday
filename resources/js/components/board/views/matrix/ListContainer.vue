@@ -3,7 +3,7 @@
     <h4 class="font-bold text-gray-500 dark:text-gray-300">
         Checklist ({{ doneItems }} / {{ items ? items.length : 0 }})
     </h4>
-   <draggable v-model="items" handle=".handle">
+   <draggable :model-value="items" @update:modelValue="$emit('update:items')" handle=".handle">
         <div
             v-for="(check, index) in items"
             :key="check.id"

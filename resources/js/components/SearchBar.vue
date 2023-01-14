@@ -3,8 +3,8 @@
     <input
         type="search"
         class="w-full p-2 focus:outline-none"
-        v-model="value"
-        @input="emitInput"
+        :model-value="value"
+        @update:modelValue="emitInput"
         placeholder="Filter boards ..."
     />
     <button class="p-2 text-white bg-purple-400">

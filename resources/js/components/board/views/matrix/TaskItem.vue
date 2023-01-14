@@ -130,7 +130,7 @@
           v-html="task.description"
         />
         <div class="mt-5 task-item__checklist">
-          <checklist-container :items="task.checklist" :task="task"  @updated="updateItems"></checklist-container>
+          <ListContainer v-model:items="task.checklist" :task="task"  @updated="updateItems" />
         </div>
       </div>
     </el-collapse-transition>
@@ -141,7 +141,7 @@
 
 <script>
 import { toRefs, computed, reactive, ref } from "vue"
-import ChecklistContainer from "./ListContainer.vue"
+import ListContainer from "./ListContainer.vue"
 import PersonSelect from "./PersonSelect.vue"
 import TagsSelect from "./TagsSelect.vue"
 import DateSelect from "./DateSelect.vue"
@@ -151,7 +151,7 @@ import { useDateTime } from "@/utils/useDateTime";
 
 export default {
   components: {
-    ChecklistContainer,
+    ListContainer,
     PersonSelect,
     TagsSelect,
     DateSelect,
