@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Libraries\GoogleService;
 use App\Models\AutomationService;
 use App\Models\Integration;
+use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ServiceController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $user = $request->user();
 
         return Inertia::render('Integrations', [
@@ -26,6 +28,7 @@ class ServiceController extends Controller
     public function google(Request $request)
     {
        return GoogleService::requestAccessToken((object) $request->post('credentials'), $request->user());
+
     }
 
     public function acceptOauth(Request $request)

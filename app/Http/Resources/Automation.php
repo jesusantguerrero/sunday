@@ -18,6 +18,7 @@ class Automation extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'recipe' => $this->recipe,
+            'sentence' => $this->sentence,
             'service_logo' => $this->recipe ? $this->recipe->service->logo : "",
             'service_name' => $this->recipe ? $this->recipe->service->name : "",
         ];

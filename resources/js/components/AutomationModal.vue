@@ -195,7 +195,6 @@ export default {
             services: [],
             recipes: [],
             integrations: [],
-            calendarList: [],
             emailConditions: [
                 {
                     id: "from:",

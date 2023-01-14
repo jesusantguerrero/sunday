@@ -52,13 +52,14 @@
                 ></span>
                 <!-- <span class="ml-2 toolbar-buttons">
                     <i class="fa fa-thumbtack"></i
-                ></span> -->
-                <!-- <span class="ml-2 toolbar-buttons">
+                ></span>
+                <span class="ml-2 toolbar-buttons">
                     <i class="fa fa-filter"></i>
                 </span>
-                <span class="ml-2 toolbar-buttons">
+                -->
+                <span class="ml-2 toolbar-buttons" :class="{active: searchOptions.sort}" @click="clearSort()">
                     <i class="fa fa-sort"></i>
-                </span> -->
+                </span>
             </div>
         </header>
 

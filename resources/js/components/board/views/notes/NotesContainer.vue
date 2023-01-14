@@ -11,7 +11,7 @@
                     <span>
                         Notes
                     </span>
-                    <span class="ml-4 text-gray-300"> {{ kanbanData.backlog.childs.length}} </span>
+                    <span class="ml-4 text-gray-300"> {{ mails.length}} </span>
                 </div>
                 <el-dropdown trigger="click"  @click.native.prevent>
                     <div class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200">
@@ -27,12 +27,12 @@
             </div>
             <div class="pt-5 pr-4">
                 <draggable
-                    class="grid grid-cols-6 gap-4"
+                    class="grid  sm:grid-cols-2 md:grid-cols-4 gap-4"
                     :list="kanbanData.backlog.childs"
                     group="tasks"
                     @change="($event) => changeStatus($event, quadrant)"
                 >
-                    <div v-for="task in kanbanData.backlog.childs" :key="`task-${task.id}`" :class="`task-item p-5 bg-${task.color}-300`">
+                    <div v-for="task in mails" :key="`task-${task.id}`" :class="`task-item p-5 bg-white overflow-auto ic-scroller`">
                         <label class="checkbox-label">
                             <span class="font-bold">
                                 <!-- [{{ task.stage.name }}] -->
@@ -43,9 +43,7 @@
                             </span>
                         </label>
 
-                        <div v-html="task.snippet" class="note-body">
-
-                        </div>
+                        <div v-html="task.snippet" class="note-body bg-white" />
                     </div>
                 </draggable>
                 <!-- <item-group-cell
@@ -86,6 +84,11 @@ export default {
     components: {
         ItemGroupCell,
         Draggable
+    },
+    computed: {
+        mails() {
+            return this.kanbanData.backlog.childs.filter((item) => item.sender)
+        }
     },
     methods: {
         addItem(quadrant) {

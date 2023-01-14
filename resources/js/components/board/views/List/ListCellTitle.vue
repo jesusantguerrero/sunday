@@ -17,7 +17,7 @@
                 name=""
                 id=""
                 v-model="item.done"
-                @change="emit('saved', item, 'done', item.done)"
+                @change="$emit('saved', item, 'done', item.done)"
             />
         </div>
         <!-- /Done checkbox -->

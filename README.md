@@ -8,9 +8,9 @@ ICDaily is a productivity web app to help you keep your tasks, track your time, 
 
 ## The goals
 
-* **EASY and Fast** Provide an easy way to keep your taks assing priorities and track your time using promodoro.
+* **EASY and Fast** Provide an easy way to keep your taks assing priorities and track your time using pomodoro.
 
-* **One to rule them all** Promodoro timer, Toggl tracker, Heisenhower matrix and Monday Automations
+* **One to rule them all** Promodoro timer, Toggl tracker, Eisenhower matrix and Monday Automations
 
 > This will be like Monday but more chulo
  
@@ -26,11 +26,21 @@ ICDaily is a productivity web app to help you keep your tasks, track your time, 
 * List / Board layout
 * And more...
 
-![ICNOTE](./resources/js/documentation/assets/images/img3.PNG)
+![Dashboard](./resources/js/documentation/assets/images/img3.PNG)
 > You'll use real checkboxes not images
 
 ## Captures
-![ICNOTE](./resources/js/documentation/assets/images/img2.PNG)
+![Boards](./resources/js/documentation/assets/images/img2.PNG)
+
+## Motivation 
+Back in the day I was working in a project that had strong communication via Gmail, I set up an automation in Monday to load emails and map them into tasks. My free trial ended and [Jetstream](https://jetstream.laravel.com/2.x/introduction.html) was released. It was the perfect time to clone and see what new things Jetstream bring to laravel and extend Moday functionality all at the same time (or just an excuse for other side project?). 
+
+## Sunday vs Zen
+If you noticed I have another similar productivity app called [Zen](https://zenboard.app/) in fact, Zen is is extracted from Sunday to be a more personal, minimal and lightweight version of it but as features were rolling out the differences were bigger they are antitesis from one another.
+
+Sunday is a self-hosted general purpose productivity app inspired in Monday. with the support for Teams, Members, Spaces (Coming soon?), Integrations with Gmail and Calendar is more focused in Job relared activities.
+
+Zen aims to be a flow, another dimension you unblocking your productivity chackras and facing Enlightenment ⛩️, na, just kidding. But seriously it is an unique opinionated behavior on how to be productive in a personal level. It is the relation between me(the user), my goals and my time. The is a work in process on how to connect it with a bigger picture(Projects, Plans, Habits).
 
 ## Installation
 
@@ -91,6 +101,10 @@ npm run watch
 
 ## Related projects
 - [Zen](https://zenboard.app/)
+
+## Other self-hosted projects
+- [Loger](https://github.com/jesusantguerrero/atmosphere)
+
 
 ## License
 [MIT license](https://opensource.org/licenses/MIT).

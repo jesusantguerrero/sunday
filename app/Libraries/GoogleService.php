@@ -46,6 +46,7 @@ class GoogleService
             $integration = Integration::find($integrationId);
             $integration->token = encrypt($data->refresh_token);
             session(['g_token', json_encode($data)]);
+
             return;
         };
     }
@@ -61,8 +62,9 @@ class GoogleService
         $client->setAccessToken($accessToken);
 
         if ($client->isAccessTokenExpired()) {
-            if ($refreshToken = $client->refreshToken(decrypt($integration->token))) {
-                $accessToken = $client->fetchAccessTokenWithRefreshToken($refreshToken);
+            dd($accessToken);
+            if ($refreshToken = $client->getRefreshToken()) {
+                $tokenResponse = $client->fetchAccessTokenWithRefreshToken($refreshToken);
                 self::setTokens((object) [
                     'access_token' => $accessToken,
                     'refresh_token' => $refreshToken
@@ -70,12 +72,24 @@ class GoogleService
                 $integration->user,
                 $integrationId);
                 $client->setAccessToken($accessToken);
+
             }
         }
-
         return $client;
     }
 
+    public static function storeIntegration($data, $user) {
+        Integration::updateOrCreate([
+            "team_id" => $user->current_team_id,
+            "user_id" => $user->id,
+            "name" => $data->service_name,
+            "automation_service_id" => $data->service_id
+        ], [
+            "hash" => $user->email
+        ]);
+    }
+
+    // services
     public static function createItemFromCalendar($automationId, $afterResponse = null) {
         $automation = Automation::find($automationId);
         echo "$automation->name $automation->id \n";
@@ -86,7 +100,7 @@ class GoogleService
 
     public static function listCalendars(int $integrationId) {
         $client = self::getClient($integrationId);
-        $service = new Google_Service_Calendar($client);
+        $service = new Calendar($client);
         return $service->calendarList->listCalendarList();
     }
 

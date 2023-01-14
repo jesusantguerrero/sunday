@@ -52,8 +52,11 @@
                                 <div class="head">
                                     {{ service.name }} {{ service.hash }}
                                 </div>
-                                <div class="tagline">
-                                    {{ service.hash }} {{ service.created_at }}
+                                <div class="tagline text-gray-400">
+                                    Rules:
+                                    <span v-for="automation in service.automations">
+                                        {{ automation.name }}
+                                    </span>
                                 </div>
                             </div>
 
@@ -168,7 +171,6 @@ export default {
                 service_id: service.id,
                 service_name: service.name,
             };
-
             axios({
                 url: "/services/google",
                 method: "post",
