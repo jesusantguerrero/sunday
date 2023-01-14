@@ -16,6 +16,7 @@ use App\Http\Controllers\StandupController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TimeEntryController;
+use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,6 +43,7 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/planner', [DashboardController::class, 'planner'])->name('planner');
+    Route::put('/current-workspace', [WorkspaceController::class, 'switchWorkspace']);
 
     // Apps
     Route::get('/notes', [DashboardController::class, 'notes'])->name('notes');
@@ -58,6 +60,7 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
 
     // Integration
     Route::get('/integrations', [ServiceController::class, 'index'])->name('integrations');
+    Route::post('/services/google', [ServiceController::class, 'google']);
 
     // Tracker
     Route::get('/tracker', [TimeEntryController::class, 'list'])->name('tracker');
@@ -85,8 +88,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/api/automation-services', AutomationServiceController::class);
     Route::apiResource('/api/automation-recipes', AutomationRecipeController::class);
 
-    // Automation Services
-    Route::post('/services/google', [ServiceController::class, 'google']);
     Route::get('/services/messages', [ServiceController::class, 'getMessages']);
     Route::get('/api/calendars', [ServiceController::class, 'listCalendars']);
 
@@ -97,4 +98,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::apiResource('/api/time-entries', TimeEntryController::class);
     Route::post('/api/time-entries/bulk/delete', [TimeEntryController::class, 'bulkDelete']);
     Route::apiResource('/api/settings', SettingController::class);
+
+    // Workspaces
+    Route::apiResource('/api/workspaces', WorkspaceController::class);
 });

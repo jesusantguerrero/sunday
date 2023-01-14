@@ -43,7 +43,7 @@
                         </div>
                     </draggable>
                     <item-group-cell
-                        class="w-full flex items-center"
+                        class="flex items-center w-full"
                         field-name="title"
                         :is-title="true"
                         :index="-1"
@@ -68,14 +68,14 @@
                     >
                         <template slot="singleLabel" slot-scope="props">
                             <span class="option__title">
-                                <i class="fa fa-briefcase mr-2"></i>
+                                <i class="mr-2 fa fa-briefcase"></i>
                                 {{ props.option.name }}
                             </span>
                         </template>
                         <template slot="option" slot-scope="props">
                             <div class="option__desc">
                                 <span class="option__title">
-                                    <i class="fa fa-briefcase mr-2"></i>
+                                    <i class="mr-2 fa fa-briefcase"></i>
                                     {{ props.option.name }}
                                 </span>
                             </div>
@@ -98,14 +98,14 @@
                     >
                         <template slot="singleLabel" slot-scope="props">
                             <span class="option__title">
-                                <i class="fa fa-briefcase mr-2"></i>
+                                <i class="mr-2 fa fa-briefcase"></i>
                                 {{ props.option.name }}
                             </span>
                         </template>
                         <template slot="option" slot-scope="props">
                             <div class="option__desc">
                                 <span class="option__title">
-                                    <i class="fa fa-briefcase mr-2"></i>
+                                    <i class="mr-2 fa fa-briefcase"></i>
                                     {{ props.option.name }}
                                 </span>
                             </div>
@@ -121,7 +121,7 @@
                     <div
                         v-for="(field, index) in visibleFields"
                         :key="field.name"
-                        class="form-group form-cell pb-5"
+                        class="pb-5 form-group form-cell"
                     >
                         <label for=""> {{ field.title }} </label>
                         <item-group-cell
@@ -149,10 +149,10 @@
 </template>
 
 <script>
-import DialogModal from "../../Jetstream/DialogModal";
-import ItemGroupCell from "./ItemGroupCell";
-import PrimaryButton from "../../Jetstream/Button";
-import Draggable from "vuedraggable";
+import DialogModal from "../../Jetstream/DialogModal.vue";
+import ItemGroupCell from "./ItemGroupCell.vue";
+import PrimaryButton from "../../Jetstream/Button.vue";
+import { VueDraggableNext as Draggable } from "vue-draggable-next"
 
 export default {
     components: {
@@ -314,17 +314,8 @@ export default {
             ]).then(([stagesResponse, fieldsResponse]) => {
                 let fields = fieldsResponse.data.data
                 const stages = stagesResponse.data.data
-                this.$set(
-                    this.formData.board,
-                    "stages",
-                    stages
-                );
-
-                this.$set(
-                    this.formData,
-                    "stage",
-                    stages[0]
-                );
+                this.formData.board["stages"] = stages
+                this.formData["stage"] = stages[0]
 
                 const fieldNames = fields.map(field => field.name);
                 this.typeFields.forEach((field) => {
@@ -333,12 +324,7 @@ export default {
                     }
                 });
 
-
-                this.$set(
-                    this.formData.board,
-                    "fields",
-                    fields
-                );
+                this.formData.board["fields"] = fields
                 this.isLoading = false
             });
         },
@@ -360,7 +346,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .form-control {
     @apply w-full bg-gray-100 border-gray-400 border-2 px-4;
     height: 37px;

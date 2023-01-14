@@ -1,14 +1,14 @@
 <template>
-    <div class="item-container section-card committed my-5">
-        <header class="font-bold text-lg text-cool-gray-600">
+    <div class="my-5 item-container section-card committed">
+        <header class="text-lg font-bold text-cool-gray-600">
             {{ title }}
         </header>
         <slot> </slot>
-        <div class="body text-gray-600 mb-5">
+        <div class="mb-5 text-gray-600 body">
             <item-group-cell
                 ref="ItemGroupCell"
                 v-if="allowAdd"
-                class="w-full flex items-center mb-10"
+                class="flex items-center w-full mb-10"
                 field-name="title"
                 :is-title="true"
                 :index="-1"
@@ -38,7 +38,7 @@
 
             <div
                 v-if="!tasks || !tasks.length"
-                class="task-item text-center font-bold text-gray-400"
+                class="font-bold text-center text-gray-400 task-item"
             >
                 <slot name="empty">
                     There's no items to show
@@ -49,8 +49,8 @@
 </template>
 
 <script>
-import ItemContainerTask from "./ItemContainerTask";
-import ItemGroupCell from "./ItemGroupCell";
+import ItemContainerTask from "./ItemContainerTask.vue";
+import ItemGroupCell from "./ItemGroupCell.vue";
 
 export default {
     components: {
@@ -106,7 +106,7 @@ export default {
                     "filter[board_id]": this.newTask.board.id
                 }
             }).then(({ data }) => {
-                this.$set(this.newTask, "fieldsData", data.data);
+                this.newTask["fieldsData"] = data.data;
             });
         },
 

@@ -13,6 +13,27 @@ const PROMODORO_TEMPLATE = [
     'longBreak'
 ]
 
+export const MODES = {
+    session: {
+        name: "session",
+        color: "bg-red-500",
+        minutes: SESSION_MINUTES,
+        seconds: TIME_SECONDS
+    },
+    break: {
+        name: "break",
+        color: "bg-blue-500",
+        minutes: BREAK_MINUTES,
+        seconds: TIME_SECONDS
+    },
+    longBreak: {
+        name: "long",
+        color: "bg-green-500",
+        minutes: LONG_BREAK_MINUTES,
+        seconds: TIME_SECONDS
+    }
+}
+
 export default {
     props: {
         settings: {
@@ -28,26 +49,7 @@ export default {
         return {
             audio: null,
             alarmSound: "alarmwatch",
-            modes: {
-                session: {
-                    name: "session",
-                    color: "red",
-                    minutes: SESSION_MINUTES,
-                    seconds: TIME_SECONDS
-                },
-                break: {
-                    name: "break",
-                    color: "blue",
-                    minutes: BREAK_MINUTES,
-                    seconds: TIME_SECONDS
-                },
-                longBreak: {
-                    name: "long",
-                    color: "green",
-                    minutes: LONG_BREAK_MINUTES,
-                    seconds: TIME_SECONDS
-                }
-            },
+            modes: MODES,
             defaults: {
                 SESSION_MINUTES,
                 BREAK_MINUTES,

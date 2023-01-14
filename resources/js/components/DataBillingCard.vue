@@ -107,7 +107,7 @@ export default {
                 url: `/v2/subscriptions/${data.subscriptionID}/save`,
                 data
             }).then(() => {
-                this.fireworks();
+                fireworks();
             })
         }
     }

@@ -17,14 +17,14 @@
 
                     <div class="ml-4 leading-tight">
                         <div>{{ $page.props.user.name }}</div>
-                        <div class="text-gray-700 text-sm">{{ $page.props.user.email }}</div>
+                        <div class="text-sm text-gray-700">{{ $page.props.user.email }}</div>
                     </div>
                 </div>
             </div>
 
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="name" value="Team Name" />
-                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autofocus />
+                <jet-input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
         </template>
@@ -42,12 +42,12 @@
 </template>
 
 <script>
-    import JetActionMessage from './../../Jetstream/ActionMessage'
-    import JetButton from './../../Jetstream/Button'
-    import JetFormSection from './../../Jetstream/FormSection'
-    import JetInput from './../../Jetstream/Input'
-    import JetInputError from './../../Jetstream/InputError'
-    import JetLabel from './../../Jetstream/Label'
+    import JetActionMessage from './../../Jetstream/ActionMessage.vue'
+    import JetButton from './../../Jetstream/Button.vue'
+    import JetFormSection from './../../Jetstream/FormSection.vue'
+    import JetInput from './../../Jetstream/Input.vue'
+    import JetInputError from './../../Jetstream/InputError.vue'
+    import JetLabel from './../../Jetstream/Label.vue'
 
     export default {
         components: {

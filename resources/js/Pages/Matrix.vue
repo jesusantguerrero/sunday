@@ -1,10 +1,10 @@
 <template>
     <app-layout :boards="boards">
         <div class="">
-            <div class="max-w-8xl mx-auto sm:pr-6 lg:pr-8 flex flex-col md:flex-row">
+            <div class="flex flex-col mx-auto max-w-8xl sm:pr-6 lg:pr-8 md:flex-row">
                 <!-- Main board -->
-                <div class="w-100 md:w-7/12 lg:w-8/12 md:mx-4 pt-12">
-                    <div class="flex justify-between flex-col md:flex-row mx-2 md:mr-2 md:ml-0">
+                <div class="pt-12 w-100 md:w-7/12 lg:w-8/12 md:mx-4">
+                    <div class="flex flex-col justify-between mx-2 md:flex-row md:mr-2 md:ml-0">
                         <span class="text-3xl font-bold"> Today's Todos </span>
 
                         <div class="flex items-center">
@@ -19,27 +19,27 @@
                                 >
                                 <template slot="singleLabel" slot-scope="props">
                                     <span class="option__title">
-                                            <i  class="fa fa-briefcase mr-2"></i>
+                                            <i  class="mr-2 fa fa-briefcase"></i>
                                             {{ props.option }}
                                         </span>
                                 </template>
                                 <template slot="option" slot-scope="props">
                                     <div class="option__desc">
                                         <span class="option__title">
-                                            <i  class="fa fa-briefcase mr-2"></i>
+                                            <i  class="mr-2 fa fa-briefcase"></i>
                                             {{ props.option }}
                                         </span>
                                     </div>
                                 </template>
                                 </multiselect>
                             </div>
-                            <div class="controls h-10 bg-purple-700 rounded-lg">
+                            <div class="h-10 bg-purple-700 rounded-lg controls">
                                 <button
                                     v-for="mode in modes"
                                     :key="mode"
                                     @click="modeSelected=mode"
                                     :class="{'bg-purple-400': mode == modeSelected }"
-                                    class="px-8 h-full rounded-lg text-white capitalize">
+                                    class="h-full px-8 text-white capitalize rounded-lg">
                                         {{ mode }}
                                 </button>
                             </div>
@@ -76,10 +76,10 @@
                 <!-- End of main board -->
 
                 <!-- Right Side -->
-                <div class="w-100 md:w-5/12 lg:w-4/12 md:ml-4 pt-12">
-                    <span class="text-3xl ml-2 font-bold"> Tools </span>
+                <div class="pt-12 w-100 md:w-5/12 lg:w-4/12 md:ml-4">
+                    <span class="ml-2 text-3xl font-bold"> Tools </span>
 
-                      <div class="section-card committed mt-5">
+                      <div class="mt-5 section-card committed">
                          <div :class="`bg-${promodoroColor}-400 text-gray-600 font-bold px-0`">
                             <promodoro
                                 ref="Promodoro"
@@ -93,15 +93,15 @@
                     </div>
 
                     <div class="section-card committed">
-                        <header class="bg-blue-400 text-white font-bold flex justify-between">
+                        <header class="flex justify-between font-bold text-white bg-blue-400">
                             <span>
                                 Links
                             </span>
-                            <button class="bg-transparent text-white" @click="isLinkFormOpen = !isLinkFormOpen">
+                            <button class="text-white bg-transparent" @click="isLinkFormOpen = !isLinkFormOpen">
                                 <i class="fa fa-plus"></i>
                             </button>
                         </header>
-                         <div class="body bg-blue-400 text-gray-600">
+                         <div class="text-gray-600 bg-blue-400 body">
                              <link-viewer
                                 :links="links"
                                 @edit="openLinkForm"
@@ -111,20 +111,20 @@
                     </div>
 
                     <div class="section-card committed">
-                        <header class="bg-blue-400 text-white font-bold flex justify-between">
+                        <header class="flex justify-between font-bold text-white bg-blue-400">
                             <span>
                                 Agenda
                             </span>
-                            <inertia-link class="bg-transparent text-white" href="/planner">
+                            <inertia-link class="text-white bg-transparent" href="/planner">
                                 Go to Planner
                             </inertia-link>
                         </header>
-                         <div class="body bg-blue-400 text-gray-600">
+                         <div class="text-gray-600 bg-blue-400 body">
                             <div
-                                class="text-white cursor-pointer hover:bg-blue-500 p-2 rounded-md"
+                                class="p-2 text-white rounded-md cursor-pointer hover:bg-blue-500"
                                 v-for="event in agenda"
                                 :key="`event-${event.id}`">
-                                    <span class="font-bold mr-2">
+                                    <span class="mr-2 font-bold">
                                         {{event.time }}
                                     </span>
                                     <span class="capitalize">
@@ -182,18 +182,18 @@
 </template>
 
 <script>
-    import AppLayout from './../Layouts/AppLayout'
-    import BoardSide from "../components/board/BoardSide"
-    import BoardItemContainer from "../components/board/ItemContainer"
-    import ScheduleControls from "../components/schedule/controls";
-    import ScheduleView from "../components/schedule"
-    import Promodoro from "../components/promodoro/index"
-    import DialogModal from "../Jetstream/DialogModal"
-    import LinkFormModal from "../components/links/Form"
-    import LinkViewer from "../components/links/Viewer"
-    import PrimaryButton from "../Jetstream/Button"
+    import AppLayout from './../Layouts/AppLayout.vue'
+    import BoardSide from "../components/board/BoardSide.vue"
+    import BoardItemContainer from "../components/board/ItemContainer.vue"
+    import ScheduleControls from "../components/schedule/controls.vue";
+    import ScheduleView from "../components/schedule/index.vue"
+    import Promodoro from "../components/promodoro/index.vue"
+    import DialogModal from "../Jetstream/DialogModal.vue"
+    import LinkFormModal from "../components/links/Form.vue"
+    import LinkViewer from "../components/links/Viewer.vue"
+    import PrimaryButton from "../Jetstream/Button.vue"
     import { subDays, toDate, format } from "date-fns";
-    import { uniq, orderBy } from "lodash-es";
+    import { uniq, orderBy } from "lodash";
 
     export default {
         components: {

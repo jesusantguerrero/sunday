@@ -1,54 +1,47 @@
 <template>
-<el-date-picker
-    v-model="localValue"
+<DatePicker
+    v-model:value="localValue"
     ref="input"
     type="date"
-    @blur="$emit('closed')"
     input-class="w-full"
     placeholder="selecciona una fecha"
+    @blur="$emit('closed')"
 />
 </template>
 
-<script>
-import mixins from "./mixin";
+<script setup>
+import { cellProps, formatValue } from "./mixin";
+import { computed } from "vue";
+import { NDatePicker as DatePicker } from "naive-ui"
 
-export default {
-    mixins: [mixins],
-    props: {
-        value: {
-            type: [Date, String]
-        },
-        users: {
-            type: Array,
-            default() {
-                return []
-            }
-        }
+const emit = defineEmits(['update:modelValue', 'saved', 'closed'])
+const props = defineProps({
+    ...cellProps,
+    modelValue: {
+        type: [Date, String]
     },
-    data() {
-        return {
-            localValue: ""
-        }
-    },
-    watch: {
-        value: {
-            handler() {
-                if (this.value) {
-                    this.localValue = this.formatValue(this.value, 'date', 'read');
-                }
-            },
-            immediate: true
-        },
-        localValue() {
-             if (this.formatValue(this.localValue, 'date', 'read') != this.formatValue(this.value, 'date', 'read')) {
-                this.$emit('input', this.localValue)
-                this.$emit('saved', 'date')
-            } else {
-                this.$emit('closed')
-            }
+    users: {
+        type: Array,
+        default() {
+            return []
         }
     }
-};
+});
+
+const localValue = computed({
+    set(value) {
+        const date = new Date(value)
+        if (formatValue(date, 'date', 'read') != formatValue(props.modelValue, 'date', 'read')) {
+            emit('update:modelValue', date)
+            emit('saved', 'date')
+        } else {
+            emit('closed')
+        }
+    },
+    get() {
+        return props.modelValue ? formatValue(props.modelValue, 'date', 'read') : null;
+    }
+})
 </script>
 
 <style lang="scss">

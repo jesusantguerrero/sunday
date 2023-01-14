@@ -29,7 +29,7 @@
 
 <script>
 import { isToday, format } from "date-fns";
-import GridItem from "./grid-item";
+import GridItem from "./grid-item.vue";
 const showEmptySlots = false;
 
 export default {

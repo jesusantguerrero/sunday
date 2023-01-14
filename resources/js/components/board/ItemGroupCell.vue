@@ -9,341 +9,230 @@
             class="new-item-button"
             @click="toggleEditMode()"
         >
-            <i class="fa fa-plus mr-3"></i>
+            <i class="mr-3 fa fa-plus"></i>
             <span>
                 {{ placeholder }}
             </span>
         </div>
 
         <template v-else-if="!isEditMode">
-            <link-preview
-                    v-if="field.type == 'url' && displayValue"
-                    :value="displayValue"
-                    @edit="toggleEditMode()"
-                >
-            </link-preview>
+            <LinkPreview
+                v-if="field.type == 'url' && displayValue"
+                :value="displayValue"
+                @edit="toggleEditMode()"
+            />
             <span
                 v-else
                 @click="toggleEditMode()"
                 :title="displayValue"
-                class="w-full h-7 text-sm inline-block border-2 border-transparent hover:border-gray-300 border-dashed cursor-pointer px-2 overflow-hidden"
+                class="inline-block w-full px-2 overflow-hidden text-sm border-2 border-transparent border-dashed cursor-pointer h-7 hover:border-gray-300"
             >
                 {{ displayValue }}
             </span>
         </template>
 
         <template v-else>
-            <div class="h-8 px-2 w-full" v-if="isCustomField">
-                <component
-                    v-model="value"
-                    ref="input"
-                    :is="component"
-                    :users="users"
-                    :options="field.options"
-                    @saved="saveChanges"
-                    @closed="isEditMode = false"
-                />
-            </div>
-
-            <div v-else class="flex h-full w-full items-center">
-                <div class="controls" v-if="showControls && item.board">
-                    <board-selector
-                        :options="item.board.stages"
-                        icon-class="fas fa-layer-group"
-                        v-model="item.stage"
-                    >
-                    </board-selector>
+                <div class="w-full h-8 px-2" v-if="isCustomField">
+                    <component
+                        v-model="value"
+                        ref="input"
+                        :is="componentName"
+                        :users="users"
+                        :options="field.options"
+                        @saved="saveChanges()"
+                        @closed="isEditMode = false"
+                    />
                 </div>
-                <input
-                    ref="input"
-                    type="text"
-                    class="form-input h-8 px-2 mx-0 border-none rounded-none w-full"
-                    :class="{ 'new-item': isTitle }"
-                    :name="`${index}-${fieldName}`"
-                    id=""
-                    :placeholder="placeholder"
-                    v-model="value"
-                    @blur="saveChanges()"
-                    @keydown.enter="saveItem"
-                />
-                <div class="controls flex h-full" v-if="showControls">
-                    <board-selector
-                        :options="boards"
-                        tooltip="Board"
-                        icon-class="fas fa-list"
-                        :show-label="false"
-                        v-model="item.board"
-                    >
-                    </board-selector>
-                    <el-tooltip
-                        effect="dark"
-                        content="reminder date"
-                        placement="top"
-                    >
-                        <i class="fas fa-clock mx-2"></i>
-                    </el-tooltip>
-                    <el-tooltip
-                        effect="dark"
-                        content="Delegate"
-                        placement="top"
-                    >
-                        <i class="fas fa-user mx-2"></i>
-                    </el-tooltip>
 
-                    <el-tooltip effect="dark" content="Status" placement="top">
-                        <i class="fas fa-tag mx-2"></i>
-                    </el-tooltip>
+                <div v-else class="flex items-center w-full h-full">
+                    <div class="controls" v-if="showControls && item.board">
+                        <BoardSelector
+                            :options="item.board.stages"
+                            icon-class="fas fa-layer-group"
+                            v-model="item.stage"
+                        />
+                    </div>
+                    <input
+                        ref="input"
+                        type="text"
+                        class="w-full h-8 px-2 mx-0 border-none rounded-none form-input"
+                        :class="{ 'new-item': isTitle }"
+                        :name="`${index}-${fieldName}`"
+                        id=""
+                        :placeholder="placeholder"
+                        v-model="value"
+                        @blur="saveChanges()"
+                        @keydown.enter="saveItem"
+                    />
+                    <div class="flex h-full controls" v-if="showControls">
+                        <BoardSelector
+                            v-if="boards"
+                            :options="boards"
+                            tooltip="Board"
+                            icon-class="fas fa-list"
+                            :show-label="false"
+                            v-model="item.board"
+                        />
+                        <el-Tooltip
+                            effect="dark"
+                            content="reminder date"
+                            placement="top"
+                        >
+                            <i class="mx-2 fas fa-clock"></i>
+                        </el-Tooltip>
+                        <ElTooltip
+                            effect="dark"
+                            content="Delegate"
+                            placement="top"
+                        >
+                            <i class="mx-2 fas fa-user"></i>
+                        </ElTooltip>
+
+                        <ElTooltip effect="dark" content="Status" placement="top">
+                            <i class="mx-2 fas fa-tag"></i>
+                        </ElTooltip>
+                    </div>
                 </div>
-            </div>
         </template>
     </div>
 </template>
 
-<script>
-import { format, toDate } from "date-fns";
-import LinkPreview from "./cellTypes/LinkPreview";
-import InputLabel from "./cellTypes/Label";
-import InputDate from "./cellTypes/Date";
-import InputPerson from "./cellTypes/Person";
-import InputTime from "./cellTypes/Time";
+<script setup>
+import LinkPreview from "./cellTypes/LinkPreview.vue";
+import InputLabel from "./cellTypes/Label.vue";
+import InputDate from "./cellTypes/Date.vue";
+import InputPerson from "./cellTypes/Person.vue";
+import InputTime from "./cellTypes/Time.vue";
+import CellSummaryProgress from "./cellTypes/CellSummaryProgress.vue";
 import BoardSelector from './BoardSelector.vue';
+import { NTooltip } from "naive-ui";
+import { computed, inject, nextTick, reactive, toRefs, watch, onMounted, ref } from "vue";
+import { formatValue } from "./cellTypes/mixin";
 
-export default {
-    name: "ItemGroupCell",
-    inject: ["users"],
-    components: {
-        InputDate,
-        InputLabel,
-        InputPerson,
-        InputTime,
-        LinkPreview,
-        BoardSelector
+const users = inject('users', [])
+const props = defineProps({
+    fieldName: {
+        type: String
     },
-    props: {
-        fieldName: {
-            type: String
-        },
-        field: {
-            type: Object,
-            default() {
-                return {};
-            }
-        },
-        fieldType: {
-            type: String,
-            default: "text"
-        },
-        item: {
-            type: Object
-        },
-        index: {
-            type: Number
-        },
-        isNew: {
-            type: Boolean
-        },
-        isTitle: {
-            type: Boolean
-        },
-        showControls: {
-            type: Boolean
-        },
-        boards: {
-            type: Array,
-            default() {
-                return []
-            }
-        },
-        closeOnBlur: {
-            type: Boolean,
-            default: true
-        },
-        placeholder: {
-            type: String,
-            default: "Add item"
+    field: {
+        type: Object,
+        default() {
+            return {};
         }
     },
-    watch: {
-        item: {
-            handler(item) {
-                if (item[this.fieldName] != this.value) {
-                    const field =
-                        item.fields &&
-                        item.fields.find(
-                            field => field.field_name == this.fieldName
-                        );
-                    item[this.fieldName] =
-                        item[this.fieldName] || (field && field.value);
-                    this.value = this.formatValue(
-                        item[this.fieldName],
-                        this.field ? this.field.type : "default",
-                        "read"
-                    );
-                }
-            },
-            deep: true,
-            immediate: true
-        },
-        selectValue() {
-            if (this.field.type == "person") {
-                this.value = this.selectValue;
-                this.saveChanges();
-            }
+    fieldType: {
+        type: String,
+        default: "text"
+    },
+    item: {
+        type: Object
+    },
+    index: {
+        type: Number
+    },
+    isNew: {
+        type: Boolean
+    },
+    isTitle: {
+        type: Boolean
+    },
+    showControls: {
+        type: Boolean
+    },
+    boards: {
+        type: Array,
+        default() {
+            return []
         }
     },
-
-    data() {
-        return {
-            value: "",
-            selectValue: "",
-            isEditMode: false
-        };
+    closeOnBlur: {
+        type: Boolean,
+        default: true
     },
-
-    computed: {
-        displayValue() {
-            return this.formatValue(this.value, this.field.type, "display");
-        },
-        component() {
-            return `input-${this.field.type}`;
-        },
-        itemStage() {
-            return this.item && this.item.stage && this.item.board
-                ? `${this.item.stage.name}`
-                : "";
-        },
-        isCustomField() {
-            return (
-                this.field.type &&
-                ["label", "select", "time", "date", "person"].includes(
-                    this.field.type
-                )
-            );
-        }
-    },
-
-    mounted() {
-        // onClickOutside(this.$refs.ItemGroupCell, (e) => {
-        //     console.log(e);
-        //     const classes = e.path.map(item => item.className)
-        //     const el = classes.includes("el-")
-        //     this.isEditMode = false
-        // })
-    },
-
-    methods: {
-        formatValue(value, type = "default", operation = "read") {
-            const formatters = {
-                date: {
-                    write: (value = "") => {
-                        return typeof value == "string"
-                            ? value
-                            : format(value, "yyyy-MM-dd");
-                    },
-                    read: (value = "") => {
-                        return value && typeof value == "string"
-                            ? this.setDate(value)
-                            : value;
-                    },
-                    display: (value = "") => {
-                        const isString = typeof value == "string";
-                        if (isString) {
-                            return value;
-                        } else {
-                            try {
-                                return format(value, "yyyy-MM-dd");
-                            } catch (e) {
-                                return value;
-                            }
-                        }
-                    }
-                },
-                time: {
-                    write: (value = "") => {
-                        return typeof value == "string"
-                            ? value
-                            : format(value, "hh:mm");
-                    },
-                    read: (value = "") => {
-                        const theValue =
-                            value && typeof value == "string"
-                                ? this.setTime(value)
-                                : value;
-                        return theValue;
-                    },
-                    display: (value = "") => {
-                        const isString = typeof value == "string";
-                        if (isString) {
-                            return value;
-                        } else {
-                            try {
-                                return format(value, "hh:mm");
-                            } catch (e) {
-                                return value;
-                            }
-                        }
-                    }
-                },
-                label: {
-                    display: value => {
-                        const option = this.field.options.find(option => {
-                            return option.name == this.value;
-                        });
-                        return option ? option.label || option.name : value;
-                    }
-                },
-                default: {
-                    read: value => value,
-                    write: value => value,
-                    display: value => value
-                }
-            };
-            return formatters[type] && formatters[type][operation]
-                ? formatters[type][operation](value)
-                : value;
-        },
-
-        setDate(dateValue) {
-            const date = dateValue ? dateValue.split("-") : null;
-            return date ? new Date(date[0], date[1] - 1, date[2]) : null;
-        },
-
-        setTime(timeValue) {
-            let date = timeValue ? timeValue.split(":") : null;
-            const dateTime = new Date();
-            dateTime.setHours(date[0]);
-            dateTime.setMinutes(date[1]);
-            dateTime.setSeconds(0);
-            return dateTime;
-        },
-
-        toggleEditMode() {
-            this.isEditMode = !this.isEditMode;
-            this.$nextTick(() => {
-                if (this.$refs.input) {
-                    const input =
-                        this.$refs.input.$el && !this.$refs.input.focus
-                            ? this.$refs.input.$el
-                            : this.$refs.input;
-                    input.focus();
-                }
-            });
-        },
-
-        saveChanges(type = "default") {
-            this.$emit("saved", this.formatValue(this.value, type, "write"));
-            if (this.closeOnBlur) {
-                this.toggleEditMode();
-            }
-        },
-
-        saveItem($event) {
-            this.saveChanges();
-            this.$emit("keydown", $event);
-            this.toggleEditMode();
-        },
+    placeholder: {
+        type: String,
+        default: "Add item"
     }
-};
+});
+
+const emit = defineEmits(['saved'])
+
+const state = reactive({
+    value: "",
+    selectValue: "",
+    isEditMode: false
+});
+
+watch(props.item, (item) => {
+if (item && item[props.fieldName] != state.value) {
+    const field = item.fields && item.fields.find(field => field.field_name == props.fieldName);
+    item[props.fieldName] = item[props.fieldName] || (field && field.value);
+    state.value = formatValue(item[props.fieldName], props.field ? props.field.type : "default", "read");
+}}, {
+    deep: true,
+    immediate: true
+});
+
+watch(state.selectValue, () => {
+    if (props.field.type == "person") {
+        state.value = state.selectValue;
+        saveChanges();
+    }
+});
+
+const displayValue = computed(() => {
+    return formatValue(state.value, props.field.type, "display",);
+});
+
+const components = {
+    label: InputLabel,
+    date: InputDate,
+    person: InputPerson,
+    time: InputTime,
+    progress: CellSummaryProgress
+}
+
+const componentName = computed(() => {
+    return components[props.item.type || props.field.type];
+});
+
+const isCustomField = computed(() => {
+    return (
+        props.field.type &&
+        ["label", "select", "time", "date", "person"].includes(
+            props.field.type
+        )
+    );
+});
+
+const input = ref();
+function toggleEditMode() {
+    state.isEditMode = !state.isEditMode;
+    // nextTick(() => {
+    //     // if (input.value) {
+    //         // const inputEl = input.value.$el && !input.value.focus ? input.value.$el : input.value;
+    //         // inputEl.focus();
+    //     // }s
+    // });
+}
+
+function saveChanges(type = "default") {
+    emit("saved", formatValue(state.value, type, "write"));
+    if (props.closeOnBlur) {
+        toggleEditMode();
+    }
+}
+
+function saveItem($event) {
+    saveChanges();
+    emit("keydown", $event);
+    toggleEditMode();
+}
+
+const {
+    value,
+    isEditMode
+} = toRefs(state)
 </script>
 
 <style lang="scss">

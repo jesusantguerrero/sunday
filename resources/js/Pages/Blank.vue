@@ -1,13 +1,13 @@
 <template>
     <app-layout :boards="boards">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
             </h2>
         </template>
 
         <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
+            <div class="flex mx-auto max-w-8xl sm:px-6 lg:px-8">
                Comming Soon
             </div>
         </div>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    import AppLayout from './../Layouts/AppLayout'
+    import AppLayout from './../Layouts/AppLayout.vue'
 
     export default {
         name: "Integrations",

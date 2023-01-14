@@ -1,8 +1,8 @@
 <template>
     <div class="login-box">
-        <form class="form-signin md:w-1/2 w-full" @submit.prevent="login">
+        <form class="w-full form-signin md:w-1/2" @submit.prevent="login">
 
-            <div class="w-100 flex justify-center">
+            <div class="flex justify-center w-100">
                 <div class="w-20">
                     <app-logo></app-logo>
                 </div>
@@ -34,7 +34,7 @@
                 @click.prevent="login"
             >
                 Email password reset link
-                <i v-if="isLoading" class="fa fa-spinner fa-pulse ml-2"></i>
+                <i v-if="isLoading" class="ml-2 fa fa-spinner fa-pulse"></i>
             </button>
             <p class="copyrights">&copy; 2020-{{ currentYear }}</p>
         </form>
@@ -42,8 +42,7 @@
 </template>
 
 <script>
-import { required, email } from "vuelidate/lib/validators";
-import AppLogo from "../../Jetstream/ApplicationMark";
+import AppLogo from "../../Jetstream/ApplicationMark.vue";
 import axios from "axios";
 
 export default {
@@ -64,14 +63,6 @@ export default {
         currentYear() {
             const date = new Date();
             return date.getFullYear();
-        }
-    },
-    validations: {
-        user: {
-            email: {
-                required,
-                email
-            }
         }
     },
     methods: {
@@ -216,7 +207,7 @@ export default {
     &--error {
         @apply text-red-400;
         input {
-            @apply shadow-md border-2 border-red-300;
+            @apply shadow-sm border-2 border-red-300;
         }
     }
 }

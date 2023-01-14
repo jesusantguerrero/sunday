@@ -6,13 +6,13 @@
                 </slot>
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 overflow-auto h-96 ic-scroller">
                 <slot name="content">
                 </slot>
             </div>
         </div>
 
-        <div class="px-6 py-4 bg-gray-100 text-right">
+        <div class="px-6 py-4 space-x-2 text-right bg-gray-100">
             <slot name="footer">
             </slot>
         </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-    import Modal from './Modal'
+    import Modal from './Modal.vue'
 
     export default {
         components: {

@@ -1,13 +1,13 @@
 <template>
     <app-layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Profile
             </h2>
         </template>
 
         <div>
-            <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="py-10 mx-auto max-w-8xl sm:px-6 lg:px-8">
                 <update-profile-information-form
                             :name="$page.props.user.name"
                             :email="$page.props.user.email" />
@@ -35,13 +35,13 @@
 </template>
 
 <script>
-    import AppLayout from './../../Layouts/AppLayout'
-    import DeleteUserForm from './DeleteUserForm'
-    import JetSectionBorder from './../../Jetstream/SectionBorder'
-    import LogoutOtherBrowserSessionsForm from './LogoutOtherBrowserSessionsForm'
-    import TwoFactorAuthenticationForm from './TwoFactorAuthenticationForm'
-    import UpdatePasswordForm from './UpdatePasswordForm'
-    import UpdateProfileInformationForm from './UpdateProfileInformationForm'
+    import AppLayout from './../../Layouts/AppLayout.vue'
+    import DeleteUserForm from './DeleteUserForm.vue'
+    import JetSectionBorder from './../../Jetstream/SectionBorder.vue'
+    import LogoutOtherBrowserSessionsForm from './LogoutOtherBrowserSessionsForm.vue'
+    import TwoFactorAuthenticationForm from './TwoFactorAuthenticationForm.vue'
+    import UpdatePasswordForm from './UpdatePasswordForm.vue'
+    import UpdateProfileInformationForm from './UpdateProfileInformationForm.vue'
 
     export default {
         props: ['sessions'],

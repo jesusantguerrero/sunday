@@ -7,7 +7,7 @@ const timeEntry = {
     label_ids: []
 };
 
-import { cloneDeep } from "lodash-es";
+import { cloneDeep } from "lodash";
 import { addMinutes, format as formatDate, isThisSecond } from "date-fns";
 import axios from "axios";
 import Duration from "luxon/src/duration";

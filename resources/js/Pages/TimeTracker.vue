@@ -1,37 +1,36 @@
 <template>
     <app-layout :boards="boards">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
             </h2>
         </template>
 
         <div class="">
-            <div class="max-w-8xl mx-auto flex">
-                <time-entry-form :current="current" @stopped="reloadTracks">
-                </time-entry-form>
+            <div class="flex mx-auto max-w-8xl">
+                <time-entry-form :current="current" @stopped="reloadTracks" />
             </div>
 
             <div class="mt-10 items-container">
                 <div
-                    class="items-container__header flex justify-between px-8 mb-10"
+                    class="flex justify-between px-8 mb-10 items-container__header"
                 >
                     <span class="text-3xl font-bold"> Time entries </span>
-                    <div class="controls bg-purple-700 rounded-lg">
+                    <div class="bg-purple-700 rounded-lg controls">
                         <button
                             v-for="mode in modes"
                             :key="mode"
                             @click="modeSelected = mode"
                             :class="{ 'bg-purple-400': mode == modeSelected }"
-                            class="px-8 h-full rounded-lg text-white capitalize"
+                            class="h-full px-8 text-white capitalize rounded-lg"
                         >
                             {{ mode }}
                         </button>
                     </div>
                 </div>
-                <div class="items-container__list px-8">
+                <div class="px-8 items-container__list">
                     <div v-for="(tracksByDate, trackDate) in trackGroup" :key="trackDate" class="mb-12">
-                        <div class="pl-16 py-4 bg-white w-full font-bold">
+                        <div class="w-full py-4 pl-16 font-bold bg-white">
                             {{ formattedDate(trackDate) }}
                         </div>
 
@@ -56,10 +55,10 @@
 </template>
 
 <script>
-import AppLayout from "./../Layouts/AppLayout";
-import TimeEntryForm from "../components/timeTracker/Form";
-import TimeEntryGroup from "../components/timeTracker/Group";
-import BulkSelectionBar from "../components/BulkSelectionBar";
+import AppLayout from "./../Layouts/AppLayout.vue";
+import TimeEntryForm from "../components/timeTracker/Form.vue";
+import TimeEntryGroup from "../components/timeTracker/Group.vue";
+import BulkSelectionBar from "../components/BulkSelectionBar.vue";
 import { format, isToday, parse } from "date-fns";
 
 export default {
@@ -103,11 +102,11 @@ export default {
         },
     },
     created() {
-        this.$parent.$on("session::stopped", () => {
-            this.$nextTick(() => {
-                this.reloadTracks();
-            });
-        });
+        // this?.$parent?.$on("session::stopped", () => {
+        //     this.$nextTick(() => {
+        //         this.reloadTracks();
+        //     });
+        // });
     },
     data() {
         return {

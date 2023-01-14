@@ -1,38 +1,38 @@
 <template>
     <app-layout :boards="notebooks">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
             </h2>
         </template>
 
         <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 flex">
+            <div class="flex mx-auto max-w-8xl sm:px-6 lg:px-8">
                 <div class="about-screen">
                     <p class="close-bar">
                         <span class="close-about icon icon-left-open"> </span>
                     </p>
                     <div class="block-container">
-                        <h3 class="logo cursor-pointer">
+                        <h3 class="cursor-pointer logo">
                             <span class="mr-4">IC</span><span>Dail<span class="movable">y.</span></span>
                         </h3>
                     </div>
                     <div class="block-container">
-                        <p class="app-version"><span>{{appVersion}}</span></p>
+                        <p class="app-version"><span>{{state.appVersion}}</span></p>
                     </div>
                     <p class="about-nav">
                         <button
-                            v-for="(section, sectionName) in sections"
+                            v-for="(section, sectionName) in state.sections"
                             :key="sectionName"
                             :class="{selected: sectionName == selectedSection}"
-                            @click="selectedSection=sectionName"
+                            @click="state.selectedSection=sectionName"
                         >
                             {{ section }}
                         </button>
                     </p>
 
                     <div class="information-container">
-                        <div class="prose lg:prose-md w-full max-w-full" v-html="currentSection" />
+                        <div class="w-full max-w-full prose lg:prose-md" v-html="currentSection" />
                     </div>
 
                     <div class="logos"></div>
@@ -49,48 +49,33 @@
     </app-layout>
 </template>
 
-<script>
-import AppLayout from "./../Layouts/AppLayout";
-const info = require("@docs/info.md")
-const thanks = require("@docs/thanksto.md")
-const tutorial = require("@docs/tutorial.md")
+<script setup>
+import AppLayout from "./../Layouts/AppLayout.vue";
+// import info from "@docs/info.md"
+// import thanks from "@docs/thanksto.md"
+// import tutorial from "@docs/tutorial.md"
+import { reactive, computed } from "vue";
 
-export default {
-    name: "Integrations",
-    props: {
-        notebooks: {
-            type: Array,
-            default() {
-                return [];
-            }
+
+const state = reactive({
+        appVersion: "1.0.0",
+        selectedSection: 'info',
+        sections: {
+            info: "Information",
+            tutorial: "Tutorial",
+            thanks: "Thanks to",
+            licence: "License",
+        },
+        text: {
+            info,
+            thanks,
+            tutorial
         }
-    },
-    components: {
-        AppLayout
-    },
-    computed: {
-        currentSection() {
-            return this.text[this.selectedSection]
-        }
-    },
-    data() {
-        return {
-            appVersion: "1.0.0",
-            selectedSection: 'info',
-            sections: {
-                info: "Information",
-                tutorial: "Tutorial",
-                thanks: "Thanks to",
-                licence: "License",
-            },
-            text: {
-                info,
-                thanks,
-                tutorial
-            }
-        }
-    }
-};
+});
+
+const currentSection = computed(() => {
+    return state.text[state.selectedSection]
+})
 </script>
 
 

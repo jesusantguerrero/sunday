@@ -4,7 +4,7 @@
             class="w-full mx-2"
         >
             <div
-                class="header capitalize font-bold flex w-full justify-between items-center h-12"
+                class="flex items-center justify-between w-full h-12 font-bold capitalize header"
 
             >
                 <div>
@@ -14,7 +14,7 @@
                     <span class="ml-4 text-gray-300"> {{ mails.length}} </span>
                 </div>
                 <el-dropdown trigger="click"  @click.native.prevent>
-                    <div class="hover:bg-gray-200 w-5 rounded-full py-2 text-center h-full flex justify-center">
+                    <div class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200">
                         <div class="flex items-center mr-2">
                             <i class="fa fa-ellipsis-v"></i>
                         </div>
@@ -25,7 +25,7 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
-            <div class="pr-4 pt-5">
+            <div class="pt-5 pr-4">
                 <draggable
                     class="grid  sm:grid-cols-2 md:grid-cols-4 gap-4"
                     :list="kanbanData.backlog.childs"
@@ -46,14 +46,25 @@
                         <div v-html="task.snippet" class="note-body bg-white" />
                     </div>
                 </draggable>
+                <!-- <item-group-cell
+                    class="flex items-center w-full"
+                    field-name="title"
+                    :is-title="true"
+                    :index="-1"
+                    :item="kanbanData.backlog.newTask"
+                    :is-new="true"
+                    @saved="kanbanData.backlog.newTask['title'] = $event"
+                    @keydown.enter="addItem(kanbanData.backlog)"
+                >
+                </item-group-cell> -->
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import ItemGroupCell from "../../ItemGroupCell";
-import Draggable from "vuedraggable";
+import ItemGroupCell from "../../ItemGroupCell.vue";
+import { VueDraggableNext as Draggable } from "vue-draggable-next"
 
 export default {
     props: {
@@ -109,7 +120,7 @@ export default {
                          value: quadrant.attributes.name
                      })
                 } else {
-                    this.$set(field, 'value', quadrant.attributes.name)
+                    field['value'] = quadrant.attributes.name
                 }
 
                 this.$emit('saved', event.added.element)

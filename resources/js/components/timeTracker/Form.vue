@@ -1,6 +1,6 @@
 <template>
-    <div class="card w-full time-traker-form bg-white  sm:px-6 lg:px-8 py-4">
-      <div class="card-body flex">
+    <div class="w-full py-4 bg-white card time-traker-form sm:px-6 lg:px-8">
+      <div class="flex card-body">
         <div class="w-2/4">
           <input
             type="text"
@@ -9,8 +9,8 @@
             v-model.trim="timeEntry.description"
           />
         </div>
-        <div class="w-1/4 flex">
-          <div class="time-tracker__relations flex">
+        <div class="flex w-1/4">
+          <div class="flex time-tracker__relations">
             <div class="time-tracker__billable-status custom-check-container">
               <label
                 for="time-tracker-project"
@@ -52,7 +52,7 @@
               <label
                 for="time-tracker-billable"
                 id="time-tracker-tag-select"
-                class="custom-check  dropdown-toggle"
+                class="custom-check dropdown-toggle"
                 :class="{ selected: hasLabels }"
                 data-toggle="dropdown"
                 aria-haspopup="true"
@@ -112,8 +112,8 @@
             </div>
           </div>
         </div>
-        <div class="w-1/4 flex">
-          <div class="time-tracker__controls flex">
+        <div class="flex w-1/4">
+          <div class="flex time-tracker__controls">
             <input
               type="text"
               name=""
@@ -134,7 +134,7 @@
 
 <script>
 import { format as formatDate } from "date-fns";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep } from "lodash";
 import Duration from "duration";
 import axios from "axios";
 

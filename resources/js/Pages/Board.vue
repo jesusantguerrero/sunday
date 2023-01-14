@@ -1,62 +1,40 @@
 <template>
-    <app-layout :boards="boards">
-        <div class="">
-                <div class="w-12/12 mx-2 pt-12">
-                    <div class="overflow-hidden">
-                        <board-section 
-                            :board="board" 
-                            :users="users" 
-                            :automations="automations"
-                            :filters="filters"
-                        />
-                    </div>
-                </div>
-            </div>
-    </app-layout>
+    <AppLayout :boards="boards">
+        <BoardSection
+            class="pt-12 mx-2 w-full overflow-hidden"
+            :board="board"
+            :users="users"
+            :automations="automations"
+            :filters="filters"
+        />
+    </AppLayout>
 </template>
 
-<script>
-    import AppLayout from './../Layouts/AppLayout'
-    import BoardSection from "./../components/board/BoardSection";
-    import BoardSide from "../components/board/BoardSide"
+<script setup>
+    import AppLayout from '@/Layouts/AppLayout.vue'
+    import BoardSection from "@/components/board/BoardSection.vue";
 
-    export default {
-        components: {
-            AppLayout,
-            BoardSection,
-            BoardSide
-        },
-        props: {
-            boards: {
-                type: Array,
-                default() {
-                    return []
-                }
-            },
-            board: {
-                type: Object,
-                default() {
-                    return {}
-                }
-            },
-            automations: {
-                type: Array,
-                refault() {
-                    return []
-                }
-            },
-            users: {
-                type: Array,
-                default() {
-                    return []
-                }
-            },
-            filters: {
-                type: Object,
-                default() {
-                    return {}
-                }
+    defineProps({
+        board: {
+            type: Object,
+            default() {
+                return {}
             }
+        },
+        automations: {
+            type: Array,
+            refault() {
+                return []
+            }
+        },
+        users: {
+            type: Array,
+            refault() {
+                return []
+            }
+        },
+        filters: {
+            type: Object,
         }
-    }
+    })
 </script>

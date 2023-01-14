@@ -20,8 +20,8 @@
 
 <script>
 import { format } from "date-fns";
-import Controls from "./controls";
-import Grid from "./grid";
+import Controls from "./controls.vue";
+import Grid from "./grid.vue";
 
 export default {
   props: {

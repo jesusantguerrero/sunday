@@ -5,7 +5,7 @@
 
     <el-tooltip v-else class="item" effect="dark" :content="label" placement="right">
         <inertia-link
-            class="side-item flex px-2 py-1 items-center px-5"
+            class="flex items-center px-2 py-1 side-item"
             :class="{ active: isPath(to) }"
             :href="to"
             :title="label"
@@ -65,10 +65,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40px;
-    min-width: 40px;
-    font-size: 22px;
-    height: 40px;
+    width: 34px;
+    min-width: 34px;
+    font-size: 18px;
+    height: 34px;
     border-radius: 8px;
     font-weight: bolder;
     margin: 10px auto;

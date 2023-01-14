@@ -1,8 +1,8 @@
 <template>
     <div class="promodoro-app" :class="{mini: isMiniLocal}">
         <header
-            class=" text-white font-bold flex justify-between w-full items-center py-2"
-            :class="`bg-${promodoroColor}-400`"
+            class="flex items-center justify-between w-full py-2 font-bold text-white "
+            :class="promodoroColor"
         >
              <button
                     @click="play()"
@@ -13,13 +13,13 @@
             <span> {{ title }} </span>
             <div class="flex">
                 <!-- <div
-                    class="actions rounded-lg flex h-8"
+                    class="flex h-8 rounded-lg actions"
                     :class="`bg-${promodoroColor}-700`"
                 >
                     <button
                         v-for="(mode, key) in modes"
                         :key="key"
-                        class="px-2 h-full rounded-lg"
+                        class="h-full px-2 rounded-lg"
                         :class="{
                             [`bg-${promodoroColor}-100 text-${promodoroColor}-700`]:
                                 modeSelected == key
@@ -50,7 +50,7 @@
                 </button>
             </div>
         </header>
-        <p v-if="isMiniLocal" class="text-white mb-4 uppercase">
+        <p v-if="isMiniLocal" class="mb-4 text-white uppercase">
             <span>{{ modes[modeSelected].name }}</span>
         </p>
         <div v-else class="clock" :class="{ rest: round, ticking: run == 1 }">
@@ -91,10 +91,8 @@ const time = { minutes: 0, seconds: 10 };
 
 import Tracker from "../timeTracker/tracker";
 import Duration from "luxon/src/duration";
-import Interval from "luxon/src/interval";
-import PromodoroConfigurationModal from "./Configuration";
-import promodoroMixin from "./promodoro";
-import { MessageBox } from "element-ui";
+import PromodoroConfigurationModal from "./Configuration.vue";
+import promodoroMixin, { MODES } from "./promodoro";
 
 export default {
     mixins: [promodoroMixin],
@@ -161,13 +159,17 @@ export default {
         isMiniLocal() {
             this.$emit('update:is-mini', this.isMiniLocal)
         },
-        promodoroColor() {
-            this.$emit("update:timerColor", this.promodoroColor);
+        promodoroColor: {
+            handler() {
+                this.$emit("update:timerColor", this.promodoroColor);
+
+            },
+            immediate: true
         },
         formattedTime: {
             deep: true,
             handler(formattedTime) {
-                this.tracker && this.$set(this.tracker, "duration", this.tracker.getDuration());
+                if (this.tracker) this.tracker["duration"] = this.tracker.getDuration();
                 const title = this.run ? `(${formattedTime}) Daily` : "Daily";
                 document.getElementsByTagName("title")[0].text = title;
                 let [min, sec] = formattedTime.split(":")
@@ -192,9 +194,9 @@ export default {
         },
 
         promodoroColor() {
-            return this.modeSelected && this.modes[this.modeSelected].color
-                ? this.modes[this.modeSelected].color
-                : "red";
+            return this.modeSelected && MODES[this.modeSelected].color
+                ? MODES[this.modeSelected].color
+                : "bg-red-500";
         },
 
         rawTime() {
@@ -263,7 +265,7 @@ export default {
         stopTracker(stoppedTimestamp) {
             if (this.trackerLocal) {
                 this.trackerLocal.stopTimer(stoppedTimestamp);
-                this.$set(this.tracker, "duration", this.tracker.getDuration());
+                this.tracker["duration"] = this.tracker.getDuration();
                 this.$emit('stopped')
             }
         },

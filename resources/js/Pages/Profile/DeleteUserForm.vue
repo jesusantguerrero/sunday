@@ -29,7 +29,7 @@
                     Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.
 
                     <div class="mt-4">
-                        <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
+                        <jet-input type="password" class="block w-3/4 mt-1" placeholder="Password"
                                     ref="password"
                                     v-model="form.password"
                                     @keyup.enter.native="deleteUser" />
@@ -53,13 +53,13 @@
 </template>
 
 <script>
-    import JetActionSection from './../../Jetstream/ActionSection'
-    import JetButton from './../../Jetstream/Button'
-    import JetDialogModal from './../../Jetstream/DialogModal'
-    import JetDangerButton from './../../Jetstream/DangerButton'
-    import JetInput from './../../Jetstream/Input'
-    import JetInputError from './../../Jetstream/InputError'
-    import JetSecondaryButton from './../../Jetstream/SecondaryButton'
+    import JetActionSection from './../../Jetstream/ActionSection.vue'
+    import JetButton from './../../Jetstream/Button.vue'
+    import JetDialogModal from './../../Jetstream/DialogModal.vue'
+    import JetDangerButton from './../../Jetstream/DangerButton.vue'
+    import JetInput from './../../Jetstream/Input.vue'
+    import JetInputError from './../../Jetstream/InputError.vue'
+    import JetSecondaryButton from './../../Jetstream/SecondaryButton.vue'
 
     export default {
         components: {

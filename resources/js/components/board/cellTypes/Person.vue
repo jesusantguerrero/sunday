@@ -1,62 +1,49 @@
 <template>
-    <el-select
-        v-model="localValue"
+    <NSelect
+        v-model:value="localValue"
         ref="input"
         value-key="name"
         placeholder="Select"
         :filterable="true"
         :automatic-dropdown="true"
-        @visible-change="($event) => !$event && $emit('closed')"
-    >
-        <el-option
-            ref="input"
-            v-for="item in users"
-            :key="item.id"
-            :label="item.name"
-            :value="item.name"
-        >
-        </el-option>
-    </el-select>
+        :options="users"
+        @blur="$emit('closed')"
+    />
 </template>
 
-<script>
-import mixins from "./mixin";
+<script setup>
+import { cellProps }from "./mixin";
+import { NSelect } from "naive-ui"
+import { computed } from "vue"
 
-export default {
-    mixins: [mixins],
-    props: {
-        value: {
-            type: String
-        },
-        users: {
-            type: Array,
-            default() {
-                return []
-            }
-        }
+const emit = defineEmits(['update:modelValue', 'closed', 'saved']);
+
+const props = defineProps({
+    ...cellProps,
+    modelValue: {
+        type: String
     },
-    data() {
-        return {
-            localValue: ""
-        }
-    },
-    watch: {
-        value: {
-            handler() {
-                this.localValue = this.value;
-            },
-            immediate: true
-        },
-        localValue() {
-            if (this.localValue != this.value) {
-                this.$emit('input', this.localValue)
-                this.$emit('saved')
-            } else {
-                this.$emit('closed')
-            }
+    users: {
+        type: Array,
+        default() {
+            return []
         }
     }
-};
+});
+
+const localValue = computed({
+    get() {
+        return this.modelValue;
+    },
+    set(value) {
+        if (value != props.modelValue) {
+            emit('update:modelValue', value)
+            emit('saved')
+        } else {
+            emit('closed')
+        }
+    }
+});
 </script>
 
 <style lang="scss">

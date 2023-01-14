@@ -23,7 +23,7 @@
                     <!-- Member Email -->
                     <div class="col-span-6 sm:col-span-4">
                         <jet-label for="email" value="Email" />
-                        <jet-input id="name" type="text" class="mt-1 block w-full" v-model="addTeamMemberForm.email" />
+                        <jet-input id="name" type="text" class="block w-full mt-1" v-model="addTeamMemberForm.email" />
                         <jet-input-error :message="addTeamMemberform.errors.email" class="mt-2" />
                     </div>
 
@@ -46,7 +46,7 @@
                                             {{ role.name }}
                                         </div>
 
-                                        <svg v-if="addTeamMemberForm.role == role.key" class="ml-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <svg v-if="addTeamMemberForm.role == role.key" class="w-5 h-5 ml-2 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     </div>
 
                                     <!-- Role Description -->
@@ -106,14 +106,14 @@
                                 </div>
 
                                 <!-- Leave Team -->
-                                <button class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
+                                <button class="ml-6 text-sm text-red-500 cursor-pointer focus:outline-none"
                                                     @click="confirmLeavingTeam"
                                                     v-if="$page.props.user.id === user.id">
                                     Leave
                                 </button>
 
                                 <!-- Remove Team Member -->
-                                <button class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
+                                <button class="ml-6 text-sm text-red-500 cursor-pointer focus:outline-none"
                                                     @click="confirmTeamMemberRemoval(user)"
                                                     v-if="userPermissions.canRemoveTeamMembers">
                                     Remove
@@ -145,7 +145,7 @@
                                         {{ role.name }}
                                     </div>
 
-                                    <svg v-if="updateRoleForm.role == role.key" class="ml-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <svg v-if="updateRoleForm.role == role.key" class="w-5 h-5 ml-2 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
 
                                 <!-- Role Description -->
@@ -214,18 +214,18 @@
 </template>
 
 <script>
-    import JetActionMessage from './../../Jetstream/ActionMessage'
-    import JetActionSection from './../../Jetstream/ActionSection'
-    import JetButton from './../../Jetstream/Button'
-    import JetConfirmationModal from './../../Jetstream/ConfirmationModal'
-    import JetDangerButton from './../../Jetstream/DangerButton'
-    import JetDialogModal from './../../Jetstream/DialogModal'
-    import JetFormSection from './../../Jetstream/FormSection'
-    import JetInput from './../../Jetstream/Input'
-    import JetInputError from './../../Jetstream/InputError'
-    import JetLabel from './../../Jetstream/Label'
-    import JetSecondaryButton from './../../Jetstream/SecondaryButton'
-    import JetSectionBorder from './../../Jetstream/SectionBorder'
+    import JetActionMessage from './../../Jetstream/ActionMessage.vue'
+    import JetActionSection from './../../Jetstream/ActionSection.vue'
+    import JetButton from './../../Jetstream/Button.vue'
+    import JetConfirmationModal from './../../Jetstream/ConfirmationModal.vue'
+    import JetDangerButton from './../../Jetstream/DangerButton.vue'
+    import JetDialogModal from './../../Jetstream/DialogModal.vue'
+    import JetFormSection from './../../Jetstream/FormSection.vue'
+    import JetInput from './../../Jetstream/Input.vue'
+    import JetInputError from './../../Jetstream/InputError.vue'
+    import JetLabel from './../../Jetstream/Label.vue'
+    import JetSecondaryButton from './../../Jetstream/SecondaryButton.vue'
+    import JetSectionBorder from './../../Jetstream/SectionBorder.vue'
 
     export default {
         components: {

@@ -13,6 +13,7 @@
                     <multiselect
                         v-model="formData.service"
                         ref="input"
+                        label="name"
                         :show-labels="false"
                         :options="services"
                         class="w-full"
@@ -21,7 +22,7 @@
                             <div>
                                 <img
                                     :src="props.option.logo"
-                                    class="automation-logo mr-2"
+                                    class="mr-2 automation-logo"
                                 />
                                 {{ props.option.name }}
                             </div>
@@ -30,7 +31,7 @@
                             <div class="d-flex">
                                 <img
                                     :src="props.option.logo"
-                                    class="automation-logo mr-2"
+                                    class="mr-2 automation-logo"
                                 />
                                 {{ props.option.name }}
                             </div>
@@ -60,8 +61,7 @@
                         label="name"
                         :options="automationRecipes"
                         class="w-full"
-                    >
-                    </multiselect>
+                    />
                 </div>
 
                 <div class="form-group" v-if="boards">
@@ -72,20 +72,21 @@
                         :show-labels="false"
                         :allow-empty="false"
                         placeholder="Select board"
+                        label="name"
                         :options="boards"
                         class="w-full"
                         @input="getBoardData"
                     >
                         <template slot="singleLabel" slot-scope="props">
                             <span class="option__title">
-                                <i class="fa fa-briefcase mr-2"></i>
+                                <i class="mr-2 fa fa-briefcase"></i>
                                 {{ props.option.name }}
                             </span>
                         </template>
                         <template slot="option" slot-scope="props">
                             <div class="option__desc">
                                 <span class="option__title">
-                                    <i class="fa fa-briefcase mr-2"></i>
+                                    <i class="mr-2 fa fa-briefcase"></i>
                                     {{ props.option.name }}
                                 </span>
                             </div>
@@ -104,19 +105,20 @@
                         :show-labels="false"
                         :allow-empty="false"
                         placeholder="Select board"
+                        label="name"
                         :options="formData.board.stages"
                         class="w-full"
                     >
                         <template slot="singleLabel" slot-scope="props">
                             <span class="option__title">
-                                <i class="fa fa-briefcase mr-2"></i>
+                                <i class="mr-2 fa fa-briefcase"></i>
                                 {{ props.option.name }}
                             </span>
                         </template>
                         <template slot="option" slot-scope="props">
                             <div class="option__desc">
                                 <span class="option__title">
-                                    <i class="fa fa-briefcase mr-2"></i>
+                                    <i class="mr-2 fa fa-briefcase"></i>
                                     {{ props.option.name }}
                                 </span>
                             </div>
@@ -160,8 +162,8 @@
 </template>
 
 <script>
-import DialogModal from "../Jetstream/DialogModal";
-import PrimaryButton from "../Jetstream/Button";
+import DialogModal from "../Jetstream/DialogModal.vue";
+import PrimaryButton from "../Jetstream/Button.vue";
 
 export default {
     components: {
@@ -367,9 +369,9 @@ export default {
             ]).then(([stagesResponse, fieldsResponse]) => {
                 let fields = fieldsResponse.data.data;
                 const stages = stagesResponse.data.data;
-                this.$set(this.formData.board, "stages", stages);
+                this.formData.board["stages"] = stages;
 
-                this.$set(this.formData, "stage", stages[0]);
+                this.formData["stage"] = stages[0];
 
                 const fieldNames = fields.map(field => field.name);
                 this.typeFields.forEach(field => {
@@ -378,7 +380,7 @@ export default {
                     }
                 });
 
-                this.$set(this.formData.board, "fields", fields);
+                this.formData.board["fields"] = fields;
                 this.isLoading = false;
             });
         },
@@ -407,6 +409,14 @@ export default {
             });
         },
 
+        getCalendarList() {
+            axios({
+                url: "/api/calendars"
+            }).then(({ data }) => {
+                this.calendarList = data;
+            });
+        },
+
         getInputs() {
             if (this.formData.recipe) {
                 const mapper = JSON.parse(this.formData.recipe.mapper);
@@ -424,7 +434,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .form-control {
     @apply w-full bg-gray-100 border-gray-400 border-2 px-4;
     height: 37px;

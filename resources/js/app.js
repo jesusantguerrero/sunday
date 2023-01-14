@@ -1,46 +1,34 @@
-require("./bootstrap");
-require("vue-multiselect/dist/vue-multiselect.min.css");
+import './bootstrap';
+import '../css/app.scss';
+import "atmosphere-ui/style.css"
+import "vue-multiselect/dist/vue-multiselect.css"
 
-import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue';
-import Vue from "vue";
-import { App as InertiaApp, plugin as InertiaPlugin } from "@inertiajs/inertia-vue";
-import ConfirmModalMixin from "./plugins/ConfirmModalMixin";
-import VueGoogleApi from "vue-google-api";
-import route from 'ziggy';
-import "./plugins/element-ui";
+import { createApp, h } from "vue";
+import { createInertiaApp, Link  } from "@inertiajs/inertia-vue3";
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import VueMultiselect from 'vue-multiselect'
+import { InertiaProgress } from "@inertiajs/progress";
+import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
+import FloatingVue from 'floating-vue'
+import ElementPlus from "element-plus";
+import 'element-plus/dist/index.css'
 
-const config = {
-    apiKey: process.env.MIX_GOOGLE_APP_KEY,
-    clientId: process.env.MIX_GOOGLE_CLIENT_ID,
-    accessType: "offline",
-    scope: "profile https://www.googleapis.com/auth/gmail.readonly",
-    discoveryDocs: []
-};
+createInertiaApp({
+    title: (title) => `${title} - ${appName}`,
+    resolve: name => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
+    setup({ el, app, props, plugin }) {
+        createApp({ render: () => h(app, props)})
+        .mixin({ methods: { route } })
+        .use(plugin)
+        .use(autoAnimatePlugin)
+        .use(FloatingVue)
+        .use(ElementPlus)
+        .component('InertiaProgress', InertiaProgress)
+        .component('InertiaLink', Link)
+        .component('Multiselect', VueMultiselect)
+        .mount(el);
+    }
+})
 
-import Multiselect from "vue-multiselect";
-import PortalVue from "portal-vue";
-import Vuelidate from "vuelidate";
-import fireworks from "./plugins/fireworks";
-window.route = route;
-Vue.use(Vuelidate);
-Vue.use(InertiaPlugin);
-Vue.use(PortalVue);
-Vue.use(VueGoogleApi, config);
-Vue.mixin(ConfirmModalMixin);
-Vue.mixin(fireworks)
-Vue.mixin({ methods: { route } });
-Vue.component("multiselect", Multiselect);
+InertiaProgress.init({ color: '#4B5563' });
 
-const app = document.querySelector("[data-page]");
-
-new Vue({
-    render: h =>
-        h(InertiaApp, {
-            props: {
-                initialPage: JSON.parse(app.dataset.page),
-                resolveComponent: name => require(`./Pages/${name}`).default
-            }
-        })
-}).$mount(app);
-
-require('./bootstrap');

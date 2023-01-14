@@ -27,27 +27,19 @@ class ServiceController extends Controller
 
     public function google(Request $request)
     {
-        return GoogleService::requestAccessToken((object) $request->post('credentials'), $request->user());
+       return GoogleService::requestAccessToken((object) $request->post('credentials'), $request->user());
+
     }
 
     public function acceptOauth(Request $request)
     {
-        if (auth()->hasUser()) {
-            try {
-                GoogleService::setTokens((object) $request->post('credentials'), $request->user());
-                return redirect('/integrations');
-            } catch (Exception $e) {
-                return redirect('/integrations')->with('flash', [
-                    'banner' => $e->getMessage(),
-                ]);
-            }
-        } else {
-        }
+        GoogleService::setTokens((object) $request->post('credentials'), $request->user());
+        return redirect('/integrations');
     }
 
-    public function listCalendars(Integration $integration)
+    public function listCalendars(Request $request, Response $response)
     {
-        $calendars = GoogleService::listCalendars($integration->id);
-        return response()->setContent($calendars->getItems());
+       $calendars = GoogleService::listCalendars($request->user()->id);
+       return $response->setContent($calendars->getItems());
     }
 }
