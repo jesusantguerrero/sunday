@@ -1,5 +1,5 @@
 # IC-Daily (codename: Sunday) 
-Monolith app using laravel 9, jetstream, intertia and Vue2.
+Monolith app using laravel 9, jetstream, intertia and Vue.
 
 ICDaily is a productivity web app to help you keep your tasks, track your time, using pomodoro inspired on Monday.
 
@@ -48,7 +48,7 @@ Zen aims to be a flow, another dimension you unblocking your productivity chackr
 
 | Prerequisite                                          | Version     |
 | ------------------------------------------------------| ----------  |
-| [Node.js](http://nodejs.org)                          | `~ ^14.18.0`|
+| [Node.js](http://nodejs.org)                          | `~ ^16.18.0`|
 | npm (comes with Node) or yarn (used)                  | `~ ^5`      |
 | [PHP]                                                 | `~ ^8.1.2`  |
 | [Cloud Platform Project (with Gmail API)**](https://developers.google.com/gmail/api/quickstart/js)                                |    --                                                 |             |
@@ -96,7 +96,7 @@ Frontend development
 # install npm packages
 npm install
 # development
-npm run watch
+npm run dev
 ```
 
 ## Related projects
