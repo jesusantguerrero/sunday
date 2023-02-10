@@ -85,10 +85,8 @@ Setup
 composer install --ignore-platform-reqs
 # generate key
 php artisan key:generate
-# run migrations
-php artisan migrate
-# run seeds
-php artisan db:seed
+# run migrations and seeds
+php artisan migrate --seed
 ```
 
 Frontend development
