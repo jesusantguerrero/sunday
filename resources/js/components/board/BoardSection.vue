@@ -63,7 +63,7 @@
             </div>
         </header>
 
-        <bulk-selection-bar
+        <BulkSelectionBar
             v-if="selectedItems.length"
             :selected-items="selectedItems"
             @delete-pressed="confirmDeleteItems(selectedItems, true)"
@@ -76,7 +76,7 @@
                 handle=".handle"
                 @end="saveReorder"
             >
-                <transition-group>
+                <TransitionGroup>
                     <ListView
                         v-for="stage in board.stages"
                         :key="stage.name"
@@ -93,7 +93,7 @@
                         @stage-updated="addStage"
                         class="mt-10"
                     />
-                </transition-group>
+                </TransitionGroup>
             </draggable>
 
             <component
@@ -294,17 +294,25 @@ onMounted(() => {
     }
 });
 
+const isLoading = ref(false)
 function addItem(item, reload = true) {
     const method = item.id ? "PUT" : "POST";
     const param = item.id ? `/${item.id}` : "";
+    if (isLoading.value) return
+    isLoading.value = true;
     axios({
         url: `/items${param}`,
         method,
         data: item
     }).then(() => {
         if (reload) {
-            Inertia.reload({ preserveScroll: true });
+            Inertia.reload({
+                preserveScroll: true ,
+                preserveState: true
+            });
         }
+    }).finally(() => {
+        isLoading.value = false
     });
 }
 

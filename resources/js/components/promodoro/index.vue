@@ -90,7 +90,7 @@
 const time = { minutes: 0, seconds: 10 };
 
 import Tracker from "../timeTracker/tracker";
-import Duration from "luxon/src/duration";
+import { Duration } from "luxon";
 import PromodoroConfigurationModal from "./Configuration.vue";
 import promodoroMixin, { MODES } from "./promodoro";
 

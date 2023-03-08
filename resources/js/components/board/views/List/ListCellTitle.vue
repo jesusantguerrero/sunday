@@ -51,7 +51,6 @@
                 @keydown.enter="$emit('saved', item, 'points', item.points)"
                 @blur="$emit('saved', item, 'points', item.points)"
             >
-
         </div>
         <!-- /Estimation Points -->
 

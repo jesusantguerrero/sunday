@@ -27,7 +27,7 @@ export  const formatHumanDate = (isoDate) => {
 
 export function useDateTime(dateRef) {
     const date = dateRef || ref(null)
-    
+
     const formattedDate = computed(() => {
         return date.value && typeof date.value == 'object' ? toISO(date.value) : date.value;
     })

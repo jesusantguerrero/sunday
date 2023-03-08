@@ -10,8 +10,8 @@ const timeEntry = {
 import { cloneDeep } from "lodash";
 import { addMinutes, format as formatDate, isThisSecond } from "date-fns";
 import axios from "axios";
-import Duration from "luxon/src/duration";
-import Interval from "luxon/src/interval";
+import { Duration } from "luxon";
+import { Interval } from "luxon";
 
 export default class tracker {
         constructor(trackConfig = {}) {

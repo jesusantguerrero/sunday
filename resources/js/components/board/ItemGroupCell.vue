@@ -64,6 +64,7 @@
                         @blur="saveChanges()"
                         @keydown.enter="saveItem"
                     />
+                    {{  value }}
                     <div class="flex h-full controls" v-if="showControls">
                         <BoardSelector
                             v-if="boards"
@@ -164,11 +165,12 @@ const state = reactive({
 });
 
 watch(props.item, (item) => {
-if (item && item[props.fieldName] != state.value) {
-    const field = item.fields && item.fields.find(field => field.field_name == props.fieldName);
-    item[props.fieldName] = item[props.fieldName] || (field && field.value);
-    state.value = formatValue(item[props.fieldName], props.field ? props.field.type : "default", "read");
-}}, {
+    if (item && item[props.fieldName] != state.value) {
+        const field = item.fields && item.fields.find(field => field.field_name == props.fieldName);
+        item[props.fieldName] = item[props.fieldName] || (field && field.value);
+        state.value = formatValue(item[props.fieldName], props.field ? props.field.type : "default", "read");
+    }
+}, {
     deep: true,
     immediate: true
 });
@@ -208,12 +210,12 @@ const isCustomField = computed(() => {
 const input = ref();
 function toggleEditMode() {
     state.isEditMode = !state.isEditMode;
-    // nextTick(() => {
-    //     // if (input.value) {
-    //         // const inputEl = input.value.$el && !input.value.focus ? input.value.$el : input.value;
-    //         // inputEl.focus();
-    //     // }s
-    // });
+    nextTick(() => {
+        if (input.value) {
+            const inputEl = input.value.$el && !input.value.focus ? input.value.$el : input.value;
+            inputEl.focus();
+        }
+    });
 }
 
 function saveChanges(type = "default") {
@@ -225,6 +227,7 @@ function saveChanges(type = "default") {
 
 function saveItem($event) {
     saveChanges();
+    state.value = "";
     emit("keydown", $event);
     toggleEditMode();
 }

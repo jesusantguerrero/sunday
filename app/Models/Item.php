@@ -10,7 +10,21 @@ use RRule\RRule;
 
 class Item extends Model
 {
-    protected $fillable = ['board_id', 'team_id', 'stage_id','resource_id', 'rrule' ,'resource_type', 'resource_origin', 'title', 'order', 'user_id', 'done','commit_date', 'points'];
+    protected $fillable = [
+        'board_id',
+        'team_id',
+        'stage_id',
+        'resource_id',
+        'rrule' ,
+        'resource_type',
+        'resource_origin',
+        'title',
+        'order',
+        'user_id',
+        'done',
+        'commit_date',
+        'points'
+    ];
     protected $with = ['fields', 'checklist'];
     use HasFactory;
     use ItemScopeTrait;
