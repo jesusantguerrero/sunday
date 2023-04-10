@@ -19,10 +19,12 @@
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.11",
         "laravel/sanctum": "^3.0",
+        "laravel/socialite": "^5.6",
         "laravel/tinker": "^2.7",
         "php-mime-mail-parser/php-mime-mail-parser": "^7.0",
         "pusher/pusher-php-server": "^7.0",
         "rlanvin/php-rrule": "^2.2",
+        "socialiteproviders/laravelpassport": "^4.3",
         "tightenco/ziggy": "^1.4.3"
     },
     "require-dev": {

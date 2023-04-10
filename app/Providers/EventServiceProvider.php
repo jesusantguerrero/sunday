@@ -23,7 +23,11 @@ class EventServiceProvider extends ServiceProvider
         TeamCreated::class => [
             CreateTeamWorkspace::class,
             CreateTeamSettings::class
-        ]
+        ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            // ... other providers
+            \SocialiteProviders\LaravelPassport\LaravelPassportExtendSocialite::class.'@handle',
+        ],
     ];
 
     /**

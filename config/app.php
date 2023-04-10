@@ -53,7 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-
+    'sso_url' => env('SSO_URL', 'http://localhost'),
     'asset_url' => env('ASSET_URL', null),
 
     /*
