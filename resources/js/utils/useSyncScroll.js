@@ -13,7 +13,7 @@ export const useSyncScroll = (direction, theClass) => {
         })
     }
 
-    return { 
+    return {
         syncScroll
     }
 }

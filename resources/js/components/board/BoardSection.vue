@@ -141,7 +141,7 @@ import AutomationModal from "../AutomationModal.vue";
 import BulkSelectionBar from '../BulkSelectionBar.vue';
 import { VueDraggableNext as Draggable } from "vue-draggable-next"
 import { throttle } from "lodash";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 import { onMounted, provide, computed, watch, reactive, ref, toRefs } from "vue";
 import BoardTitle from "./BoardTitle.vue";
 
@@ -207,11 +207,20 @@ const state = reactive({
     isItemModalOpen: false,
     isAutomationModalOpen: false
 });
+function parseParams(options = {}) {
+ return new URLSearchParams(pickBy(options))
+}
 
-watch(state.searchOptions, throttle(() => {
-    let query = pickBy(state.searchOptions);
-    query = Object.keys(query).length ?  '?' + new URLSearchParams(pickBy(state.searchOptions)) : '';
-    Inertia.replace(`/boards/${props.board.id}${query}`)
+watch(state.searchOptions, throttle((options, oldOptions) => {
+    const optionsObject = Object.values(options).filter((value) => value);
+    const hasOptions = optionsObject.length ? Object.values(options).join('') : false;
+    if (!oldOptions && !hasOptions) return;
+
+    const currentOptions = parseParams(options);
+    if (currentOptions != parseParams(oldOptions)) {
+        const query = Object.keys(pickBy(options)).length ?  '?' + parseParams(state.searchOptions) : '';
+        router.replace(`/boards/${props.board.id}${query}`)
+    }
 }, 200),{
     deep: true,
     immediate: true
@@ -306,9 +315,13 @@ function addItem(item, reload = true) {
         data: item
     }).then(() => {
         if (reload) {
-            Inertia.reload({
+            router.reload({
                 preserveScroll: true ,
-                preserveState: true
+                preserveState: true,
+                onError(err) {
+                    debugger
+                },
+                only: ['items']
             });
         }
     }).finally(() => {
@@ -328,7 +341,7 @@ function addStage(stage = {}, reload = true) {
         data: stage
     }).then(({ data }) => {
         if (reload) {
-            Inertia.reload({ preserveScroll: true });
+            router.reload({ preserveScroll: true });
         }
     });
 }
@@ -345,7 +358,7 @@ function updateBoardName(board = {}, reload = true) {
         }
     }).then(() => {
         if (reload) {
-            Inertia.reload({ preserveScroll: true });
+            router.reload({ preserveScroll: true });
             props.isEditMode = false;
         }
     });
@@ -362,7 +375,7 @@ function runAutomation(automationId) {
             title: "Automation sync",
             message: "Updated"
         })
-        Inertia.reload({ preserveScroll: true });
+        router.reload({ preserveScroll: true });
     });
 }
 
@@ -371,7 +384,7 @@ function saveReorder() {
         stage.order = index;
         await addStage(stage, false);
     });
-    Inertia.reload({ preserveScroll: true });
+    router.reload({ preserveScroll: true });
 }
 
 function toggleDone() {
@@ -422,7 +435,7 @@ function confirmDeleteItem(item, reload = true) {
             }).then(() => {
                 if (reload) {
                     this.itemToDelete = false;
-                    this.$inertia.reload({ preserveScroll: true });
+                    this.$router.reload({ preserveScroll: true });
                 }
             });
         }
@@ -440,7 +453,7 @@ function confirmDeleteItems(items, reload = true) {
                 method: "post",
                 data: items.map(item => item.id)
             }).then(() => {
-                Inertia.reload({ preserveScroll: true });
+                router.reload({ preserveScroll: true });
             });
         }
     });

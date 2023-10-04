@@ -14,7 +14,7 @@
         "doctrine/dbal": "^2.12",
         "freesgen/querify": "dev-master",
         "google/apiclient": "2.12.6",
-        "inertiajs/inertia-laravel": "^0.5.4",
+        "inertiajs/inertia-laravel": "^0.6.9",
         "insane/treasurer": "dev-master",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.11",
