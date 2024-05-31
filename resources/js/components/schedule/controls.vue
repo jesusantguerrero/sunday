@@ -110,7 +110,11 @@ export default {
       return format(date, "iii");
     },
     getMonthName(date) {
-      return format(date, "MMM, yyyy");
+        try {
+            return format(date, "MMM, yyyy");
+        } catch (err) {
+            return date
+        }
     },
     getDateLabel(date) {
       return format(date, "dd");

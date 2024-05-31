@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Resources\Item as ItemResource;
-use App\Models\Board;
+use Carbon\Carbon;
 use App\Models\Item;
 use App\Models\Link;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\URL;
+use App\Models\Board;
 use App\Models\Standup;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Insane\Treasurer\Models\Plan;
-use Insane\Treasurer\Models\Subscription;
+use Illuminate\Support\Facades\URL;
 use Insane\Treasurer\PaypalServiceV2;
+use Insane\Treasurer\Models\Subscription;
+use App\Http\Resources\Item as ItemResource;
 
 class BillingController extends Controller
 {
@@ -33,7 +33,7 @@ class BillingController extends Controller
                 "user_id" => $user->id
             ])->get(),
             "transactions" => function () use ($request) {
-                return $request->user()->subscriptionTransactions();
+                return $request->user()->currentTeam->subscriptionTransactions();
             }
         ]);
     }
