@@ -118,6 +118,17 @@ class GoogleService
         return $service;
     }
 
+    public static function storeIntegration($data, $user) {
+        Integration::updateOrCreate([
+            "team_id" => $user->current_team_id,
+            "user_id" => $user->id,
+            "name" => $data->service_name,
+            "automation_service_id" => $data->service_id
+        ], [
+            "hash" => $user->email
+        ]);
+    }
+
     public static function requestAccessToken($data, $user) {
         $client = new GoogleClient([
             "client_id" => config('integrations.google.client_id')

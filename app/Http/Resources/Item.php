@@ -19,6 +19,7 @@ class Item extends JsonResource
             'title' => $this->title,
             'resource_type' => $this->resource_type,
             'done' => $this->done,
+            'points' => $this->points,
             'commit_date' => $this->commit_date,
             'color' => $this->color,
             'stage' => $this->stage ? $this->stage->name : "",

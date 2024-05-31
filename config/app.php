@@ -53,7 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-
+    'sso_url' => env('SSO_URL', 'http://localhost'),
     'asset_url' => env('ASSET_URL', null),
 
     /*
@@ -165,6 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
+        \SocialiteProviders\Manager\ServiceProvider::class, // add
 
         /*
          * Application Service Providers...

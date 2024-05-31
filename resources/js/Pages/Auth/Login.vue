@@ -13,15 +13,24 @@
       <template #brand>
         <AppLogo class="w-full h-20 text-white" />
       </template>
+      <template #append>
+        <AtButton>
+            Connect with neatlancer
+        </AtButton>
+      </template>
     </AtAuthForm>
   </AtAuthBox>
+    <AtButton @click="neatlancerLogin">
+        Connect with neatlancer
+    </AtButton>
 </template>
 
 <script setup>
-import { AtAuthBox, AtAuthForm } from "atmosphere-ui";
+import { AtAuthBox, AtAuthForm, AtButton } from "atmosphere-ui";
 import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-vue3";
 import AppLogo from "@/Jetstream/ApplicationMark.vue";
+import { onMounted } from "vue";
 
 defineProps({
   canResetPassword: Boolean,
@@ -53,4 +62,15 @@ const submit = (formData) => {
       onFinish: () => form.reset("password"),
     });
 };
+
+const neatlancerLogin = () => {
+  window.location.href = '/neatlancer';
+};
+
+onMounted(() => {
+    axios.get('/oauth/clients')
+    .then(response => {
+        console.log(response.data);
+    });
+})
 </script>

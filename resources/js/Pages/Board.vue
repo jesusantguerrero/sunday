@@ -23,13 +23,13 @@
         },
         automations: {
             type: Array,
-            refault() {
+            default() {
                 return []
             }
         },
         users: {
             type: Array,
-            refault() {
+            default() {
                 return []
             }
         },

@@ -1,98 +1,102 @@
 <template>
-  <div class="ic-list" :class="{ 'rounded-md bg-gray-200 border border-slate-500': !isExpanded }" :data-table-size="tableSize">
+  <div
+    class="ic-list"
+    :class="{ 'rounded-md bg-gray-200 border border-slate-500': !isExpanded }"
+    :data-table-size="tableSize"
+  >
     <div class="ic-list__body" :class="{ 'not-expanded': !isExpanded, loaded: isLoaded }">
       <!-- Column title -->
       <div class="ic-list__title">
         <ListCellHeader
-            class="item-false__header"
-            :visibleFields="[ {name: 'title'}]"
-            :filters="filters"
-            v-slot:default="{ filterIcons }"
+          class="item-false__header"
+          :visibleFields="[{ name: 'title' }]"
+          :filters="filters"
+          v-slot:default="{ filterIcons }"
         >
-            <div class="flex items-center space-x-2 header-cell">
-                <div class="flex items-center">
-                <span class="toolbar-buttons" @click="toggleExpand">
-                    <i :class="[isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
-                </span>
+          <div class="flex items-center space-x-2 header-cell">
+            <div class="flex items-center">
+              <span class="toolbar-buttons" @click="toggleExpand">
+                <i :class="[isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right']" />
+              </span>
 
-                <div class="hidden item-group__selector" v-if="isExpanded">
-                    <input
-                        type="checkbox"
-                        v-model="stage.selected"
-                        @change="toggleSelection()"
-                    />
-                </div>
+              <div class="hidden item-group__selector" v-if="isExpanded">
+                <input
+                  type="checkbox"
+                  v-model="stage.selected"
+                  @change="toggleSelection()"
+                />
+              </div>
 
-                <span class="font-bold handle" v-if="!isEditMode">
-                    {{ stage.title || stage.name }}
-                    {{ isSelectMode ? "(Selection Mode)" : "" }}
-                </span>
+              <span class="font-bold handle" v-if="!isEditMode">
+                {{ stage.title || stage.name }}
+                {{ isSelectMode ? "(Selection Mode)" : "" }}
+              </span>
 
-                <div v-else>
-                    <input
-                        :value="stage.name"
-                        type="text"
-                        ref="input"
-                        @keypress.enter="saveStage(stage)"
-                        @blur="saveStage(stage)"
-                    />
-                </div>
+              <div v-else>
+                <input
+                  :value="stage.name"
+                  type="text"
+                  ref="input"
+                  @keypress.enter="saveStage(stage)"
+                  @blur="saveStage(stage)"
+                />
+              </div>
 
-                <div class="hidden">
-                    <i class="mx-2 fa fa-edit" @click="toggleEditMode(true)"></i>
-                    <NDropdown
-                    trigger="click"
-                    @select="handleBoardCommands"
-                    @click.native.prevent
-                    :options="[
-                        {
-                            key: 'edit',
-                            label: 'Edit',
-                        },
-                        {
-                            key: 'delete',
-                            label: 'Delete',
-                        },
-                        {
-                            key: 'selection',
-                            label: 'Select Mode',
-                        },
-                    ]"
-                    >
-                    <div
-                        class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
-                    >
-                        <div class="flex items-center justify-center">
-                        <i class="fa fa-ellipsis-v"></i>
-                        </div>
-                    </div>
-                    </NDropdown>
-                </div>
-                </div>
+              <div class="hidden">
+                <i class="mx-2 fa fa-edit" @click="toggleEditMode(true)"></i>
                 <NDropdown
-                    trigger="click"
-                    @select="handleFilterCommands('title', $event)"
-                    @click.native.prevent
-                    :options="[
-                        {
-                            key: 'sort',
-                            label: 'Sort by Task Name',
-                        },
-                        {
-                            key: 'clearSort',
-                            label: 'Clear sort',
-                        },
-                        {
-                            key: 'saveOrder',
-                            label: 'Save this order',
-                        },
-                    ]"
+                  trigger="click"
+                  @select="handleBoardCommands"
+                  @click.native.prevent
+                  :options="[
+                    {
+                      key: 'edit',
+                      label: 'Edit',
+                    },
+                    {
+                      key: 'delete',
+                      label: 'Delete',
+                    },
+                    {
+                      key: 'selection',
+                      label: 'Select Mode',
+                    },
+                  ]"
                 >
-                <div class="px-2 py-1 transition cursor-pointer hover:bg-slate-200">
-                    <span> {{ items.length }} Tasks <i :class="filterIcons.sort" /></span>
-                </div>
+                  <div
+                    class="flex justify-center w-5 h-full py-2 text-center rounded-full hover:bg-gray-200"
+                  >
+                    <div class="flex items-center justify-center">
+                      <i class="fa fa-ellipsis-v"></i>
+                    </div>
+                  </div>
                 </NDropdown>
+              </div>
             </div>
+            <NDropdown
+              trigger="click"
+              @select="handleFilterCommands('title', $event)"
+              @click.native.prevent
+              :options="[
+                {
+                  key: 'sort',
+                  label: 'Sort by Task Name',
+                },
+                {
+                  key: 'clearSort',
+                  label: 'Clear sort',
+                },
+                {
+                  key: 'saveOrder',
+                  label: 'Save this order',
+                },
+              ]"
+            >
+              <div class="px-2 py-1 transition cursor-pointer hover:bg-slate-200">
+                <span> {{ items.length }} Tasks <i :class="filterIcons.sort" /></span>
+              </div>
+            </NDropdown>
+          </div>
         </ListCellHeader>
 
         <div class="grid" v-if="isExpanded">
@@ -119,28 +123,31 @@
       </div>
       <!-- Column title -->
 
-      <div class="item-group ic-scroller ic-scroller-slim" @scroll="syncScroll"
+      <div
+        class="item-group ic-scroller ic-scroller-slim"
+        @scroll="syncScroll"
         :id="`${stage.id}-slim-body`"
       >
         <ListCellHeader
-            class="grid py-1 text-left item-group-row"
-            :visible-fields="visibleFields"
-            :filters="filters"
-            @sort="sort"
-            @clear-sort="clearSort"
-            @field-added="onFieldAdded"
+          class="grid py-1 text-left item-group-row"
+          :visible-fields="visibleFields"
+          :filters="filters"
+          @sort="sort"
+          @clear-sort="clearSort"
+          @field-added="onFieldAdded"
         />
 
         <!-- items  -->
         <template v-if="isExpanded">
-            <ListRow v-for="(item, index) in items"
-                :key="`item-${index}-${item.id}`"
-                :id="`item-${index}-${item.id}`"
-                :item="item"
-                :row-index="index"
-                :visible-fields="visibleFields"
-                @saved="saveChanges"
-            />
+          <ListRow
+            v-for="(item, index) in items"
+            :key="`item-${index}-${item.id}`"
+            :id="`item-${index}-${item.id}`"
+            :item="item"
+            :row-index="index"
+            :visible-fields="visibleFields"
+            @saved="saveChanges"
+          />
         </template>
         <!-- End of items -->
       </div>
@@ -148,9 +155,9 @@
       <!-- column add -->
       <div class="ic-list__add" v-if="isExpanded">
         <ListCellHeader class="item-false__header sticky_header">
-            <field-popover :field-data="newField" :board="board" @saved="onFieldAdded">
-              <i class="fa fa-plus" slot="reference"></i>
-            </field-popover>
+          <field-popover :field-data="newField" :board="board" @saved="onFieldAdded">
+            <i class="fa fa-plus" slot="reference"></i>
+          </field-popover>
         </ListCellHeader>
 
         <div class="grid">
@@ -168,7 +175,7 @@
     <div class="ic-list__footer" v-if="isExpanded">
       <div class="grid grid-cols-10 text-left item-line">
         <div class="flex items-center col-span-12 px-0 item-line-cell">
-          <item-group-cell
+          <ItemGroupCell
             class="flex items-center w-full"
             field-name="title"
             :is-title="true"
@@ -185,252 +192,243 @@
 
     <!-- summary row  -->
     <ListSummaryRow
-        :items="items"
-        :stage="stage"
-        :visible-fields="visibleFields"
-        @scroll="syncScroll"
+      :items="items"
+      :stage="stage"
+      :visible-fields="visibleFields"
+      @scroll="syncScroll"
     />
     <!-- end of summary row -->
   </div>
 </template>
 
 <script setup>
-import { VueDraggableNext as Draggable } from "vue-draggable-next"
-import { NDropdown } from "naive-ui"
+import { VueDraggableNext as Draggable } from "vue-draggable-next";
+import { NDropdown } from "naive-ui";
 import { computed, nextTick, reactive, ref, watch, toRefs } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 
 import ItemGroupCell from "../../ItemGroupCell.vue";
 import FieldPopover from "../../FieldPopover.vue";
-import ListCellTitle from './ListCellTitle.vue';
+import ListCellTitle from "./ListCellTitle.vue";
 import ListCellHeader from "./ListCellHeader.vue";
 import ListRow from "./ListRow.vue";
 import ListSummaryRow from "./ListSummaryRow.vue";
 
-import { matrixColors } from "@/utils/constants"
-import { useSyncScroll } from "@/utils/useSyncScroll"
-
+import { matrixColors } from "@/utils/constants";
+import { useSyncScroll } from "@/utils/useSyncScroll";
 
 const props = defineProps({
-        createMode: {
-            type: Boolean
-        },
-        stage: {
-            type: Object
-        },
-        board: {
-            type: Object
-        },
-        selectedItems: {
-            type: Array,
-            default() {
-                return [];
-            }
-        },
-        items: {
-            type: Array,
-            default() {
-                return [];
-            }
-        },
-        filters: {
-            type: Object
-        }
+  createMode: {
+    type: Boolean,
+  },
+  stage: {
+    type: Object,
+  },
+  board: {
+    type: Object,
+  },
+  selectedItems: {
+    type: Array,
+    default() {
+      return [];
+    },
+  },
+  items: {
+    type: Array,
+    default() {
+      return [];
+    },
+  },
+  filters: {
+    type: Object,
+  },
 });
 
-const emit = defineEmits([])
+const emit = defineEmits([]);
 
 const state = reactive({
-    newItem: {},
-    newField: {},
-    isSelectMode: false,
-    isEditMode: false,
-    isExpanded: true,
-    isLoaded: false
+  newItem: {},
+  newField: {},
+  isSelectMode: false,
+  isEditMode: false,
+  isExpanded: true,
+  isLoaded: false,
 });
 
 watch(props.selectedItems, () => {
-    emit("selected-items-updated", props.selectedItems);
-})
+  emit("selected-items-updated", props.selectedItems);
+});
 
 const visibleFields = computed(() => {
-    return props.board.fields.filter(field => !field.hide);
-})
+  return props.board.fields.filter((field) => !field.hide);
+});
 
 const tableSize = computed(() => {
-    return visibleFields.value.length;
+  return visibleFields.value.length;
 });
 
-watch(tableSize, () => {
-        const documentRoot = document.documentElement;
-        documentRoot.style.setProperty(
-            "--board-column-size",
-            tableSize.value
-        );
-    },{
-        deep: true,
-        immediate: true
-});
+watch(
+  tableSize,
+  () => {
+    const documentRoot = document.documentElement;
+    documentRoot.style.setProperty("--board-column-size", tableSize.value);
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
 
 function getBg(field, item, fieldName) {
-    const fieldValue =
-        item.fields &&
-        item.fields.find(field => field.field_name == fieldName);
-    const value = fieldValue ? fieldValue.value : item[fieldName];
+  const fieldValue =
+    item.fields && item.fields.find((field) => field.field_name == fieldName);
+  const value = fieldValue ? fieldValue.value : item[fieldName];
 
-    if (value && field.rules) {
-        const bgRule = field.rules.find(rule => rule.name == "bg");
-        if (bgRule) {
-            const ruleOptions =
-                bgRule.options || field[bgRule.reference];
-            const bg =
-                ruleOptions &&
-                ruleOptions.find(rule => {
-                    const name = rule.name || rule.value;
-                    return value.toLowerCase() == name.toLowerCase();
-                });
-            return bg ? matrixColors[bg.result || bg.color] : "";
-        }
+  if (value && field.rules) {
+    const bgRule = field.rules.find((rule) => rule.name == "bg");
+    if (bgRule) {
+      const ruleOptions = bgRule.options || field[bgRule.reference];
+      const bg =
+        ruleOptions &&
+        ruleOptions.find((rule) => {
+          const name = rule.name || rule.value;
+          return value.toLowerCase() == name.toLowerCase();
+        });
+      return bg ? matrixColors[bg.result || bg.color] : "";
     }
-    return "bg-gray-200";
+  }
+  return "bg-gray-200";
 }
 
 function toggleExpand() {
-    state.isExpanded = !state.isExpanded;
+  state.isExpanded = !state.isExpanded;
 }
 
-const input = ref()
+const input = ref();
 function toggleEditMode() {
-    state.isEditMode = !state.isEditMode;
-    nextTick(() => {
-        if (input.value) {
-            input.value.focus();
-        }
-    });
+  state.isEditMode = !state.isEditMode;
+  nextTick(() => {
+    if (input.value) {
+      input.value.focus();
+    }
+  });
 }
 
 function addItem(stage, reload) {
-    const lastItemOrder = Math.max(
-        ...props.stage.items.map(item => item.order)
-    );
-    state.newItem.board_id = stage.board_id;
-    state.newItem.stage_id = stage.id;
-    state.newItem.fields = props.board.fields.map(field => {
-        return {
-            field_id: field.id,
-            field_name: field.name,
-            value: state.newItem[field.name]
-        };
-    });
-    state.newItem.order = lastItemOrder + 1;
-    emit("saved", { ...state.newItem }, reload);
-    state.newItem = {};
+  const lastItemOrder = Math.max(...props.stage.items.map((item) => item.order));
+  state.newItem.board_id = stage.board_id;
+  state.newItem.stage_id = stage.id;
+  state.newItem.fields = props.board.fields.map((field) => {
+    return {
+      field_id: field.id,
+      field_name: field.name,
+      value: state.newItem[field.name],
+    };
+  });
+  state.newItem.order = lastItemOrder + 1;
+  emit("saved", { ...state.newItem }, reload);
+  state.newItem = {};
+  console.log(state.newItem, "here")
 }
 
 function handleSelect() {}
 
 function onFieldAdded() {
-    state.newField = {};
-    Inertia.reload({ preserveScroll: true });
+  state.newField = {};
+  Inertia.reload({ preserveScroll: true });
 }
 
 function saveChanges(item, field, value) {
-    item[field] = value;
-    item.fields = props.board.fields.map(field => {
-        return {
-            field_id: field.id,
-            field_name: field.name,
-            value: item[field.name]
-        };
-    });
-    emit("saved", { ...item });
+  item[field] = value;
+  item.fields = props.board.fields.map((field) => {
+    return {
+      field_id: field.id,
+      field_name: field.name,
+      value: item[field.name],
+    };
+  });
+  emit("saved", { ...item });
 }
 
 function saveStage(stage) {
-    stage.name = input.value?.value;
-    state.isEditMode = false;
-    emit("stage-updated", { ...stage });
+  stage.name = input.value?.value;
+  state.isEditMode = false;
+  emit("stage-updated", { ...stage });
 }
 
 function saveReorder() {
-    prop.stage.items.forEach(async (item, index) => {
-        item.order = index;
-        emit("saved", { ...item }, false);
-    });
-    Inertia.reload({ preserveScroll: true });
+  prop.stage.items.forEach(async (item, index) => {
+    item.order = index;
+    emit("saved", { ...item }, false);
+  });
+  Inertia.reload({ preserveScroll: true });
 }
 
 function handleBoardCommands(command) {
-    switch (command) {
-        case "delete":
-            emit("board-deleted", item);
-            break;
-        case "edit":
-            toggleEditMode();
-            break;
-        case "selection":
-            state.isSelectMode = !state.isSelectMode;
-            break;
-        default:
-            break;
-    }
+  switch (command) {
+    case "delete":
+      emit("board-deleted", item);
+      break;
+    case "edit":
+      toggleEditMode();
+      break;
+    case "selection":
+      state.isSelectMode = !state.isSelectMode;
+      break;
+    default:
+      break;
+  }
 }
 
 function handleCommand(item, command) {
-    switch (command) {
-        case "delete":
-            emit("item-deleted", item);
-            break;
-        case "edit":
-            emit("open-item", item);
-            break;
-        default:
-            break;
-    }
+  switch (command) {
+    case "delete":
+      emit("item-deleted", item);
+      break;
+    case "edit":
+      emit("open-item", item);
+      break;
+    default:
+      break;
+  }
 }
 
 const sort = (fieldName) => {
-    emit('sort', fieldName)
-}
+  emit("sort", fieldName);
+};
 
 const clearSort = (fieldName) => {
-    emit('clearSort', fieldName)
-}
+  emit("clearSort", fieldName);
+};
 
 function handleFilterCommands(fieldName, command) {
-    switch (command) {
-        case "clearSort":
-            clearSort(fieldName);
-            break;
-        case "sort":
-            sort(fieldName);
-            break;
-        default:
-            emit("saveOrder", fieldName);
-            break;
-    }
+  switch (command) {
+    case "clearSort":
+      clearSort(fieldName);
+      break;
+    case "sort":
+      sort(fieldName);
+      break;
+    default:
+      emit("saveOrder", fieldName);
+      break;
+  }
 }
 
 function toggleSelection() {
-    props.stage.items.forEach(item => {
-        item['selected'] = props.stage.selected
-    })
+  props.stage.items.forEach((item) => {
+    item["selected"] = props.stage.selected;
+  });
 }
 
-const {
-    newItem,
-    newField,
-    isSelectMode,
-    isEditMode,
-    isExpanded,
-    isLoaded
-} = toRefs(state);
+const { newItem, newField, isSelectMode, isEditMode, isExpanded, isLoaded } = toRefs(
+  state
+);
 
-const summaryRow = ref()
-const bodyRow = ref()
+const summaryRow = ref();
+const bodyRow = ref();
 
-const { syncScroll } = useSyncScroll('left', 'ic-scroller-slim')
-
+const { syncScroll } = useSyncScroll("left", "ic-scroller-slim");
 </script>
 
 <style lang="scss">

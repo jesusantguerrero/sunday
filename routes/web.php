@@ -12,6 +12,7 @@ use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\NeatlancerController;
 use App\Http\Controllers\StandupController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
@@ -37,6 +38,8 @@ Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name(
 
 // Automation Services
 Route::get('/services/accept-oauth', [ServiceController::class, 'acceptOauth']);
+Route::get('/neatlancer', [NeatlancerController::class, 'connect']);
+Route::get('/oauth/accept', [NeatlancerController::class, 'accept']);
 
 Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     // Dashboards

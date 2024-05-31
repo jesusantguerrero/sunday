@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="mt-5 md:ml-6">
-                        <schedule-view
+                        <ScheduleView
                             :value="stringToDate(date)"
                             @input="getCommitsByDate"
                             :modes="modes"
@@ -48,8 +48,7 @@
                             time-end-field=""
                             date-end-field=""
                             title-field=""
-                        >
-                        </schedule-view>
+                        />
                     </div>
                 </div>
                 <!-- End of main board -->
@@ -129,6 +128,7 @@ import ScheduleControls from "../components/schedule/controls.vue";
 import ScheduleView from "../components/schedule/index.vue";
 import ItemModal from "../components/board/ItemModal.vue";
 import { format } from "date-fns";
+import { stringToDate } from "@/utils";
 
 export default {
     components: {
