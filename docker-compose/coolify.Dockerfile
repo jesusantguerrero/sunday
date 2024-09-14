@@ -51,8 +51,15 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* && \
 COPY --from=base --chown=9999:9999 /var/www/html .
 COPY --chown=9999:9999 . .
 RUN composer dump-autoload
+RUN chown -R www-data:www-data .
 
 COPY --from=asset-files --chown=www-data:www-data /app/public/build ./public/build
+
+RUN useradd -G www-data,root,crontab -u $uid -d /home/$user $user
+RUN mkdir -p /home/$user/.composer && \
+    chown -R $user:$user /home/$user && \
+    chown -R $user:$user /var/www && \
+    chown -R www-data:www-data /var/www
 
 # RUN php artisan route:cache
 # RUN php artisan view:cache
