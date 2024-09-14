@@ -1,24 +1,24 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AutomationController;
-use App\Http\Controllers\AutomationRecipeController;
-use App\Http\Controllers\AutomationServiceController;
-use App\Http\Controllers\BillingController;
-use App\Http\Controllers\BoardController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FieldController;
-use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\StageController;
 use App\Http\Controllers\LinkController;
-use App\Http\Controllers\NeatlancerController;
-use App\Http\Controllers\StandupController;
+use App\Http\Controllers\BoardController;
+use App\Http\Controllers\FieldController;
+use App\Http\Controllers\StageController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\StandupController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TimeEntryController;
 use App\Http\Controllers\WorkspaceController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AutomationController;
+use App\Http\Controllers\NeatlancerController;
+use App\Http\Controllers\IntegrationController;
+use App\Http\Controllers\AutomationRecipeController;
+use App\Http\Controllers\AutomationServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,12 +51,12 @@ Route::middleware(['auth:sanctum', 'verified', 'inertia'])->group(function() {
     // Apps
     Route::get('/notes', [DashboardController::class, 'notes'])->name('notes');
     Route::get('/okrs', [DashboardController::class, 'okrs'])->name('okrs');
-    Route::get('/reports', [DashboardController::class, 'blank'])->name('blank');
+    Route::get('/reports', [DashboardController::class, 'blank'])->name('reports');
 
     // footer
-    Route::get('/help', [DashboardController::class, 'help'])->name('blank');
-    Route::get('/about', [DashboardController::class, 'about'])->name('blank');
-    Route::get('/settings', [DashboardController::class, 'blank'])->name('blank');
+    Route::get('/help', [DashboardController::class, 'help'])->name('help');
+    Route::get('/about', [DashboardController::class, 'about'])->name('about');
+    Route::get('/settings', [DashboardController::class, 'blank'])->name('settings');
 
     // Boards
     Route::get('/boards/{id}', [BoardController::class, 'edit'])->name('boards');
