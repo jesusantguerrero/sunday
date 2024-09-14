@@ -33,7 +33,7 @@
                   </template>
                 </multiselect>
               </div>
-              <div class="h-10 bg-purple-700  rounded-lg">
+              <div class="h-10 bg-purple-700 rounded-lg">
                 <button
                   v-for="mode in state.modes"
                   :key="mode"
@@ -47,7 +47,7 @@
             </div>
           </div>
 
-          <board-item-container
+          <BoardItemContainer
             v-show="showCommitted"
             title="Commited"
             :tasks="committed"
@@ -58,9 +58,9 @@
               <schedule-controls v-if="localCommitDate" v-model="localCommitDate">
               </schedule-controls>
             </template>
-          </board-item-container>
+          </BoardItemContainer>
 
-          <board-item-container
+          <BoardItemContainer
             v-show="showTodo"
             title="To Do"
             :allow-add="true"
@@ -90,7 +90,7 @@
                 >
               </div>
             </template>
-          </board-item-container>
+          </BoardItemContainer>
         </div>
         <!-- End of main board -->
 
