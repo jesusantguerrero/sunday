@@ -7,7 +7,7 @@ services:
         uid: 1000
         TZ: America\New_York
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: ./docker-compose/coolify.Dockerfile
     image: sunday-image
     container_name: sunday-app
     restart: unless-stopped
