@@ -5,7 +5,7 @@ FROM serversideup/php:${PHP_VERSION}-fpm-nginx as base
 WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --prefer-dist
+RUN composer install --ignore-platform-reqs --no-dev --no-interaction --no-plugins --no-scripts --prefer-dist
 
 FROM node:${NODE_VERSION}-alpine as asset-files
 
