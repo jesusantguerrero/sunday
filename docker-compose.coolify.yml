@@ -14,6 +14,7 @@ services:
       - "8888:8080"
     volumes:
       - ./docker-compose/web/timezone:/etc/timezone
+      - './storage:/var/www/html/storage'
   task:
     image: sunday-image
     command: ["php", "/var/www/html/artisan", "schedule:work"]
@@ -26,6 +27,8 @@ services:
     command: ["php", "/var/www/html/artisan", "queue:work", "--tries=3"]
     environment:
       PHP_FPM_POOL_NAME: "sunday_queue"
+    depends_on:
+      - web
 
 
 
