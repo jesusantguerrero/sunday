@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import AppSideItem from "./";
+import AppSideItem from "./AppSideItem.vue";
 
 export default {
   props: {
