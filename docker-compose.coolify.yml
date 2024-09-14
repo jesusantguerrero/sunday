@@ -15,6 +15,14 @@ services:
     volumes:
       - ./docker-compose/web/timezone:/etc/timezone
       - './storage:/var/www/html/storage'
+    environment:
+      AUTORUN_ENABLED: true
+      DB_CONNECTION: mysql
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
   task:
     image: sunday-image
     command: ["php", "/var/www/html/artisan", "schedule:work"]
