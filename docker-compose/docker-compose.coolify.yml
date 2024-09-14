@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  web:
+    build:
+      args:
+        user: 'sunday'
+        uid: 1000
+        TZ: America\New_York
+      context: ./
+      dockerfile: Dockerfile
+    image: sunday-image
+    container_name: sunday-app
+    restart: unless-stopped
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./web/timezone:/etc/timezone
+  task:
+    image: sunday-image
+    command: ["php", "/var/www/html/artisan", "schedule:work"]
+    environment:
+      PHP_PFM_POOL_NAME: "sunday_task"
+    depends_on:
+      - web
+  queue:
+    image: sunday-image
+    command: ["php", "/var/www/html/artisan", "queue:work", "--tries=3"]
+    environment:
+      PHP_FPM_POOL_NAME: "sunday_queue"
+
+
+
