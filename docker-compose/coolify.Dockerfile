@@ -54,8 +54,8 @@ RUN composer dump-autoload
 
 COPY --from=asset-files --chown=www-data:www-data /app/public/build ./public/build
 
-RUN php artisan route:cache
-RUN php artisan view:cache
+# RUN php artisan route:cache
+# RUN php artisan view:cache
 
 RUN echo "alias ll='ls -al'" >>/etc/bash.bashrc
 RUN echo "alias a='php artisan'" >>/etc/bash.bashrc
